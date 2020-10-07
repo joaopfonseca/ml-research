@@ -1,32 +1,22 @@
-research
+Research
 ==============================
 
-A short description of the project.
+This repository contains the code developed for all the publications I was involved in. The python
+code for generating the paper, experiments' results and visualizations reported in each paper is
+available (whenever possible) in the paper's directory.
+
+Additionally, contributions at the algorithm level are available in the package `fonseca_research`.
 
 Project Organization
 ------------
 
     ├── LICENSE
-    ├── Makefile           <- Makefile with commands like `make data` or `make train`
+    ├── Makefile           <- Makefile with basic commands
     ├── README.md          <- The top-level README for developers using this project.
-    ├── data
-    │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Intermediate data that has been transformed.
-    │   ├── processed      <- The final, canonical data sets for modeling.
-    │   └── raw            <- The original, immutable data dump.
     │
     ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
     │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    │
-    ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-    │
-    ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-    │   └── figures        <- Generated graphics and figures to be used in reporting
+    ├── publications       <- Research papers' code 
     │
     ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
     │                         generated with `pip freeze > requirements.txt`
@@ -51,6 +41,24 @@ Project Organization
     │
     └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
 
+Installation and Setup
+--------
+A Python distribution of version 3.7 or higher is required to run this project. 
+
+### Basic Installation
+
+The following commands should allow you to setup this project with minimal effort:
+
+    # Clone the project.
+    git clone https://github.com/joaopfonseca/research.git
+    cd research
+    
+    # Create and activate an environment 
+    make create_environment 
+    conda activate research # Adapt this line accordingly if you're not running conda
+    
+    # Install project requirements and the fonseca_research package
+    make requirements
 
 --------
 
