@@ -54,7 +54,7 @@ The following commands should allow you to setup this project with minimal effor
     cd research
     
     # Create and activate an environment 
-    make create_environment 
+    make environment 
     conda activate research # Adapt this line accordingly if you're not running conda
     
     # Install project requirements and the fonseca_research package
