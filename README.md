@@ -5,39 +5,27 @@ This repository contains the code developed for all the publications I was invol
 code for generating the paper, experiments' results and visualizations reported in each paper is
 available (whenever possible) in the paper's directory.
 
-Additionally, contributions at the algorithm level are available in the package `fonseca_research`.
+Additionally, contributions at the algorithm level are available in the package `research`.
 
 Project Organization
 ------------
 
     ├── LICENSE
+    │
     ├── Makefile           <- Makefile with basic commands
+    │
     ├── README.md          <- The top-level README for developers using this project.
     │
     ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
     │
-    ├── publications       <- Research papers' code 
+    ├── publications       <- Research papers published, submitted, or under development.
     │
     ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
     │                         generated with `pip freeze > requirements.txt`
     │
     ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
-    │   │
-    │   ├── data           <- Scripts to download or generate data
-    │   │   └── make_dataset.py
-    │   │
-    │   ├── features       <- Scripts to turn raw data into features for modeling
-    │   │   └── build_features.py
-    │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
-    │   └── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │       └── visualize.py
+    │
+    ├── research           <- Source code used in publications.
     │
     └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
 
