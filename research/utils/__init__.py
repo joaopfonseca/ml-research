@@ -11,7 +11,7 @@ publications repo, to which I have also contributed.
 Link to related repo: https://github.com/AlgoWit/publications
 """
 from ._metrics import SCORERS, geometric_mean_score_macro
-from ._results import (
+from ._utils import (
     generate_mean_std_tbl,
     generate_pvalues_tbl,
     sort_tbl,
@@ -19,6 +19,11 @@ from ._results import (
     make_bold
 )
 from ._image import img_array_to_pandas
+from ._data import load_datasets
+from ._check_pipelines import (
+    check_pipelines,
+    check_pipelines_wrapper
+)
 
 __all__ = [
     'SCORERS',
@@ -28,5 +33,8 @@ __all__ = [
     'sort_tbl',
     'generate_paths',
     'make_bold',
-    'img_array_to_pandas'
+    'img_array_to_pandas',
+    'load_datasets',
+    'check_pipelines',
+    'check_pipelines_wrapper'
 ]

@@ -11,7 +11,7 @@ from sklearn.base import clone
 from sklearn.base import ClassifierMixin, BaseEstimator
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from fonseca_research.utils import SCORERS
+from research.utils import SCORERS
 
 
 def _entropy_selection(probabs, leftover_ids, increment):
