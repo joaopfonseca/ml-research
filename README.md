@@ -45,7 +45,7 @@ The following commands should allow you to setup this project with minimal effor
     make environment 
     conda activate research # Adapt this line accordingly if you're not running conda
     
-    # Install project requirements and the fonseca_research package
+    # Install project requirements and the research package
     make requirements
 
 --------
