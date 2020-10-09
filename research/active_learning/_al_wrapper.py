@@ -155,6 +155,7 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
                 if score > self._top_score:
                     self._top_score = score
                     self.classifier_ = classifier
+                    self.top_score_iter_ = iter_n
 
             # keep track of iter_n
             if self.max_iter is not None:
