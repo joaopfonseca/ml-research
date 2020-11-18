@@ -152,7 +152,7 @@ is independent from the context and can be used alongside any classifier. We wil
 artificial data generation techniques, presented in Section~\ref{sec:ovs-sota}.
 
 In this paper, we propose a novel AL framework to address two limitations commonly found in the
-literature: Minimize human-computer interaction and reduce the class imbalance bias. This is done
+literature: minimize human-computer interaction and reduce the class imbalance bias. This is done
 with the introduction of an additional component in the iterative AL procedure (the generator), used
 to generate artificial data to both balance and augment the training dataset. The introduction of
 this component is expected to reduce the number of iterations required until convergence of the
@@ -228,8 +228,7 @@ oracle and added to the training dataset (i.e., the augmented dataset).
 
 Selecting an efficient selection criterion is particularly important to find the samples closest
 to the decision border (i.e., samples difficult to classify)~\cite{Shrivastava2021}. Therefore, most
-of AL related studies focus on the design of the query/acquisition function~\cite{Su2020}. There are
-\textbf{X} main selection criteria
+of AL related studies focus on the design of the query/acquisition function~\cite{Su2020}.
 
 \subsection{Non-informed selection criteria}
 
@@ -287,52 +286,53 @@ The measurement of entropy $H$ is based on the observed probability $p(y_{i}^{*}
 obtaining class $\omega$ as the predicted class label $y_{i}^{*}$, where $N_i$ is the number classes
 predicted for observation $x_i$.
 
-Entropy query-by-bagging (EQB), also defined as maximum entropy~\cite{Liu2020}, is an ensemble approach of
-the entropy selection criterion, originally proposed in~\cite{Tuia2009}. This strategy uses the set
-of predictions produced by the ensemble classifier to calculate those many entropy measurements.
-The estimated uncertainty measure for one sample is given by the maximum entropy within that set.
-EQB was observed to be an efficient selection criterion. Specifically, \cite{Shrivastava2021}
-applied EQB on hyper-spectral remote sensing imagery using Support Vector Machines (SVM) and Extreme
-Learning Machines (ELM) as choosers, achieving optimal results when combining EQB with ELM. This
-method was also successful when applied alon
+Entropy query-by-bagging (EQB), also defined as maximum entropy~\cite{Liu2020}, is an ensemble
+approach of the entropy selection criterion, originally proposed in~\cite{Tuia2009}. This strategy
+uses the set of predictions produced by the ensemble classifier to calculate those many entropy
+measurements. The estimated uncertainty measure for one sample is given by the maximum entropy
+within that set. EQB was observed to be an efficient selection criterion.
+Specifically,~\cite{Shrivastava2021} applied EQB on hyper-spectral remote sensing imagery using
+Support Vector Machines (SVM) and Extreme Learning Machines (ELM) as choosers, achieving optimal
+results when combining EQB with ELM\@. Another study successfully implemented this method on an
+active deep learning application~\cite{Liu2020}. Another study improved over this method with a
+normalized EQB selection criterion~\cite{Copa2010}.
 
+\subsection{Other relevant criteria}
 
+Margin Sampling is a SVM-specific criterion, based on the distance of a given point to the SVM's
+decision boundary~\cite{Shrivastava2021}. This method is less popular than the remaining methods
+because it is limited to one type of chooser (SVMs). One extension of this method is the multiclass
+level uncertainty~\cite{Shrivastava2021}, calculated by subtracting the observation's distance to
+the decision boudaries of the two most probable classes~\cite{Demir2011}.
 
+The Mutual Information-based (MI) criterion selects the new training samples by maximizing the
+mutual information between the classifier and class labels in order to select samples from regions
+that are difficult to classify. Although this method is commonly used, it is frequently outperformed
+by the breaking ties selection criterion~\cite{Li2011,Liu2018}.
 
-Query by bagging normalization~\cite{Copa2010}
+The breaking ties (BT) selection criterion was originally introduced in~\cite{Luo2003}. The BT
+algorithm is formulated as follows:
 
-\cite{Shrivastava2021}
+\begin{equation}
+    BT(x_i) = \arg \min_{x_i, i \in S_u}\{ \max_{\omega \in N}{p(y_{i}^{*}=\omega|x_i)} -
+    \max_{\omega \in N\setminus\{\omega^{+}\}}{p(y_{i}^{*}=\omega|x_i)}\}
+\end{equation}
 
+Which is essentially the subtraction of the probabilities of the two most likely classes. Another
+related method is Modified Breaking Ties scheme (MBT), which aims at finding the samples containing
+the largest probabilities for the dominant class~\cite{Liu2018,Li2013a}
 
-- Margin Sampling
-\cite{Shrivastava2021}
-SVM specific, it's the distance of the point to the decision boundary
-
-- Multiclass Level Uncertainty
-\cite{Shrivastava2021}
-
-- Breaking Ties 
-
-- Mutual information
-
-- Loss prediction~\cite{Yoo2019} 
+The last type of selection criteria identified is the loss prediction method~\cite{Yoo2019}. This
+method replaces the selection criterion with a second predictor whose goal is to estimate the
+chooser's loss for a given prediction. This allows the new classifier to estimate the prediction
+loss on unlabeled observations and select the ones with the highest predicted loss.
 
 Some of the literature fail to specify the strategy employed, although inferring it is generally
 intuitive. For example,~\cite{Ertekin2007} successfully used AL to address the imbalanced learning
-problem. They employed an ensemble of Support Vector Machines as the chooser and predictor to employ
-the ensemble-based selection criterion.
-
-Another frequent object of study is the chooser and predictor (which is often the same classifier).
-% citation
-
-
-
-% selection criteria
-
-% maximum difference = margin sampling
-% entropy
-% model evaluations (agreement/disagreement rate)
-% random sampling (used as a baseline method)
+problem. They employed an ensemble of SVMs as the chooser and predictor to employ an ensemble-based
+selection criterion. All of the research found related to this topic focused on the improvement of AL
+through modifications on the selection criterion, chooser or predictor. None of these publications
+proposed significant variations to the typical AL framework.
 
 \section{Artificial Data Generation Approaches}~\label{sec:ovs-sota}
 
