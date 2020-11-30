@@ -1,9 +1,9 @@
 Research
 ==============================
 
-This repository contains the code developed for all the publications I was involved in. The python
-code for generating the paper, experiments' results and visualizations reported in each paper is
-available (whenever possible) in the paper's directory.
+This repository contains the code developed for all the publications I was involved in. The LaTeX 
+and Python code for generating the paper, experiments' results and visualizations reported in each 
+paper is available (whenever possible) in the paper's directory.
 
 Additionally, contributions at the algorithm level are available in the package `research`.
 
