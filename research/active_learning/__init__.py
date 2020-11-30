@@ -4,7 +4,17 @@ Learning.
 """
 
 from ._al_wrapper import ALWrapper
+from ._selection_methods import (
+    entropy,
+    breaking_ties,
+    random,
+    SELECTION_CRITERIA
+)
 
 __all__ = [
-    'ALWrapper'
+    'ALWrapper',
+    'entropy',
+    'breaking_ties',
+    'random',
+    'SELECTION_CRITERIA'
 ]
