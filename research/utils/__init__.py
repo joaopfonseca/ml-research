@@ -10,7 +10,6 @@ publications repo, to which I have also contributed.
 
 Link to related repo: https://github.com/AlgoWit/publications
 """
-from ._metrics import SCORERS, geometric_mean_score_macro
 from ._utils import (
     generate_mean_std_tbl,
     generate_pvalues_tbl,
@@ -26,8 +25,6 @@ from ._check_pipelines import (
 )
 
 __all__ = [
-    'SCORERS',
-    'geometric_mean_score_macro',
     'generate_mean_std_tbl',
     'generate_pvalues_tbl',
     'sort_tbl',
