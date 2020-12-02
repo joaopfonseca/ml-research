@@ -58,7 +58,11 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
             self.evaluation_metric_ = self.evaluation_metric
 
         if self.classifier is None:
-            self._classifier = RandomForestClassifier()
+            self._classifier = RandomForestClassifier(
+                random_state=self.random_state
+            )
+        else:
+            self._classifier = clone(self.classifier)
 
         if type(self.selection_strategy) == str:
             self.selection_strategy_ = SELECTION_CRITERIA[
