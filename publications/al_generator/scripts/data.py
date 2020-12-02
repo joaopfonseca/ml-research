@@ -24,7 +24,7 @@ if __name__ == '__main__':
     datasets = RemoteSensingDatasets().download()
 
     # Sample datasets
-    min_n_samples, max_n_samples, fraction, rnd_seed = 20, 1000, 0.1, 5
+    min_n_samples, max_n_samples, fraction, rnd_seed = 20, 1000, 0.2, 42
     content = []
     for name, data in datasets.content_:
         data = data.sample(frac=fraction, random_state=rnd_seed)
