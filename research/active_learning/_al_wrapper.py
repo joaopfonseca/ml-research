@@ -95,6 +95,13 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         self.increment_ = self.increment
         return X, X_test, y, y_test
 
+    def _get_performance_scores(self):
+        data_utilization = [
+            i[1] for i in self.data_utilization_
+        ]
+        test_scores = self.test_scores_
+        return data_utilization, test_scores
+
     def fit(self, X, y):
 
         X, X_test, y, y_test = self._check(X, y)
@@ -130,6 +137,8 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
 
             # train classifier and get probabilities
             classifier.fit(X[selection], y[selection])
+
+            # TODO: Save metadata using a separate function
 
             # get score for current iteration
             if self.save_test_scores or self.auto_load:
