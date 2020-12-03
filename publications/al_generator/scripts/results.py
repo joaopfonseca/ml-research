@@ -91,7 +91,7 @@ CONFIG_AL = {
         ), {
             'evaluation_metric': ['accuracy', 'f1_macro',
                                   'geometric_mean_score_macro'],
-            'selection_strategy': ['random', 'entropy', 'breaking ties']
+            'selection_strategy': ['random', 'entropy', 'breaking_ties']
         }
     ),
     'scoring': [
