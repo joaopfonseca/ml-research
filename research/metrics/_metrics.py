@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.metrics import SCORERS, make_scorer
 from sklearn.metrics._scorer import _PredictScorer
 from imblearn.metrics import geometric_mean_score
+from rlearn.model_selection.search import MultiClassifier
 
 
 class ALScorer(_PredictScorer):
@@ -30,7 +31,15 @@ class ALScorer(_PredictScorer):
             Score function applied to prediction of estimator on X.
         """
 
-        return self._sign * self._score_func(estimator)
+        if type(estimator) == MultiClassifier:
+            data_utilization, test_scores = estimator\
+                .estimator_\
+                ._get_performance_scores()
+        else:
+            data_utilization, test_scores = estimator\
+                ._get_performance_scores()
+
+        return self._sign * self._score_func(test_scores, data_utilization)
 
 
 def geometric_mean_score_macro(y_true, y_pred):
@@ -38,19 +47,14 @@ def geometric_mean_score_macro(y_true, y_pred):
     return geometric_mean_score(y_true, y_pred, average='macro')
 
 
-def area_under_learning_curve(estimator):
+def area_under_learning_curve(test_scores, *args):
     """Area under the learning curve. Used in Active Learning experiments."""
-    test_scores = estimator.test_scores_
     auc = np.sum(test_scores) / len(test_scores)
     return auc
 
 
-def data_utilization_rate(estimator, threshold=.8):
+def data_utilization_rate(test_scores, data_utilization, threshold=.8):
     """Data Utilization Rate. Used in Active Learning Experiments."""
-    test_scores = estimator.test_scores_
-    data_utilization = [
-        i[1] for i in estimator.data_utilization_
-    ]
     indices = np.where(np.array(test_scores) >= threshold)[0]
     arg = (
         indices[0]
