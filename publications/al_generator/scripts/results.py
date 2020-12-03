@@ -78,7 +78,7 @@ CONFIG_AL = {
         ('SMOTE', ClusterOverSampler(SMOTE(k_neighbors=5), n_jobs=1), {}),
         ('G-SMOTE', ClusterOverSampler(GeometricSMOTE(
             k_neighbors=5, deformation_factor=.5, truncation_factor=.5
-        ), n_jobs=-1), {})
+        ), n_jobs=1), {})
     ],
     'wrapper': (
         'AL',
