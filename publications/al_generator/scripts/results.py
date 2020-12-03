@@ -74,8 +74,8 @@ CONFIG = {
 
 CONFIG_AL = {
     'generator': [
-        # ('NONE', None, {}),
-        # ('SMOTE', ClusterOverSampler(SMOTE(k_neighbors=5), n_jobs=1), {}),
+        ('NONE', None, {}),
+        ('SMOTE', ClusterOverSampler(SMOTE(k_neighbors=5), n_jobs=1), {}),
         ('G-SMOTE', ClusterOverSampler(GeometricSMOTE(
             k_neighbors=5, deformation_factor=.5, truncation_factor=.5
         ), n_jobs=-1), {})
@@ -91,7 +91,7 @@ CONFIG_AL = {
         ), {
             'evaluation_metric': ['accuracy', 'f1_macro',
                                   'geometric_mean_score_macro'],
-            'selection_strategy': ['random', 'entropy', 'margin sampling']
+            'selection_strategy': ['random', 'entropy', 'breaking ties']
         }
     ),
     'scoring': [
