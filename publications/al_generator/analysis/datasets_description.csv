@@ -1,0 +1,8 @@
+Dataset,Features,Instances,Min. Instances,Maj. Instances,IR,Classes
+Botswana,145,1500,106,164,1.55,11
+Salinas A,224,1500,109,428,3.93,6
+Kennedy Space Center,176,1500,69,281,4.07,11
+Indian Pines,220,1500,31,366,11.81,12
+Salinas,224,1500,25,312,12.48,16
+Pavia University,103,1500,33,654,19.82,9
+Pavia Centre,102,1500,27,668,24.74,9
