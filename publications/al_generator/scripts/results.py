@@ -2,8 +2,8 @@
 Generate the main experimental results.
 """
 
-# Author: Georgios Douzas <gdouzas@icloud.com>
-#         Joao Fonseca <jpmrfonseca@gmail.com>
+# Author: Joao Fonseca <jpmrfonseca@gmail.com>
+#         Georgios Douzas <gdouzas@icloud.com>
 # License: MIT
 
 from os.path import join
@@ -23,9 +23,10 @@ from research.utils import (
     check_pipelines_wrapper
 )
 from research.active_learning import ALWrapper
-
 from imblearn.base import SamplerMixin
 from sklearn.model_selection import train_test_split
+
+TEST_SIZE = .2
 
 
 class remove_test(SamplerMixin):
@@ -33,12 +34,12 @@ class remove_test(SamplerMixin):
     Used to ensure the data used to train classifiers with and without AL
     is the same.
     """
-    def __init__(self):
-        pass
+    def __init__(self, test_size=.2):
+        self.test_size = test_size
 
     def _fit_resample(self, X, y):
         X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=.2, random_state=42
+            X, y, test_size=self.test_size, random_state=42
         )
         return X_train, y_train
 
@@ -50,7 +51,7 @@ CONFIG = {
     # Remove .2 of the dataset from training, to replicate the training data
     # for AL methods
     'remove_test': [
-        ('remove_test', remove_test(), {})
+        ('remove_test', remove_test(TEST_SIZE), {})
     ],
     'classifiers': [
         ('LR', LogisticRegression(
@@ -83,10 +84,10 @@ CONFIG_AL = {
     'wrapper': (
         'AL',
         ALWrapper(
-            n_initial=20,
-            increment=15,
+            n_initial=150,
+            increment=50,
             max_iter=400,
-            test_size=.2,
+            test_size=TEST_SIZE,
             random_state=42
         ), {
             'evaluation_metric': ['accuracy', 'f1_macro',
