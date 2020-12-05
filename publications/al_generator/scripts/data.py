@@ -12,6 +12,7 @@ from os.path import join, dirname
 
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
 
 from research.datasets import RemoteSensingDatasets
 
@@ -24,23 +25,31 @@ if __name__ == '__main__':
     datasets = RemoteSensingDatasets().download()
 
     # Sample datasets
-    min_n_samples, max_n_samples, fraction, rnd_seed = 20, 1000, 0.2, 42
+    min_n_samples, dataset_size, rnd_seed = 200, 1500, 42
     content = []
     for name, data in datasets.content_:
-        data = data.sample(frac=fraction, random_state=rnd_seed)
+
         classes = [
             cl for cl, count in Counter(data.target).items()
-            if count >= min_n_samples and count <= max_n_samples
+            if count >= min_n_samples
         ]
-        data = data[data.target.isin(classes)].reset_index(drop=True)
+        data = data[data.target.isin(classes)]
+
+        data, _ = train_test_split(
+            data,
+            train_size=dataset_size,
+            stratify=data.target,
+            random_state=rnd_seed
+        )
+
         data = pd.concat(
             [
                 pd.DataFrame(
                     MinMaxScaler().fit_transform(data.drop(columns='target'))
                 ),
-                data.target
+                data.reset_index(drop=True).target
             ],
-            axis=1
+            axis=1,
         )
         content.append((name, data))
 
