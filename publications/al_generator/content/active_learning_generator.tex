@@ -453,6 +453,59 @@ appropriate domain to test this method.
 
 \subsection{Datasets}
 
+\pgfplotstabletypeset[
+	begin table=\begin{longtable},
+		end table=\end{longtable},  col sep=comma, header=true,
+	columns={Dataset,Features,Instances,Min. Instances,Maj. Instances,IR, Classes}, string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
+	every last row/.style={after row=\bottomrule \caption{\label{tab:datasets_description}
+				Description of the datasets used for this experiment.}}
+]{../analysis/datasets_description.csv}
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{.24\textwidth}
+		\centering
+		\captionsetup{skip=12pt}
+		\includegraphics[height=1.5\linewidth]{../analysis/indian_pines}
+		\subcaption{{\medbreak}}\label{fig:indian_pines}
+	\end{subfigure}
+	\begin{subfigure}{.24\textwidth}
+		\centering
+		\includegraphics[height=1.5\linewidth]{../analysis/pavia_centre}
+		\subcaption{{\medbreak}}\label{fig:pavia_centre}
+	\end{subfigure}
+	\begin{subfigure}{.24\textwidth}
+		\centering
+		\includegraphics[height=1.5\linewidth]{../analysis/pavia_university}
+		\subcaption{{\medbreak}}\label{fig:pavia_university}
+	\end{subfigure}
+
+	\begin{subfigure}{.24\textwidth}
+		\centering
+		\includegraphics[height=1.5\linewidth]{../analysis/salinas}
+		\subcaption{{\medbreak}}\label{fig:salinas}
+	\end{subfigure}
+	\begin{subfigure}{.24\textwidth}
+		\centering
+		\includegraphics[height=1.5\linewidth]{../analysis/salinas_a}
+		\subcaption{{\medbreak}}\label{fig:salinas_a}
+	\end{subfigure}
+	\begin{subfigure}{.24\textwidth}
+		\centering
+		\includegraphics[height=1.5\linewidth]{../analysis/botswana}
+		\subcaption{{\medbreak}}\label{fig:botswana}
+	\end{subfigure}
+	\begin{subfigure}{.24\textwidth}
+		\centering
+		\includegraphics[height=1.5\linewidth]{../analysis/kennedy_space_center}
+		\subcaption{{\medbreak}}\label{fig:kennedy_space_center}
+	\end{subfigure}
+	\caption{Gray scale visualization of a band (top row) and ground truth (bottom row) of
+		each scene used in this study. (a) Indian Pines, (b) Pavia Centre, (c) Pavia
+		University, (d) Salinas, (e) Salinas A, (f) Botswana, (g) Kennedy Space Center
+    }\label{fig:scenes}
+\end{figure}
+
 \subsection{Evaluation Metrics}
 
 1. Area under the learning curve (sums up all the performance values for each time point)
