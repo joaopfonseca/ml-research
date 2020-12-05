@@ -14,8 +14,10 @@ pandas
 numpy
 scikit-learn
 imbalanced-learn
-rich
 research-learn
+rich
+matplotlib
+seaborn
 
 # experiment dependencies
 geometric-smote
