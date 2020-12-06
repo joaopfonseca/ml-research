@@ -11,6 +11,7 @@ Link to related repo: https://github.com/AlgoWit/publications
 from ._metrics import (
     SCORERS,
     geometric_mean_score_macro,
+    ALScorer,
     area_under_learning_curve,
     data_utilization_rate
 )
@@ -19,5 +20,6 @@ __all__ = [
     'SCORERS',
     'geometric_mean_score_macro',
     'area_under_learning_curve',
-    'data_utilization_rate'
+    'data_utilization_rate',
+    'ALScorer'
 ]
