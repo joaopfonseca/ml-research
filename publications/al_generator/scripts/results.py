@@ -16,6 +16,8 @@ from gsmote import GeometricSMOTE
 from clover.over_sampling import ClusterOverSampler
 from sklearn.model_selection import StratifiedKFold
 from rlearn.model_selection import ModelSearchCV
+from imblearn.base import SamplerMixin
+from sklearn.model_selection import train_test_split
 from research.utils import (
     load_datasets,
     generate_paths,
@@ -23,10 +25,27 @@ from research.utils import (
     check_pipelines_wrapper
 )
 from research.active_learning import ALWrapper
-from imblearn.base import SamplerMixin
-from sklearn.model_selection import train_test_split
+from research.metrics import (
+    ALScorer,
+    data_utilization_rate,
+    SCORERS
+)
 
 TEST_SIZE = .2
+
+
+def make_dur(threshold):
+    def dur(test_scores, data_utilization):
+        return data_utilization_rate(
+            test_scores,
+            data_utilization,
+            threshold=threshold
+        )
+    return dur
+
+
+for i in range(60, 100, 5):
+    SCORERS[f'dur_{i}'] = ALScorer(make_dur(i/100))
 
 
 class remove_test(SamplerMixin):
@@ -85,8 +104,8 @@ CONFIG_AL = {
         'AL',
         ALWrapper(
             n_initial=150,
-            increment=50,
-            max_iter=400,
+            increment=25,
+            max_iter=34,
             test_size=TEST_SIZE,
             random_state=42
         ), {
@@ -100,8 +119,7 @@ CONFIG_AL = {
         'f1_macro',
         'geometric_mean_score_macro',
         'area_under_learning_curve',
-        'data_utilization_rate'
-    ]
+    ] + [f'dur_{i}' for i in range(60, 100, 5)]
 }
 
 
