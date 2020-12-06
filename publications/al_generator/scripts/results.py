@@ -103,9 +103,9 @@ CONFIG_AL = {
     'wrapper': (
         'AL',
         ALWrapper(
-            n_initial=150,
-            increment=25,
-            max_iter=34,
+            n_initial=15,
+            increment=15,
+            max_iter=49,
             test_size=TEST_SIZE,
             random_state=42
         ), {
