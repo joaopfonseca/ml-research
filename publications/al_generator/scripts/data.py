@@ -25,7 +25,7 @@ if __name__ == '__main__':
     datasets = RemoteSensingDatasets().download()
 
     # Sample datasets
-    min_n_samples, dataset_size, rnd_seed = 200, 1500, 42
+    min_n_samples, dataset_size, rnd_seed = 150, 1500, 42
     content = []
     for name, data in datasets.content_:
 
