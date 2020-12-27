@@ -15,7 +15,8 @@ from ._utils import (
     generate_pvalues_tbl,
     sort_tbl,
     generate_paths,
-    make_bold
+    make_bold,
+    generate_mean_std_tbl_bold
 )
 from ._image import img_array_to_pandas
 from ._data import load_datasets
@@ -23,6 +24,7 @@ from ._check_pipelines import (
     check_pipelines,
     check_pipelines_wrapper
 )
+from ._visualization import load_plt_sns_configs
 
 __all__ = [
     'generate_mean_std_tbl',
@@ -33,5 +35,7 @@ __all__ = [
     'img_array_to_pandas',
     'load_datasets',
     'check_pipelines',
-    'check_pipelines_wrapper'
+    'check_pipelines_wrapper',
+    'load_plt_sns_configs',
+    'generate_mean_std_tbl_bold'
 ]

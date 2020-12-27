@@ -2,6 +2,7 @@
 #         Joao Fonseca <jpmrfonseca@gmail.com>
 # License: MIT
 
+import numpy as np
 import pandas as pd
 from os.path import join, dirname, abspath
 
@@ -60,14 +61,38 @@ def generate_paths(filepath):
     return paths
 
 
-def make_bold(row, maximum=True, num_decimals=2):
+def make_bold(row, maximum=True, num_decimals=2, threshold=None):
     """
     Make bold the lowest or highest value(s).
     """
     row = round(row, num_decimals)
-    val = row.max() if maximum else row.min()
-    mask = (row == val)
+    if threshold is None:
+        val = row.max() if maximum else row.min()
+        mask = (row == val)
+    else:
+        mask = (row > threshold) if maximum else (row < threshold)
     formatter = '{0:.%sf}' % num_decimals
     row = row.apply(lambda el: formatter.format(el))
-    row[mask] = '\\textbf{%s}' % formatter.format(val)
-    return row
+    row[mask] = [
+        '\\textbf{%s' % formatter.format(v)
+        for v in row[mask].astype(float)
+    ]
+    return row, mask
+
+
+def generate_mean_std_tbl_bold(
+    mean_vals, std_vals, maximum=True, decimals=2, threshold=None
+):
+    """
+    Generate table that combines mean and sem values.
+    """
+    mean_bold = mean_vals.apply(
+        lambda row: make_bold(row, maximum, decimals, threshold)[0], axis=1
+    )
+    mask = mean_vals.apply(
+        lambda row: make_bold(row, maximum, decimals, threshold)[1], axis=1
+    ).values
+    std_bold = np.round(std_vals, decimals).astype(str)
+    std_bold = np.where(mask, std_bold+'}', std_bold)
+    scores = mean_bold + r" $\pm$ " + std_bold
+    return scores
