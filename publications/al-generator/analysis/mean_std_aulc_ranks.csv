@@ -1,0 +1,10 @@
+Classifier,Evaluation Metric,NONE,SMOTE,G-SMOTE
+KNN,Accuracy,2.43 $\pm$ 0.98,2.29 $\pm$ 0.49,\textbf{1.29 $\pm$ 0.49}
+KNN,F-score,3.00 $\pm$ 0.0,1.57 $\pm$ 0.53,\textbf{1.43 $\pm$ 0.53}
+KNN,G-mean,3.00 $\pm$ 0.0,\textbf{1.00 $\pm$ 0.0},2.00 $\pm$ 0.0
+LR,Accuracy,\textbf{1.71 $\pm$ 0.95},2.00 $\pm$ 0.82,2.29 $\pm$ 0.76
+LR,F-score,2.43 $\pm$ 0.98,1.86 $\pm$ 0.69,\textbf{1.71 $\pm$ 0.76}
+LR,G-mean,2.86 $\pm$ 0.38,2.00 $\pm$ 0.58,\textbf{1.14 $\pm$ 0.38}
+RF,Accuracy,2.14 $\pm$ 0.69,2.14 $\pm$ 0.9,\textbf{1.71 $\pm$ 0.95}
+RF,F-score,2.43 $\pm$ 0.79,2.29 $\pm$ 0.76,\textbf{1.29 $\pm$ 0.49}
+RF,G-mean,2.57 $\pm$ 0.53,2.29 $\pm$ 0.76,\textbf{1.14 $\pm$ 0.38}
