@@ -325,23 +325,22 @@ def calculate_wide_optimal_al(results):
 
 
 def calculate_mean_std_table(wide_optimal):
-    means, stds = (
-        df.reset_index().rename(columns={'variable': 'Evaluation Metric'})
-        .groupby(['Classifier', 'Evaluation Metric']).mean()
-        for df in wide_optimal
-    )
-    return means, stds
+    df = wide_optimal[0].copy()
+    df_grouped = df.reset_index()\
+        .rename(columns={'variable': 'Evaluation Metric'})\
+        .groupby(['Classifier', 'Evaluation Metric'])
+
+    return df_grouped.mean(), df_grouped.std(ddof=0)
 
 
 def calculate_mean_std_table_al(
     wide_optimal_al, al_metric='area_under_learning_curve'
 ):
-    means, stds = (
-        df.loc[df.index.get_level_values(3) == al_metric]
-        .reset_index().groupby(['Classifier', 'Evaluation Metric']).mean()
-        for df in wide_optimal_al
-    )
-    return means, stds
+    df = wide_optimal_al[0].copy()
+    df_grouped = df.loc[df.index.get_level_values(3) == al_metric]\
+        .reset_index().groupby(['Classifier', 'Evaluation Metric'])
+
+    return df_grouped.mean(), df_grouped.std(ddof=0)
 
 
 def mean_std_ranks(
@@ -350,7 +349,7 @@ def mean_std_ranks(
     ranks = wide_optimal.rank(axis=1, ascending=False)\
         .reset_index()\
         .groupby(['Classifier', 'variable'])
-    return ranks.mean(), ranks.std()
+    return ranks.mean(), ranks.std(ddof=0)
 
 
 def mean_std_ranks_al(
@@ -364,7 +363,7 @@ def mean_std_ranks_al(
         .reset_index()\
         .groupby(['Classifier', 'Evaluation Metric'])
 
-    return ranks.mean(), ranks.std()
+    return ranks.mean(), ranks.std(ddof=0)
 
 
 def data_utilization_rate(*wide_optimal):
@@ -383,7 +382,7 @@ def data_utilization_rate(*wide_optimal):
         ).reset_index()\
         .groupby(['Classifier', 'Evaluation Metric', 'Generator'])
 
-    return dur_grouped.mean(), dur_grouped.std()
+    return dur_grouped.mean(), dur_grouped.std(ddof=0)
 
 
 def deficiency_scores(wide_optimal, wide_optimal_al):
@@ -408,7 +407,7 @@ def deficiency_scores(wide_optimal, wide_optimal_al):
         ).reset_index()\
         .groupby(['Classifier', 'Evaluation Metric'])
 
-    return deficiency.mean(), deficiency.std()
+    return deficiency.mean(), deficiency.std(ddof=0)
 
 
 def generate_main_results(results):
