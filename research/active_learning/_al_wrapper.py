@@ -11,6 +11,7 @@ from sklearn.base import clone
 from sklearn.base import ClassifierMixin, BaseEstimator
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
+from imblearn.pipeline import Pipeline
 from ..metrics import SCORERS
 from ._selection_methods import SELECTION_CRITERIA
 
@@ -19,8 +20,9 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
     def __init__(
         self,
         classifier=None,
-        max_iter=1000,
+        generator=None,
         selection_strategy='entropy',
+        max_iter=1000,
         n_initial=100,
         increment=50,
         save_classifiers=False,
@@ -35,6 +37,7 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         experimental environment.
         """
         self.classifier = classifier
+        self.generator = generator
         self.max_iter = max_iter
         self.selection_strategy = selection_strategy
         self.n_initial = n_initial
@@ -146,7 +149,11 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
 
         while iter_n < self.max_iter:
 
-            classifier = clone(self._classifier)
+            # Create a pipeline with generator and classifier objects
+            classifier = Pipeline([
+                ('generator', clone(self.generator)),
+                ('classifier', clone(self._classifier))
+            ])
 
             # Add new samples to dataset
             unlabeled_ids = np.argwhere(~selection).squeeze()
