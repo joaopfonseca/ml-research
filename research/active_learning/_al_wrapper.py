@@ -41,7 +41,7 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         self.increment = increment
         self.random_state = random_state
 
-        # For finding the optimal classifier purposes
+        # Used to find the optimal classifier
         self.auto_load = auto_load
         self.test_size = test_size
         self.save_classifiers = save_classifiers
@@ -83,6 +83,8 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         if self.auto_load:
             self.classifier_ = None
             self._top_score = 0
+
+        if self.auto_load or self.save_test_scores:
             X, X_test, y, y_test = train_test_split(
                 X, y,
                 test_size=self.test_size,
@@ -102,6 +104,38 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         test_scores = self.test_scores_
         return data_utilization, test_scores
 
+    def _save_metadata(self, iter_n, classifier, X_test, y_test, selection):
+        """Save metadata from a completed iteration."""
+
+        # Get score for current iteration
+        if self.save_test_scores or self.auto_load:
+            score = self.evaluation_metric_(
+                classifier,
+                X_test,
+                y_test
+            )
+
+        # Save classifier
+        if self.save_classifiers:
+            self.classifiers_.append(classifier)
+
+        # Save test scores
+        if self.save_test_scores:
+            self.test_scores_.append(score)
+
+            # TODO: This is useless. DUR can be calculated without this
+            #       list. Just need to adapt the code accordingly.
+            self.data_utilization_.append(
+                (selection.sum(), selection.sum()/selection.shape[0])
+            )
+
+        # Replace top classifier
+        if self.auto_load:
+            if score > self._top_score:
+                self._top_score = score
+                self.classifier_ = classifier
+                self.top_score_iter_ = iter_n
+
     def fit(self, X, y):
 
         X, X_test, y, y_test = self._check(X, y)
@@ -114,57 +148,39 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
 
             classifier = clone(self._classifier)
 
-            # add new samples to dataset
+            # Add new samples to dataset
             unlabeled_ids = np.argwhere(~selection).squeeze()
-            ids = (
-                # new samples
-                self.selection_strategy_(
+
+            if iter_n == 0:
+                # Get data according to passed initialization method
+                ids = SELECTION_CRITERIA['random'](
+                    unlabeled_ids=unlabeled_ids,
+                    increment=self.n_initial,
+                    random_state=self.random_state
+                )
+            else:
+                # Get data according to passed selection strategy
+                ids = self.selection_strategy_(
                     probabilities=probabs,
                     unlabeled_ids=unlabeled_ids,
                     increment=self.increment_,
                     random_state=self.random_state
                 )
-                if iter_n != 0
-                else
-                # random initialization
-                SELECTION_CRITERIA['random'](
-                    unlabeled_ids=unlabeled_ids,
-                    increment=self.n_initial,
-                    random_state=self.random_state
-                )
-            )
+
             selection[ids] = True
 
-            # train classifier and get probabilities
+            # Train classifier and get probabilities
             classifier.fit(X[selection], y[selection])
 
-            # TODO: Save metadata using a separate function
-
-            # get score for current iteration
-            if self.save_test_scores or self.auto_load:
-                score = self.evaluation_metric_(
-                    classifier,
-                    X_test,
-                    y_test
-                )
-                self.data_utilization_.append(
-                    (selection.sum(), selection.sum()/selection.shape[0])
-                )
-
-            # save classifier
-            if self.save_classifiers:
-                self.classifiers_.append(classifier)
-
-            # save test scores
-            if self.save_test_scores:
-                self.test_scores_.append(score)
-
-            # Replace top classifier
-            if self.auto_load:
-                if score > self._top_score:
-                    self._top_score = score
-                    self.classifier_ = classifier
-                    self.top_score_iter_ = iter_n
+            # Save metadata from current iteration
+            self._save_metadata(
+                self,
+                iter_n,
+                classifier,
+                X_test,
+                y_test,
+                selection
+            )
 
             # keep track of iter_n
             if self.max_iter is not None:
