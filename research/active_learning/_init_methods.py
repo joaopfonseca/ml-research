@@ -28,12 +28,12 @@ def init_strategy(
 
     # Random selection
     if clusterer is None:
-        return random(
+        ids = random(
             unlabeled_ids=unlabeled_ids,
             increment=n_initial,
             random_state=random_state
-
         )
+        return None, ids
 
     # Cluster-based selection
     if selection_method is None:

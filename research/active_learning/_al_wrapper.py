@@ -170,9 +170,14 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         while iter_n < self.max_iter_:
 
             # Generator + Chooser (in this case chooser==Predictor)
+            generator = (
+                None if self.generator is None else clone(self.generator)
+            )
+            chooser = clone(self._classifier)
+
             classifier = Pipeline([
-                ('generator', clone(self.generator)),
-                ('classifier', clone(self._classifier))
+                ('generator', generator),
+                ('chooser', chooser)
             ])
 
             # Train classifier and get probabilities
