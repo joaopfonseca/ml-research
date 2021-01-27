@@ -45,23 +45,24 @@
 \maketitle
 
 \begin{abstract}
-    In remote sensing, Active Learning (AL) has become an important technique to
-    collect informative ground truth data for supervised classification tasks.
-    In spite of its effectiveness, it is still significantly reliant on user
-    interaction, which makes it both expensive and time consuming to implement.
-    Most of the current literature focuses on the optimization of AL by
-    modifying the selection criteria, the chooser and/or predictors used.
-    Although they improve the effectiveness of data collection, none of these
-    attempts to reduce human-computer interaction through artificial data
-    sources. In this paper, we introduce a new component to the typical AL
-    framework, the generator, as a source of artificial data to reduce the
-    amount of user-labeled data required in AL\@. The performance of the
-    proposed AL framework is done using SMOTE and Geometric SMOTE as generators.
-    It is compared to the original AL framework using similar acquisition
-    functions and predictors over three AL-specific performance metrics in seven
-    well known datasets. We show that this modification to the AL framework
-    significantly reduces cost and time requirements for a successful AL
-    implementation. 
+    In remote sensing, Active Learning (AL) has become an important technique
+    to collect informative ground truth data ``on-demand'' for supervised
+    classification tasks.  In spite of its effectiveness, it is still
+    significantly reliant on user interaction, which makes it both expensive
+    and time consuming to implement.  Most of the current literature focuses on
+    the optimization of AL by modifying the selection criteria, the chooser
+    and/or predictors used.  Although improvements in these areas will result
+    in more effective data collection, the use of artificial data sources to
+    reduce human-computer interaction remains unexplored. In this paper, we
+    introduce a new component to the typical AL framework, the data generator,
+    a source of artificial data to reduce the amount of user-labeled data
+    required in AL\@.  The implementation of the proposed AL framework is done
+    using SMOTE and Geometric SMOTE as data generators.  We compare the new AL
+    framework to the original one using similar acquisition functions and
+    predictors over three AL-specific performance metrics in seven benchmark
+    datasets. We show that this modification to the AL framework significantly
+    reduces cost and time requirements for a successful AL implementation in
+    the context of remote sensing. 
 \end{abstract}
 
 \section{Introduction}~\label{sec:introduction}
@@ -71,21 +72,22 @@ increasing number of remote sensing missions have allowed the continuous
 collection of large amounts of high quality remotely sensed data. This data is
 often composed of multi and hyper spectral satellite imagery, essential for
 numerous applications, such as Land Use/Land Cover (LULC) change detection,
-ecosystem management~\cite{Nagai2020}, agricultural management~\cite{Huang2018},
-water resource management~\cite{Wang2018}, forest management, and urban
-monitoring~\cite{Khatami2016}. Despite LULC maps being essential for most of
-these applications, their production still a challenging task~\cite{Gavade2019,
-Wulder2018}. They can be updated using either one of the following strategies:
+ecosystem management~\cite{Nagai2020}, agricultural
+management~\cite{Huang2018}, water resource management~\cite{Wang2018}, forest
+management, and urban monitoring~\cite{Khatami2016}. Despite LULC maps being
+essential for most of these applications, their production still a challenging
+task~\cite{Gavade2019, Wulder2018}. They can be updated using either one of the
+following strategies:
 
 \begin{enumerate}
     \item Photo-interpreted. Consists of evaluating a patch's LULC class based
         on orthophoto and satellite image
         interpretation~\cite{costa2020introducing}. This method guarantees a
         decent level of accuracy, as it is dependent on the interpreter's
-        expertise and human error. Typically, it is an expensive, time-consuming
-        task that requires the expertise of a photo-interpreter. This task is
-        also frequently applied to obtain ground-truth labels for training
-        and/or validating Machine Learning (ML) algorithms for related
+        expertise and human error. Typically, it is an expensive,
+        time-consuming task that requires the expertise of a photo-interpreter.
+        This task is also frequently applied to obtain ground-truth labels for
+        training and/or validating Machine Learning (ML) algorithms for related
         tasks~\cite{vermote2020remote, COSTANTINO2020}. 
     \item Automated mapping. It is based on the usage of a ML method or a
         combination of methods in order to obtain an updated LULC map. The
@@ -94,8 +96,8 @@ Wulder2018}. They can be updated using either one of the following strategies:
         methods vary across applications and geographical
         areas~\cite{Gavade2019}. Typically, this method requires the existence
         of ground-truth data, which is frequently outdated or nonexistent for
-        the required time frame~\cite{Nagai2020}. On the other hand, employing a
-        ML method provides readily available and relatively inexpensive LULC
+        the required time frame~\cite{Nagai2020}. On the other hand, employing
+        a ML method provides readily available and relatively inexpensive LULC
         maps. The increasing quality of state-of-the-art classification methods
         have motivated the application and adaptation of these methods in this
         domain~\cite{Maxwell2018}.
@@ -105,9 +107,10 @@ Wulder2018}. They can be updated using either one of the following strategies:
         photo-interpretation process by selecting a smaller sample of the study
         area to be interpreted. The goal is to minimize the inaccuracies found
         in the LULC map by supplying high-quality ground-truth data to the
-        automated method. The final (photo-interpreted) dataset consists of only
-        the most informative samples, i.e., patches that are typically difficult
-        to classify for a traditional automated mapping method~\cite{Liu2020}. 
+        automated method. The final (photo-interpreted) dataset consists of
+        only the most informative samples, i.e., patches that are typically
+        difficult to classify for a traditional automated mapping
+        method~\cite{Liu2020}. 
 \end{enumerate}
 
 The latter method is best know as AL\@. It is especially useful whenever there
@@ -158,20 +161,20 @@ These challenges have different sources:
 
 Research developed in the field of Active Learning typically focus on the
 reduction of human error by minimizing the human interaction with the process
-through the development of more efficient choosers and selection criteria within
-the generally accepted AL framework.  Concurrently, the problem of rare land
-cover classes is rarely addressed. This is a frequent problem in the ML
+through the development of more efficient choosers and selection criteria
+within the generally accepted AL framework.  Concurrently, the problem of rare
+land cover classes is rarely addressed. This is a frequent problem in the ML
 community, known as the Imbalanced Learning problem. This problem exists
 whenever there is an uneven between-class distribution in the
-dataset~\cite{Chawla2004}. Specifically, most classifiers attempt to
-optimize metrics such as overall accuracy, which are designed to work primarily
-with balanced datasets. Consequently, these metrics tend to introduce a bias
-towards the majority class by attributing an importance to each class
-proportional to its relative frequency~\cite{Maxwell2018}. As an example, such a
-classifier could achieve an overall accuracy of 99\% on a binary dataset where
-the minority class represents 1\% of the overall dataset and still be deemed
-useless. A number of methods have been developed to deal with this problem. They
-can be categorized into three different types of
+dataset~\cite{Chawla2004}. Specifically, most classifiers attempt to optimize
+metrics such as overall accuracy, which are designed to work primarily with
+balanced datasets. Consequently, these metrics tend to introduce a bias towards
+the majority class by attributing an importance to each class proportional to
+its relative frequency~\cite{Maxwell2018}. As an example, such a classifier
+could achieve an overall accuracy of 99\% on a binary dataset where the
+minority class represents 1\% of the overall dataset and still be deemed
+useless. A number of methods have been developed to deal with this problem.
+They can be categorized into three different types of
 approaches~\cite{Fernandez2013,Kaur2019}. Cost-sensitive solutions perform
 changes to the cost matrix in the learning phase. Algorithmic level solutions
 modify specific classifiers to reinforce learning on minority classes.
@@ -181,10 +184,10 @@ context and can be used alongside any classifier. We will focus on artificial
 data generation techniques, presented in Section~\ref{sec:ovs-sota}.
 
 In this paper, we propose a novel AL framework to address two limitations
-commonly found in the literature: minimize human-computer interaction and reduce
-the class imbalance bias. This is done with the introduction of an additional
-component in the iterative AL procedure (the generator), used to generate
-artificial data to both balance and augment the training dataset. The
+commonly found in the literature: minimize human-computer interaction and
+reduce the class imbalance bias. This is done with the introduction of an
+additional component in the iterative AL procedure (the generator), used to
+generate artificial data to both balance and augment the training dataset. The
 introduction of this component is expected to reduce the number of iterations
 required until convergence of the predictor's quality.
 
@@ -199,17 +202,17 @@ conclusions drawn from our findings.
 
 \section{Active Learning Approaches}~\label{sec:al-sota}
 
-As the amount of unlabeled data increases, the interest and practical usefulness
-of AL follows that trend~\cite{Kottke2017}. AL is used as the general definition
-of frameworks aiming to train a learning system in multiple steps, where a set
-of new data points are chosen and added to the training dataset each
-time~\cite{Ruzicka2020}. Typically, an AL framework is composed of 10
-elements~\cite{Sverchkov2017,Su2020,Ruzicka2020}:
+As the amount of unlabeled data increases, the interest and practical
+usefulness of AL follows that trend~\cite{Kottke2017}. AL is used as the
+general definition of frameworks aiming to train a learning system in multiple
+steps, where a set of new data points are chosen and added to the training
+dataset each time~\cite{Ruzicka2020}. Typically, an AL framework is composed of
+10 elements~\cite{Sverchkov2017,Su2020,Ruzicka2020}:
 
 \begin{enumerate}
-    \item Data source. In the context of LULC classification, the data source is
-        usually a hyper/multi-spectral image, a Synthetic-aperture radar (SAR)
-        image, or a composite image.
+    \item Data source. In the context of LULC classification, the data source
+        is usually a hyper/multi-spectral image, a Synthetic-aperture radar
+        (SAR) image, or a composite image.
     \item Unlabeled dataset. Consists of a sample of the original data source.
         It is used in combination with the chooser and the selection criterion
         to retrieve uncertainty estimates on each iteration.
@@ -232,36 +235,37 @@ elements~\cite{Sverchkov2017,Su2020,Ruzicka2020}:
         This is a classifier trained using the augmented dataset. It is used to
         estimate the class probabilities for each sample over the unlabeled
         dataset.
-    \item Selection criterion. It quantifies the chooser's uncertainty level for
-        each sample belonging to the unlabeled dataset. It is typically based on
-        the class probabilities assigned by the chooser. In some situations, the
-        chooser and the selection criterion are grouped together under the
-        concept \textit{acquisition function}~\cite{Ruzicka2020} or
-        \textit{query function}~\cite{Su2020}. Some of the literature refers to
-        the selection criterion by using the concept \textit{sampling
-        scheme}~\cite{Liu2020}.
-    \item Predictor. The classifier used to infer the land cover classes for the
-        final output map. Once a stopping criterion is met, the classifier is
-        trained using the augmented dataset and the LULC classes are inferred
-        from the data source.
+    \item Selection criterion. It quantifies the chooser's uncertainty level
+        for each sample belonging to the unlabeled dataset. It is typically
+        based on the class probabilities assigned by the chooser. In some
+        situations, the chooser and the selection criterion are grouped
+        together under the concept \textit{acquisition
+        function}~\cite{Ruzicka2020} or \textit{query function}~\cite{Su2020}.
+        Some of the literature refers to the selection criterion by using the
+        concept \textit{sampling scheme}~\cite{Liu2020}.
+    \item Predictor. The classifier used to infer the land cover classes for
+        the final output map. Once a stopping criterion is met, the classifier
+        is trained using the augmented dataset and the LULC classes are
+        inferred from the data source.
     \item Prediction output. In the context of LULC classification, the
         prediction output is the estimated LULC map raster.
 \end{enumerate}
 
 Figure~\ref{fig:al_typical} schematizes the steps involved in a complete AL
-iteration. For a better context within the remote sensing domain, the prediction
-output is identified as the LULC map. This framework starts by collecting
-unlabeled data from the original data source. It is used to generate a random
-initial training sample and is labeled by the oracle. In practical applications,
-the oracle is frequently a group of photo-interpreters~\cite{Kottke2017}. The
-chooser is trained on the resulting dataset and is used to predict the class
-probabilities on the unlabeled dataset. The class probabilities are fed into a
-selection criterion to estimate the prediction's uncertainty, out of which the
-samples with the highest uncertainty will be selected. This calculation is
-motivated by the absence of labels in the uncertainty dataset. Therefore, it is
-impossible to estimate the prediction's accuracy in a real case scenario. The
-iteration is completed when the selected points are tagged by the oracle and
-added to the training dataset (i.e., the augmented dataset). 
+iteration. For a better context within the remote sensing domain, the
+prediction output is identified as the LULC map. This framework starts by
+collecting unlabeled data from the original data source. It is used to generate
+a random initial training sample and is labeled by the oracle. In practical
+applications, the oracle is frequently a group of
+photo-interpreters~\cite{Kottke2017}. The chooser is trained on the resulting
+dataset and is used to predict the class probabilities on the unlabeled
+dataset. The class probabilities are fed into a selection criterion to estimate
+the prediction's uncertainty, out of which the samples with the highest
+uncertainty will be selected. This calculation is motivated by the absence of
+labels in the uncertainty dataset. Therefore, it is impossible to estimate the
+prediction's accuracy in a real case scenario. The iteration is completed when
+the selected points are tagged by the oracle and added to the training dataset
+(i.e., the augmented dataset). 
 
 \begin{figure}[htb]
 	\centering
@@ -273,17 +277,17 @@ added to the training dataset (i.e., the augmented dataset).
 A common challenge found in AL tasks is ensuring the consistency of AL over
 different initializations~\cite{Kottke2017}. There are two factors involved in
 this phenomenon. On the one hand, the implementation of the same method over
-different initializations may result in significantly different initial training
-samples, amounts to varying accuracy curves. On the other hand, the lack of a
-robust selection criterion and/or chooser may also result in inconsistencies
-across AL experiments with different initializations. This phenomenon was
-observed and documented in a LULC classification context
+different initializations may result in significantly different initial
+training samples, amounts to varying accuracy curves. On the other hand, the
+lack of a robust selection criterion and/or chooser may also result in
+inconsistencies across AL experiments with different initializations. This
+phenomenon was observed and documented in a LULC classification context
 in~\cite{tuia2011using}.
 
-Selecting an efficient selection criterion is particularly important to find the
-samples closest to the decision border (i.e., samples difficult to
-classify)~\cite{Shrivastava2021}. Therefore, most of AL related studies focus on
-the design of the query/acquisition function~\cite{Su2020}.
+Selecting an efficient selection criterion is particularly important to find
+the samples closest to the decision border (i.e., samples difficult to
+classify)~\cite{Shrivastava2021}. Therefore, most of AL related studies focus
+on the design of the query/acquisition function~\cite{Su2020}.
 
 \subsection{Non-informed selection criteria}
 
@@ -300,13 +304,13 @@ methods along with their corresponding variances.
 
 \subsection{Ensemble-based selection criteria}
 
-Ensemble disagreement is based on the class predictions of a set of classifiers.
-The disagreement between all the predictions for a given observation is a common
-measure for uncertainty, although computationally
+Ensemble disagreement is based on the class predictions of a set of
+classifiers.  The disagreement between all the predictions for a given
+observation is a common measure for uncertainty, although computationally
 inefficient~\cite{Ruzicka2020,Pasolli2016}. It is calculated using the set of
-classifications over a single observation, given by the number of votes assigned
-to the most frequent class~\cite{Shrivastava2021}. This method was implemented
-successfully for complex applications such as deep active
+classifications over a single observation, given by the number of votes
+assigned to the most frequent class~\cite{Shrivastava2021}. This method was
+implemented successfully for complex applications such as deep active
 learning~\cite{Ruzicka2020}.
 
 Multiview~\cite{Muslea2006} consists on the training of multiple independent
@@ -320,12 +324,13 @@ successfully applied to hyper-spectral image classification in~\cite{Di2012}
 and~\cite{Zhou2014}.
 
 An adapted disagreement criterion for an ensemble of $k$-nearest neighbors has
-been proposed in~\cite{Pasolli2016}. This method employs a $k$-nearest neighbors
-classifier and computes an instance's classification uncertainty based on the
-neighbors' class frequency using the maximum disagreement metric over varying
-values for $k$. As a result, this method is comparable to computing the dominant
-class' score over a weighted $k$-nearest neighbors classifier. This method was
-also used on a multimetric active learning framework~\cite{Zhang2016}.
+been proposed in~\cite{Pasolli2016}. This method employs a $k$-nearest
+neighbors classifier and computes an instance's classification uncertainty
+based on the neighbors' class frequency using the maximum disagreement metric
+over varying values for $k$. As a result, this method is comparable to
+computing the dominant class' score over a weighted $k$-nearest neighbors
+classifier. This method was also used on a multimetric active learning
+framework~\cite{Zhang2016}.
 
 Another relevant ensemble-based selection criterion is the binary random
 forest-based query model~\cite{Su2020}. This method employs a one-versus-one
@@ -340,8 +345,9 @@ methods, such as random sampling.
 
 A number of contributions have focused on entropy-based querying. The
 application of entropy is common among active deep learning
-applications~\cite{Aghdam2019}, where the training of an ensemble of classifiers
-is often too expensive. The measure of entropy is formulated as follows:
+applications~\cite{Aghdam2019}, where the training of an ensemble of
+classifiers is often too expensive. The measure of entropy is formulated as
+follows:
 
 \begin{equation}\label{eq:entropy}
     H(x_i) = \sum_{\omega=1}^{N_i}{p(y_{i}^{*}=\omega|x_i)}\log_2[p(y_{i}^{*}=\omega|x_i)]
@@ -368,9 +374,9 @@ with a normalized EQB selection criterion~\cite{Copa2010}.
 \subsection{Other relevant criteria}
 
 Margin Sampling is a SVM-specific criterion, based on the distance of a given
-point to the SVM's decision boundary~\cite{Shrivastava2021}. This method is less
-popular than the remaining methods because it is limited to one type of chooser
-(SVMs). One extension of this method is the multiclass level
+point to the SVM's decision boundary~\cite{Shrivastava2021}. This method is
+less popular than the remaining methods because it is limited to one type of
+chooser (SVMs). One extension of this method is the multiclass level
 uncertainty~\cite{Shrivastava2021}, calculated by subtracting the observation's
 distance to the decision boundaries of the two most probable
 classes~\cite{Demir2011}.
@@ -378,8 +384,8 @@ classes~\cite{Demir2011}.
 The Mutual Information-based (MI) criterion selects the new training samples by
 maximizing the mutual information between the classifier and class labels in
 order to select samples from regions that are difficult to classify. Although
-this method is commonly used, it is frequently outperformed by the breaking ties
-selection criterion~\cite{Li2011,Liu2018}.
+this method is commonly used, it is frequently outperformed by the breaking
+ties selection criterion~\cite{Li2011,Liu2018}.
 
 The breaking ties (BT) selection criterion was originally introduced
 in~\cite{Luo2003}. It is formulated as follows:
@@ -400,24 +406,25 @@ predictor whose goal is to estimate the chooser's loss for a given
 prediction. This allows the new classifier to estimate the prediction loss on
 unlabeled observations and select the ones with the highest predicted loss.
 
-Some of the literature fails to specify the strategy employed, although inferring
-it is generally intuitive. For example,~\cite{Ertekin2007} successfully used AL
-to address the imbalanced learning problem. They employed an ensemble of SVMs as
-the chooser and predictor, as well as an ensemble-based selection criterion. All
-of the research found related to this topic focused on the improvement of AL
-through modifications on the selection criterion, chooser or predictor. None of
-these publications proposed significant variations to the original AL framework.
+Some of the literature fails to specify the strategy employed, although
+inferring it is generally intuitive. For example,~\cite{Ertekin2007}
+successfully used AL to address the imbalanced learning problem. They employed
+an ensemble of SVMs as the chooser and predictor, as well as an ensemble-based
+selection criterion. All of the research found related to this topic focused on
+the improvement of AL through modifications on the selection criterion, chooser
+or predictor. None of these publications proposed significant variations to the
+original AL framework.
 
 \section{Artificial Data Generation Approaches}~\label{sec:ovs-sota}
 
 The generation of artificial data is a common approach to address imbalanced
 learning tasks~\cite{Kaur2019}, as well as improving the effectiveness of
-supervised learning tasks~\cite{DeVries2017}. In recent years some sophisticated
-data generation approaches were found.  Although, the scope of this work is to
-propose the integration of a generator within the AL framework. Due to the
-complexity and computational cost of network-based approaches (e.g., Generative
-Adversarial Networks), we will only focus on heuristic data generation
-approaches, specifically, oversamplers.
+supervised learning tasks~\cite{DeVries2017}. In recent years some
+sophisticated data generation approaches were found.  Although, the scope of
+this work is to propose the integration of a generator within the AL framework.
+Due to the complexity and computational cost of network-based approaches (e.g.,
+Generative Adversarial Networks), we will only focus on heuristic data
+generation approaches, specifically, oversamplers.
 
 Heuristic data resampling methods employ local and/or global information to
 generate new, relevant, non-duplicated instances. These methods are most
@@ -449,14 +456,14 @@ oversampling methods~\cite{Douzas2019}:
         neighbors and initial observation. The selection of a sample and/or
         neighboring sample located inside a majority class region may produce
         artificial samples within that region and amplify noisy data.
-        Borderline-SMOTE~\cite{Han2005} is a modification of SMOTE in which only
-        the minority examples near the borderline are over-sampled. This method
-        avoids the generation of noisy samples by disregarding minority samples
-        located in a majority class region as well as samples distant from the
-        decision borders. The Adaptive Synthetic Sampling approach
-        (ADASYN)~\cite{HaiboHe2008} uses a density distribution ratio to address
-        this limitation and focus the artificial data generation on minority
-        class regions that are more difficult to classify.
+        Borderline-SMOTE~\cite{Han2005} is a modification of SMOTE in which
+        only the minority examples near the borderline are over-sampled. This
+        method avoids the generation of noisy samples by disregarding minority
+        samples located in a majority class region as well as samples distant
+        from the decision borders. The Adaptive Synthetic Sampling approach
+        (ADASYN)~\cite{HaiboHe2008} uses a density distribution ratio to
+        address this limitation and focus the artificial data generation on
+        minority class regions that are more difficult to classify.
     \item Generation of noisy instances due to the use of observations from two
         different minority class clusters. Choosing a minority sample
         $\overrightarrow{a}$ and one of its nearest neighbors
@@ -466,19 +473,19 @@ oversampling methods~\cite{Douzas2019}:
         SMOTE~\cite{Douzas2018} and Self-Organizing map oversampling
         (SOMO)~\cite{Douzas2017} reduce this effect by oversampling minority
         class samples within the same clusters.
-    \item Generation of nearly duplicated instances. The linear interpolation of
-        parent samples that are close to each other produces an artificial
+    \item Generation of nearly duplicated instances. The linear interpolation
+        of parent samples that are close to each other produces an artificial
         sample with similar properties as its parents. Geometric SMOTE
         (G-SMOTE)~\cite{Douzas2019} introduces a modification of the SMOTE
-        algorithm in the data generation mechanism to produce artificial samples
-        with higher variability.
+        algorithm in the data generation mechanism to produce artificial
+        samples with higher variability.
 \end{enumerate}
 
 The G-SMOTE algorithm is introduced as a generalization of the vanilla SMOTE\@.
 Instead of generating artificial data as a linear combination of the parent
 samples, it is done within a deformed, truncated hyper-spheroid. G-SMOTE
-generates an artificial sample $\overrightarrow{r}$ within a hyper-spheroid $H$,
-formed by selecting a minority sample $\overrightarrow{p}$ and one of its
+generates an artificial sample $\overrightarrow{r}$ within a hyper-spheroid
+$H$, formed by selecting a minority sample $\overrightarrow{p}$ and one of its
 nearest neighbors $\overrightarrow{q}$, as shown in
 Figure~\ref{fig:data_generation}. The truncation and deformation parameters
 define the shape of the spheroid's geometry. The method also modifies the
@@ -490,14 +497,15 @@ classification tasks, regardless of the classifier used~\cite{Douzas2019class}.
 \section{Proposed method}~\label{sec:proposed-method}
 
 Within the literature identified, most of the work developed in the AL domain
-revolved around improving the quality of the chooser, predictor and/or selection
-criterion. Although these methods allow earlier convergence of the AL iterative
-process, the impact of these methods are only observed between iterations.
-Consequently, none of these contributions focused on the definition of decision
-borders within iterations. The method proposed in this paper modifies the AL
-framework by introducing an artificial data generation step within AL's
-iterative process. We define this component as the generator and is intended to
-be integrated into the AL framework as shown in Figure~\ref{fig:al_new}. 
+revolved around improving the quality of the chooser, predictor and/or
+selection criterion. Although these methods allow earlier convergence of the AL
+iterative process, the impact of these methods are only observed between
+iterations. Consequently, none of these contributions focused on the
+definition of decision borders within iterations. The method proposed in this
+paper modifies the AL framework by introducing an artificial data generation
+step within AL's iterative process. We define this component as the generator
+and is intended to be integrated into the AL framework as shown in
+Figure~\ref{fig:al_new}. 
 
 \begin{figure}[H]
 	\centering
@@ -512,8 +520,8 @@ phase with a more consistent definition of the decision boundaries at each
 iteration. Therefore, any algorithm capable of producing artificial data, be it
 domain agnostic or specific, can be employed. The artificial data is only used
 to train the classifiers involved in the process (chooser and predictor) and is
-discarded once the chooser's training phase is completed. The remaining steps in
-the AL framework remain unchanged. This method is addressed towards the
+discarded once the chooser's training phase is completed. The remaining steps
+in the AL framework remain unchanged. This method is addressed towards the
 limitations found in the previous sections: 
 
 \begin{enumerate}
@@ -532,8 +540,8 @@ Although the performance of this method is shown within a LULC classification
 context, the proposed framework is independent from the domain. The high
 dimensionality of remotely sensed imagery make its classification particularly
 challenging when the availability of labeled data is scarce and/or comes at a
-high cost, being subjected to the curse of dimensionality. Consequently, it is a
-relevant and appropriate domain to test this method.
+high cost, being subjected to the curse of dimensionality. Consequently, it is
+a relevant and appropriate domain to test this method.
 
 \section{Methodology}~\label{sec:methodology}
 
@@ -559,12 +567,12 @@ frameworks.
 \subsection{Datasets}~\label{sec:datasets}
 
 The datasets used were extracted from publicly available hyperspectral scenes.
-Additionally, all datasets were collected using the same sampling procedure. The
-description of the hyperspectral scenes used in this study is provided in
-Table~\ref{tab:rs_scene_description}. These scenes were chosen because of
-their popularity in the research community and their high baseline
-classification scores. Consequently, demonstrating an outperforming method in
-this context is particularly challenging and valuable.
+Additionally, all datasets were collected using the same sampling procedure.
+The description of the hyperspectral scenes used in this study is provided in
+Table~\ref{tab:rs_scene_description}. These scenes were chosen because of their
+popularity in the research community and their high baseline classification
+scores. Consequently, demonstrating an outperforming method in this context is
+particularly challenging and valuable.
 
 \pgfplotstabletypeset[
 	begin table=\begin{longtable},
@@ -584,11 +592,11 @@ and~\ref{fig:pavia_university}). The Salinas and Salinas A scenes contain
 at-sensor radiance data. As subset of Salinas, the Salinas A scene contains
 contains the vegetables fields present in Salinas and the latter is also
 composed of bare soils and vineyard fields (see Figures~\ref{fig:salinas}
-and~\ref{fig:salinas_a}). The Botswana scene contains ground truth data composed
-of seasonal swamps, occasional swamps, and drier woodlands located in the distal
-portion of the Delta (see Figure~\ref{fig:botswana}). The Kennedy Space Center
-scene contains a ground truth composed of both vegetation and urban-related
-coverage (see Figure~\ref{fig:kennedy_space_center})
+and~\ref{fig:salinas_a}). The Botswana scene contains ground truth data
+composed of seasonal swamps, occasional swamps, and drier woodlands located in
+the distal portion of the Delta (see Figure~\ref{fig:botswana}). The Kennedy
+Space Center scene contains a ground truth composed of both vegetation and
+urban-related coverage (see Figure~\ref{fig:kennedy_space_center})
 
 \begin{figure}[H]
 	\centering
@@ -629,24 +637,24 @@ coverage (see Figure~\ref{fig:kennedy_space_center})
 		\includegraphics[height=1.5\linewidth]{../analysis/kennedy_space_center}
 		\subcaption{{\medbreak}}\label{fig:kennedy_space_center}
 	\end{subfigure}
-	\caption{Gray scale visualization of a band (top row) and ground truth (bottom row) of
-		each scene used in this study. (a) Indian Pines, (b) Pavia Centre, (c) Pavia
-		University, (d) Salinas, (e) Salinas A, (f) Botswana, (g) Kennedy Space Center
-    }\label{fig:scenes}
+    \caption{Gray scale visualization of a band (top row) and ground truth
+        (bottom row) of each scene used in this study. (a) Indian Pines, (b)
+        Pavia Centre, (c) Pavia University, (d) Salinas, (e) Salinas A, (f)
+        Botswana, (g) Kennedy Space Center }\label{fig:scenes}
 \end{figure}
 
 The sampling strategy is similar to all datasets. The pixels without a ground
-truth label are first discarded. All the classes with cardinality lower than 150
-are also discarded. This is done to maintain feasible Imbalance Ratios (IR)
-across datasets (where $IR = \frac{count(C_{maj})}{count(C_{min})}$). Finally, a
-stratified sample of 1500 observations are selected for the experiment. The
+truth label are first discarded. All the classes with cardinality lower than
+150 are also discarded. This is done to maintain feasible Imbalance Ratios (IR)
+across datasets (where $IR = \frac{count(C_{maj})}{count(C_{min})}$). Finally,
+a stratified sample of 1500 observations are selected for the experiment. The
 resulting datasets are described in Table~\ref{tab:datasets_description}. The
 motivation for this strategy is three fold: (1) reduce the datasets to a
 manageable size and allow the experimental procedure to be completed within a
-feasible time frame, (2) ensure the relative class frequencies in the scenes are
-preserved and (3) ensure equivalent analyses across datasets and AL frameworks.
-In this context, a fixed number of observations per dataset is especially
-important to standardize the AL-related performance metrics.
+feasible time frame, (2) ensure the relative class frequencies in the scenes
+are preserved and (3) ensure equivalent analyses across datasets and AL
+frameworks.  In this context, a fixed number of observations per dataset is
+especially important to standardize the AL-related performance metrics.
 
 \pgfplotstabletypeset[
 	begin table=\begin{longtable},
@@ -658,11 +666,11 @@ important to standardize the AL-related performance metrics.
 
 \subsection{Machine Learning Algorithms}~\label{sec:machine_learning_algorithms}
 
-We use two different types of ML algorithms. Data generation algorithms, used to
-form the generator, and classification algorithms, used to form the chooser and
-predictor. In order to maintain simplicity and a common approach to most of the
-literature in the topic, the classifiers used to play the chooser and predictor
-are the same.
+We use two different types of ML algorithms. Data generation algorithms, used
+to form the generator, and classification algorithms, used to form the chooser
+and predictor. In order to maintain simplicity and a common approach to most of
+the literature in the topic, the classifiers used to play the chooser and
+predictor are the same.
 
 Although any method capable of generating artificial data can be used as a
 generator, the ones used in this experiment are oversamplers, originally
@@ -671,11 +679,12 @@ SMOTE for its popularity and simplicity. We also chose G-SMOTE as a better
 performing generalization of the former method.
 
 Three classification algorithms are used as the chooser and predictor. We use
-different types of classifiers to test the framework's performance under varying
-situations: neighbors-based, linear and ensemble models. The neighbors-based
-classifier chosen was $K$-nearest neighbors (KNN)~\cite{Cover1967}, a logistic
-regression (LR)~\cite{Nelder1972} is used as the linear model and a random
-forest classifier (RFC)~\cite{Ho1995} was used as the ensemble model.
+different types of classifiers to test the framework's performance under
+varying situations: neighbors-based, linear and ensemble models. The
+neighbors-based classifier chosen was $K$-nearest neighbors
+(KNN)~\cite{Cover1967}, a logistic regression (LR)~\cite{Nelder1972} is used as
+the linear model and a random forest classifier (RFC)~\cite{Ho1995} was used as
+the ensemble model.
 
 The acquisition function is completed by testing three different selection
 criteria. Random selection is used as a baseline selection criterion, whereas
@@ -689,26 +698,26 @@ According to~\cite{Gavade2019}, nearly 80\% of the satellite-based LULC studies
 employ the \textit{Overall Accuracy} (OA) and \textit{Kappa coefficient}
 performance metrics. However, these metrics are frequently insufficient to
 accurately depict classification performance~\cite{Olofsson2013, Pontius2011}.
-Metrics such as Producer's Accuracy (or \textit{Recall}) and User's Accuracy (or
-\textit{Precision}) are also commonly used. Since they consist of ratios based on
-True/False Positives (TP and FP) and Negatives (TN and FN), formulated as
-$Precision = \frac{TP}{TP+FP}$ and $Recall = \frac{TP}{TP+FN}$, they provide per
-class information regarding the classifier's classification performance.
-However, in this experiment, the meaning and number of classes available in each
-dataset varies, making these metrics difficult to synthesize.
+Metrics such as Producer's Accuracy (or \textit{Recall}) and User's Accuracy
+(or \textit{Precision}) are also commonly used. Since they consist of ratios
+based on True/False Positives (TP and FP) and Negatives (TN and FN), formulated
+as $Precision = \frac{TP}{TP+FP}$ and $Recall = \frac{TP}{TP+FN}$, they provide
+per class information regarding the classifier's classification performance.
+However, in this experiment, the meaning and number of classes available in
+each dataset varies, making these metrics difficult to synthesize.
 
 While OA and Kappa tend to overestimate a classifier's performance on datasets
-with high IR, other metrics such as \textit{F-score} and \textit{Geometric mean}
-(G-mean) are less sensitive to the data imbalance bias~\cite{Jeni2013,
+with high IR, other metrics such as \textit{F-score} and \textit{Geometric
+mean} (G-mean) are less sensitive to the data imbalance bias~\cite{Jeni2013,
 Kubat1997}. Therefore, we employ 3 performance metrics:
 
 \begin{enumerate}
-    \item The G-mean scorer is the geometric mean of $Specificity = \frac{TN}{TN
-        + FP}$ and \textit{Sensitivity} (also known as
+    \item The G-mean scorer is the geometric mean of $Specificity =
+        \frac{TN}{TN + FP}$ and \textit{Sensitivity} (also known as
         \textit{Recall})~\cite{Kubat1997}. Both metrics are calculated in a
-        multiclass context considering a one-versus-all approach. For multiclass
-        problems, the \textit{G-mean} scorer is calculated as its average per
-        class values: 
+        multiclass context considering a one-versus-all approach. For
+        multiclass problems, the \textit{G-mean} scorer is calculated as its
+        average per class values: 
         \begin{equation}\label{eq:gmean}
             \textit{G-mean} = \sqrt{\overline{Sensitivity}_i \times
             \overline{Specificity}_i}
@@ -724,14 +733,12 @@ Kubat1997}. Therefore, we employ 3 performance metrics:
         \end{equation}
 
     \item OA consists of the ratio between the number of correctly classified
-        observations and the total number of observations. This metric, because of its
-        popularity and easy interpretability, is kept for discussion purposes.
-        Considering $C$ as the set of classes within a dataset, it is expressed as: 
-        \begin{equation}\label{eq:oa}
-            \textit{OA} =
-            \frac{\sum_{i}^{C}{\text{TP}_{i}}}{\sum_{i}^{C}{(\text{TP}_{i} +
-            \text{FP}_{i})}}
-        \end{equation}
+        observations and the total number of observations. This metric, because
+        of its popularity and easy interpretability, is kept for discussion
+        purposes.  Considering $C$ as the set of classes within a dataset, it
+        is expressed as: \begin{equation}\label{eq:oa} \textit{OA} =
+        \frac{\sum_{i}^{C}{\text{TP}_{i}}}{\sum_{i}^{C}{(\text{TP}_{i} +
+    \text{FP}_{i})}} \end{equation}
 
 \end{enumerate}
 
@@ -741,15 +748,14 @@ follow the recommendations found in~\cite{Kottke2017}. Each AL configuration is
 evaluated using the \textit{Area Under the Learning Curve} (AULC) performance
 metric. It is the sum of the classification performance values of all
 iterations. To facilitate the analysis of the results, we fix the range of this
-metric between $[0,1]$ by dividing it with the total amount of
-iterations (i.e., the maximum performance area). The metric \textit{Data
-Utilization Rate} (DUR)~\cite{Reitmaier2013} consists of the ratio between the
-minimum number of observations necessary to reach a given performance threshold
-by an AL strategy and an equivalent baseline strategy. The deficiency
-score~\cite{Yanik2015} is used to compare the performance between two active
-learners. The deficiency of algorithm $A$ with respect to algorithm $B$ is
-calculated with the areas between the respective learning curves and the maximum
-performance line $MP$:
+metric between $[0,1]$ by dividing it with the total amount of iterations
+(i.e., the maximum performance area). The metric \textit{Data Utilization Rate}
+(DUR)~\cite{Reitmaier2013} consists of the ratio between the minimum number of
+observations necessary to reach a given performance threshold by an AL strategy
+and an equivalent baseline strategy. The deficiency score~\cite{Yanik2015} is
+used to compare the performance between two active learners. The deficiency of
+algorithm $A$ with respect to algorithm $B$ is calculated with the areas
+between the respective learning curves and the maximum performance line $MP$:
 
 \begin{equation}
     deficiency = \frac{MP-AULC_A}{2MP-AULC_A-AULC_B} 
@@ -768,11 +774,11 @@ labeled data as a proxy for the population of unlabeled samples. Because the
 dataset is already fully labeled, the oracle's typical annotation process
 involved in each iteration is done at zero cost. Each AL and classifier
 configuration is tested using a stratified 5-fold cross validation testing
-scheme. For each round, the larger partition is split in a stratified fashion to
-form a training and validation set (containing 20\% of the original partition).
-The validation set is used to evaluate the convergence efficiency of active
-learners; the chooser's classification performance metrics and amount of data
-points used at each iteration are used to compute the AULC and DUR\@.
+scheme. For each round, the larger partition is split in a stratified fashion
+to form a training and validation set (containing 20\% of the original
+partition).  The validation set is used to evaluate the convergence efficiency
+of active learners; the chooser's classification performance metrics and amount
+of data points used at each iteration are used to compute the AULC and DUR\@.
 Additionally, within the AL iterative process, the classifier with optimal
 performance on the validation set is evaluated using the test set. In order to
 further reduce possible initialization biases, this procedure is repeated 3
@@ -785,10 +791,10 @@ Figure~\ref{fig:experiment_pipeline}.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=.7\linewidth]{../analysis/experiment_pipeline}
-	\caption{Experimental procedure. The performance metrics are averaged over
-    the 5 folds across each of the 3 different initializations of this procedure
-    for a given combination of generator, chooser/predictor and selection
-    criterion.}~\label{fig:experiment_pipeline}
+    \caption{Experimental procedure. The performance metrics are averaged over
+    the 5 folds across each of the 3 different initializations of this
+    procedure for a given combination of generator, chooser/predictor and
+    selection criterion.}~\label{fig:experiment_pipeline}
 \end{figure}
 
 To make the convergence metrics comparable across active learners, the
@@ -799,9 +805,9 @@ metrics.
 In most practical AL applications it is assumed that the number of observations
 in the initial training sample is too small to perform hyperparameter tuning.
 Consequently, in order to ensure realistic results, our experimental procedure
-does not include hyperparameter optimization. The predefined hyperparameters are
-shown in Table~\ref{tab:grid}. They were set up based on general recommendations
-and default settings for the classifiers and generators used.
+does not include hyperparameter optimization. The predefined hyperparameters
+are shown in Table~\ref{tab:grid}. They were set up based on general
+recommendations and default settings for the classifiers and generators used.
 
 The AL iterative process is set up with a randomly selected initial training
 sample with 15 initial samples. At each iteration, an additional 15 samples are
@@ -837,8 +843,8 @@ added to the training set. This process is stopped after 49 iterations, once
 
 \subsection{Software Implementation}
 
-The experiment was implemented using the Python programming language, along with
-the Python libraries
+The experiment was implemented using the Python programming language, along
+with the Python libraries
 \href{https://scikit-learn.org/stable/}{Scikit-Learn}~\cite{Pedregosa2011},
 \href{https://imbalanced-learn.org/en/stable/}{Imbalanced-Learn}~\cite{JMLR:v18:16-365},
 \href{https://geometric-smote.readthedocs.io/en/latest/?badge=latest}{Geometric-SMOTE},
@@ -907,8 +913,8 @@ The mean deficiency scores of the proposed framework is shown in
 Table~\ref{tab:deficiency_scores}. This metric is calculated using the proposed
 framework using G-SMOTE and SMOTE as algorithms $A$ and the baseline active
 learner as algorithm $B$. The proposed method shows consistent a improvement
-over the baseline method, except in three situations, where the difference among
-active learners is marginal.
+over the baseline method, except in three situations, where the difference
+among active learners is marginal.
 
 \pgfplotstabletypeset[
 	begin table=\begin{longtable},
@@ -920,9 +926,9 @@ active learners is marginal.
 ]{../analysis/mean_std_deficiency.csv}
 
 The average DURs are shown in Figure~\ref{fig:dur}. They were calculated for
-various threshold levels, varying at a step of 5\% between 60\% and
-95\%. The DURs shown in the figure use the typical AL framework as the baseline
-strategy. The results show a generalized decrease of data required to reach the
+various threshold levels, varying at a step of 5\% between 60\% and 95\%. The
+DURs shown in the figure use the typical AL framework as the baseline strategy.
+The results show a generalized decrease of data required to reach the
 performance thresholds in the various scenarios. For higher performance
 thresholds, the gap between the proposed and baseline methods tend to be
 reduced, since the amount of data required is larger and the benefits of data
@@ -969,10 +975,10 @@ findings drawn from this experiment.
 \subsection{Statistical Analysis}~\label{sec:statistical-analysis}
 
 The methods used to test the experiment's results must be appropriate for a
-multi-dataset context. Therefore the statistical analysis is performed using the
-Friedman test~\cite{friedman1937use} and the Holm-Bonferroni
-method~\cite{holm1979simple} for a post-hoc analysis. The variable used for this
-test is the AULC, considering the various performance metrics used.
+multi-dataset context. Therefore the statistical analysis is performed using
+the Friedman test~\cite{friedman1937use} and the Holm-Bonferroni
+method~\cite{holm1979simple} for a post-hoc analysis. The variable used for
+this test is the AULC, considering the various performance metrics used.
 
 Table~\ref{tab:friedman_test} shows the results of the Friedman test. In most
 cases the null hypothesis is rejected, which indicates a statistically
@@ -1007,40 +1013,42 @@ using overall accuracy.
 
 \section{Conclusion}~\label{sec:conclusion}
 
-The aim of this experiment was to prove the effectiveness of a new AL framework,
-where a new element is introduced to improve the convergence rate of AL using
-artificial data generation. On the one hand, the experiment was designed to test
-the proposed method under particularly challenging conditions, where the maximum
+The aim of this experiment was to test the effectiveness of a new AL framework,
+where a new element is introduced to improve the convergence rate of AL through
+the use of artificial data generation. The experiment was designed to test the
+proposed method under particularly challenging conditions, where the maximum
 performance line is naturally high in most datasets (with exception to the
-Indian Pines dataset). On the other hand, in order to test basic setups for this
-new framework, the elements that constitute the Generator component were set up
-in a simple fashion. Although it is able to consistently outperform the original
-AL framework in most scenarios, it is still not able to do so in few occasions.
-This is shown in Table~\ref{tab:wide_optimal_aulc}. These results could be
-further improved through the modification of the data generation strategy.
-During each iteration, the new artificial data is generated to match each
-non-majority class frequency with the majority class frequency. Additionally,
-generating a larger amount of data for all classes (especially in early
-iterations) can further improve these results. 
+Indian Pines dataset). In order to test basic setups for this new framework,
+the elements that constitute the Generator component were set up in a
+plug-and-play scheme, without significant tuning of the data generators (SMOTE
+and G-SMOTE). The tests showed that this new framework is able to consistently
+outperform the original AL framework in most scenarios, as shown in
+Table~\ref{tab:wide_optimal_aulc}. These results could be further improved
+through the modification and more intense tuning of the data generation
+strategy. In our experiment, during each iteration, the new artificial data is
+generated only to match each non-majority class frequency with the majority
+class frequency, thus strictly balancing the class distribution. Generating a
+larger amount of data for all classes (especially in early iterations) can
+further improve these results. 
 
 We also consider the fast convergence of AL on these datasets. The high
-performance scores for the baseline AL framework made the production of
-statistically significant improvements over the traditional AL framework under
+performance scores for the baseline AL framework made the achievement of
+significant improvements over the traditional AL framework under
 these conditions particularly meaningful. The advantage of the proposed AL
 framework is shown in Figure~\ref{fig:dur}. In most of the presented scenarios
 there is a substantial reduction of necessary data to reach each of the tested
 performance metric thresholds. 
 
-The results from this experiment show a promising transformation of the current
-AL framework. The proposed method successfully anticipated the predictor's
-optimal performance, as shown in
-Tables~\ref{tab:aulc_ranks},~\ref{tab:aulc_scores}
-and~\ref{tab:deficiency_scores}. The annotation cost would have been reduced in
-a real application since the number of iterations and labeled samples necessary
-to reach near optimal classification performance is reduced, as shown in
-Figure~\ref{fig:dur}. The class imbalance bias observed in AL tasks is reduced,
-as shown in Tables~\ref{tab:deficiency_scores}, where data imbalance appropriate
-metrics are always improved over the baseline scores.
+The results from this experiment show that the inclusion of a data generator in
+the AL framework will yield significant improvements in the convergence of the
+method. The proposed method successfully anticipated the predictor's optimal
+performance, as shown in Tables~\ref{tab:aulc_ranks},~\ref{tab:aulc_scores}
+and~\ref{tab:deficiency_scores}. This means the annotation cost would have been
+reduced in a real application since the number of iterations and labeled
+samples necessary to reach near optimal classification performance is reduced,
+as shown in Figure~\ref{fig:dur}. The class imbalance bias observed in AL tasks
+is reduced, as shown in Tables~\ref{tab:deficiency_scores}, where data
+imbalance appropriate metrics are always improved over the baseline scores.
 
 \bibliography{references}
 \bibliographystyle{apalike}
