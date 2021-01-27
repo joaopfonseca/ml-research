@@ -25,7 +25,7 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         init_clusterer=None,
         init_strategy='random',
         selection_strategy='entropy',
-        max_iter=1000,
+        max_iter=None,
         n_initial=100,
         increment=50,
         save_classifiers=False,
@@ -79,6 +79,10 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
             ]
         else:
             self.selection_strategy_ = self.selection_strategy
+
+        self.max_iter_ = self.max_iter \
+            if self.max_iter is not None \
+            else np.inf
 
         if self.save_classifiers or self.save_test_scores:
             self.data_utilization_ = []
@@ -147,70 +151,61 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
 
     def fit(self, X, y):
 
-        X, X_test, y, y_test = self._check(X, y)
-
+        # Original "unlabeled" dataset
         iter_n = 0
+        X, X_test, y, y_test = self._check(X, y)
         selection = np.zeros(shape=(X.shape[0])).astype(bool)
-        probabs = None
 
-        while iter_n < self.max_iter:
+        # Oracle - Get data according to passed initialization method
+        self.init_clusterer_, ids = init_strategy(
+            X=X,
+            n_initial=self.n_initial,
+            clusterer=self.init_clusterer,
+            selection_method=self.init_strategy,
+            random_state=self.random_state
+        )
 
-            # Create a pipeline with generator and classifier objects
+        selection[ids] = True
+
+        while iter_n < self.max_iter_:
+
+            # Generator + Chooser (in this case chooser==Predictor)
             classifier = Pipeline([
                 ('generator', clone(self.generator)),
                 ('classifier', clone(self._classifier))
             ])
-
-            # Add new samples to dataset
-            unlabeled_ids = np.argwhere(~selection).squeeze()
-
-            if iter_n == 0:
-                # Get data according to passed initialization method
-                self.init_clusterer_, ids = init_strategy(
-                    X=X,
-                    n_initial=self.n_initial,
-                    clusterer=self.init_clusterer,
-                    selection_method=self.init_strategy,
-                    random_state=self.random_state
-                )
-            else:
-                # Get data according to passed selection strategy
-                ids = self.selection_strategy_(
-                    probabilities=probabs,
-                    unlabeled_ids=unlabeled_ids,
-                    increment=self.increment_,
-                    random_state=self.random_state
-                )
-
-            selection[ids] = True
 
             # Train classifier and get probabilities
             classifier.fit(X[selection], y[selection])
 
             # Save metadata from current iteration
             self._save_metadata(
-                self,
-                iter_n,
-                classifier,
-                X_test,
-                y_test,
-                selection
+                iter_n, classifier, X_test, y_test, selection
+            )
+
+            # Compute the class probabilities of unlabeled observations
+            unlabeled_ids = np.argwhere(~selection).squeeze()
+            probabs = classifier.predict_proba(X[~selection])
+
+            # Some selection strategies can't deal with 0. values
+            probabs = np.where(probabs == 0., 1e-10, probabs)
+
+            # Get data according to passed selection criterion
+            ids = self.selection_strategy_(
+                probabilities=probabs,
+                unlabeled_ids=unlabeled_ids,
+                increment=self.increment_,
+                random_state=self.random_state
             )
 
             # keep track of iter_n
-            if self.max_iter is not None:
-                iter_n += 1
+            iter_n += 1
 
             # stop if all examples have been included
             if selection.all():
                 break
             elif selection.sum()+self.increment_ > y.shape[0]:
                 self.increment_ = y.shape[0] - selection.sum()
-
-            probabs = classifier.predict_proba(X[~selection])
-
-            # some selection strategies can't deal with 0. values
-            probabs = np.where(probabs == 0., 1e-10, probabs)
 
         return self
 
