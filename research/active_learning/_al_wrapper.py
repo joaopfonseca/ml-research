@@ -14,6 +14,7 @@ from sklearn.ensemble import RandomForestClassifier
 from imblearn.pipeline import Pipeline
 from ..metrics import SCORERS
 from ._selection_methods import SELECTION_CRITERIA
+from ._init_methods import init_strategy
 
 
 class ALWrapper(ClassifierMixin, BaseEstimator):
@@ -21,6 +22,8 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         self,
         classifier=None,
         generator=None,
+        init_clusterer=None,
+        init_strategy='random',
         selection_strategy='entropy',
         max_iter=1000,
         n_initial=100,
@@ -29,7 +32,7 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         save_test_scores=True,
         auto_load=True,
         test_size=.1,
-        evaluation_metric=None,
+        evaluation_metric='accuracy',
         random_state=None
     ):
         """
@@ -38,11 +41,12 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         """
         self.classifier = classifier
         self.generator = generator
-        self.max_iter = max_iter
+        self.init_clusterer = init_clusterer
+        self.init_strategy = init_strategy
         self.selection_strategy = selection_strategy
+        self.max_iter = max_iter
         self.n_initial = n_initial
         self.increment = increment
-        self.random_state = random_state
 
         # Used to find the optimal classifier
         self.auto_load = auto_load
@@ -50,6 +54,8 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         self.save_classifiers = save_classifiers
         self.save_test_scores = save_test_scores
         self.evaluation_metric = evaluation_metric
+
+        self.random_state = random_state
 
     def _check(self, X, y):
 
@@ -160,9 +166,11 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
 
             if iter_n == 0:
                 # Get data according to passed initialization method
-                ids = SELECTION_CRITERIA['random'](
-                    unlabeled_ids=unlabeled_ids,
-                    increment=self.n_initial,
+                self.init_clusterer_, ids = init_strategy(
+                    X=X,
+                    n_initial=self.n_initial,
+                    clusterer=self.init_clusterer,
+                    selection_method=self.init_strategy,
                     random_state=self.random_state
                 )
             else:
