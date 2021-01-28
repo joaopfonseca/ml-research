@@ -746,13 +746,3 @@ if __name__ == '__main__':
     # Main results - visualizations
     wide_optimal_al = calculate_wide_optimal_al(results)
     generate_dur_visualization(wide_optimal_al)
-    generate_mean_rank_bar_chart(wide_optimal_al)
-
-    # Statistical results
-    statistical_results = generate_statistical_results(
-        wide_optimal_al, alpha=.15, control_method='NONE'
-    )
-    for name, result in statistical_results:
-        result['Metric'] = result['Metric'].map(METRICS_MAPPING)
-        result = result.rename(columns={'Metric': 'Evaluation Metric'})
-        result.to_csv(join(analysis_path, f'{name}.csv'), index=False)
