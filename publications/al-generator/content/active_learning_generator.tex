@@ -197,7 +197,7 @@ describe the state of the art in AL and Oversampling techniques,
 Section~\ref{sec:proposed-method} exposes the proposed method,
 Section~\ref{sec:methodology} covers the datasets, evaluation metrics, ML
 classifiers and experimental procedure, Section~\ref{sec:results} presents the
-results and statistical analyses and Section~\ref{sec:conclusion} reports the
+experiment's results and Section~\ref{sec:conclusion} reports the
 conclusions drawn from our findings.
 
 \section{Active Learning Approaches}~\label{sec:al-sota}
@@ -270,7 +270,9 @@ the selected points are tagged by the oracle and added to the training dataset
 \begin{figure}[htb]
 	\centering
 	\includegraphics[width=.85\linewidth]{../analysis/al_typical}
-	\caption{Typical AL framework.
+	\caption{Diagram depicting the typical AL framework. Although the chooser
+        and predictor are presented as separate entities, they are frequently
+        the same classifier.
     }~\label{fig:al_typical}
 \end{figure}
 
@@ -420,11 +422,10 @@ original AL framework.
 The generation of artificial data is a common approach to address imbalanced
 learning tasks~\cite{Kaur2019}, as well as improving the effectiveness of
 supervised learning tasks~\cite{DeVries2017}. In recent years some
-sophisticated data generation approaches were found.  Although, the scope of
-this work is to propose the integration of a generator within the AL framework.
-Due to the complexity and computational cost of network-based approaches (e.g.,
-Generative Adversarial Networks), we will only focus on heuristic data
-generation approaches, specifically, oversamplers.
+sophisticated data generation approaches were found. Although, the scope of
+this work is to propose the integration of a generator within the AL
+framework. To do this, we will focus on heuristic data generation approaches,
+specifically, oversamplers.
 
 Heuristic data resampling methods employ local and/or global information to
 generate new, relevant, non-duplicated instances. These methods are most
@@ -442,7 +443,15 @@ as shown in Figure~\ref{fig:data_generation}.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{../analysis/data_generation}
-	\caption{Examples of SMOTE and G-SMOTE generation process.
+    \caption{Examples of SMOTE and G-SMOTE generation process. SMOTE randomly
+        selects sample $\protect\overrightarrow{x}$ and one of its nearest
+        neighbors $\protect\overrightarrow{y}$ to produce sample
+        $\protect\overrightarrow{z}$. Noisy sample
+        $\protect\overrightarrow{b}$ is generated with SMOTE using points
+        $\protect\overrightarrow{a}$ and $\protect\overrightarrow{c}$.  Sample
+        $\protect\overrightarrow{p}$ and one of its nearest neighbors
+        $\protect\overrightarrow{q}$ are used by G-SMOTE to originate sample
+        $\protect\overrightarrow{r}$.
     }~\label{fig:data_generation}
 \end{figure}
 
@@ -507,22 +516,24 @@ step within AL's iterative process. We define this component as the generator
 and is intended to be integrated into the AL framework as shown in
 Figure~\ref{fig:al_new}. 
 
-\begin{figure}[H]
+\begin{figure}[htb]
 	\centering
 	\includegraphics[width=.85\linewidth]{../analysis/al_new}
-	\caption{Proposed AL framework.
+    \caption{Proposed AL framework. The data generation mechanism is
+        represented as the generator, which is used to complete the data
+        generation phase. The remaining steps are left unchanged.
     }~\label{fig:al_new}
 \end{figure}
 
-This method leverages the capacity of artificial data to introduce more data
+This method leverages the capability of artificial data to introduce more data
 variability into the augmented dataset and facilitate the chooser's training
 phase with a more consistent definition of the decision boundaries at each
-iteration. Therefore, any algorithm capable of producing artificial data, be it
-domain agnostic or specific, can be employed. The artificial data is only used
-to train the classifiers involved in the process (chooser and predictor) and is
-discarded once the chooser's training phase is completed. The remaining steps
-in the AL framework remain unchanged. This method is addressed towards the
-limitations found in the previous sections: 
+iteration. Therefore, any algorithm capable of producing artificial data, be
+it agnostic or specific to the domain, can be employed. The artificial data is
+only used to train the classifiers involved in the process (chooser and
+predictor) and is discarded once the chooser's training phase is completed.
+The remaining steps in the AL framework remain unchanged. This method is
+addressed towards the limitations found in the previous sections: 
 
 \begin{enumerate}
     \item The convergence of the predictor's performance should be anticipated
@@ -579,7 +590,7 @@ particularly challenging and valuable.
 		end table=\end{longtable},  col sep=semicolon, header=true,
 	columns={Dataset,Sensor,Location,Dimension,Bands,Res. (m),Classes}, string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
 	every last row/.style={after row=\bottomrule \caption{\label{tab:rs_scene_description}
-				Description of the hyperspectral scenes used for this experiment.}}
+				Description of the hyperspectral scenes used in this experiment.}}
 ]{../analysis/rs_scene_description.csv}
 
 The Indian Pines scene~\cite{Baumgardner2015} is composed of agriculture fields
@@ -653,7 +664,7 @@ motivation for this strategy is three fold: (1) reduce the datasets to a
 manageable size and allow the experimental procedure to be completed within a
 feasible time frame, (2) ensure the relative class frequencies in the scenes
 are preserved and (3) ensure equivalent analyses across datasets and AL
-frameworks.  In this context, a fixed number of observations per dataset is
+frameworks. In this context, a fixed number of observations per dataset is
 especially important to standardize the AL-related performance metrics.
 
 \pgfplotstabletypeset[
@@ -661,7 +672,9 @@ especially important to standardize the AL-related performance metrics.
 		end table=\end{longtable},  col sep=comma, header=true,
 	columns={Dataset,Features,Instances,Min. Instances,Maj. Instances,IR, Classes}, string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
 	every last row/.style={after row=\bottomrule \caption{\label{tab:datasets_description}
-				Description of the datasets used for this experiment.}}
+	Description of the datasets collected from each corresponding scene. The
+    sampling strategy is similar to all scenes.
+    }}
 ]{../analysis/datasets_description.csv}
 
 \subsection{Machine Learning Algorithms}~\label{sec:machine_learning_algorithms}
@@ -838,7 +851,8 @@ added to the training set. This process is stopped after 49 iterations, once
                    & truncation factor    & 0.5                \\
 		\bottomrule
 	\end{tabular}
-    \caption{\label{tab:grid}Hyper-parameters grid.}
+    \caption{\label{tab:grid}Hyper-parameter definition for the classifiers and
+    generators used in the experiment.}
 \end{table}
 
 \subsection{Software Implementation}
@@ -860,39 +874,31 @@ repository of the project}.
 
 The evaluation of the different AL frameworks in a multiple dataset context
 should not rely uniquely on the mean of the performance metrics across
-datasets.~\cite{demvsar2006} recommends the usage of mean ranking scores, since
-the performance levels of the different frameworks varies according to the data
-it is being used on. Consequently, evaluating these performance metrics solely
-based on their mean values might lead to inaccurate analyses. Accordingly, the
-results of this experiment is analysed using both the mean ranking and absolute
-scores for each model. Finally, these results are used to perform a statistical
-significance analysis, presented in Subsection~\ref{sec:statistical-analysis}.
-The rank values are assigned based on the mean scores resulting from three
-different initializations of 5-fold cross validation for each classifier and
-active learner.
+datasets.~\cite{demvsar2006} recommends the usage of mean ranking scores,
+since the performance levels of the different frameworks varies according to
+the data it is being used on. Consequently, evaluating these performance
+metrics solely based on their mean values might lead to inaccurate analyses.
+Accordingly, the results of this experiment is analysed using both the mean
+ranking and absolute scores for each model.  The rank values are assigned
+based on the mean scores resulting from three different initializations of
+5-fold cross validation for each classifier and active learner.
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=.6\linewidth]{../analysis/mean_rankings_bar_chart}
-    \caption{Mean AULC ranking of AL frameworks across datasets.}~\label{fig:aulc_ranks}
-\end{figure}
-
-The AULC mean ranking scores show that the convergence efficiency of the
-proposed method (i.e., using generators G-SMOTE and SMOTE) is consistently
-higher than the traditional AL framework (NONE). With the exception of two
-scenarios, the proposed framework using G-SMOTE was able to outperform the
-remaining methods. The only scenario where the baseline active learner was able
-to outperform the remaining methods was using the LR classifier and OA as the
-optimization goal. Table~\ref{tab:aulc_ranks} shows the quantitative results of
-average AULC ranking scores and standard deviations across datasets for each
-active learner.
+Table~\ref{tab:aulc_ranks} shows the average rankings and standard deviations
+across datasets of the AULC scores for each active learner. These results show
+that the convergence efficiency of the proposed method (i.e., using generators
+G-SMOTE and SMOTE) is consistently higher than the traditional AL framework
+(NONE). With the exception of two scenarios, the proposed framework using
+G-SMOTE was able to outperform the remaining methods. The only scenario where
+the baseline active learner was able to outperform the remaining methods was
+using the LR classifier and OA as the optimization goal. 
 
 \pgfplotstabletypeset[
 	begin table=\begin{longtable},
-		end table=\end{longtable},  col sep=comma, header=true,
-	string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
+	end table=\end{longtable}, col sep=comma, header=true, string type, 
+    every head row/.style={before row=\toprule, after row=\midrule\endhead},
 	every last row/.style={after row=\bottomrule \caption{\label{tab:aulc_ranks}
-				Mean AULC ranking scores.}}
+	Mean rankings of the AULC metric over the different datasets used in the
+    experiment.}}
 ]{../analysis/mean_std_aulc_ranks.csv}
 
 The mean absolute scores are provided in Table~\ref{tab:aulc_scores}. In some
@@ -903,10 +909,11 @@ frameworks particularly meaningful.
 
 \pgfplotstabletypeset[
 	begin table=\begin{longtable},
-		end table=\end{longtable},  col sep=comma, header=true,
-	string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
-	every last row/.style={after row=\bottomrule \caption{\label{tab:aulc_scores}
-				Mean absolute AULC scores.}}
+	end table=\end{longtable},  col sep=comma, header=true, string type, 
+    every head row/.style={before row=\toprule, after row=\midrule\endhead},
+	every last row/.style={
+        after row=\bottomrule \caption{\label{tab:aulc_scores}
+	Average AULC of each AL configuration tested.}}
 ]{../analysis/mean_std_aulc_scores.csv}
 
 The mean deficiency scores of the proposed framework is shown in
@@ -921,8 +928,9 @@ among active learners is marginal.
 		end table=\end{longtable},  col sep=comma, header=true,
 	string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
 	every last row/.style={after row=\bottomrule \caption{\label{tab:deficiency_scores}
-        Mean deficiency scores. The scores were calculated by estimating the
-        deficiency of the proposed framework with respect to the baseline method.}}
+    Mean deficiency scores. The scores were calculated by estimating the
+    deficiency of the proposed framework with respect to the original AL
+    framework.}}
 ]{../analysis/mean_std_deficiency.csv}
 
 The average DURs are shown in Figure~\ref{fig:dur}. They were calculated for
@@ -937,16 +945,20 @@ generation is less apparent.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{../analysis/data_utilization_rate}
-    \caption{Mean data utilization rates.}~\label{fig:dur}
+    \caption{Mean data utilization rates. The y-axis shows the average amount
+    of data necessary to reach the different performance thresholds (as a
+    percentage of the baseline AL framework).}~\label{fig:dur}
 \end{figure}
 
 The mean optimal classification scores is shown in
-Table~\ref{tab:optimal_mean_std_scores}. One of the goals of this study is
-ensuring that the classification performance of the predictors resulting from
-the proposed framework are not worse than the predictors produced using the
-typical AL framework. Using a generator in AL's iterative process
-was capable of outperforming the baseline framework in most cases and the
-maximum performance classifier in 6 of those.
+Table~\ref{tab:optimal_mean_std_scores}. The maximum performance (MP)
+classification scores are shown as a benchmark and represent the performance
+of the corresponding classifier using the entire training set. One of the
+goals of this study is ensuring that the classification performance of the
+predictors resulting from the proposed framework are not worse than the
+predictors produced using the typical AL framework. Using a generator in AL's
+iterative process was capable of outperforming the baseline framework in most
+cases and the maximum performance classifier in 6 of those.
 
 \pgfplotstabletypeset[
 	begin table=\begin{longtable},
@@ -954,7 +966,9 @@ maximum performance classifier in 6 of those.
 	string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
 	every last row/.style={after row=\bottomrule
         \caption{\label{tab:optimal_mean_std_scores}
-				Optimal classification scores.}}
+    Optimal classification scores. The Maximum Performance (MP) classification
+    scores are calculated using classifiers trained using the entire training
+    set.}}
 ]{../analysis/optimal_mean_std_scores.csv}
 
 The optimal AULC results of each method are reported in
@@ -971,45 +985,6 @@ findings drawn from this experiment.
             Legend: IP Indian Pines, KSC Kennedy Space Center, PC Pavia Center, PU
             Pavia University, SA Salinas A.}}
 ]{../analysis/wide_optimal_aulc.csv}
-
-\subsection{Statistical Analysis}~\label{sec:statistical-analysis}
-
-The methods used to test the experiment's results must be appropriate for a
-multi-dataset context. Therefore the statistical analysis is performed using
-the Friedman test~\cite{friedman1937use} and the Holm-Bonferroni
-method~\cite{holm1979simple} for a post-hoc analysis. The variable used for
-this test is the AULC, considering the various performance metrics used.
-
-Table~\ref{tab:friedman_test} shows the results of the Friedman test. In most
-cases the null hypothesis is rejected, which indicates a statistically
-significant difference on the performance among AL frameworks.
-
-\pgfplotstabletypeset[
-	begin table=\begin{longtable},
-		end table=\end{longtable},  col sep=comma, header=true,
-	string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
-	every last row/.style={after row=\bottomrule
-        \caption{\label{tab:friedman_test}
-			Results for Friedman test. Statistical significance is tested at a
-            level of $\alpha = 0.15$. The null hypothesis is that there is no 
-            difference in the classification across AL frameworks.}}
-]{../analysis/friedman_test.csv}
-
-The Holm-Bonferroni test results are shown in Table~\ref{tab:holms_test}. The
-null hypothesis was rejected in most situations, with exception to the AULC
-using overall accuracy.
-
-\pgfplotstabletypeset[
-	begin table=\begin{longtable},
-		end table=\end{longtable},  col sep=comma, header=true,
-	string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
-	every last row/.style={after row=\bottomrule
-        \caption{\label{tab:holms_test}
-				Adjusted p-values using the Holm-Bonferroni method. Bold values
-                are statistically significant at a level of $\alpha = 0.15$. The 
-                null hypothesis is that the tested method does not perform better 
-                than the control method (benchmark AL framework).}}
-]{../analysis/holms_test.csv}
 
 \section{Conclusion}~\label{sec:conclusion}
 
@@ -1047,7 +1022,7 @@ and~\ref{tab:deficiency_scores}. This means the annotation cost would have been
 reduced in a real application since the number of iterations and labeled
 samples necessary to reach near optimal classification performance is reduced,
 as shown in Figure~\ref{fig:dur}. The class imbalance bias observed in AL tasks
-is reduced, as shown in Tables~\ref{tab:deficiency_scores}, where data
+is reduced, as shown in Table~\ref{tab:deficiency_scores}, where data
 imbalance appropriate metrics are always improved over the baseline scores.
 
 \bibliography{references}
