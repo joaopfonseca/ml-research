@@ -111,14 +111,14 @@ classification:
         mapping unit tend to cause the overlooking of small-area LULC patches
         and generates noisy training data that may reduce the prediction
         accuracy of a classifier \cite{Pelletier2017}.
-	\item Dealing with rare land cover classes, due to the varying levels of
-	      area coverage for each class. In this case using a purely random sampling strategy
-	      will amount to a dataset with a roughly proportional class
-	      distribution as the one on the landscape. On the other hand, the
-	      acquisition of training datasets containing balanced class frequencies
-	      is often unfeasible. This causes an asymmetry in class distribution,
-	      where some classes are frequent in the training dataset, while others
-	      have little expression \cite{Wang2019, Feng2019}.
+    \item Dealing with rare land cover classes, due to the varying levels of
+        area coverage for each class. In this case using a purely random
+        sampling strategy will amount to a dataset with a roughly proportional
+        class distribution as the one on the landscape. On the other hand, the
+        acquisition of training datasets containing balanced class frequencies
+        is often unfeasible. This causes an asymmetry in class distribution,
+        where some classes are frequent in the training dataset, while others
+        have little expression \cite{Wang2019, Feng2019}.
 \end{enumerate}
 
 The latter challenge is known as the imbalanced learning problem
@@ -188,17 +188,56 @@ latter consists of more sophisticated approaches that aim to perform
 over/undersampling based on the points' contextual information within their data
 space.
 
-The imbalanced learning problem is not new in machine learning but its relevancy
-has been growing, as attested by \cite{Haixiang2017}. The problem has also been
-addressed in the context of remote sensing \cite{Douzas2019rs}. In this paper,
-we propose the K-means SMOTE (K-SMOTE) \cite{Douzas2018} oversampler to address
-the imbalanced learning problem in a multiclass context for LULC classification
-using various remote sensing datasets. The K-SMOTE algorithm presents
-significant advantages over other oversamplers, by coupling two different
-procedures in the generation of artificial data. The algorithm starts by
-clustering the observations; next, the generation of the artificial observations
-is done taking into consideration the distribution of majority/minority cases in
-each individual cluster. The efficacy of K-SMOTE is tested using
+The imbalanced learning problem is not new in machine learning but its
+relevancy has been growing, as attested by \cite{Haixiang2017}. The problem
+has also been addressed in the context of remote sensing \cite{Douzas2019rs}.
+In this paper, we propose the K-means SMOTE (K-SMOTE) \cite{Douzas2018}
+oversampler to address the imbalanced learning problem in a multiclass context
+for LULC classification using various remote sensing datasets. The K-SMOTE
+algorithm presents significant advantages over other oversamplers, by coupling
+two different procedures in the generation of artificial data. The algorithm
+starts by clustering the observations; next, the generation of the artificial
+observations is done taking into consideration the distribution of
+majority/minority cases in each individual cluster. The idea of starting with
+a clustering procedure before the data generation phase is important in
+remote sensing because the spectral signature of the different classes can
+change significantly based on the geographical area in which it is represented.
+In other words, the spectral signature of a specific class can vary greatly
+depending on the geography, meaning that often we will be facing within-class
+imbalance \cite{Japkowicz2001}.
+
+In fact, we can decompose class imbalance into two different types:
+between-class imbalance and within-class imbalance \cite{Douzas2018, Jo2004}. While
+the first refers to the overall asymmetry between majority and minority
+classes, the second results from the fact that in different areas of the input
+space there might be different levels of imbalance. Depending on the
+complexity of the input space, different subclusters of minority and majority
+instances may be present. In order to achieve a balance between minority and
+majority instances, these subclusters should be treated separately. Assuming
+that the role of a classifier is to create rules in such a way that it is able
+to isolate the different relevant sub-concepts that represent both the
+majority and minority classes, the classifier will create multiple disjunct
+rules that describe these concepts. If the input space is simple and the
+classes’ instances are grouped together in a unique cluster, the classifier
+will only need to create (general) rules that comprise large portions of
+instances belonging to the same class. To the contrary, if the input space is
+complex and scatters through multiple small clusters, the classifier will need
+to learn a more complex set of (specific) rules, which can be seen in Figure
+\ref{fig:complex_input_space_example}. It is important to note that small
+clusters can happen both in the minority and majority class, although they
+will tend to be more frequent in the minority class due to its
+underrepresentation.  
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{../analysis/complex_input_space_example}
+	\caption{Example of a complex input space. In this example, a classifier
+        would need to separate the minority class' samples across 4
+        distinguishable regions, or clusters. }
+	\label{fig:complex_input_space_example}
+\end{figure}
+
+The efficacy of K-SMOTE is tested using
 different types of classifiers. To do so, we employ both commonly used and
 state-of-the-art oversamplers as benchmarking methods: Random oversampling
 (ROS), Synthetic Minority Oversampling Technique (SMOTE) \cite{Chawla2002} and
