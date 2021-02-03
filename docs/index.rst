@@ -3,17 +3,37 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-research documentation!
+Welcome to research documentation!
 ==============================================
+
+``research`` is a library that hosts much of the code written to conduct my
+research. It contains the implementation of algorithms and research utilities:
+dataset loading, experiment setup utilities, experiment results processing and
+LaTeX tables formatting. The `GitHub repository
+<https://github.com/joaopfonseca/research>`_ also contains most of the source
+code (LaTeX, Python, etc.) of all papers I have been involved with. They can
+be found in the `publications directory
+<https://github.com/joaopfonseca/research/tree/master/publications>`_. 
 
 Contents:
 
+Contents
+--------
+
 .. toctree::
    :maxdepth: 2
+   :caption: Getting Started
 
    getting-started
-   commands
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Documentation
+   
+   user-guide
+   commands
+   running-experiments
+   api
 
 
 Indices and tables

@@ -1,10 +1,18 @@
-Commands
-========
+.. _commands:
 
-The Makefile contains the central entry points for common tasks related to this project.
+Make commands
+=============
 
-Syncing data to S3
-^^^^^^^^^^^^^^^^^^
+The Makefile contains commands for common tasks related the setup and
+development of experiments. These commands can be used by running ``make
+<command>`` in the root directory of the project.
 
-* `make sync_data_to_s3` will use `aws s3 sync` to recursively sync files in `data/` up to `s3://[OPTIONAL] your-bucket-for-syncing-data (do not include 's3://')/data/`.
-* `make sync_data_from_s3` will use `aws s3 sync` to recursively sync files from `s3://[OPTIONAL] your-bucket-for-syncing-data (do not include 's3://')/data/` to `data/`.
+======================================  =========================================================
+ `make` command                          Description
+======================================  =========================================================
+``clean``                               Delete all compiled Python files
+``environment``                         Set up python interpreter environment
+``lint``                                Lint using flake8
+``requirements``                        Install Python Dependencies
+``test_environment``                    Test python environment is setup correctly
+======================================  =========================================================

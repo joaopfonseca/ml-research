@@ -19,13 +19,13 @@ import sys
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 # sys.path.insert(0, os.path.abspath('.'))
 
-# -- General configuration -----------------------------------------------------
+# -- General configuration ----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
 # needs_sphinx = '1.0'
 
-# Add any Sphinx extension module names here, as strings. They can be extensions
-# coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
+# Add any Sphinx extension module names here, as strings. They can be
+# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = []
 
 # Add any paths that contain templates here, relative to this directory.
@@ -66,7 +66,8 @@ release = '0.1'
 # directories to ignore when looking for source files.
 exclude_patterns = ['_build']
 
-# The reST default role (used for this markup: `text`) to use for all documents.
+# The reST default role (used for this markup: `text`) to use for all
+# documents.
 # default_role = None
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
@@ -87,23 +88,59 @@ pygments_style = 'sphinx'
 # modindex_common_prefix = []
 
 
-# -- Options for HTML output ---------------------------------------------------
+# -- Options for HTML output --------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'default'
+html_theme = 'sphinx_material'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-# html_theme_options = {}
+html_theme_options = {
+    # Set the name of the project to appear in the navigation.
+    'nav_title': 'Research',
+
+    'nav_links': [
+        {'href': 'index', 'internal': True, 'title': 'Material'},
+        {
+            'href': 'https://squidfunk.github.io/mkdocs-material/',
+            'internal': False,
+            'title': 'Material for MkDocs',
+        },
+    ],
+    'heroes': {
+        'index': 'Implementation of Machine Learning algorithms, experiments and utilities.',
+    },
+    # Specify a base_url used to generate sitemap.xml.
+    # 'base_url': 'https://project.github.io/project',
+
+    # Set the color and the accent color
+    'color_primary': 'blue',
+    'color_accent': 'light-blue',
+
+    # Set the repo location to get a badge with stats
+    'repo_url': 'https://github.com/joaopfonseca/research/',
+    'repo_name': 'research',
+
+    'logo_icon': '&#xe869',
+
+    'nav_links': {},
+
+    # Visible levels of the global TOC; -1 means unlimited
+    'globaltoc_depth': 3,
+    # If False, expand all TOC entries
+    'globaltoc_collapse': False,
+    # If True, show hidden TOC entries
+    'globaltoc_includehidden': False,
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-# html_title = None
+html_title = 'research'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 # html_short_title = None
@@ -131,7 +168,14 @@ html_static_path = ['_static']
 # html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-# html_sidebars = {}
+html_sidebars = {
+    '**': [
+        'logo-text.html',
+        'globaltoc.html',
+        'localtoc.html',
+        'searchbox.html'
+    ]
+}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
