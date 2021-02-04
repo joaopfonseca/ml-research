@@ -8,3 +8,8 @@ python-dotenv>=0.5.1
 # documentation requirements
 Sphinx
 sphinx-material
+numpydoc
+nbsphinx
+recommonmark
+sphinx_markdown_tables
+sphinx_copybutton
