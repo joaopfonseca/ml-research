@@ -72,8 +72,6 @@
 
 \section{Introduction}
 
-% context
-
 The increasing amount of remote sensing missions granted the access to dense
 time series (TS) data at a global level and provides up-to-date, accurate land
 cover information \cite{Drusch2012}. This information is often materialized
@@ -822,30 +820,33 @@ in all cases.
 
 \section{Conclusion}~\label{sec:conclusion} 
 
-This research paper was motivated by the difficulty posed in classifying rare
-classes for Land Use/Land Cover mapping. Cluster-based oversampling is
-especially useful in this context because the spectral signature of a given
-class often depends on its geographical area and the period within which the
-image was acquired. As a result, training a classifier capable of separating
-the different LULC classes with imbalanced representations in the
+This research paper was motivated by the challenges faced when classifying
+rare classes for LULC mapping. Cluster-based oversampling is especially
+useful in this context because the spectral signature of a given class often
+varies, depending on its geographical distribution and the time period within
+which the image was acquired. This induces the representation of minority
+classes as small clusters in the input space. As a result, training a
+classifier capable of identifying LULC minority classes in the
 hyper/multi-spectral scene over different areas or periods becomes
-particularly challenging.
+particularly challenging. The clustering procedure, performed before the data
+generation phase, allows for a more accurate generation of minority samples,
+as it identifies these minority clusters.
 
-A number of existing methods to address this problem (known as imbalanced
-learning) were identified and their caveats were exposed. Typically, these
-methods are not only difficult to implement, but they are also context
-dependent. We focused on oversampling methods due to their widespread usage,
-easy implementation and flexibility. Specifically, this paper demonstrated
-the efficacy of a recent oversampler, K-Means SMOTE, applied in a multi-class
-context for Land Cover Classification tasks. This was done with sampled data
-from seven well known and naturally imbalanced datasets: Indian Pines, Pavia
-Centre, Pavia University, Salinas, Salinas A, Botswana and Kennedy Space
-Center. For each combination of dataset, oversampler and classifier, the
-results of every classification task was averaged across a 5 fold
-stratification strategy with 3 different initialization seeds, resulting in a
-mean validation score of 15 classification tasks. The mean validation score of
-each combination was then used to perform the analyses presented in this
-report.
+A number of existing methods to address the imbalanced learning problem were
+identified and their limitations discussed. Typically, algorithm-based
+approaches and cost-sensitive solutions are not only difficult to implement,
+but they are also context dependent. In this paper we focused on oversampling
+methods due to their widespread usage, easy implementation and flexibility.
+Specifically, this paper demonstrated the efficacy of a recent oversampler,
+K-Means SMOTE, applied in a multi-class context for Land Cover Classification
+tasks. This was done with sampled data from seven well known and naturally
+imbalanced benchmark datasets: Indian Pines, Pavia Centre, Pavia University,
+Salinas, Salinas A, Botswana and Kennedy Space Center. For each combination of
+dataset, oversampler and classifier, the results of every classification task
+was averaged across a 5 fold stratification strategy with 3 different
+initialization seeds, resulting in a mean validation score of 15
+classification tasks. The mean validation score of each combination was then
+used to perform the analyses presented in this report.
 
 In 56 out of 63 classification tasks, K-SMOTE led to better results than ROS,
 SMOTE, B-SMOTE and no oversampling. More importantly, we found that K-Means
