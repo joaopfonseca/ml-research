@@ -46,23 +46,27 @@
 
 \begin{abstract}
 
-    Land cover maps are an important resource to make informed policy,
-    development, planning and resource management decisions. The primary
-    challenge for the development of accurate, timely and automated Land
-    Use/Land Cover maps are technical skills. Specifically, remotely sensed data
-    is often imbalanced, where the number of samples of a few classes is
-    significantly greater the number of samples of the remaining classes. This
-    asymmetric class distribution, impacts negatively the performance of
-    classifiers and adds a new source of inaccuracy to the production of these
-    maps. In this paper, we address this problem, known as the imbalanced
-    learning problem, by using K-Means SMOTE, a recently proposed oversampling
-    method. K-Means SMOTE is an oversampling algorithm that attempts to improve
-    the quality of newly created artificial data by avoiding the generation of
-    noisy data and effectively overcome data imbalance. The performance of
-    K-Means SMOTE is compared to other popular oversampling methods using seven
-    well known datasets and a variety of classifiers and evaluation metrics. The
-    results show that the proposed method consistently outperforms the remaining
-    oversamplers and produces higher quality land cover classifications.
+    Land cover maps are a critical tool to support informed policy
+    development, planning, and resource management decisions. The ability to
+    automatically produce Land Use/Land Cover maps, through the use of machine
+    learning methods, will improve the accuracy and timeliness of
+    decision-making. With significant upsides, the automatic
+    production of Land Use/Land Cover maps has been a topic of interest for the
+    remote sensing community for several years, but it is still fraught with
+    technical challenges. One such challenge is the imbalanced nature of most
+    remotely sensed data, where the number of samples of a few classes is
+    significantly greater than the number of samples of the remaining classes.
+    This asymmetric class distribution impacts negatively the performance of
+    classifiers and adds a new source of error to the production of these
+    maps. In this paper, we address the imbalanced learning problem, by using
+    K-Means and SMOTE as an improved oversampling algorithm. K-Means SMOTE
+    improves the quality of newly created artificial data by avoiding the
+    generation of noisy data while effectively overcome data imbalance. The
+    performance of K-Means SMOTE is compared to other popular oversampling
+    methods using seven remote sensing benchmark datasets and a variety of
+    classifiers and evaluation metrics. The results show that the proposed
+    method consistently outperforms the remaining oversamplers and produces
+    higher quality land cover classifications.
 
 \end{abstract}
 
@@ -465,9 +469,8 @@ This paper's main contributions are:
     \item Propose a cluster-based multiclass oversampling method appropriate
         for LULC classification and compare its performance with the remaining
         oversamplers in a multiclass context with seven benchmark LULC
-        classification datasets. Allows us to check for oversamplers'
-        performance statistical significance across datasets and report
-        K-SMOTE's performance in benchmark LULC datasets.
+        classification datasets. Allows us to check the oversamplers'
+        performance across benchmark LULC datasets.
     \item Introducing a cluster-based oversampling algorithm within the remote
         sensing domain, as well as comparing its performance with the remaining
         oversamplers in a multiclass context.
@@ -819,25 +822,30 @@ in all cases.
 
 \section{Conclusion}~\label{sec:conclusion} 
 
-Uma classe pode ter spectral signatures diferentes dependendo da sua
-localização.
-
 This research paper was motivated by the difficulty posed in classifying rare
-classes in Land Use/Land Cover tasks. A number of existing methods to address
-this problem (known as imbalanced learning) was identified and their caveats
-were exposed.  Typically, these methods are not only difficult to implement,
-they are also context dependent. We focused on oversampling methods due to
-their widespread usage, easy implementation and flexibility.  Specifically,
-this paper demonstrated the efficacy of a recent oversampler, K-Means SMOTE,
-applied in a multi-class context for Land Cover Classification tasks. This was
-done with sampled data from seven well known and naturally imbalanced
-datasets: Indian Pines, Pavia Centre, Pavia University, Salinas, Salinas A,
-Botswana and Kennedy Space Center. For each combination of dataset,
-oversampler and classifier, the results of every classification task was
-averaged across a 5 fold stratification strategy with 3 different
-initialization seeds, resulting in a mean validation score of 15
-classification tasks. The mean validation score of each combination was then
-used to perform the analyses presented in this report.
+classes for Land Use/Land Cover mapping. Cluster-based oversampling is
+especially useful in this context because the spectral signature of a given
+class often depends on its geographical area and the period within which the
+image was acquired. As a result, training a classifier capable of separating
+the different LULC classes with imbalanced representations in the
+hyper/multi-spectral scene over different areas or periods becomes
+particularly challenging.
+
+A number of existing methods to address this problem (known as imbalanced
+learning) were identified and their caveats were exposed. Typically, these
+methods are not only difficult to implement, but they are also context
+dependent. We focused on oversampling methods due to their widespread usage,
+easy implementation and flexibility. Specifically, this paper demonstrated
+the efficacy of a recent oversampler, K-Means SMOTE, applied in a multi-class
+context for Land Cover Classification tasks. This was done with sampled data
+from seven well known and naturally imbalanced datasets: Indian Pines, Pavia
+Centre, Pavia University, Salinas, Salinas A, Botswana and Kennedy Space
+Center. For each combination of dataset, oversampler and classifier, the
+results of every classification task was averaged across a 5 fold
+stratification strategy with 3 different initialization seeds, resulting in a
+mean validation score of 15 classification tasks. The mean validation score of
+each combination was then used to perform the analyses presented in this
+report.
 
 In 56 out of 63 classification tasks, K-SMOTE led to better results than ROS,
 SMOTE, B-SMOTE and no oversampling. More importantly, we found that K-Means
