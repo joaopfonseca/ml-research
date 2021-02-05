@@ -15,8 +15,6 @@ code (LaTeX, Python, etc.) of all papers I have been involved with. They can
 be found in the `publications directory
 <https://github.com/joaopfonseca/research/tree/master/publications>`_. 
 
-Contents:
-
 Contents
 --------
 
@@ -33,12 +31,3 @@ Contents
    user-guide
    commands
    running-experiments
-   api
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`

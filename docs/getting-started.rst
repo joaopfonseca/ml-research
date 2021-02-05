@@ -34,4 +34,4 @@ commands to get a copy from GitHub and install all dependencies::
     pip install .
 
 The project's environment and requirements can also be installed using `make` commands (See section
-`Make commands <commands.html>`_).
+`Commands <commands.html>`_).

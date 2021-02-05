@@ -1,7 +1,7 @@
 .. _commands:
 
-Make commands
-=============
+Commands
+========
 
 The Makefile contains commands for common tasks related the setup and
 development of experiments. These commands can be used by running ``make
