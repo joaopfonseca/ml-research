@@ -737,8 +737,19 @@ combination and initialization we use the evaluation strategy shown in Figure
 \ref{fig:experiment_pipeline}: $k$-fold cross-validation strategy where $k=5$
 to train each model defined and save the averaged scores of each split.
 
+Each combination of oversampler, classifier and parameters definition is fit 5
+times (once for each fold) per dataset. Each time, an oversampler will use the
+training set ($80\%$ of the dataset) to generate a set with artificial data,
+which is appended to the original training set in order to generate a training
+dataset with the exact same number of observations for each class. The newly
+formed training dataset is used to train the classifier and the test set ($20\%$
+of the dataset, the remaining fold) is used to evaluate the performance of the
+classifier. The evaluation scores are then averaged over the 5 times the process
+is repeated. The range of hyperparameters used are shown in table
+\ref{tab:grid}.
+
 \end{paracol}
-\begin{figure}[H]
+\begin{figure}
 	\centering
 	\includegraphics[width=1\linewidth]{../analysis/experiment_pipeline}
 	\caption{Experimental procedure. The performance metrics are averaged over
@@ -750,17 +761,6 @@ to train each model defined and save the averaged scores of each split.
 \begin{paracol}{2}
 \linenumbers
 \switchcolumn
-
-Each combination of oversampler, classifier and parameters definition is fit 5
-times (once for each fold) per dataset. Each time, an oversampler will use the
-training set ($80\%$ of the dataset) to generate a set with artificial data,
-which is appended to the original training set in order to generate a training
-dataset with the exact same number of observations for each class. The newly
-formed training dataset is used to train the classifier and the test set ($20\%$
-of the dataset, the remaining fold) is used to evaluate the performance of the
-classifier. The evaluation scores are then averaged over the 5 times the process
-is repeated. The range of hyperparameters used are shown in table
-\ref{tab:grid}.
 
 \end{paracol}
 \begin{table}
@@ -800,7 +800,7 @@ The experiment was implemented using the Python programming language, using the
 \href{https://cluster-over-sampling.readthedocs.io/en/latest/?badge=latest}{Cluster-Over-Sampling}
 and \href{https://research-learn.readthedocs.io/en/latest/?badge=latest}{Research-Learn} libraries.
 All functions, algorithms, experiments and results are provided at the
-\href{https://github.com/joaopfonseca/publications/tree/master/remote-sensing-kmeans-smote}{GitHub
+\href{https://github.com/AlgoWit/publications}{GitHub
 repository of the project}.
 
 \section{Results}~\label{sec:results}
@@ -959,6 +959,28 @@ alongside any classifier. K-SMOTE is available as an open source implementation
 for the Python programming language (see Subsection~\ref{sec:implementation}).
 Consequently, it can be a useful tool for both remote sensing researchers and
 practitioners.
+
+\authorcontributions{Conceptualization, F.B.; Methodology, J.F. and G.D.; Software,
+	J.F. and G.D.; Validation, F.B., G.D.; Formal Analysis, J.F; Writing -
+	Original Draft Preparation, J.F.; Writing - Review \& Editing, F.B.,
+	G.D., J.F.; Supervision, F.B.; Funding Acquisition, F.B.}
+
+\funding{This research was funded by "Fundação para a Ciência e Tecnologia"
+	(Portugal), grants' number PCIF/SSI/0102/2017 and DSAIPA/AI/0100/2018 -
+	IPSTERS.}
+
+\dataavailability{
+    The data reported in this study is publicly available. It can be retrieved
+    and preprocessed using the Python source code provided at
+    \url{https://github.com/AlgoWit/publications}. Alternatively the original
+    data is available at
+    \url{http://www.ehu.eus/ccwintco/index.php?title=Hyperspectral_Remote_Sensing_Scenes}.
+} 
+
+\conflictsofinterest{The authors declare no conflict of interest. The funders
+	had no role in the design of the study; in the collection, analyses, or
+	interpretation of data; in the writing of the manuscript, or in the decision to
+	publish the results.}
 
 \end{paracol}
 \reftitle{References}
