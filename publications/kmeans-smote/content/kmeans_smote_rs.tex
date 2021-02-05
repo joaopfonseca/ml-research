@@ -1,51 +1,74 @@
-\documentclass[parskip=full]{scrartcl}
+\documentclass[remotesensing,article,submit,moreauthors,pdftex]{Definitions/mdpi} 
 
+\firstpage{1} 
+\makeatletter 
+\setcounter{page}{\@firstpage} 
+\makeatother
+\pubvolume{1}
+\issuenum{1}
+\articlenumber{0}
+\pubyear{2021}
+\copyrightyear{2020}
+\datereceived{} 
+\dateaccepted{} 
+\datepublished{} 
+\hreflink{https://doi.org/}
+
+% The following line should be uncommented if the LaTeX file is uploaded to arXiv.org
 \pdfoutput=1
-
-\title{Improving Land Cover Classification using oversampling\\ 
-	\LARGE{A Heuristic Method Based on K-Means and SMOTE}}
-\author{
-	Joao Fonseca\(^{1}\), Georgios Douzas\(^{1}\), Fernando Bacao\(^{1*}\) 
-	\\
-	\small{\(^{1}\)NOVA Information Management School, Universidade Nova de Lisboa}
-	\\
-	\small{*Corresponding Author}
-	\\
-	\\
-	\small{Postal Address: NOVA Information Management School, Campus de Campolide, 1070-312 Lisboa, Portugal}
-	\\
-	\small{Telephone: +351 21 382 8610}
-}
 
 \usepackage{breakcites}
 \usepackage{float}
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage{geometry}
-\geometry{
-	a4paper,
-	left=18mm,
-	right=18mm,
-	top=8mm,
-}
 \usepackage{amsmath}
 \newcommand{\inlineeqnum}{\refstepcounter{equation}~~\mbox{(\theequation)}}
 \usepackage{enumitem}
 \usepackage[ruled,vlined]{algorithm2e}
 \usepackage{booktabs}
 \usepackage{pgfplotstable}
-\pgfplotsset{compat=1.14}
+\pgfplotsset{compat=1.17}
 \usepackage{longtable}
 \usepackage{tabu}
 \usepackage{hyperref}
-\date{}
 
-\begin{document}
+\Title{Improving Land Cover Classification using oversampling: 
+	\LARGE{A Heuristic Method Based on K-Means and SMOTE}}
 
-\maketitle
+% MDPI internal command: Title for citation in the left column
+\TitleCitation{
+    Improving Land Cover Classification using oversampling:
+    A Heuristic Method Based on K-Means and SMOTE
+}
 
-\begin{abstract}
+% Orcid ID
+\newcommand{\orcidauthorA}{0000-0001-5889-3575}
+\newcommand{\orcidauthorB}{0000-0001-7019-3782}
+\newcommand{\orcidauthorC}{0000-0002-0834-0275}
 
+\Author{
+    Joao Fonseca $^{1,}$*\orcidA{},
+    Georgios Douzas $^{1}$\orcidB{},
+    Fernando Bacao $^{1}$\orcidC{}
+}
+
+% MDPI internal command: Authors, for metadata in PDF
+\AuthorNames{Joao Fonseca, Georgios Douzas and Fernando Bacao}
+
+% MDPI internal command: Authors, for citation in the left column
+\AuthorCitation{Fonseca, J.; Douzas, G.; Bacao, F.}
+
+\address{%
+$^{1}$ \quad NOVA Information Management School (NOVA IMS), Universidade Nova
+    de Lisboa, Campus de Campolide, 1070-312 Lisboa, Portugal;
+    gdouzas@novaims.unl.pt (G.D.); bacao@novaims.unl.pt (F.B.)\\
+    * \quad Correspondence: jpfonseca@novaims.unl.pt (J.F.)
+}
+
+\corres{Correspondence: jpfonseca@novaims.unl.pt}
+
+\abstract{
     Land cover maps are a critical tool to support informed policy
     development, planning, and resource management decisions. The ability to
     automatically produce Land Use/Land Cover maps, through the use of machine
@@ -67,8 +90,17 @@
     classifiers and evaluation metrics. The results show that the proposed
     method consistently outperforms the remaining oversamplers and produces
     higher quality land cover classifications.
+}
 
-\end{abstract}
+\keyword{
+    LULC Classification; 
+    Imbalanced Learning; 
+    Oversampling; 
+    Data Generation; 
+    Clustering
+} 
+
+\begin{document}
 
 \section{Introduction}
 
@@ -231,14 +263,19 @@ clusters can happen both in the minority and majority class, although they
 will tend to be more frequent in the minority class due to its
 underrepresentation.  
 
-\begin{figure}[H]
-	\centering
+\end{paracol}
+\begin{figure}[ht]
+    \widefigure
 	\includegraphics[width=1\linewidth]{../analysis/complex_input_space_example}
 	\caption{Example of a complex input space. In this example, a classifier
         would need to separate the minority class' samples across 4
-        distinguishable clusters. }
+        distinguishable clusters.
 	\label{fig:complex_input_space_example}
+    }
 \end{figure}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 The efficacy of K-SMOTE is tested using
 different types of classifiers. To do so, we employ both commonly used and
@@ -344,12 +381,16 @@ such that $\overrightarrow{z} =
 random floating point between 0 and 1, as shown in Figure
 \ref{fig:smote_example}.
 
+\end{paracol}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{../analysis/smote_example}
 	\caption{Example of SMOTE's data generation process.}
 	\label{fig:smote_example}
 \end{figure}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 A number of studies implement SMOTE within the LULC classification context and
 reported improvements on the quality of the trained predictors
@@ -444,6 +485,7 @@ as G-SMOTE. Also K-SMOTE includes the SMOTE algorithm as a special case when the
 number of clusters is set to one. Consequently, K-SMOTE is always guaranteed to
 return results as good as or better than SMOTE.
 
+\end{paracol}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{../analysis/kmeans_smote_example}
@@ -455,6 +497,9 @@ return results as good as or better than SMOTE.
 		observations within the same cluster.}
 	\label{fig:kmeans_smote_example}
 \end{figure}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 Although no other study was found to implement cluster-based oversampling,
 another study \cite{Douzas2019rs} compared the performance of SMOTE, ROS,
@@ -499,6 +544,7 @@ constraints, while conserving the relative LULC class frequencies and data
 distribution. Table~\ref{tab:datasets_description} provides a description of the
 final datasets used for this work.
 
+\end{paracol}
 \pgfplotstabletypeset[
 	begin table=\begin{longtable},
 		end table=\end{longtable},  col sep=comma, header=true,
@@ -506,6 +552,9 @@ final datasets used for this work.
 	every last row/.style={after row=\bottomrule \caption{\label{tab:datasets_description}
 				Description of the datasets used for this experiment.}}
 ]{../analysis/datasets_description.csv}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 \subsubsection*{Indian Pines} 
 
@@ -555,42 +604,49 @@ water absorption and low SNR bands were removed and a total of 176 bands at a
 spatial resolution of 18m are used. The scene is a $512 \times 614$ pixel image
 and contains a total of 16 classes (see figure~\ref{fig:kennedy_space_center}).
 
+\end{paracol}
 \begin{figure}[H]
 	\centering
 	\begin{subfigure}{.24\textwidth}
 		\centering
-		\captionsetup{skip=12pt}
+		\captionsetup{skip=12pt,justification=centering}
 		\includegraphics[height=1.5\linewidth]{../analysis/indian_pines}
 		\subcaption{{\medbreak}}\label{fig:indian_pines}
 	\end{subfigure}
 	\begin{subfigure}{.24\textwidth}
 		\centering
+		\captionsetup{skip=12pt,justification=centering}
 		\includegraphics[height=1.5\linewidth]{../analysis/pavia_centre}
 		\subcaption{{\medbreak}}\label{fig:pavia_centre}
 	\end{subfigure}
 	\begin{subfigure}{.24\textwidth}
 		\centering
+		\captionsetup{skip=12pt,justification=centering}
 		\includegraphics[height=1.5\linewidth]{../analysis/pavia_university}
 		\subcaption{{\medbreak}}\label{fig:pavia_university}
 	\end{subfigure}
 
 	\begin{subfigure}{.24\textwidth}
 		\centering
+		\captionsetup{skip=12pt,justification=centering}
 		\includegraphics[height=1.5\linewidth]{../analysis/salinas}
 		\subcaption{{\medbreak}}\label{fig:salinas}
 	\end{subfigure}
 	\begin{subfigure}{.24\textwidth}
 		\centering
+		\captionsetup{skip=12pt,justification=centering}
 		\includegraphics[height=1.5\linewidth]{../analysis/salinas_a}
 		\subcaption{{\medbreak}}\label{fig:salinas_a}
 	\end{subfigure}
 	\begin{subfigure}{.24\textwidth}
 		\centering
+		\captionsetup{skip=12pt,justification=centering}
 		\includegraphics[height=1.5\linewidth]{../analysis/botswana}
 		\subcaption{{\medbreak}}\label{fig:botswana}
 	\end{subfigure}
 	\begin{subfigure}{.24\textwidth}
 		\centering
+		\captionsetup{skip=12pt,justification=centering}
 		\includegraphics[height=1.5\linewidth]{../analysis/kennedy_space_center}
 		\subcaption{{\medbreak}}\label{fig:kennedy_space_center}
 	\end{subfigure}
@@ -599,8 +655,12 @@ and contains a total of 16 classes (see figure~\ref{fig:kennedy_space_center}).
 		University, (d) Salinas, (e) Salinas A, (f) Botswana, (g) Kennedy Space Center
     }\label{fig:scenes}
 \end{figure}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 \subsection{Evaluation Metrics}
+
 Most of the satellite-based LULC classification studies (nearly 80\%) employ
 \textit{Overall Accuracy} (OA) and the \textit{Kappa Coefficient}
 \cite{Gavade2019}. Although, some authors argue that both evaluation metrics,
@@ -677,6 +737,7 @@ combination and initialization we use the evaluation strategy shown in Figure
 \ref{fig:experiment_pipeline}: $k$-fold cross-validation strategy where $k=5$
 to train each model defined and save the averaged scores of each split.
 
+\end{paracol}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{../analysis/experiment_pipeline}
@@ -686,6 +747,9 @@ to train each model defined and save the averaged scores of each split.
     definition.}
 	\label{fig:experiment_pipeline}
 \end{figure}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 Each combination of oversampler, classifier and parameters definition is fit 5
 times (once for each fold) per dataset. Each time, an oversampler will use the
@@ -698,7 +762,8 @@ classifier. The evaluation scores are then averaged over the 5 times the process
 is repeated. The range of hyperparameters used are shown in table
 \ref{tab:grid}.
 
-\begin{table}[H]
+\end{paracol}
+\begin{table}
 	\centering
 	\begin{tabular}{lll}
 		\toprule
@@ -722,6 +787,9 @@ is repeated. The range of hyperparameters used are shown in table
     \caption{\label{tab:grid}Hyper-parameters grid. $^*$~One cluster is generated in total, a corner
         case that mimics the behavior of SMOTE}
 \end{table}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 \subsection{Software Implementation}~\label{sec:implementation}
 
@@ -756,6 +824,7 @@ addition to its superior performance, in the majority of the cases K-SMOTE's
 mean ranking has a lower standard deviation than any of the remaining methods,
 and particularly when opposed to SMOTE (the best performing benchmark method).
 
+\end{paracol}
 \pgfplotstabletypeset[
 	begin table=\begin{longtable},
 		end table=\end{longtable}, col sep=comma, header=true,
@@ -763,6 +832,9 @@ and particularly when opposed to SMOTE (the best performing benchmark method).
 	every last row/.style={after row=\bottomrule \caption{\label{tab:mean_sem_ranking}
 				Results for mean ranking of oversamplers across datasets.}}
 ]{../analysis/mean_sem_ranking.csv}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 The mean cross-validation scores are shown in Table~\ref{tab:mean_sem_scores}.
 Considering the disparity of performance scores across datasets, the results
@@ -771,6 +843,7 @@ dataset, presented in Table~\ref{tab:cross_validation_scores}. K-SMOTE's
 performance is the highest in most classifier/metric combinations and
 datasets.
 
+\end{paracol}
 \pgfplotstabletypeset[
 	begin table=\begin{longtable},
 		end table=\end{longtable},  col sep=comma, header=true,
@@ -779,6 +852,9 @@ datasets.
 	every last row/.style={after row=\bottomrule \caption{\label{tab:mean_sem_scores}
 				Mean cross-validation scores of oversamplers.}}
 ]{../analysis/mean_sem_scores.csv}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 The performance of both oversamplers and classifiers is generally dependent on
 the dataset being used. Although both absolute and relative scores between the
@@ -786,6 +862,7 @@ different oversamplers are dependent on the choice of metric and classifier,
 K-SMOTE's relative performance is consistent across datasets and generally
 outperforms the remaining oversampling methods in 56 of the 63 tests.
 
+\end{paracol}
 \pgfplotstabletypeset[
 	begin table=\begin{longtable},
 		end table=\end{longtable},
@@ -800,6 +877,9 @@ outperforms the remaining oversampling methods in 56 of the 63 tests.
         PU \- Pavia University, SA \- Salinas A.}}
 ]
 {../analysis/wide_optimal.csv}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 \subsection{Statistical Analysis}~\label{sec:statistical_analysis}
 
@@ -808,6 +888,7 @@ test~\cite{friedman1937use}. Table~\ref{tab:friedman_test} shows the results
 obtained in the Friedman test performed, where the null hypothesis is rejected
 in all cases.
 
+\end{paracol}
 \pgfplotstabletypeset[
 	begin table=\begin{longtable},
 		end table=\end{longtable},  col sep=comma, header=true,
@@ -817,6 +898,9 @@ in all cases.
 				$\alpha = 0.05$. The null hypothesis is that there is no difference in the
                 classification outcome across oversamplers.}}
 ]{../analysis/friedman_test.csv}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 \section{Conclusion}~\label{sec:conclusion} 
 
@@ -876,7 +960,9 @@ for the Python programming language (see Subsection~\ref{sec:implementation}).
 Consequently, it can be a useful tool for both remote sensing researchers and
 practitioners.
 
+\end{paracol}
+\reftitle{References}
+\externalbibliography{yes}
 \bibliography{references}
-\bibliographystyle{apalike}
 
 \end{document}
