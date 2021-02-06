@@ -31,3 +31,4 @@ Contents
    user-guide
    commands
    running-experiments
+   api

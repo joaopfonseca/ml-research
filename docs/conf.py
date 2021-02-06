@@ -14,10 +14,16 @@
 import os
 import sys
 
+import sphinx_material
+from recommonmark.transform import AutoStructify
+
+FORCE_CLASSIC = os.environ.get("SPHINX_MATERIAL_FORCE_CLASSIC", False)
+FORCE_CLASSIC = FORCE_CLASSIC in ("1", "true")
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath(os.pardir))
+sys.path.insert(0, os.path.abspath(os.path.join(os.pardir, 'research')))
 
 # -- General configuration ----------------------------------------------------
 
@@ -47,7 +53,9 @@ autodoc_default_flags = ['members', 'inherited-members']
 
 # this is needed for some reason...
 # see https://github.com/numpy/numpydoc/issues/69
-numpydoc_show_class_members = False
+# numpydoc_show_class_members = False
+
+extensions.append('sphinx.ext.imgmath')
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -92,7 +100,7 @@ release = __version__
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build']
+exclude_patterns = ['_build', '_templates']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -154,9 +162,9 @@ html_theme_options = {
     'logo_icon': '&#xe869',
 
     # Visible levels of the global TOC; -1 means unlimited
-    'globaltoc_depth': 3,
+    'globaltoc_depth': 2,
     # If False, expand all TOC entries
-    'globaltoc_collapse': False,
+    'globaltoc_collapse': True,
     # If True, show hidden TOC entries
     'globaltoc_includehidden': False,
 }
