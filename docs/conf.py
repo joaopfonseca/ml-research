@@ -41,6 +41,7 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
+    "sphinx.ext.imgmath",
     "nbsphinx",
     "recommonmark",
     "sphinx_markdown_tables",
@@ -54,8 +55,6 @@ autodoc_default_flags = ['members', 'inherited-members']
 # this is needed for some reason...
 # see https://github.com/numpy/numpydoc/issues/69
 # numpydoc_show_class_members = False
-
-extensions.append('sphinx.ext.imgmath')
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
