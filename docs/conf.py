@@ -137,12 +137,6 @@ html_theme_options = {
     'nav_title': 'Research',
 
     'nav_links': [
-        {'href': 'index', 'internal': True, 'title': 'Material'},
-        {
-            'href': 'https://squidfunk.github.io/mkdocs-material/',
-            'internal': False,
-            'title': 'Material for MkDocs',
-        },
     ],
     'heroes': {
         'index': 'Implementation of Machine Learning algorithms, experiments and utilities.',
@@ -158,7 +152,8 @@ html_theme_options = {
     'repo_url': 'https://github.com/joaopfonseca/research/',
     'repo_name': 'research',
 
-    'logo_icon': '&#xe869',
+    # Icon codes: https://codepen.io/btn-ninja/pen/YrXmax
+    'logo_icon': '&#xe85c',
 
     # Visible levels of the global TOC; -1 means unlimited
     'globaltoc_depth': 2,
@@ -185,7 +180,7 @@ html_title = 'research'
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-# html_favicon = None
+html_favicon = '_templates/logo.png'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
