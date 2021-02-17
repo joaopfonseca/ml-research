@@ -67,7 +67,7 @@
 
 \section{Introduction}~\label{sec:introduction}
 
-The technological development of air and space borne sensors, as well as the
+The technological development of air and spaceborne sensors, as well as the
 increasing number of remote sensing missions have allowed the continuous
 collection of large amounts of high quality remotely sensed data. This data is
 often composed of multi and hyper spectral satellite imagery, essential for
@@ -75,60 +75,61 @@ numerous applications, such as Land Use/Land Cover (LULC) change detection,
 ecosystem management~\cite{Nagai2020}, agricultural
 management~\cite{Huang2018}, water resource management~\cite{Wang2018}, forest
 management, and urban monitoring~\cite{Khatami2016}. Despite LULC maps being
-essential for most of these applications, their production still a challenging
-task~\cite{Gavade2019, Wulder2018}. They can be updated using either one of the
-following strategies:
+essential for most of these applications, their production is still a
+challenging task~\cite{Gavade2019, Wulder2018}. They can be updated using
+one of the following strategies:
 
 \begin{enumerate}
-    \item Photo-interpreted. Consists of evaluating a patch's LULC class based
-        on orthophoto and satellite image
+    \item Photo-interpretation. This approach consists of evaluating a patch's
+        LULC class by a human operator based on orthophoto and satellite image
         interpretation~\cite{costa2020introducing}. This method guarantees a
         decent level of accuracy, as it is dependent on the interpreter's
         expertise and human error. Typically, it is an expensive,
-        time-consuming task that requires the expertise of a photo-interpreter.
-        This task is also frequently applied to obtain ground-truth labels for
-        training and/or validating Machine Learning (ML) algorithms for related
-        tasks~\cite{vermote2020remote, COSTANTINO2020}. 
-    \item Automated mapping. It is based on the usage of a ML method or a
-        combination of methods in order to obtain an updated LULC map. The
-        development of a reliable automated method is still a challenge among
-        the ML and remote sensing community, since the efficacy of existing
-        methods vary across applications and geographical
-        areas~\cite{Gavade2019}. Typically, this method requires the existence
-        of ground-truth data, which is frequently outdated or nonexistent for
-        the required time frame~\cite{Nagai2020}. On the other hand, employing
-        a ML method provides readily available and relatively inexpensive LULC
-        maps. The increasing quality of state-of-the-art classification methods
-        have motivated the application and adaptation of these methods in this
-        domain~\cite{Maxwell2018}.
-    \item Hybrid approaches. They employ photo-interpreted data to augment the
-        training dataset and improve the quality of automated
+        time-consuming task that requires the expertise of a
+        photo-interpreter. This task is also frequently applied to obtain
+        ground-truth labels for training and/or validating Machine Learning
+        (ML) algorithms for related tasks~\cite{vermote2020remote,
+        COSTANTINO2020}. 
+    \item Automated mapping. This approach is based on the usage of a ML
+        method or a combination of methods in order to obtain an updated LULC
+        map. The development of a reliable automated method is still a
+        challenge among the ML and remote sensing community, since the
+        effectiveness of existing methods varies across applications and
+        geographical areas~\cite{Gavade2019}. Typically, this method requires
+        the existence of ground-truth data, which is frequently outdated or
+        nonexistent for the required time frame~\cite{Nagai2020}. On the other
+        hand, employing a ML method provides readily available and relatively
+        inexpensive LULC maps. The increasing quality of state-of-the-art
+        classification methods have motivated the application and adaptation
+        of these methods in this domain~\cite{Maxwell2018}.
+    \item Hybrid approaches. These approaches employ photo-interpreted data to
+        augment the training dataset and improve the quality of automated
         mapping~\cite{Ruzicka2020}. It attempts to accelerate the
-        photo-interpretation process by selecting a smaller sample of the study
-        area to be interpreted. The goal is to minimize the inaccuracies found
-        in the LULC map by supplying high-quality ground-truth data to the
-        automated method. The final (photo-interpreted) dataset consists of
-        only the most informative samples, i.e., patches that are typically
-        difficult to classify for a traditional automated mapping
+        photo-interpretation process by selecting a smaller sample of the
+        study area to be interpreted. The goal is to minimize the inaccuracies
+        found in the LULC map by supplying high-quality ground-truth data to
+        the automated method. The final (photo-interpreted) dataset consists
+        of only the most informative samples, \textit{i.e.}, patches that are
+        typically difficult to classify for a traditional automated mapping
         method~\cite{Liu2020}. 
 \end{enumerate}
 
 The latter method is best know as AL\@. It is especially useful whenever there
-is an absence of ground-truth data and/or the mapping region does not contain
-updated LULC maps~\cite{Su2020}. In a context of limited sample-collection
-budget, the collection of the most informative samples capable of optimally
-increasing the classification accuracy of a LULC map is of particular
-interest~\cite{Su2020}. AL attempts to minimize the human-computer interaction
-involved in photo-interpretation by selecting the data points to include into
-the annotation process. These data points are selected based on an uncertainty
-measure and represent the points close to the decision borders. Afterwards,
-they are passed on for photo-interpretation and added to the training dataset,
-while the points with the lowest uncertainty values are ignored for
-photo-interpretation and classification. This process is iterated until a
-convergence criterion is reached~\cite{Pasolli2016}. 
+is a shortage or even absence of ground-truth data and/or the mapping region
+does not contain updated LULC maps~\cite{Su2020}. In a context of limited
+sample-collection budget, the collection of the most informative samples
+capable of optimally increasing the classification accuracy of a LULC map is
+of particular interest~\cite{Su2020}. AL attempts to minimize the
+human-computer interaction involved in photo-interpretation by selecting the
+data points to include in the annotation process. These data points are
+selected based on an uncertainty measure and represent the points close to the
+decision borders. Afterwards, they are passed on for photo-interpretation and
+added to the training dataset, while the points with the lowest uncertainty
+values are ignored for photo-interpretation and classification. This process
+is iterated until a convergence criterion is reached~\cite{Pasolli2016}. 
 
 The relevant work developed within AL is described in detail in
-Section~\ref{sec:al-sota}. The research attempts to address some of the
+Section~\ref{sec:al-sota}. This paper attempts to address some of the
 challenges found in AL, mainly inherited from automated and photo-interpreted
 mapping: mapping inaccuracies and time consuming human-computer interactions.
 These challenges have different sources:
@@ -140,11 +141,13 @@ These challenges have different sources:
         quality of the orthophotos and satellite images being used, are some of
         the factors that may lead to the overlooking of small-area LULC patches
         and label-noisy training data~\cite{Pelletier2017}.
-    \item High-dimensional datasets. The amount of bands (i.e., features)
-        present in multi and hyper spectral images introduce an increased level
-        of complexity in the classification step~\cite{Stromann2020}. These
-        datasets are often prone to the Hughes phenomenon, also known as the
-        curse of dimensionality. 
+    \item High-dimensional datasets. Although the amount of bands
+        (\textit{i.e.}, features) present in multi and hyper spectral images
+        contain useful information for automated classification, they also
+        introduce an increased level of complexity and redundancy in the
+        classification step~\cite{Stromann2020}. These datasets are often
+        prone to the Hughes phenomenon, also known as the curse of
+        dimensionality. 
     \item Class separability. Producing an LULC map considering classes with
         similar spectral signatures makes them difficult to
         separate~\cite{Alonso-Sarria2019}. A lower pixel resolution of the
@@ -153,35 +156,35 @@ These challenges have different sources:
     \item Existence of rare land cover classes. The varying morphologies of
         different geographical regions naturally implies an uneven distribution
         of land cover classes~\cite{Feng2018}. This is particularly relevant in
-        the context of AL:\@ the data selection method is based on a given
+        the context of AL since the data selection method is based on a given
         uncertainty measure over data points whose class label is unknown.
         Consequently, AL's iterative process of data selection may disregard
         wrongly classified land cover areas belonging to a minority class.
 \end{enumerate}
 
-Research developed in the field of Active Learning typically focus on the
-reduction of human error by minimizing the human interaction with the process
-through the development of more efficient choosers and selection criteria
-within the generally accepted AL framework.  Concurrently, the problem of rare
-land cover classes is rarely addressed. This is a frequent problem in the ML
-community, known as the Imbalanced Learning problem. This problem exists
-whenever there is an uneven between-class distribution in the
-dataset~\cite{Chawla2004}. Specifically, most classifiers attempt to optimize
-metrics such as overall accuracy, which are designed to work primarily with
-balanced datasets. Consequently, these metrics tend to introduce a bias towards
-the majority class by attributing an importance to each class proportional to
-its relative frequency~\cite{Maxwell2018}. As an example, such a classifier
-could achieve an overall accuracy of 99\% on a binary dataset where the
-minority class represents 1\% of the overall dataset and still be deemed
-useless. A number of methods have been developed to deal with this problem.
-They can be categorized into three different types of
-approaches~\cite{Fernandez2013,Kaur2019}. Cost-sensitive solutions perform
-changes to the cost matrix in the learning phase. Algorithmic level solutions
-modify specific classifiers to reinforce learning on minority classes.
-Resampling solutions modify the dataset by removing majority samples and/or
-generating artificial minority samples. The latter is independent from the
-context and can be used alongside any classifier. We will focus on artificial
-data generation techniques, presented in Section~\ref{sec:ovs-sota}.
+Research developed in the field of AL typically focus on the reduction of
+human error by minimizing the human interaction with the process through the
+development of more efficient choosers and selection criteria within the
+generally accepted AL framework. Concurrently, the problem of rare land cover
+classes is rarely addressed. This is a frequent problem in the ML community,
+known as the Imbalanced Learning problem. This problem exists whenever there
+is an uneven between-class distribution in the dataset~\cite{Chawla2004}.
+Specifically, most classifiers are optimized and evaluted using accuracy-like
+metrics, which are designed to work primarily with balanced datasets.
+Consequently, these metrics tend to introduce a bias towards the majority
+class by attributing an importance to each class proportional to its relative
+frequency~\cite{Maxwell2018}. As an example, such a classifier could achieve
+an overall accuracy of 99\% on a binary dataset where the minority class
+represents 1\% of the overall dataset and still be deemed useless. A number of
+methods have been developed to deal with this problem. They can be categorized
+into three different types of approaches~\cite{Fernandez2013,Kaur2019}.
+Cost-sensitive solutions perform changes to the cost matrix in the learning
+phase. Algorithmic level solutions modify specific classifiers to reinforce
+learning on minority classes. Resampling solutions modify the dataset by
+removing majority samples and/or generating artificial minority samples. The
+latter is independent from the context and can be used alongside any
+classifier. Because of this we will focus on artificial data generation
+techniques, presented in Section~\ref{sec:ovs-sota}.
 
 In this paper, we propose a novel AL framework to address two limitations
 commonly found in the literature: minimize human-computer interaction and
@@ -191,14 +194,14 @@ generate artificial data to both balance and augment the training dataset. The
 introduction of this component is expected to reduce the number of iterations
 required until convergence of the predictor's quality.
 
-This paper is organized as follows: Section~\ref{sec:introduction} exposes the
-problem and its context, Sections~\ref{sec:al-sota} and~\ref{sec:ovs-sota}
+This paper is organized as follows: Section~\ref{sec:introduction} explains
+the problem and its context, Sections~\ref{sec:al-sota} and~\ref{sec:ovs-sota}
 describe the state of the art in AL and Oversampling techniques,
-Section~\ref{sec:proposed-method} exposes the proposed method,
+Section~\ref{sec:proposed-method} explains the proposed method,
 Section~\ref{sec:methodology} covers the datasets, evaluation metrics, ML
 classifiers and experimental procedure, Section~\ref{sec:results} presents the
-experiment's results and Section~\ref{sec:conclusion} reports the
-conclusions drawn from our findings.
+experiment's results and Section~\ref{sec:conclusion} presents the conclusions
+drawn from our findings.
 
 \section{Active Learning Approaches}~\label{sec:al-sota}
 
@@ -213,16 +216,17 @@ dataset each time~\cite{Ruzicka2020}. Typically, an AL framework is composed of
     \item Data source. In the context of LULC classification, the data source
         is usually a hyper/multi-spectral image, a Synthetic-aperture radar
         (SAR) image, or a composite image.
-    \item Unlabeled dataset. Consists of a sample of the original data source.
-        It is used in combination with the chooser and the selection criterion
-        to retrieve uncertainty estimates on each iteration.
+    \item Unlabeled dataset. Consists of the original data source (or a sample
+        thereof). It is used in combination with the chooser and the
+        selection criterion to expand the training set in regions where the
+        classification uncertainty is higher.
     \item Initial training sample. It is a small sample of the unlabeled
         dataset, used to initiate the first AL iteration. The size of the
         initial training sample normally varies between no observations at all
         and 10\%~\cite{Li2013}.
     \item Augmented training dataset. This dataset is the concatenation of the
         labeled initial training sample along with the datasets labeled by the
-        oracle in past iterations.
+        oracle in past iterations (discussed in point 6).
     \item Uncertainty map. The dataset containing the highest uncertainty
         points/patches to be labeled by the oracle.
     \item Oracle. An external entity to which the uncertainty map is presented
@@ -265,7 +269,7 @@ uncertainty will be selected. This calculation is motivated by the absence of
 labels in the uncertainty dataset. Therefore, it is impossible to estimate the
 prediction's accuracy in a real case scenario. The iteration is completed when
 the selected points are tagged by the oracle and added to the training dataset
-(i.e., the augmented dataset). 
+(\textit{i.e.}, the augmented dataset). 
 
 \begin{figure}[htb]
 	\centering
@@ -278,7 +282,7 @@ the selected points are tagged by the oracle and added to the training dataset
 
 A common challenge found in AL tasks is ensuring the consistency of AL over
 different initializations~\cite{Kottke2017}. There are two factors involved in
-this phenomenon. On the one hand, the implementation of the same method over
+this phenomenon. On one hand, the implementation of the same method over
 different initializations may result in significantly different initial
 training samples, amounts to varying accuracy curves. On the other hand, the
 lack of a robust selection criterion and/or chooser may also result in
@@ -287,19 +291,20 @@ phenomenon was observed and documented in a LULC classification context
 in~\cite{tuia2011using}.
 
 Selecting an efficient selection criterion is particularly important to find
-the samples closest to the decision border (i.e., samples difficult to
+the samples closest to the decision border (\textit{i.e.}, samples difficult to
 classify)~\cite{Shrivastava2021}. Therefore, most of AL related studies focus
 on the design of the query/acquisition function~\cite{Su2020}.
 
 \subsection{Non-informed selection criteria}
 
-Only one non-informed selection criterion was found. Random sampling selects
-unlabeled samples without considering any external information produced by the
-chooser. Since the method for selecting the unlabeled samples is random, this
-method disregards the usage of a chooser and is comparatively worse than any
-other selection criterion. Although, random sampling is still a powerful
-baseline method~\cite{Cawley2011}. Generally, different AL initializations
-return high performance variability~\cite{Kottke2017}. When this happens, the
+Only one non-informed (\textit{i.e.}, random) selection criterion was found in
+the literature. Random sampling selects unlabeled samples without considering
+any external information produced by the chooser. Since the method for
+selecting the unlabeled samples is random, this method disregards the usage of
+a chooser and is comparatively worse than any other selection criterion.
+However, random sampling is still a powerful baseline
+method~\cite{Cawley2011}. Generally, different AL initializations result in
+high performance variability~\cite{Kottke2017}. When this happens, the
 analysis of the mean performances over multiple repetitions is not of interest
 on its own. Instead, it is preferable to do pairwise comparison of different
 methods along with their corresponding variances. 
@@ -307,7 +312,7 @@ methods along with their corresponding variances.
 \subsection{Ensemble-based selection criteria}
 
 Ensemble disagreement is based on the class predictions of a set of
-classifiers.  The disagreement between all the predictions for a given
+classifiers. The disagreement between all the predictions for a given
 observation is a common measure for uncertainty, although computationally
 inefficient~\cite{Ruzicka2020,Pasolli2016}. It is calculated using the set of
 classifications over a single observation, given by the number of votes
@@ -338,10 +343,10 @@ Another relevant ensemble-based selection criterion is the binary random
 forest-based query model~\cite{Su2020}. This method employs a one-versus-one
 ensemble method to demonstrate an efficient data selection method using the
 estimated probability of each binary random forest and determining the
-classification uncertainty based on the probabilities closest to 0.5 (i.e., the
-least separable pair of classes are used to determine the uncertainty value).
-Although, this study fails to compare the proposed method with other benchmark
-methods, such as random sampling.
+classification uncertainty based on the probabilities closest to 0.5
+(\textit{i.e.}, the least separable pair of classes are used to determine the
+uncertainty value). However, this study fails to compare the proposed method
+with other benchmark methods, such as random sampling.
 
 \subsection{Entropy-based criteria}
 
@@ -422,7 +427,7 @@ original AL framework.
 The generation of artificial data is a common approach to address imbalanced
 learning tasks~\cite{Kaur2019}, as well as improving the effectiveness of
 supervised learning tasks~\cite{DeVries2017}. In recent years some
-sophisticated data generation approaches were found. Although, the scope of
+sophisticated data generation approaches were developed. However, the scope of
 this work is to propose the integration of a generator within the AL
 framework. To do this, we will focus on heuristic data generation approaches,
 specifically, oversamplers.
@@ -431,14 +436,15 @@ Heuristic data resampling methods employ local and/or global information to
 generate new, relevant, non-duplicated instances. These methods are most
 commonly used to populate minority classes and balance the between-class
 distribution of a dataset. The Synthetic Minority Oversampling Technique
-(SMOTE)~\cite{Chawla2002} was the first heuristic oversampling algorithm to be
-proposed. The simplicity and effectiveness of this method contributes to its
-prevailing popularity. It generates a new instance $\overrightarrow{z}$ through
-a linear interpolation of a randomly selected minority-class observation
-$\overrightarrow{x}$ and one of its randomly selected $k$-nearest neighbors
-$\overrightarrow{y}$ such that $\overrightarrow{z} = \alpha\overrightarrow{x} +
-(1-\alpha)\overrightarrow{y}$ where $\alpha$ is a random float between 0 and 1,
-as shown in Figure~\ref{fig:data_generation}. 
+(SMOTE)~\cite{Chawla2002} is a popular heuristic oversampling
+algorithm, proposed in 2002. The simplicity and effectiveness of this method
+contributes to its prevailing popularity. It generates a new instance
+$\overrightarrow{z}$ through a linear interpolation of a randomly selected
+minority-class observation $\overrightarrow{x}$ and one of its randomly
+selected $k$-nearest neighbors $\overrightarrow{y}$ such that
+$\overrightarrow{z} = \alpha\overrightarrow{x} + (1-\alpha)\overrightarrow{y}$
+where $\alpha$ is a random real number between 0 and 1, as shown in
+Figure~\ref{fig:data_generation}. 
 
 \begin{figure}[H]
 	\centering
@@ -458,7 +464,8 @@ as shown in Figure~\ref{fig:data_generation}.
 The implementation of SMOTE for LULC classification tasks has been found to
 improve the quality of the predictors used~\cite{Jozdani2019,Bogner2018}.
 Despite its popularity, its drawbacks motivated the development of other
-oversampling methods~\cite{Douzas2019}:
+oversampling methods~\cite{Douzas2019}. The following issues are addressed in
+more recent papers:
 
 \begin{enumerate}
     \item Generation of noisy samples due to the selection of $k$-nearest
@@ -532,8 +539,8 @@ iteration. Therefore, any algorithm capable of producing artificial data, be
 it agnostic or specific to the domain, can be employed. The artificial data is
 only used to train the classifiers involved in the process (chooser and
 predictor) and is discarded once the chooser's training phase is completed.
-The remaining steps in the AL framework remain unchanged. This method is
-addressed towards the limitations found in the previous sections: 
+The remaining steps in the AL framework remain unchanged. This method
+addresses the limitations found in the previous sections: 
 
 \begin{enumerate}
     \item The convergence of the predictor's performance should be anticipated
@@ -577,13 +584,13 @@ frameworks.
 
 \subsection{Datasets}~\label{sec:datasets}
 
-The datasets used were extracted from publicly available hyperspectral scenes.
-Additionally, all datasets were collected using the same sampling procedure.
-The description of the hyperspectral scenes used in this study is provided in
-Table~\ref{tab:rs_scene_description}. These scenes were chosen because of their
-popularity in the research community and their high baseline classification
-scores. Consequently, demonstrating an outperforming method in this context is
-particularly challenging and valuable.
+The datasets used were extracted from publicly available repositories with
+hyperspectral images. Additionally, all datasets were collected using the
+same sampling procedure. The description of the hyperspectral scenes used in
+this study is provided in Table~\ref{tab:rs_scene_description}. These scenes
+were chosen because of their popularity in the research community and their
+high baseline classification scores. Consequently, demonstrating an
+outperforming method in this context is particularly challenging and valuable.
 
 \pgfplotstabletypeset[
 	begin table=\begin{longtable},
@@ -755,20 +762,21 @@ Kubat1997}. Therefore, we employ 3 performance metrics:
 
 \end{enumerate}
 
-The comparison of classification convergence across AL frameworks and selection
-criteria is done using 3 AL-specific performance metrics. Particularly, we
-follow the recommendations found in~\cite{Kottke2017}. Each AL configuration is
-evaluated using the \textit{Area Under the Learning Curve} (AULC) performance
-metric. It is the sum of the classification performance values of all
-iterations. To facilitate the analysis of the results, we fix the range of this
-metric between $[0,1]$ by dividing it with the total amount of iterations
-(i.e., the maximum performance area). The metric \textit{Data Utilization Rate}
-(DUR)~\cite{Reitmaier2013} consists of the ratio between the minimum number of
-observations necessary to reach a given performance threshold by an AL strategy
-and an equivalent baseline strategy. The deficiency score~\cite{Yanik2015} is
-used to compare the performance between two active learners. The deficiency of
-algorithm $A$ with respect to algorithm $B$ is calculated with the areas
-between the respective learning curves and the maximum performance line $MP$:
+The comparison of classification convergence across AL frameworks and
+selection criteria is done using 3 AL-specific performance metrics.
+Particularly, we follow the recommendations found in~\cite{Kottke2017}. Each
+AL configuration is evaluated using the \textit{Area Under the Learning Curve}
+(AULC) performance metric. It is the sum of the classification performance
+values of all iterations. To facilitate the analysis of the results, we fix
+the range of this metric between $[0,1]$ by dividing it by the total amount of
+iterations (\textit{i.e.}, the maximum performance area). The \textit{Data
+Utilization Rate} (DUR)~\cite{Reitmaier2013} metric consists of the ratio
+between the minimum number of observations necessary to reach a given
+performance threshold by an AL strategy and an equivalent baseline strategy.
+The deficiency score~\cite{Yanik2015} is used to compare the performance
+between two active learners. The deficiency of algorithm $A$ with respect to
+algorithm $B$ is calculated with the areas between the respective learning
+curves and the maximum performance line $MP$:
 
 \begin{equation}
     deficiency = \frac{MP-AULC_A}{2MP-AULC_A-AULC_B} 
@@ -790,16 +798,16 @@ configuration is tested using a stratified 5-fold cross validation testing
 scheme. For each round, the larger partition is split in a stratified fashion
 to form a training and validation set (containing 20\% of the original
 partition).  The validation set is used to evaluate the convergence efficiency
-of active learners; the chooser's classification performance metrics and amount
-of data points used at each iteration are used to compute the AULC and DUR\@.
-Additionally, within the AL iterative process, the classifier with optimal
-performance on the validation set is evaluated using the test set. In order to
-further reduce possible initialization biases, this procedure is repeated 3
-times with different seeds and the results of all runs are averaged (i.e., each
-configuration is trained and evaluated 15 times). Finally, the maximum
-performance lines are calculated using the same approach. In those cases, the
-validation set is not used. The experimental procedure is depicted in
-Figure~\ref{fig:experiment_pipeline}.
+of active learners; the chooser's classification performance metrics and
+amount of data points used at each iteration are used to compute the AULC and
+DUR\@.  Additionally, within the AL iterative process, the classifier with
+optimal performance on the validation set is evaluated using the test set. In
+order to further reduce possible initialization biases, this procedure is
+repeated 3 times with different seeds and the results of all runs are averaged
+(\textit{i.e.}, each configuration is trained and evaluated 15 times).
+Finally, the maximum performance lines are calculated using the same approach.
+In those cases, the validation set is not used. The experimental procedure is
+depicted in Figure~\ref{fig:experiment_pipeline}.
 
 \begin{figure}[H]
 	\centering
@@ -874,10 +882,10 @@ repository of the project}.
 
 The evaluation of the different AL frameworks in a multiple dataset context
 should not rely uniquely on the mean of the performance metrics across
-datasets.~\cite{demvsar2006} recommends the usage of mean ranking scores,
-since the performance levels of the different frameworks varies according to
-the data it is being used on. Consequently, evaluating these performance
-metrics solely based on their mean values might lead to inaccurate analyses.
+datasets.~\cite{demvsar2006} recommends the use of mean ranking scores, since
+the performance levels of the different frameworks varies according to the
+data it is being used on. Consequently, evaluating these performance metrics
+solely based on their mean values might lead to inaccurate analyses.
 Accordingly, the results of this experiment is analysed using both the mean
 ranking and absolute scores for each model.  The rank values are assigned
 based on the mean scores resulting from three different initializations of
@@ -885,12 +893,12 @@ based on the mean scores resulting from three different initializations of
 
 Table~\ref{tab:aulc_ranks} shows the average rankings and standard deviations
 across datasets of the AULC scores for each active learner. These results show
-that the convergence efficiency of the proposed method (i.e., using generators
-G-SMOTE and SMOTE) is consistently higher than the traditional AL framework
-(NONE). With the exception of two scenarios, the proposed framework using
-G-SMOTE was able to outperform the remaining methods. The only scenario where
-the baseline active learner was able to outperform the remaining methods was
-using the LR classifier and OA as the optimization goal. 
+that the convergence efficiency of the proposed method (\textit{i.e.}, using
+generators G-SMOTE and SMOTE) is consistently higher than the traditional AL
+framework (NONE). With the exception of two scenarios, the proposed framework
+using G-SMOTE was able to outperform the remaining methods. The only scenario
+where the baseline active learner was able to outperform the remaining methods
+was using the LR classifier and OA as the optimization goal. 
 
 \pgfplotstabletypeset[
 	begin table=\begin{longtable},
