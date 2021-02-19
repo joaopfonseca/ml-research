@@ -425,7 +425,10 @@ def generate_main_results(results):
             for df in wide_optimal_al
         ),
         decimals=3
-    ).rename(columns={'Evaluation Metric': 'Metric'})
+    )
+    wide_optimal_aulc.index.rename(
+        ['Dataset', 'Classifier', 'Metric'], inplace=True
+    )
 
     # Mean ranking analysis
     mean_std_aulc_ranks = generate_mean_std_tbl_bold(
