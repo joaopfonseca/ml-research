@@ -1,33 +1,18 @@
-\documentclass[parskip=full]{scrartcl}
+\documentclass[preprint,12pt]{elsarticle}
 
 \pdfoutput=1
-
-\title{Increasing the Effectiveness of Active Learning:\\ 
-	\LARGE{Introducing Artificial Data Generation in Active Learning for Land Use/Land Cover Classification}}
-\author{
-	Joao Fonseca\(^{1}\), Georgios Douzas\(^{1}\), Fernando Bacao\(^{1*}\) 
-	\\
-	\small{\(^{1}\)NOVA Information Management School, Universidade Nova de Lisboa}
-	\\
-	\small{*Corresponding Author}
-	\\
-	\\
-	\small{Postal Address: NOVA Information Management School, Campus de Campolide, 1070-312 Lisboa, Portugal}
-	\\
-	\small{Telephone: +351 21 382 8610}
-}
 
 \usepackage{breakcites}
 \usepackage{float}
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage{geometry}
-\geometry{
-	a4paper,
-	left=18mm,
-	right=18mm,
-	top=8mm,
-}
+%\geometry{
+%	a4paper,
+%	left=18mm,
+%	right=18mm,
+%	top=8mm,
+%}
 \usepackage{amsmath}
 \newcommand{\inlineeqnum}{\refstepcounter{equation}~\mbox{(\theequation)}}
 \usepackage{enumitem}
@@ -40,30 +25,78 @@
 \usepackage{hyperref}
 \date{}
 
+\journal{ISPRS Journal of Photogrammetry and Remote Sensing}
+
 \begin{document}
 
-\maketitle
+\begin{frontmatter}
+
+\title{
+    Increasing the Effectiveness of Active Learning:\\
+    Introducing Artificial Data Generation in Active Learning for Land Use/Land Cover Classification}
+
+
+\author[inst1]{Joao Fonseca} 
+\author[inst1]{Georgios Douzas}
+\author[inst1]{Fernando Bacao}
+
+\affiliation[inst1]{
+    organization={NOVA Information Management School, Universidade Nova de Lisboa},
+    addressline={Campus de Campolide}, 
+    %city={Lisboa},
+    postcode={1070-312 Lisboa}, 
+    %state={},
+    country={Portugal}
+}
 
 \begin{abstract}
     In remote sensing, Active Learning (AL) has become an important technique
     to collect informative ground truth data ``on-demand'' for supervised
-    classification tasks.  In spite of its effectiveness, it is still
+    classification tasks. In spite of its effectiveness, it is still
     significantly reliant on user interaction, which makes it both expensive
-    and time consuming to implement.  Most of the current literature focuses on
+    and time consuming to implement. Most of the current literature focuses on
     the optimization of AL by modifying the selection criteria, the chooser
-    and/or predictors used.  Although improvements in these areas will result
+    and/or predictors used. Although improvements in these areas will result
     in more effective data collection, the use of artificial data sources to
     reduce human-computer interaction remains unexplored. In this paper, we
     introduce a new component to the typical AL framework, the data generator,
     a source of artificial data to reduce the amount of user-labeled data
-    required in AL\@.  The implementation of the proposed AL framework is done
-    using SMOTE and Geometric SMOTE as data generators.  We compare the new AL
+    required in AL\@. The implementation of the proposed AL framework is done
+    using SMOTE and Geometric SMOTE as data generators. We compare the new AL
     framework to the original one using similar acquisition functions and
     predictors over three AL-specific performance metrics in seven benchmark
     datasets. We show that this modification to the AL framework significantly
     reduces cost and time requirements for a successful AL implementation in
     the context of remote sensing. 
 \end{abstract}
+
+
+%%Graphical abstract
+\begin{graphicalabstract}
+\centering
+\includegraphics[width=.85\linewidth]{../analysis/graphical_abstract}
+\end{graphicalabstract}
+
+%%Research highlights
+\begin{highlights}
+\item We integrate artificial data generation into the Active Learning
+    framework;
+\item The proposed modification significantly reduces the cost and time
+    requirements for a successful AL implementation;
+\item The effectiveness of this framework was shown with simple,
+    context-agnostic data generation heuristics;
+\item The amount of data required to reach the performance thresholds defined
+    for the baseline AL methods were significantly reduced in all seven
+    datasets used in this experiment;
+\end{highlights}
+
+\begin{keyword}
+Active Learning \sep Artificial Data Generation \sep Land Use/Land Cover
+Classification \sep Oversampling \sep SMOTE
+\end{keyword}
+
+\end{frontmatter}
+
 
 \section{Introduction}~\label{sec:introduction}
 
@@ -273,7 +306,7 @@ the selected points are tagged by the oracle and added to the training dataset
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=.85\linewidth]{../analysis/al_typical}
+	\includegraphics[width=\linewidth]{../analysis/al_typical}
 	\caption{Diagram depicting the typical AL framework. Although the chooser
         and predictor are presented as separate entities, they are frequently
         the same classifier.
@@ -525,7 +558,7 @@ Figure~\ref{fig:al_new}.
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=.85\linewidth]{../analysis/al_new}
+	\includegraphics[width=\linewidth]{../analysis/al_new}
     \caption{Proposed AL framework. The data generation mechanism is
         represented as the generator, which is used to complete the data
         generation phase. The remaining steps are left unchanged.
@@ -592,13 +625,24 @@ were chosen because of their popularity in the research community and their
 high baseline classification scores. Consequently, demonstrating an
 outperforming method in this context is particularly challenging and valuable.
 
-\pgfplotstabletypeset[
-	begin table=\begin{longtable},
-		end table=\end{longtable},  col sep=semicolon, header=true,
-	columns={Dataset,Sensor,Location,Dimension,Bands,Res. (m),Classes}, string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
-	every last row/.style={after row=\bottomrule \caption{\label{tab:rs_scene_description}
-				Description of the hyperspectral scenes used in this experiment.}}
-]{../analysis/rs_scene_description.csv}
+
+\begin{table}[bp]
+    \centering
+    \addtolength{\leftskip} {-2cm}
+    \addtolength{\rightskip}{-2cm}
+    \pgfplotstabletypeset[
+        col sep=semicolon,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+        string type,
+    ]{../analysis/rs_scene_description.csv}
+    \caption{\label{tab:rs_scene_description}
+        Description of the hyperspectral scenes used in this experiment.}
+\end{table}
 
 The Indian Pines scene~\cite{Baumgardner2015} is composed of agriculture fields
 in approximately two thirds of its coverage, low density buildup areas and
@@ -674,15 +718,24 @@ are preserved and (3) ensure equivalent analyses across datasets and AL
 frameworks. In this context, a fixed number of observations per dataset is
 especially important to standardize the AL-related performance metrics.
 
-\pgfplotstabletypeset[
-	begin table=\begin{longtable},
-		end table=\end{longtable},  col sep=comma, header=true,
-	columns={Dataset,Features,Instances,Min. Instances,Maj. Instances,IR, Classes}, string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
-	every last row/.style={after row=\bottomrule \caption{\label{tab:datasets_description}
-	Description of the datasets collected from each corresponding scene. The
-    sampling strategy is similar to all scenes.
-    }}
-]{../analysis/datasets_description.csv}
+\begin{table}
+    \centering
+    \addtolength{\leftskip} {-2cm}
+    \addtolength{\rightskip}{-2cm}
+    \pgfplotstabletypeset[
+        col sep=comma,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+    ]{../analysis/datasets_description.csv}
+    \caption{\label{tab:datasets_description}
+        Description of the datasets collected from each corresponding scene.
+        The sampling strategy is similar to all scenes.
+    }
+\end{table}
 
 \subsection{Machine Learning Algorithms}~\label{sec:machine_learning_algorithms}
 
@@ -811,7 +864,7 @@ depicted in Figure~\ref{fig:experiment_pipeline}.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.7\linewidth]{../analysis/experiment_pipeline}
+	\includegraphics[width=\linewidth]{../analysis/experiment_pipeline}
     \caption{Experimental procedure. The performance metrics are averaged over
     the 5 folds across each of the 3 different initializations of this
     procedure for a given combination of generator, chooser/predictor and
@@ -915,14 +968,23 @@ learners. The high AULC values are owed to the naturally high classification
 performance of baseline methods, which makes the performance variability among
 frameworks particularly meaningful. 
 
-\pgfplotstabletypeset[
-	begin table=\begin{longtable},
-	end table=\end{longtable},  col sep=comma, header=true, string type, 
-    every head row/.style={before row=\toprule, after row=\midrule\endhead},
-	every last row/.style={
-        after row=\bottomrule \caption{\label{tab:aulc_scores}
-	Average AULC of each AL configuration tested.}}
-]{../analysis/mean_std_aulc_scores.csv}
+\begin{table}[H]
+    \centering
+    \addtolength{\leftskip} {-2cm}
+    \addtolength{\rightskip}{-2cm}
+    \pgfplotstabletypeset[
+        col sep=comma,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+    ]{../analysis/mean_std_aulc_scores.csv}
+    \caption{\label{tab:aulc_scores}
+        Average AULC of each AL configuration tested.
+    }
+\end{table}
 
 The mean deficiency scores of the proposed framework is shown in
 Table~\ref{tab:deficiency_scores}. This metric is calculated using the proposed
@@ -931,15 +993,25 @@ learner as algorithm $B$. The proposed method shows consistent a improvement
 over the baseline method, except in three situations, where the difference
 among active learners is marginal.
 
-\pgfplotstabletypeset[
-	begin table=\begin{longtable},
-		end table=\end{longtable},  col sep=comma, header=true,
-	string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
-	every last row/.style={after row=\bottomrule \caption{\label{tab:deficiency_scores}
-    Mean deficiency scores. The scores were calculated by estimating the
-    deficiency of the proposed framework with respect to the original AL
-    framework.}}
-]{../analysis/mean_std_deficiency.csv}
+\begin{table}[H]
+    \centering
+    \addtolength{\leftskip} {-2cm}
+    \addtolength{\rightskip}{-2cm}
+    \pgfplotstabletypeset[
+        col sep=comma,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+    ]{../analysis/mean_std_deficiency.csv}
+    \caption{\label{tab:deficiency_scores}
+        Mean deficiency scores. The scores were calculated by estimating the
+        deficiency of the proposed framework with respect to the original AL
+        framework.
+    }
+\end{table}
 
 The average DURs are shown in Figure~\ref{fig:dur}. They were calculated for
 various threshold levels, varying at a step of 5\% between 60\% and 95\%. The
@@ -952,7 +1024,9 @@ generation is less apparent.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=1\linewidth]{../analysis/data_utilization_rate}
+    \addtolength{\leftskip} {-.7cm}
+    \addtolength{\rightskip}{-2cm}
+	\includegraphics[width=1.2\linewidth]{../analysis/data_utilization_rate}
     \caption{Mean data utilization rates. The y-axis shows the average amount
     of data necessary to reach the different performance thresholds (as a
     percentage of the baseline AL framework).}~\label{fig:dur}
@@ -968,16 +1042,25 @@ predictors produced using the typical AL framework. Using a generator in AL's
 iterative process was capable of outperforming the baseline framework in most
 cases and the maximum performance classifier in 6 of those.
 
-\pgfplotstabletypeset[
-	begin table=\begin{longtable},
-		end table=\end{longtable},  col sep=comma, header=true,
-	string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
-	every last row/.style={after row=\bottomrule
-        \caption{\label{tab:optimal_mean_std_scores}
-    Optimal classification scores. The Maximum Performance (MP) classification
-    scores are calculated using classifiers trained using the entire training
-    set.}}
-]{../analysis/optimal_mean_std_scores.csv}
+\begin{table}[H]
+    \centering
+    \addtolength{\leftskip} {-2cm}
+    \addtolength{\rightskip}{-2cm}
+    \pgfplotstabletypeset[
+        col sep=comma,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+    ]{../analysis/optimal_mean_std_scores.csv}
+    \caption{\label{tab:optimal_mean_std_scores}
+        Optimal classification scores. The Maximum Performance (MP)
+        classification scores are calculated using classifiers trained using
+        the entire training set.
+    }
+\end{table}
 
 The optimal AULC results of each method are reported in
 Table~\ref{tab:wide_optimal_aulc}. These results depict in higher detail the
@@ -1034,6 +1117,6 @@ is reduced, as shown in Table~\ref{tab:deficiency_scores}, where data
 imbalance appropriate metrics are always improved over the baseline scores.
 
 \bibliography{references}
-\bibliographystyle{apalike}
+\bibliographystyle{elsarticle-num}
 
 \end{document}

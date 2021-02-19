@@ -1,4 +1,4 @@
-Dataset,Classifier,Evaluation Metric,NONE,SMOTE,G-SMOTE
+Dataset,Classifier,Metric,NONE,SMOTE,G-SMOTE
 Botswana,KNN,Accuracy,0.823 $\pm$ 0.027,0.851 $\pm$ 0.017,\textbf{0.852 $\pm$ 0.018}
 Botswana,KNN,F-score,0.814 $\pm$ 0.02,\textbf{0.856 $\pm$ 0.022},0.850 $\pm$ 0.022
 Botswana,KNN,G-mean,0.898 $\pm$ 0.016,\textbf{0.922 $\pm$ 0.011},0.921 $\pm$ 0.011
