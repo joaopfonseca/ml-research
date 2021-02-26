@@ -8,14 +8,14 @@
 \issuenum{1}
 \articlenumber{0}
 \pubyear{2021}
-\copyrightyear{2020}
+\copyrightyear{2021}
 \datereceived{} 
 \dateaccepted{} 
 \datepublished{} 
 \hreflink{https://doi.org/}
 
 % The following line should be uncommented if the LaTeX file is uploaded to arXiv.org
-\pdfoutput=1
+%\pdfoutput=1
 
 \usepackage{breakcites}
 \usepackage{float}
@@ -33,8 +33,22 @@
 \usepackage{tabu}
 \usepackage{hyperref}
 
-\Title{Improving Land Cover Classification using oversampling: 
-	\LARGE{A Heuristic Method Based on K-Means and SMOTE}}
+% Used to track changes. Can be deleted once the revision process is over.
+% commands:
+% \added
+% \deleted
+% \replaced
+\usepackage{changes}
+
+\makeatletter
+\@namedef{Changes@AuthorColor}{red}
+\colorlet{Changes@Color}{red}
+\makeatother
+
+% Original title: Improving Land Cover Classification using oversampling: A
+% Heuristic Method Based on K-Means and SMOTE
+\Title{Improving Imbalanced Land Cover Classification with K-means SMOTE:
+Detecting and Oversampling Distinctive Minority Spectral Signatures}
 
 % MDPI internal command: Title for citation in the left column
 \TitleCitation{
@@ -107,32 +121,37 @@ $^{1}$ \quad NOVA Information Management School (NOVA IMS), Universidade Nova
 The increasing amount of remote sensing missions granted the access to dense
 time series (TS) data at a global level and provides up-to-date, accurate land
 cover information \cite{Drusch2012}. This information is often materialized
-through Land Use/Land Cover (LULC) maps, which constitute an essential asset for
-various purposes, such as land cover change detection, urban planning,
-environmental monitoring and natural hazard assessment \cite{Khatami2016}.
-However, the timely production of accurate and updated LULC maps is still a
-challenge within the remote sensing community \cite{Wulder2018}. LULC maps are
-produced based on two main approaches: photo-interpreted by the human eye, or
-automatic mapping using remotely sensed data and classification algorithms.
+through Land Use and Land Cover (LULC) maps. \added{While Land Cover maps
+define the biophysical cover found on the surface of the earth, Land Use maps
+define how it is used by humans \cite{Fritz2017}. Both Land Use and Land Cover
+maps} constitute an essential asset for various purposes, such as land cover
+change detection, urban planning, environmental monitoring and natural hazard
+assessment \cite{Khatami2016}. However, the timely production of accurate and
+updated LULC maps is still a challenge within the remote sensing community
+\cite{Wulder2018}. LULC maps are produced based on two main approaches:
+photo-interpreted by the human eye, or automatic mapping using remotely sensed
+data and classification algorithms.
 
 While photo-interpreted LULC maps rely on human operators and can be more
 reliable, they also present some significant disadvantages. The most important
-disadvantage are the production costs, in fact photo-interpretation consumes
-significant resources, both in terms of money and time. Because of that, they are not
-frequently updated and not suitable for operational mapping over large areas.
-Finally, there is also the issue of overlooking rare or small-area classes, due
-to factors such as the minimum mapping unit being used.
+disadvantage \replaced{is }{are }the\replaced{ cost of production}{ production
+costs}, in fact photo-interpretation consumes significant resources, both in
+terms of money and time. Because of that, they are not frequently updated and
+not suitable for operational mapping over large areas.  Finally, there is also
+the issue of overlooking rare or small-area classes, due to factors such as
+the minimum mapping unit being used.
 
-Automatic mapping with classification algorithms based on machine-learning (ML)
-have been extensively researched and used to speed up and reduce the costs of
-the production process. Improvements in classification algorithms are sure to
-have significant impact in the efficiency with which remote sensing imagery is
+Automatic mapping with classification algorithms based on machine-learning
+(ML) have been extensively researched and used to speed up and reduce the
+costs of the production process \added{\cite{Khatami2016, Gavade2019,
+Kaur2019}}. Improvements in classification algorithms are sure to have
+significant impact in the efficiency with which remote sensing imagery is
 used. Several challenges have been identified in order to improve automatic
 classification:
 
 \begin{enumerate}
-    \item Improve the ability to handle high-dimensional datasets, in cases such
-        as Multi-spectral TS composites high-dimensionality increases the
+    \item Improve the ability to handle high-dimensional datasets, in cases
+        such as Multi-spectral TS composites high-dimensionality increases the
         complexity of the problem and creates a strain on computational power
         \cite{Stromann2020}.
     \item Improve class separability, as the production of an accurate LULC map
@@ -148,31 +167,33 @@ classification:
     \item Dealing with rare land cover classes, due to the varying levels of
         area coverage for each class. In this case using a purely random
         sampling strategy will amount to a dataset with a roughly proportional
-        class distribution as the one on the landscape. On the other hand, the
-        acquisition of training datasets containing balanced class frequencies
-        is often unfeasible. This causes an asymmetry in class distribution,
-        where some classes are frequent in the training dataset, while others
-        have little expression \cite{Wang2019, Feng2019}.
+        class distribution as the one on the\replaced{ multi/hyperspectral
+        image}{ landscape}. On the other hand, the acquisition of training
+        datasets containing balanced class frequencies is often unfeasible.
+        This causes an asymmetry in class distribution, where some classes are
+        frequent in the training dataset, while others have little expression
+        \cite{Wang2019, Feng2019}.
 \end{enumerate}
 
 The latter challenge is known, in machine learning, as the imbalanced learning
-problem \cite{Chawla2004}. It is defined as a skewed distribution of
-observations found in a dataset among classes in both binary and multi-class
-problems \cite{Abdi2016}. This asymmetry in class distribution negatively
-impacts the performance of classifiers, especially in multi-class problems.
-The problem comes from the fact that during the learning phase, classifiers
-are optimized to maximize an objective function, with overall accuracy being
-the most common one \cite{Maxwell2018}. This means that observations
-belonging to minority classes contribute less to the optimization process,
-translating into a bias towards majority classes.  As an example, a trivial
-classifier can achieve 99\% overall accuracy on a binary dataset where 1\% of
-the observations belong to the minority class if it classifies all
-observations as belonging to the majority class. This is an especially
-significant issue in the automatic classification of LULC maps, as the
-distribution of the different land-use classes tends to be highly imbalanced.
-Therefore, improvements in the ability to deal with imbalanced datasets will
-translate into important progress in the automatic classification of LULC
-maps.
+problem \cite{Chawla2004}. It is defined as a skewed distribution of\replaced{
+instances}{ observations} found in a dataset among classes in both binary and
+multi-class problems \cite{Abdi2016}. This asymmetry in class distribution
+negatively impacts the performance of classifiers, especially in multi-class
+problems.  The problem comes from the fact that during the learning phase,
+classifiers are optimized to maximize an objective function, with overall
+accuracy being the most common one \cite{Maxwell2018}. This means
+that\replaced{ instances}{ observations} belonging to minority classes
+contribute less to the optimization process, translating into a bias towards
+majority classes. As an example, a trivial classifier can achieve 99\%
+overall accuracy on a binary dataset where 1\% of the\replaced{ instances}{
+observations} belong to the minority class if it classifies all\replaced{
+instances}{ observations} as belonging to the majority class. This is an
+especially significant issue in the automatic classification of LULC maps, as
+the distribution of the different land-use classes tends to be highly
+imbalanced.  Therefore, improvements in the ability to deal with imbalanced
+datasets will translate into important progress in the automatic
+classification of LULC maps.
 
 There are three different types of approaches to deal with the class imbalance
 problem \cite{Fernandez2013,Kaur2019}:
@@ -193,12 +214,13 @@ problem \cite{Fernandez2013,Kaur2019}:
         versatility and independency from the classifier used.
 \end{enumerate}
 
-It is important to note that resampling strategies have a significant advantage
-over the other approaches. By operating at the data level, resampling strategies
-allow the use of any off the shelf algorithm, without the need for any type of
-changes or adaptions to the algorithm. This is a significant advantage
-especially considering that most users in remote sensing are not expert machine
-learning engineers. 
+\deleted{It is important to note that }\added{Since} resampling strategies
+\replaced{represent a set of methods that are detached from classifiers
+by}{have a significant advantage over the other approaches. By} operating at
+the data level, \replaced{they}{resampling strategies} allow the use of any
+off the shelf algorithm, without the need for any type of changes or adaptions
+to the algorithm. This is a significant advantage especially considering that
+most users in remote sensing are not expert machine learning engineers. 
 
 Within resampling approaches there are three subgroups of approaches
 \cite{Fernandez2013,Kaur2019,Luengo2020}:
@@ -217,33 +239,38 @@ Within resampling approaches there are three subgroups of approaches
 Resampling methods can be further distinguished between non-informed and
 heuristic (i.e., informed) resampling techniques
 \cite{Fernandez2013,Luengo2020,Garcia2016}. The former consist of methods that
-duplicate/remove a random selection of data points to set class distributions to
-user-specified levels, and are therefore a simpler approach to the problem. The
-latter consists of more sophisticated approaches that aim to perform
-over/undersampling based on the points' contextual information within their data
-space.
+duplicate/remove a random selection of data points to set class distributions
+to user-specified levels, and are therefore a simpler approach to the problem.
+The latter consists of more sophisticated approaches that aim to perform
+over/undersampling based on the points' contextual information within their
+data space.
 
 The imbalanced learning problem is not new in machine learning but its
 relevancy has been growing, as attested by \cite{Haixiang2017}. The problem
 has also been addressed in the context of remote sensing \cite{Douzas2019rs}.
-In this paper, we propose the K-means SMOTE (K-SMOTE) \cite{Douzas2018}
-oversampler to address the imbalanced learning problem in a multiclass context
-for LULC classification using various remote sensing datasets. The K-SMOTE
-algorithm presents significant advantages over other oversamplers, by coupling
-two different procedures in the generation of artificial data. The algorithm
-starts by clustering the observations; next, the generation of the artificial
-observations is done taking into consideration the distribution of
-majority/minority cases in each individual cluster. The idea of starting with
-a clustering procedure before the data generation phase is important in
-remote sensing because the spectral signature of the different classes can
-change significantly based on the geographical area in which it is represented.
-In other words, the spectral signature of a specific class can vary greatly
-depending on the geography, meaning that often we will be facing within-class
-imbalance \cite{Japkowicz2001}.
+In this paper, we propose \added{the application of a recent oversampler based
+on the Synthetic Minority Oversampling Technique (SMOTE) \cite{Chawla2002},}
+the K-means SMOTE (K-SMOTE) \cite{Douzas2018} oversampler\added{,} to address
+the imbalanced learning problem in a multiclass context for LULC
+classification using various remote sensing datasets. \added{Specifically,
+we use seven benchmark land use datasets that vary among agricultural and
+urban land use}. The K-SMOTE algorithm
+presents significant advantages over other oversamplers, by coupling two
+different procedures in the generation of artificial data. The algorithm
+starts by clustering the\replaced{ instances}{ observations}; next, the
+generation of the artificial\replaced{ instances}{ observations} is done
+taking into consideration the distribution of majority/minority cases in each
+individual cluster. The idea of starting with a clustering procedure before
+the data generation phase is important in remote sensing because the spectral
+signature of the different classes can change significantly based on the
+geographical area in which it is represented.  In other words, the spectral
+signature of a specific class can vary greatly depending on the geography,
+meaning that often we will be facing within-class imbalance
+\cite{Japkowicz2001}.
 
 In fact, we can decompose class imbalance into two different types:
-between-class imbalance and within-class imbalance \cite{Douzas2018, Jo2004}. While
-the first refers to the overall asymmetry between majority and minority
+between-class imbalance and within-class imbalance \cite{Douzas2018, Jo2004}.
+While the first refers to the overall asymmetry between majority and minority
 classes, the second results from the fact that in different areas of the input
 space there might be different levels of imbalance. Depending on the
 complexity of the input space, different subclusters of minority and majority
@@ -266,23 +293,24 @@ underrepresentation.
 \end{paracol}
 \begin{figure}[ht]
     \widefigure
-	\includegraphics[width=1\linewidth]{../analysis/complex_input_space_example}
+    \captionsetup{justification=centering}
 	\caption{Example of a complex input space. In this example, a classifier
         would need to separate the minority class' samples across 4
-        distinguishable clusters.
+        distinguishable clusters (A, B, C and D).
+    \vspace{.2cm}}
 	\label{fig:complex_input_space_example}
-    }
+	\includegraphics[width=1\linewidth]{../analysis/complex_input_space_example}
 \end{figure}
 \begin{paracol}{2}
 \linenumbers
 \switchcolumn
 
-The efficacy of K-SMOTE is tested using
-different types of classifiers. To do so, we employ both commonly used and
-state-of-the-art oversamplers as benchmarking methods: Random oversampling
-(ROS), Synthetic Minority Oversampling Technique (SMOTE) \cite{Chawla2002} and
-Borderline-SMOTE (B-SMOTE) \cite{Han2005}. Also as a baseline score we include
-classification results without the use of any resampling method.
+The efficacy of K-SMOTE is tested using different types of classifiers. To do
+so, we employ both commonly used and state-of-the-art oversamplers as
+benchmarking methods: Random oversampling (ROS), \deleted{Synthetic Minority
+Oversampling Technique (SMOTE) \cite{Chawla2002}} SMOTE and Borderline-SMOTE
+(B-SMOTE) \cite{Han2005}. Also as a baseline score we include classification
+results without the use of any resampling method.
 
 This paper is organized in 5 sections: section \ref{sec:sota} provides an
 overview of the state-of-art, section \ref{sec:methodology} describes the
@@ -310,20 +338,23 @@ In \cite{Lee2016}, the reported results show that algorithm-based methods have
 comparable performance to resampling methods.
 
 Cost-sensitive solutions refer to changes in the importance attributed to each
-instance through a cost matrix \cite{Huang2016,Cui2019,Dong2017}. A common cost
-sensitive solution is found in \cite{Huang2016}. The authors use the inverse
-class frequency (i.e., $1/|C_i|$) to give higher weight to minority classes. Cui
-et al. \cite{Cui2019} extended this method by adding a hyperparameter $\beta$ to
-class weights as $(1-\beta)/(1-\beta^{|C_i|})$. When $\beta=0$, no re-weighting
-is done. When $\beta\rightarrow 1$, weights are the inverse of the frequency
-class matrix. Another method \cite{Dong2017} explores adaptations of
-Cross-entropy classification loss by adding different formulations of class
-rectification loss.
+instance through a cost matrix \cite{Huang2016,Cui2019,Dong2017}. A
+\replaced{relevant}{ common} cost sensitive solution
+\replaced{\cite{Huang2016} uses }{is found in \cite{Huang2016}. The authors
+use} the inverse class frequency (i.e., $1/|C_i|$\added{, where $C_i$ refers
+to the frequency of class $i$}) to give higher weight to
+minority classes. Cui et al. \cite{Cui2019} extended this method by adding a
+hyperparameter $\beta$ to class weights as $(1-\beta)/(1-\beta^{|C_i|})$. When
+$\beta=0$, no re-weighting is done. When $\beta\rightarrow 1$, weights are the
+inverse of the frequency class matrix. Another method \cite{Dong2017} explores
+adaptations of Cross-entropy classification loss by adding different
+formulations of class rectification loss.
 
 Resampling (over/undersampling) is the most common approach to imbalanced
 learning addressing the problem through data resampling in machine learning in
 general and remote sensing in particular \cite{Feng2019}. The generation of
-artificial instances (i.e., augmenting the dataset), based on rare examples,
+artificial instances (i.e., augmenting the dataset), based on rare
+\replaced{instances }{examples},
 is done independently of any other step in the learning process. Once the
 procedure is applied, any standard machine learning algorithm can be used. Its
 simplicity makes resampling strategies particularly appealing for any user
@@ -335,26 +366,27 @@ multiclass problems, common in LULC classification tasks.
 \subsection{Non-informed resampling methods}
 
 There are two main non-informed resampling methods. Random Oversampling (ROS)
-generates artificial observations through random duplication of minority
-instances.  This method is used in remote sensing \cite{Sharififar2019,
-Hounkpatin2018} for its simplicity, even though its mechanism makes the
-classifier prone to overfitting \cite{Krawczyk2016}. 
+generates artificial\replaced{ instances}{ observations} through random
+duplication of minority class instances. This method is used in remote sensing
+\cite{Sharififar2019, Hounkpatin2018} for its simplicity, even though its
+mechanism makes the classifier prone to overfitting \cite{Krawczyk2016}.
 \cite{Hounkpatin2018} found that using ROS returned worse results than keeping
 the original imbalance in their dataset.
 
 A few of the recent remote sensing studies employed Random Undersampling (RUS)
-\cite{Ferreira2019}, which randomly removes
-observations belonging to majority classes. Although it's not as prone to
-overfitting as ROS, it incurs into information loss by eliminating observations
-from the majority class \cite{Feng2019}, which can be detrimental to the
-quality of the results.
+\cite{Ferreira2019}, which randomly removes\replaced{ instances}{
+observations} belonging to majority classes. Although it's not as prone to
+overfitting as ROS, it incurs into information loss by eliminating\replaced{
+instances}{ observations} from the majority class \cite{Feng2019}, which can be
+detrimental to the quality of the results.
 
-Another disadvantage of non-informed resampling methods is their performance-wise
-inconsistency across classifiers. ROS' impact on the Indian Pines dataset was
-found inconsistent between Random Forest Classifiers (RFC) and Support Vector
-Machines (SVM) and lowered the predictive power of an artificial neural network
-(ANN) \cite{Maxwell2018}. Similarly, RUS is found to generally lead to a lower
-overall accuracy due to the associated information loss \cite{Maxwell2018}.
+Another disadvantage of non-informed resampling methods is their
+performance-wise inconsistency across classifiers. ROS' impact on the Indian
+Pines dataset was found inconsistent between Random Forest Classifiers (RFC)
+and Support Vector Machines (SVM) and lowered the predictive power of an
+artificial neural network (ANN) \cite{Maxwell2018}. Similarly, RUS is found to
+generally lead to a lower overall accuracy due to the associated information
+loss \cite{Maxwell2018}.
 
 \subsection{Heuristic methods}
 
@@ -371,22 +403,33 @@ study.
 SMOTE \cite{Chawla2002} was the first heuristic oversampling algorithm to be
 proposed and has been the most popular one since then, likely due to its fair
 degree of simplicity and quality of generated data. It takes a random minority
-class sample and introduces synthetic examples along the line segment that join
-a random $k$ minority class nearest neighbor to the selected sample.
-Specifically, a single synthetic sample $\overrightarrow{z}$ is generated within
-the line segment of a randomly selected minority class observation
-$\overrightarrow{x}$ and one of its $k$ nearest neighbors $\overrightarrow{y}$
-such that $\overrightarrow{z} =
+class sample and introduces synthetic \replaced{instances }{examples} along
+the line segment that join a random $k$ minority class nearest neighbor to the
+selected sample. Specifically, a single synthetic sample $\overrightarrow{z}$
+is generated within the line segment of a randomly selected minority
+class\replaced{ instance}{ observation} $\overrightarrow{x}$ and one of its
+$k$ nearest neighbors $\overrightarrow{y}$ such that $\overrightarrow{z} =
 \alpha\overrightarrow{x}+(1-\alpha)\overrightarrow{y}$, where $\alpha$ is a
-random floating point between 0 and 1, as shown in Figure
-\ref{fig:smote_example}.
+random \replaced{real number}{floating point} between 0 and 1, as shown in
+Figure \ref{fig:smote_example}.
 
 \end{paracol}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=1\linewidth]{../analysis/smote_example}
-	\caption{Example of SMOTE's data generation process.}
+    \captionsetup{justification=centering}
+    \caption{Example of SMOTE's data generation process. \added{SMOTE randomly
+        selects instance $\protect\overrightarrow{x}$ and one of its nearest neighbors 
+        $\protect\overrightarrow{y}$ to produce $\protect\overrightarrow{z}$.
+        Noisy instance $\protect\overrightarrow{r}$ was generated by randomly
+        selecting $\protect\overrightarrow{q}$ and nearest neighbor
+        $\protect\overrightarrow{p}$ from a different
+        minority class cluster. Noisy instance $\protect\overrightarrow{c}$ was generated by
+        randomly selecting the noisy minority class instance
+        $\protect\overrightarrow{a}$ and one of its nearest neighbors
+        $\protect\overrightarrow{b}$.}
+    \vspace{.2cm}}
 	\label{fig:smote_example}
+	\includegraphics[width=1\linewidth]{../analysis/smote_example}
 \end{figure}
 \begin{paracol}{2}
 \linenumbers
@@ -403,76 +446,81 @@ semi-supervised learning model \cite{Cenggoro2018}. It consists of a generative
 model that allows learning from both labeled and unlabeled instances while
 using SMOTE to balance the data.
 
-Despite SMOTE's popularity, its limitations have motivated the development of more
-sophisticated oversampling algorithms \cite{Douzas2019, Han2005, Ma2017,
+Despite SMOTE's popularity, its limitations have motivated the development of
+more sophisticated oversampling algorithms \cite{Douzas2019, Han2005, Ma2017,
 Douzas2017, Douzas2018, HaiboHe2008}. \cite{Douzas2019} identify four major
 weaknesses of the SMOTE algorithm, which can be summarized as:
-\begin{enumerate}
-    \item Generation of noisy instances due to random selection of a minority
-        observation to oversample. The random selection of a minority
-        observation makes SMOTE oversampling prone to the amplification of
-        existing noisy data. This has been addressed by variants such as B-SMOTE
-        \cite{Han2005} and ADASYN \cite{HaiboHe2008}. 
 
-    \item Generation of noisy instances due to the selection of the $k$ nearest
-        neighbors. In the event an observation (or a small number thereof) is
-        not noisy but is isolated from the remaining clusters, known as the
-        "small disjuncts problem" \cite{holte1989}, much like sample
-        $\overrightarrow{b}$ from Figure \ref{fig:smote_example}, the selection
-        of any nearest neighbor of the same class will have a high likelihood of
-        producing a noisy sample.
+\begin{enumerate}
+    \item Generation of noisy instances due to random selection of a
+        minority\replaced{ instance}{ observation} to oversample. The random
+        selection of a minority\replaced{ instance}{ observation} makes SMOTE
+        oversampling prone to the amplification of existing noisy data. This
+        has been addressed by variants such as B-SMOTE \cite{Han2005} and
+        ADASYN \cite{HaiboHe2008}. 
+
+    \item Generation of noisy instances due to the selection of the $k$
+        nearest neighbors. In the event an\replaced{ instance}{ observation}
+        (or a small number thereof) is not noisy but is isolated from the
+        remaining clusters, known as the "small disjuncts problem"
+        \cite{holte1989}, much like sample $\overrightarrow{b}$ from Figure
+        \ref{fig:smote_example}, the selection of any nearest neighbor of the
+        same class will have a high likelihood of producing a noisy sample.
 
     \item Generation of nearly duplicated instances. Whenever the linear
-        interpolation is done between two observations that are close to each
-        other, the generated instance becomes very similar to its parents and
-        increases the risk of overfitting. G-SMOTE \cite{Douzas2019} attempts to
-        address both the $k$ nearest neighbor selection mechanism problem as
-        well as the generation of nearly duplicated instances problem. 
+        interpolation is done between two\replaced{ instances}{ observations}
+        that are close to each other, the generated instance becomes very
+        similar to its parents and increases the risk of overfitting. G-SMOTE
+        \cite{Douzas2019} attempts to address both the $k$ nearest neighbor
+        selection mechanism problem as well as the generation of nearly
+        duplicated instances problem. 
 
-    \item Generation of noisy instances due to the use of observations from two
-        different minority class clusters. Although an increased $k$ could
-        potentially avoid the previous problem, it can also lead to the
-        generation of artificial data between different minority clusters, as
-        depicted Figure \ref{fig:smote_example} with the generation of point
-        $\overrightarrow{r}$ using minority class observations
-        $\overrightarrow{p}$ and $\overrightarrow{q}$. Cluster-based
-        oversampling methods attempt to address this problem. 
+    \item Generation of noisy instances due to the use of\replaced{
+        instances}{ observations} from two different minority class clusters.
+        Although an increased $k$ could potentially avoid the previous
+        problem, it can also lead to the generation of artificial data between
+        different minority clusters, as depicted Figure
+        \ref{fig:smote_example} with the generation of point
+        $\overrightarrow{r}$ using minority class\replaced{ instances}{
+        observations} $\overrightarrow{p}$ and $\overrightarrow{q}$.
+        Cluster-based oversampling methods attempt to address this problem. 
 \end{enumerate}
 
 This last issue, the generation of noisy instances due to the existence of
-several minority class clusters, is particularly relevant in remote sensing. It
-is frequent that instances belonging to the same minority class can have
-different spectral signatures, meaning that they will be clustered in different
-parts of the input space. In this context, the use of SMOTE will lead to the
-generation of noisy instances of the minority class. This problem can be
-efficiently mitigated through the use of a cluster-based oversampling. According
-to our literature review cluster-based oversampling approaches have never been
-applied in the context of remote sensing. On the other hand, while there are
-several references of the application of cluster-based oversampling in the
-context of machine learning, there is no such application for the multiclass
-case, a fundamental requirement for the application of oversampling in the
-context of LULC. 
+several minority class clusters, is particularly relevant in remote sensing.
+It is frequent that instances belonging to the same minority class can have
+different spectral signatures, meaning that they will be clustered in
+different parts of the input space. In this context, the use of SMOTE will
+lead to the generation of noisy instances of the minority class. This problem
+can be efficiently mitigated through the use of a cluster-based oversampling.
+According to our literature review cluster-based oversampling approaches have
+never been applied in the context of remote sensing. On the other hand, while
+there are several references of the application of cluster-based oversampling
+in the context of machine learning, there is no such \added{an} application
+for the multiclass case, a fundamental requirement for the application of
+oversampling in the context of LULC. 
 
-Cluster-based oversampling approaches introduce an additional layer to
-SMOTE's selection mechanism, which is done through the inclusion of a clustering
-process. This ensures that both between-class data balance and within each class
-balance is preserved. The self-organizing map
-oversampling (SOMO) \cite{Douzas2017} algorithm transforms the dataset into a
-2-dimensional input, where the areas with the highest density of minority
-samples are identified. SMOTE is then used to oversample each of the identified
-areas separately. CURE-SMOTE \cite{Ma2017} applies a hierarchical clustering
-algorithm (CURE) to discard isolated minority instances before applying SMOTE.
+Cluster-based oversampling approaches introduce an additional layer to SMOTE's
+selection mechanism, which is done through the inclusion of a clustering
+process. This ensures that both between-class data balance and
+\replaced{within-class }{within each class} balance is preserved. The
+self-organizing map oversampling (SOMO) \cite{Douzas2017} algorithm transforms
+the dataset into a 2-dimensional input, where the areas with the highest
+density of minority samples are identified.  SMOTE is then used to oversample
+each of the identified areas separately.  \replaced{ClUstered REsampling SMOTE
+(CURE-SMOTE)}{ CURE-SMOTE} \cite{Ma2017} applies a hierarchical clustering
+algorithm to discard isolated minority instances before applying SMOTE.
 Although it avoids noise generation problems, it ignores within-class data
 distribution. Another method \cite{Santos2015} uses K-means to cluster the
-entire input space and applies SMOTE to clusters with the fewest observations,
-regardless of their class label. The label of the generated observation is
-copied from one of its parents. This method cannot ensure a balanced dataset
-since class imbalance is not specifically addressed, but rather dataset
-imbalance.
+entire input space and applies SMOTE to clusters with the fewest\replaced{
+instances}{ observations}, regardless of their class label. The label of the
+generated\replaced{ instance}{ observation}is copied from one of its parents.
+This method cannot ensure a balanced dataset since class imbalance is not
+specifically addressed, but rather dataset imbalance.
 
 K-SMOTE~\cite{Douzas2018} avoids noisy data generation by modifying the data
 selection mechanism. It employs $k$-means clustering to identify safe areas
-using cluster-specific Imbalance Ratio (defined by
+using cluster-specific Imbalance Ratio (\added{IR, }defined by
 $\frac{count(C_{majority})}{count(C_{minority})}$) and determine the quantity of
 generated samples per cluster based on a density measure. These samples are
 finally generated using the SMOTE algorithm. The K-SMOTE's data generation
@@ -488,14 +536,15 @@ return results as good as or better than SMOTE.
 \end{paracol}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=1\linewidth]{../analysis/kmeans_smote_example}
-	\caption{Example of K-SMOTE's data generation process. Clusters $A$,
-		$B$ and $C$ are selected for
-		oversampling, whereas cluster $D$ was rejected due to its
-		high imbalance ratio. The oversampling is done using the SMOTE algorithm and
-		the $k$ nearest neighbors selection only considers
-		observations within the same cluster.}
+    \captionsetup{justification=centering}
+    \caption{Example of K-SMOTE's data generation process. Clusters $A$, $B$
+        and $C$ are selected for oversampling, whereas cluster $D$ was
+        rejected due to its high imbalance ratio. The oversampling is done
+        using the SMOTE algorithm and the $k$ nearest neighbors selection only
+        considers\replaced{ instances}{ observations} within the same cluster.
+    \vspace{.2cm}}
 	\label{fig:kmeans_smote_example}
+	\includegraphics[width=1\linewidth]{../analysis/kmeans_smote_example}
 \end{figure}
 \begin{paracol}{2}
 \linenumbers
@@ -525,67 +574,75 @@ This paper's main contributions are:
 
 The purpose of this work is to understand the performance of K-SMOTE as
 opposed to other popular and/or state-of-the-art oversamplers for LULC
-classification. To do so, we use 7 LULC datasets along with 3 evaluation
-metrics and 5 classifiers to evaluate the performance of oversamplers. In this
-section we describe the datasets, evaluation metrics, oversamplers,
-classifiers and software used as well as the procedure developed.
+classification. \replaced{This is done using}{To do so, we use} 7
+\deleted{LULC} datasets \added{with predominantly land use information,} along
+with 3 evaluation metrics and \replaced{3}{ 5} classifiers to evaluate the performance of
+oversamplers. In this section we describe the datasets, evaluation metrics,
+oversamplers, classifiers and software used as well as the procedure
+developed.
 
 \subsection{Datasets}
 
 The datasets used were extracted from publicly available hyperspectral scenes.
 Information regarding each of these scenes is provided in this subsection. A
-similar data preprocessing procedure was used for each scene: 1) Conversion of
-each hyperspectral scene to a structured dataset and removal of instances with
-no associated LULC class, 2) random sampling to maintain similar class
-proportions on a sample of 10\% of each dataset and 3) removal of instances
-belonging to a class with frequency lower than 20 or higher than 1000. This is
-done to maintain the datasets to a practicable size due to computational
-constraints, while conserving the relative LULC class frequencies and data
-distribution. Table~\ref{tab:datasets_description} provides a description of the
-final datasets used for this work.
+similar data preprocessing procedure was used for each scene: 
+
+
+\begin{enumerate}
+    
+    \item \added{Conversion of each hyperspectral scene to a structured
+        dataset and removal of instances with no associated LULC class. This
+        done to reshape the dataset from $(h,w,b+gt)$  into a conventional
+        dataframe of shape $(h*w,b+gt)$, where $gt$, $h$, $w$ and $b$
+        represents the ground truth, height, width and number of bands in the
+        scene, respectively. The pixels without ground truth information are
+        discarded from further analysis}
+
+    \item \added{Stratified random sampling to maintain similar class
+        proportions on a sample of 10\% of each dataset. This is done by
+        computing the relative class frequencies in the original hyperspectral
+        scene (minus the class representing no ground truth availability) and
+        retrieving a sample that ensures the original relative class
+        frequencies remain unchanged.}
+
+    \item \added{Removal of instances belonging to a class with frequency
+        lower than 20 or higher than 1000. This is done to maintain the
+        datasets to a practicable size due to computational constraints, while
+        conserving the relative LULC class frequencies and data distribution.} 
+
+    \item \added{Data normalization using the MinMax scaler. This ensures all
+        features (i.e., bands) are in the same scale. In this case, the data
+        was rescaled between 0 and 1.}
+
+\end{enumerate}
+
+Table~\ref{tab:datasets_description} provides a description of the final
+datasets used for this work\added{, sorted according to its IR.
+Figure~\ref{fig:scenes} shows the original hyperspectral scene out of which
+the dataset used in this experiment were extracted. In the representation of
+the ground truth of these scenes, the blue regions in the ground truth of each
+hyperspectral scene represent unlabeled regions (i.e., no  ground truth is
+available). Particularly, in the Botswana and Kennedy Space Center scenes the
+truth was photointerpreted in more limited regions of the scene. However, the
+scenes are still represented as they are in order to maintain a standardized
+analysis over all datasets extracted for the experiment.}
 
 \end{paracol}
-\pgfplotstabletypeset[
-	begin table=\begin{longtable},
-		end table=\end{longtable},  col sep=comma, header=true,
-	columns={Dataset,Features,Instances,Min. Instances,Maj. Instances,IR, Classes}, string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
-	every last row/.style={after row=\bottomrule \caption{\label{tab:datasets_description}
-				Description of the datasets used for this experiment.}}
-]{../analysis/datasets_description.csv}
+\begin{table}
+	\centering
+    \captionsetup{justification=centering}
+    \caption{Description of the datasets used for this
+    experiment.\label{tab:datasets_description}\vspace{-.6cm}}
+    \pgfplotstabletypeset[
+    	begin table=\begin{longtable},
+    		end table=\end{longtable},  col sep=comma, header=true,
+    	columns={Dataset,Features,Instances,Min. Instances,Maj. Instances,IR, Classes}, string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
+    	every last row/.style={after row=\bottomrule}
+    ]{../analysis/datasets_description.csv}
+\end{table}
 \begin{paracol}{2}
 \linenumbers
 \switchcolumn
-
-\subsubsection*{Indian Pines} 
-
-The Indian Pines scene~\cite{Baumgardner2015} was collected on June 12, 1992 and
-consists of AVIRIS hyperspectral image data covering the Indian Pine Test Site
-3, located in North-western Indiana, USA. As a subset of a larger scene, it is
-composed of $145 \times 145$ pixels (see Figure~\ref{fig:indian_pines}) and 220
-spectral reflectance bands in the wavelength range 400 to 2500 nanometers.
-Approximately two thirds of this scene is composed by agriculture and the other
-third is composed of forest and other natural perennial vegetation.
-Additionally, the scene also contains low density buildup areas.
-
-\subsubsection*{Pavia Centre and University}
-
-Both Pavia Centre and University scenes were acquired by the ROSIS sensor. These
-scenes are located in Pavia, northern Italy. Pavia Centre is a $1096 \times
-1096$ pixels image with 102 spectral bands, whereas Pavia University is a $610
-\times 610$ pixels image with 103 spectral bands.  Both images have a
-geometrical resolution of 1.3 meters and their ground truths are composed of 9
-classes each (see Figures~\ref{fig:pavia_centre}
-and~\ref{fig:pavia_university}).
-
-\subsubsection*{Salinas and Salinas-A}
-
-These scenes were collected by the AVIRIS sensor over Salinas Valley, California
-and contain at-sensor radiance data. Salinas is a $512 \times 217$ pixels image
-with 224 bands and 16 classes regarding vegetables, bare soil and vineyard
-fields (see Figure~\ref{fig:salinas}). Salinas-A, a subscene of Salinas,
-comprises $86 \times 83$ pixels and contains 6 classes regarding vegetables (see
-Figure~\ref{fig:salinas_a}). These scenes have a geometrical resolution of 3.7
-meters.
 
 \subsubsection*{Botswana}
 
@@ -593,37 +650,84 @@ The Botswana scene was acquired by the Hyperion sensor on the NASA EO-1
 satellite over the Okavango Delta, Botswana in 2001-2004 at a 30m spatial
 resolution. Data preprocessing was performed by the UT Center for Space
 Research. The scene comprises a $1476 \times 256$ pixels with 145 bands and 14
-classes regarding land cover types in seasonal and occasional swamps, as well as
-drier woodlands (see figure~\ref{fig:botswana}).
+classes regarding land cover types in seasonal and occasional swamps, as well
+as drier woodlands (see figure~\ref{fig:botswana}).
+
+\subsubsection*{Pavia Cent\replaced{er}{re} and University}
+
+Both Pavia Center and University scenes were acquired by the ROSIS sensor.
+These scenes are located in Pavia, northern Italy. Pavia Cent\replaced{er}{re} is a $1096
+\times 1096$ pixels image with 102 spectral bands, whereas Pavia University is
+a $610 \times 610$ pixels image with 103 spectral bands. Both images have a
+geometrical resolution of 1.3\replaced{m }{meters} and their ground truths are
+composed of 9 classes each (see Figures~\ref{fig:pavia_center}
+and~\ref{fig:pavia_university}).
 
 \subsubsection*{Kennedy Space Center}
 
 The Kennedy Space Center scene was acquired by the AVIRIS sensor over the
-Kennedy Space Center, Florida, on March 23, 1996. Out of the original 224 bands,
-water absorption and low SNR bands were removed and a total of 176 bands at a
-spatial resolution of 18m are used. The scene is a $512 \times 614$ pixel image
-and contains a total of 16 classes (see figure~\ref{fig:kennedy_space_center}).
+Kennedy Space Center, Florida, on March 23, 1996. Out of the original 224
+bands, water absorption and low SNR bands were removed and a total of 176
+bands at a spatial resolution of 18m are used. The scene is a $512 \times 614$
+pixel image and contains a total of 16 classes (see
+figure~\ref{fig:kennedy_space_center}).
 
+\subsubsection*{Salinas and Salinas-A}
+
+These scenes were collected by the AVIRIS sensor over Salinas Valley,
+California and contain at-sensor radiance data. Salinas is a $512 \times 217$
+pixels image with 224 bands and 16 classes regarding vegetables, bare soil and
+vineyard fields (see Figure~\ref{fig:salinas}). Salinas-A, a subscene of
+Salinas, comprises $86 \times 83$ pixels and contains 6 classes regarding
+vegetables (see Figure~\ref{fig:salinas_a}). These scenes have a geometrical
+resolution of 3.7\replaced{m }{meters}.
+
+\subsubsection*{Indian Pines} 
+
+The Indian Pines scene~\cite{Baumgardner2015} was collected on June 12, 1992
+and consists of AVIRIS hyperspectral image data covering the Indian Pine Test
+Site 3, located in North-western Indiana, USA. As a subset of a larger scene,
+it is composed of $145 \times 145$ pixels (see Figure~\ref{fig:indian_pines})
+and 220 spectral reflectance bands in the wavelength range 400 to 2500
+nanometers\added{ at a spatial resolution of 20m}. Approximately two thirds of
+this scene is composed by agriculture and the other third is composed of
+forest and other natural perennial vegetation. Additionally, the scene also
+contains low density buildup areas.
+
+\pagebreak
 \end{paracol}
 \begin{figure}[H]
 	\centering
+    \captionsetup{justification=centering}
+    \caption{Gray scale visualization of a band (top row) and ground truth
+        (bottom row) of each scene used in this study. (a) Botswana, (b) Pavia
+        Cent\replaced{er}{re}, (c) Pavia University, (d) Kennedy Space Center,
+        (e) Salinas, (f) Salinas A, (g) Indian Pines.
+    \vspace{.25cm}}\label{fig:scenes}
+	
 	\begin{subfigure}{.24\textwidth}
 		\centering
 		\captionsetup{skip=12pt,justification=centering}
-		\includegraphics[height=1.5\linewidth]{../analysis/indian_pines}
-		\subcaption{{\medbreak}}\label{fig:indian_pines}
+		\includegraphics[height=1.5\linewidth]{../analysis/botswana}
+		\subcaption{{\medbreak}}\label{fig:botswana}
 	\end{subfigure}
 	\begin{subfigure}{.24\textwidth}
 		\centering
 		\captionsetup{skip=12pt,justification=centering}
 		\includegraphics[height=1.5\linewidth]{../analysis/pavia_centre}
-		\subcaption{{\medbreak}}\label{fig:pavia_centre}
+		\subcaption{{\medbreak}}\label{fig:pavia_center}
 	\end{subfigure}
 	\begin{subfigure}{.24\textwidth}
 		\centering
 		\captionsetup{skip=12pt,justification=centering}
 		\includegraphics[height=1.5\linewidth]{../analysis/pavia_university}
 		\subcaption{{\medbreak}}\label{fig:pavia_university}
+	\end{subfigure}
+	\begin{subfigure}{.24\textwidth}
+		\centering
+		\captionsetup{skip=12pt,justification=centering}
+		\includegraphics[height=1.5\linewidth]{../analysis/kennedy_space_center}
+		\subcaption{{\medbreak}}\label{fig:kennedy_space_center}
 	\end{subfigure}
 
 	\begin{subfigure}{.24\textwidth}
@@ -638,28 +742,33 @@ and contains a total of 16 classes (see figure~\ref{fig:kennedy_space_center}).
 		\includegraphics[height=1.5\linewidth]{../analysis/salinas_a}
 		\subcaption{{\medbreak}}\label{fig:salinas_a}
 	\end{subfigure}
-	\begin{subfigure}{.24\textwidth}
+    \begin{subfigure}{.24\textwidth}
 		\centering
 		\captionsetup{skip=12pt,justification=centering}
-		\includegraphics[height=1.5\linewidth]{../analysis/botswana}
-		\subcaption{{\medbreak}}\label{fig:botswana}
+		\includegraphics[height=1.5\linewidth]{../analysis/indian_pines}
+		\subcaption{{\medbreak}}\label{fig:indian_pines}
 	\end{subfigure}
-	\begin{subfigure}{.24\textwidth}
-		\centering
-		\captionsetup{skip=12pt,justification=centering}
-		\includegraphics[height=1.5\linewidth]{../analysis/kennedy_space_center}
-		\subcaption{{\medbreak}}\label{fig:kennedy_space_center}
-	\end{subfigure}
-	\caption{Gray scale visualization of a band (top row) and ground truth (bottom row) of
-		each scene used in this study. (a) Indian Pines, (b) Pavia Centre, (c) Pavia
-		University, (d) Salinas, (e) Salinas A, (f) Botswana, (g) Kennedy Space Center
-    }\label{fig:scenes}
 \end{figure}
 \begin{paracol}{2}
 \linenumbers
 \switchcolumn
 
-\subsection{Evaluation Metrics}
+\subsection{Machine Learning Algorithms}
+
+To assess the quality of the K-SMOTE algorithm, three other oversampling
+algorithms were used for benchmarking. ROS and SMOTE were chosen for their
+simplicity and popularity. B-SMOTE chosen as a popular
+variation of the SMOTE algorithm. We also include the classification
+results of no oversampling (NONE) as a baseline.
+
+To assess the performance of each oversampler, we use the classifiers Logistic
+Regression (LR) \cite{Nelder1972}, K-Nearest Neighbors (KNN)
+\cite{Cover1967}\deleted{, Decision Tree (DT) \cite{Salzberg1994}, Gradient
+Boosting Classifier (GBC) \cite{Friedman2001}} and Random Forest (RF)
+\cite{Liaw2002}. This choice was based on the classifiers' popularity for LULC
+classification, learning type and training time \cite{Maxwell2018,Gavade2019}.
+
+\subsection{Evaluation Metrics}~\label{sec:evaluation-metrics}
 
 Most of the satellite-based LULC classification studies (nearly 80\%) employ
 \textit{Overall Accuracy} (OA) and the \textit{Kappa Coefficient}
@@ -670,13 +779,14 @@ Other metrics like User's Accuracy (or \textit{Precision}) and Producer's
 Accuracy (or \textit{Recall}) are also common metrics to evaluate per-class
 prediction power. These metrics consist of ratios employing the True and False
 Positives (\textit{TP} and \textit{FP}, number of correctly/incorrectly
-classified observations of a given class) and True and False Negatives
-(\textit{TN} and \textit{FN}, number of correctly/incorrectly classified
-observations as not belonging to a given class). These metrics are formulated as
-$Precision = \frac{TP}{TP+FP}$ and $Recall = \frac{TP}{TP+FN}$. While metrics
-like OA and \textit{Kappa Coefficient} are significantly affected by imbalanced
-class distributions, \textit{F-Score} is less sensitive to data imbalance and a
-more appropriate choice for performance evaluation \cite{Jeni2013}.
+classified\replaced{ instances}{ observations} of a given class) and True and
+False Negatives (\textit{TN} and \textit{FN}, number of correctly/incorrectly
+classified\replaced{ instances}{ observations} as not belonging to a given
+class). These metrics are formulated as $Precision = \frac{TP}{TP+FP}$ and
+$Recall = \frac{TP}{TP+FN}$. While metrics like OA and \textit{Kappa
+Coefficient} are significantly affected by imbalanced class distributions,
+\textit{F-Score} is less sensitive to data imbalance and a more appropriate
+choice for performance evaluation \cite{Jeni2013}.
 
 The datasets used present significantly high IRs (see Table
 \ref{tab:datasets_description}). Therefore, it is especially important to
@@ -702,29 +812,16 @@ and 3) \textit{Overall Accuracy}, for discussion purposes.
 	      $$\textit{F-score}=2\frac{\overline{Precision} \times \overline{Recall}}{\overline{Precision} +
 			      \overline{Recall}}$$
 
-	\item \textit{Overall Accuracy} is the number of correctly classified observations
-	      divided by the total amount of observations. Having \( c \) as the label of the
-	      various classes, \textit{Accuracy} is given by the following formula:
+    \item \textit{Overall Accuracy} is the number of correctly
+        classified\replaced{ instances}{ observations}divided by the total
+        amount of\replaced{ instances}{ observations}. Having \( c
+        \) as the label of the various classes, \textit{Accuracy} is given by
+        the following formula:
 
 	      $$\textit{Accuracy} = \frac{ \sum\limits_{c}{ \text{TP}_{c} } }{
 			      \sum\limits_{c}{ (\text{TP}_{c}  + \text{FP}_{c}) } } $$
 
 \end{itemize}
-
-\subsection{Machine Learning Algorithms}
-
-To assess the quality of the K-SMOTE algorithm, three other oversampling
-algorithms were used for benchmarking. ROS and SMOTE were chosen for their
-simplicity and popularity. B-SMOTE chosen as a popular
-variation of the SMOTE algorithm. We also include the classification
-results of no oversampling (NONE) as a baseline.
-
-To assess the performance of each oversampler, we use the classifiers Logistic
-Regression (LR) \cite{Nelder1972}, K-Nearest Neighbors (KNN)
-\cite{Cover1967}, Decision Tree (DT) \cite{Salzberg1994}, Gradient Boosting
-Classifier (GBC) \cite{Friedman2001} and Random Forest (RF) \cite{Liaw2002}.
-This choice was based on the classifiers' popularity for LULC classification,
-learning type and training time \cite{Maxwell2018,Gavade2019}.
 
 \subsection{Experimental Procedure}
 
@@ -737,26 +834,31 @@ combination and initialization we use the evaluation strategy shown in Figure
 \ref{fig:experiment_pipeline}: $k$-fold cross-validation strategy where $k=5$
 to train each model defined and save the averaged scores of each split.
 
-Each combination of oversampler, classifier and parameters definition is fit 5
-times (once for each fold) per dataset. Each time, an oversampler will use the
-training set ($80\%$ of the dataset) to generate a set with artificial data,
-which is appended to the original training set in order to generate a training
-dataset with the exact same number of observations for each class. The newly
-formed training dataset is used to train the classifier and the test set ($20\%$
-of the dataset, the remaining fold) is used to evaluate the performance of the
-classifier. The evaluation scores are then averaged over the 5 times the process
-is repeated. The range of hyperparameters used are shown in table
-\ref{tab:grid}.
+\added{In the 5-fold cross validation strategy, a }\deleted{each} combination
+of oversampler, classifier and hyperparameters vector is fit 5 times
+\deleted{(once for each fold)} per dataset. \replaced{Before the training
+phase, the }{Each time, an oversampler will use the} training set
+(\added{containing }$\frac{4}{5}$ of the dataset) \deleted{to generate a set
+with artificial data, which is appended to the original training set in order
+to generate a training dataset} \added{is oversampled using one of the methods
+described (except for the baseline method NONE), creating an augmented
+dataset} with the exact same number of \replaced{instances}{ observations} for
+each class. The newly formed training dataset is used to train the classifier
+and the test set ($\frac{1}{5}$ of the dataset\deleted{, the remaining fold})
+is used to evaluate the performance of the classifier.  The evaluation scores
+are then averaged over the 5 times the process is repeated. The range of
+hyperparameters used are shown in table \ref{tab:grid}.
 
 \end{paracol}
 \begin{figure}
 	\centering
+    \captionsetup{justification=centering}
+    \caption{Experimental procedure. The performance metrics are averaged over
+    the 5 folds across each of the 3 different initializations of this
+    procedure for a given combination of oversampler, classifier and
+    hyperparameter definition.
+    \vspace{.25cm}}\label{fig:experiment_pipeline}
 	\includegraphics[width=1\linewidth]{../analysis/experiment_pipeline}
-	\caption{Experimental procedure. The performance metrics are averaged over
-    the 5 folds across each of the 3 different initializations of this procedure
-    for a given combination of oversampler, classifier and hyperparameter
-    definition.}
-	\label{fig:experiment_pipeline}
 \end{figure}
 \begin{paracol}{2}
 \linenumbers
@@ -765,7 +867,11 @@ is repeated. The range of hyperparameters used are shown in table
 \end{paracol}
 \begin{table}
 	\centering
-	\begin{tabular}{lll}
+    \captionsetup{justification=centering}
+    \caption{Hyper-parameters grid. $^*$~One cluster is generated in total, a
+    corner case that mimics the behavior of SMOTE
+    }\label{tab:grid}
+    \begin{tabular}{lll}
 		\toprule
 		Classifier       & Hyperparameters      & Values                            \\
 		\midrule
@@ -777,15 +883,13 @@ is repeated. The range of hyperparameters used are shown in table
 		Oversampler      &                      &                                   \\
 		\midrule
 		K-SMOTE          & \# neighbors  & {3, 5}                            \\
-		                 & \# clusters (as \% of number of observations)   & {1$^*$, 0.1, 0.3, 0.5, 0.7, 0.9}      \\
+		                 & \# clusters (as \% of number of\replaced{ instances}{ observations})   & {1$^*$, 0.1, 0.3, 0.5, 0.7, 0.9}      \\
                          & Exponent of mean distance & {auto, 2, 5, 7}       \\
                          & IR threshold  & {auto, 0.5, 0.75, 1.0}            \\
 		SMOTE            & \# neighbors  & {3, 5}                            \\
 		BORDERLINE SMOTE & \# neighbors  & {3, 5}                            \\
 		\bottomrule
 	\end{tabular}
-    \caption{\label{tab:grid}Hyper-parameters grid. $^*$~One cluster is generated in total, a corner
-        case that mimics the behavior of SMOTE}
 \end{table}
 \begin{paracol}{2}
 \linenumbers
@@ -803,78 +907,111 @@ All functions, algorithms, experiments and results are provided at the
 \href{https://github.com/AlgoWit/publications}{GitHub
 repository of the project}.
 
-\section{Results}~\label{sec:results}
-When evaluating the performance of an algorithm across multiple datasets, it is
-generally recommended to avoid direct score comparisons and use classification
-rankings instead~\cite{demvsar2006}. This is done by assigning a ranking to
-oversamplers based on the different combinations of classifier, metric and
-dataset used. These rankings are also used for the statistical analyses
-presented in Section~\ref{sec:statistical_analysis}.
+\pagebreak
+\section{Results\added{ \& Discussion}}~\label{sec:results}
 
-The rank values are assigned based on the mean validation scores resulting from
-the experiment described in Section~\ref{sec:methodology}. The averaged ranking
-results are computed over 3 different initialization seeds and a 5 fold cross
-validation scheme, returning a float value within the interval $[1,5]$. The mean
-rankings are presented in Table~\ref{tab:mean_sem_ranking}.
+When evaluating the performance of an algorithm across multiple datasets, it
+is generally recommended to avoid direct score comparisons and use
+classification rankings instead~\cite{demvsar2006}. This is done by assigning
+a ranking to oversamplers based on the different combinations of classifier,
+metric and dataset used. These rankings are also used for the statistical
+analyses presented in Section~\ref{sec:statistical_analysis}.
 
-The mean ranking results show that K-SMOTE consistently presents the best
-results for every classifier and performance metric used. The quantitative
-results of this analysis is presented in Table~\ref{tab:mean_sem_ranking}. In
-addition to its superior performance, in the majority of the cases K-SMOTE's
-mean ranking has a lower standard deviation than any of the remaining methods,
-and particularly when opposed to SMOTE (the best performing benchmark method).
+The rank values are assigned based on the mean validation scores resulting
+from the experiment described in Section~\ref{sec:methodology}. The averaged
+ranking results are computed over 3 different initialization seeds and a 5
+fold cross validation scheme, returning a \replaced{real number }{float
+value}within the interval $[1,5]$. The mean rankings are presented in
+Table~\ref{tab:mean_sem_ranking}.
+
+\subsection{\added{Results}}
+
+\deleted{The mean ranking results show that K-SMOTE consistently presents the
+best results for every classifier and performance metric used.} The
+\deleted{quantitative results of this analysis is} mean ranking of
+oversamplers is presented in Table~\ref{tab:mean_sem_ranking}. \replaced{This
+ranking was computed by averaging the ranks of the mean cross-validation
+scores per dataset, oversampler and classifier. K-SMOTE achieves the best mean
+ranking across datasets with low standard deviation.}{In addition to its
+superior performance, in the majority of the cases K-SMOTE's mean ranking has
+a lower standard deviation than any of the remaining methods, and particularly
+when opposed to SMOTE (the best performing benchmark method).}
 
 \end{paracol}
+\captionsetup{justification=centering}
 \pgfplotstabletypeset[
 	begin table=\begin{longtable},
-		end table=\end{longtable}, col sep=comma, header=true,
-	columns={Classifier,Metric,NONE,ROS,SMOTE,B-SMOTE,K-SMOTE}, string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
-	every last row/.style={after row=\bottomrule \caption{\label{tab:mean_sem_ranking}
-				Results for mean ranking of oversamplers across datasets.}}
+	end table=\end{longtable},
+	col sep=comma,
+	header=true,
+	columns={Classifier,Metric,NONE,ROS,SMOTE,B-SMOTE,K-SMOTE}, 
+    string type,
+    every head row/.style={before row={
+    \caption{
+    	Results for mean ranking of oversamplers across datasets.
+    }\label{tab:mean_sem_ranking}\\
+    \toprule}, after row=\midrule\endhead},
+	every last row/.style={after row=\bottomrule}
 ]{../analysis/mean_sem_ranking.csv}
 \begin{paracol}{2}
 \linenumbers
 \switchcolumn
 
 The mean cross-validation scores are shown in Table~\ref{tab:mean_sem_scores}.
-Considering the disparity of performance scores across datasets, the results
-presented in this table may not be as informative as the scores for each
-dataset, presented in Table~\ref{tab:cross_validation_scores}. K-SMOTE's
-performance is the highest in most classifier/metric combinations and
-datasets.
+\replaced{As discussed previously in this section,}{Considering} the disparity
+of performance \replaced{levels}{scores} across datasets\added{ makes the
+analysis of these scores less informative.}\deleted{, the results presented in
+this table may not be as informative as the scores for each dataset, presented
+in Table \ref{tab:cross_validation_scores}. K-SMOTE's performance is the
+highest in most classifier/metric combinations and datasets.}
 
 \end{paracol}
+\captionsetup{justification=centering}
 \pgfplotstabletypeset[
 	begin table=\begin{longtable},
-		end table=\end{longtable},  col sep=comma, header=true,
+	end table=\end{longtable},
+	col sep=comma,
+	header=true,
 	columns={Classifier,Metric,NONE,ROS,SMOTE,B-SMOTE,K-SMOTE}, 
-    string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
-	every last row/.style={after row=\bottomrule \caption{\label{tab:mean_sem_scores}
-				Mean cross-validation scores of oversamplers.}}
+    string type,
+    every head row/.style={before row={
+    \caption{
+		Mean cross-validation scores of oversamplers.
+    }\label{tab:mean_sem_scores}\\
+    \toprule}, after row=\midrule\endhead},
+	every last row/.style={after row=\bottomrule}
 ]{../analysis/mean_sem_scores.csv}
 \begin{paracol}{2}
 \linenumbers
 \switchcolumn
 
-The performance of both oversamplers and classifiers is generally dependent on
+\added{The mean cross-validation scores for each dataset are presented in
+Table~\ref{tab:cross_validation_scores}. This table allows the direct
+comparison of the performance metrics being analysed.}
+
+\deleted{The performance of both oversamplers and classifiers is generally dependent on
 the dataset being used. Although both absolute and relative scores between the
 different oversamplers are dependent on the choice of metric and classifier,
 K-SMOTE's relative performance is consistent across datasets and generally
-outperforms the remaining oversampling methods in 56 of the 63 tests.
+outperforms the remaining oversampling methods in 56 of the 63 tests.}
 
 \end{paracol}
+\captionsetup{justification=centering}
 \pgfplotstabletypeset[
 	begin table=\begin{longtable},
-		end table=\end{longtable},
+	end table=\end{longtable},
 	col sep=comma,
 	header=true,
-	columns={Dataset, Classifier,Metric,NONE,ROS,SMOTE,B-SMOTE,K-SMOTE}, 
+	columns={Dataset,Classifier,Metric,NONE,ROS,SMOTE,B-SMOTE,K-SMOTE}, 
     string type,
-	every head row/.style={before row=\toprule, after row=\midrule\endhead},
-	every last row/.style={after row=\bottomrule
-			\caption{\label{tab:cross_validation_scores}Mean cross-validation scores of oversamplers
-        for each dataset. Legend: IP \- Indian Pines, KSC \- Kennedy Space Center, PC \- Pavia Center,
-        PU \- Pavia University, SA \- Salinas A.}}
+    every head row/.style={before row={
+            \caption{Mean cross-validation scores \deleted{of oversamplers}
+            for each dataset.  Legend: IP - Indian Pines, KSC - Kennedy
+            Space Center, PC - Pavia Center, PU - Pavia University, SA -
+            Salinas A.
+        }\label{tab:cross_validation_scores}\\
+    \toprule}, after row=\midrule\endhead},
+	every last row/.style={after row=\bottomrule}
 ]
 {../analysis/wide_optimal.csv}
 \begin{paracol}{2}
@@ -889,18 +1026,93 @@ obtained in the Friedman test performed, where the null hypothesis is rejected
 in all cases.
 
 \end{paracol}
-\pgfplotstabletypeset[
-	begin table=\begin{longtable},
-		end table=\end{longtable},  col sep=comma, header=true,
-	columns={Classifier,Metric,p-value,Significance}, string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
-	every last row/.style={after row=\bottomrule \caption{\label{tab:friedman_test}
-				Results for Friedman test. Statistical significance is tested at a level of
-				$\alpha = 0.05$. The null hypothesis is that there is no difference in the
-                classification outcome across oversamplers.}}
-]{../analysis/friedman_test.csv}
+\begin{table}[H]
+    \caption{
+        Results for Friedman test. Statistical significance is tested at a
+        level of $\alpha = 0.05$. The null hypothesis is that there is no
+        difference in the classification outcome across oversamplers.
+    \vspace{-.6cm}}\label{tab:friedman_test}
+    \pgfplotstabletypeset[
+    	begin table=\begin{longtable},
+    		end table=\end{longtable},  col sep=comma, header=true,
+    	columns={Classifier,Metric,p-value,Significance}, string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
+    	every last row/.style={after row=\bottomrule}
+    ]{../analysis/friedman_test.csv}
+\end{table}
 \begin{paracol}{2}
 \linenumbers
 \switchcolumn
+
+\subsection{Discussion}
+
+\added{
+
+The mean rankings presented in Table~\ref{tab:mean_sem_ranking} show that on
+average, K-SMOTE produced the best results for every classifier and
+performance metric used. This is owed to the clustering phase and subsequent
+selection of data to be considered for oversampling. By successfully
+clustering and selecting the relevant areas in the data space to oversample,
+the SMOTE procedure was only used on minority classes within regions that
+represent well their spectral signature. This implies that this method,
+although successful in label noise free datasets such as the ones used in this
+experiment, is particularly effective for training classifiers whenever the
+ground truth data is both imbalanced and outdated.
+
+As previously discussed, the direct comparison of performance metrics averaged
+over various datasets is not recommended due to the varying levels of
+performance of classifiers across datasets~\cite{demvsar2006}. Nonetheless,
+these results are shown in Table~\ref{tab:mean_sem_scores} to provide a fuller
+picture of the results obtained in the experiment. We found that on average
+K-SMOTE provides increased performance, regardless of the classifier and
+performance metric used. More importantly, K-SMOTE guaranteed a more
+consistent performance across datasets and with less variability, which can be
+attested in Tables~\ref{tab:mean_sem_ranking},~\ref{tab:mean_sem_scores}
+and~\ref{tab:cross_validation_scores}. 
+
+As discussed in Subsection~\ref{sec:evaluation-metrics}, Evaluation Metrics,
+our results are consistent with the findings in~\cite{Olofsson2013,
+Pontius2011}. Particularly, we consider the results obtained in our experiment
+using Overall Accuracy to be less informative than the results obtained with
+the remaining performance metrics, since this metric is affected by imbalanced
+class distributions. The class imbalance bias in this metric can be observed
+in our experiment in Table~\ref{tab:mean_sem_ranking} with the classifiers LR
+and KNN, where the control method (NONE) is only outperformed by K-SMOTE. This
+effect is observed with more detail in Table~\ref{tab:mean_sem_scores}, where
+the benchmark oversamplers are outperformed by the control method in 16 out of
+63 tests (approximately 25\%). Out of these, 11 refer to tests using overall
+accuracy, while 9 of these 11 are found among the four datasets with highest
+IR, showing the overall accuracy's class imbalance bias discussed
+in~\cite{Olofsson2013, Pontius2011}. Regardless, K-SMOTE is only outperformed
+by the control method in 3 out of 63 tests (approximately 4.7\%), where all of
+those tests use overall accuracy. This represents an improvement over the
+benchmark oversamplers, showing that generally K-SMOTE is the best choice even
+when overall accuracy is used as the main performance metric.
+
+In addition to its superior performance, in the majority of the cases
+K-SMOTE's mean ranking has a lower standard deviation than any of the
+remaining methods, and particularly when opposed to SMOTE (the best performing
+benchmark method). This shows that the non-random selection of data spaces to
+oversample contributes to the quality of the data generated even on label
+noise-free data, making it a more informed data generation method in the
+context of LULC, as label noise and rare classes are particularly frequent in
+this domain. 
+
+The performance of both oversamplers and classifiers is generally dependent on
+the dataset being used. Although both absolute and relative scores between the
+different oversamplers are dependent on the choice of metric and classifier,
+K-SMOTE's relative performance is consistent across datasets and generally
+outperforms the remaining oversampling methods in 56 of the 63 tests
+(approximately 89\%). The mean cross-validation results found in
+Table~\ref{tab:cross_validation_scores} show that performance-wise, K-SMOTE is
+always better than or as good as SMOTE, with the exception of 4 situations
+(representing 6\% of the tests done), in which cases the percentage point
+difference is neglectable ($\leq 0.1$ percentage points). This shows that, in
+most cases, the usage of a cluster based procedure before employing the SMOTE
+algorithm (in this case, K-SMOTE) improves the quality of LULC classification
+when compared to using SMOTE in its original format, which remains the
+most popular oversampler among the remote sensing community.
+
+}
 
 \section{Conclusion}~\label{sec:conclusion} 
 
@@ -924,25 +1136,26 @@ methods due to their widespread usage, easy implementation and flexibility.
 Specifically, this paper demonstrated the efficacy of a recent oversampler,
 K-Means SMOTE, applied in a multi-class context for Land Cover Classification
 tasks. This was done with sampled data from seven well known and naturally
-imbalanced benchmark datasets: Indian Pines, Pavia Centre, Pavia University,
-Salinas, Salinas A, Botswana and Kennedy Space Center. For each combination of
-dataset, oversampler and classifier, the results of every classification task
-was averaged across a 5 fold stratification strategy with 3 different
-initialization seeds, resulting in a mean validation score of 15
+imbalanced benchmark datasets: Indian Pines, Pavia Cent\replaced{er}{re},
+Pavia University, Salinas, Salinas A, Botswana and Kennedy Space Center. For
+each combination of dataset, oversampler and classifier, the results of every
+classification task was averaged across a 5 fold stratification strategy with
+3 different initialization seeds, resulting in a mean validation score of 15
 classification tasks. The mean validation score of each combination was then
 used to perform the analyses presented in this report.
 
-In 56 out of 63 classification tasks, K-SMOTE led to better results than ROS,
-SMOTE, B-SMOTE and no oversampling. More importantly, we found that K-Means
-SMOTE is always better or equal than the second best oversampling method.
-K-SMOTE's performance was independent from both the classifier and performance
-metric under analysis. In general, K-SMOTE shows a higher performance among
-the non tree-based classifiers employed, when compared to the remaining
-oversamplers. Although these findings are case dependent, they are consistent
-with the results presented in~\cite{Douzas2018}. The proposed method also had
-the most consistent results across datasets, since it produced the lowest
-standard deviations across datasets in 7 out of 9 cases for both analyses,
-either based on ranking or mean cross-validation scores.
+In 56 out of 63 classification tasks \added{(approximately 89\%)}, K-SMOTE led
+to better results than ROS, SMOTE, B-SMOTE and no oversampling. More
+importantly, we found that K-Means SMOTE is always better or equal than the
+second best oversampling method. K-SMOTE's performance was independent from
+both the classifier and performance metric under analysis. In general, K-SMOTE
+shows a higher performance among the non tree-based classifiers employed, when
+compared to the remaining oversamplers. Although these findings are case
+dependent, they are consistent with the results presented
+in~\cite{Douzas2018}. The proposed method also had the most consistent results
+across datasets, since it produced the lowest standard deviations across
+datasets in 7 out of 9 cases for both analyses, either based on ranking or
+mean cross-validation scores.
 
 The proposed algorithm is a generalization of the original SMOTE algorithm. In
 fact, the SMOTE algorithm represents a corner case of K-SMOTE i.e. when the
