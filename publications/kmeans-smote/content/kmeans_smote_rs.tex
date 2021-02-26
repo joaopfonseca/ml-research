@@ -584,12 +584,18 @@ developed.
 \subsection{Datasets}
 
 The datasets used were extracted from publicly available hyperspectral scenes.
-Information regarding each of these scenes is provided in this subsection. A
-similar data preprocessing procedure was used for each scene: 
-
+Information regarding each of these scenes is provided in this subsection.
+\replaced{The data collection and preprocessing pipeline is shown in
+    Figure~\ref{fig:data_preprocessing_pipeline}
+and is common to all hyperspectral scenes:}{A similar data preprocessing procedure was used for each scene:}
 
 \begin{enumerate}
     
+    \item \added{Data collection of publicly available hyperspectral scenes.
+        The original hyperspectral scenes and ground truth data were collected
+        from a single publicly available data repository available
+        \href{http://www.ehu.eus/ccwintco/index.php?title=Hyperspectral_Remote_Sensing_Scenes}{here}.}
+
     \item \added{Conversion of each hyperspectral scene to a structured
         dataset and removal of instances with no associated LULC class. This
         done to reshape the dataset from $(h,w,b+gt)$  into a conventional
@@ -615,6 +621,19 @@ similar data preprocessing procedure was used for each scene:
         was rescaled between 0 and 1.}
 
 \end{enumerate}
+
+\end{paracol}
+\begin{figure}[H]
+	\centering
+    \captionsetup{justification=centering}
+    \caption{\added{Data collection and preprocessing pipeline.}
+    \vspace{.2cm}}
+	\label{fig:data_preprocessing_pipeline}
+	\includegraphics[width=.8\linewidth]{../analysis/data_preprocessing_pipeline}
+\end{figure}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 Table~\ref{tab:datasets_description} provides a description of the final
 datasets used for this work\added{, sorted according to its IR.
