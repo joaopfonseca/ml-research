@@ -11,6 +11,8 @@ publications/_*
 *.fls
 *.fdb_latexmk
 *.spl
+*.loc
+*.soc
 
 
 # Byte-compiled / optimized / DLL files
