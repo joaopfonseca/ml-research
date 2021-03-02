@@ -1,0 +1,8 @@
+Dataset,NONE,ROS,SMOTE,B-SMOTE
+BOTSWANA,\textbf{3.1e-02},\textbf{3.9e-03},\textbf{3.9e-03},\textbf{3.9e-03}
+INDIAN PINES,\textbf{3.1e-02},\textbf{3.9e-03},\textbf{7.8e-03},\textbf{3.9e-03}
+KENNEDY SPACE CENTER,\textbf{3.1e-02},\textbf{3.9e-03},\textbf{2.7e-02},\textbf{3.9e-03}
+PAVIA CENTRE,\textbf{3.1e-02},\textbf{3.9e-03},\textbf{1.2e-02},\textbf{3.9e-03}
+PAVIA UNIVERSITY,\textbf{3.1e-02},\textbf{3.9e-03},\textbf{3.9e-03},\textbf{3.9e-03}
+SALINAS,\textbf{3.1e-02},5.5e-02,\textbf{2.7e-02},\textbf{3.9e-03}
+SALINAS A,\textbf{3.1e-02},\textbf{3.9e-03},\textbf{1.2e-02},\textbf{3.9e-03}
