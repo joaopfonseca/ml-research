@@ -14,6 +14,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns; sns.set()
+from scipy.stats import wilcoxon
 from rlearn.tools import (
     combine_results,
     select_results,
@@ -23,22 +24,21 @@ from rlearn.tools import (
     calculate_mean_sem_perc_diff_scores,
     calculate_mean_sem_ranking,
     apply_friedman_test,
-    apply_holms_test
 )
 from sklearn.datasets import make_classification
 from sklearn.svm import LinearSVC
 from imblearn.pipeline import make_pipeline
 from imblearn.over_sampling import SMOTE
-sys.path.append(join(dirname(__file__),'..', '..', '..'))
-from utils import (
+from research.utils import (
     load_datasets,
     generate_paths,
     generate_pvalues_tbl,
     generate_mean_std_tbl,
     sort_tbl,
     make_bold,
-    RemoteSensingDatasets
 )
+from research.metrics import SCORERS
+from research.datasets import RemoteSensingDatasets
 
 RESULTS_NAMES = ('none', 'ros', 'smote', 'bsmote', 'ksmote')
 OVRS_NAMES = ('NONE', 'ROS', 'SMOTE', 'B-SMOTE', 'K-SMOTE')
@@ -50,7 +50,7 @@ DATASETS_NAMES = ('indian_pines', 'salinas', 'salinas_a', 'pavia_centre', 'pavia
 def _make_bold_stat_signif(value, sig_level=.05):
     """Make bold the lowest or highest value(s)."""
 
-    val = '{%.1e}' % value
+    val = '%.1e' % value
     val = (
         '\\textbf{%s}' % val
         if value <= sig_level
@@ -103,14 +103,17 @@ def calculate_max_improvement(results, oversamplers=None):
 def generate_mean_std_tbl_bold(mean_vals, std_vals, maximum=True, decimals=2):
     """Generate table that combines mean and sem values."""
     index = mean_vals.iloc[:, :2]
-    mean_bold = mean_vals.iloc[:, 2:].apply(lambda row: _make_bold(row, maximum, decimals)[0], axis=1)
-    mask = mean_vals.iloc[:, 2:].apply(lambda row: _make_bold(row, maximum, decimals)[1], axis=1).values
+    mean_bold = mean_vals.iloc[:, 2:].apply(
+        lambda row: _make_bold(row, maximum, decimals)[0], axis=1)
+    mask = mean_vals.iloc[:, 2:].apply(
+        lambda row: _make_bold(row, maximum, decimals)[1], axis=1).values
     std_bold = np.round(std_vals.iloc[:, 2:], decimals).astype(str)
     std_bold = np.where(mask, std_bold+'}', std_bold)
-    scores = mean_bold + r" $\pm$ "  + std_bold
+    scores = mean_bold + r" $\pm$ " + std_bold
 
     tbl = pd.concat([index, scores], axis=1)
     return tbl
+
 
 def generate_main_results():
     """Generate the main results of the experiment."""
@@ -129,28 +132,83 @@ def generate_main_results():
     )
 
     mean_sem_scores = sort_tbl(
-        generate_mean_std_tbl_bold(*calculate_mean_sem_scores(results), maximum=True, decimals=3),
+        generate_mean_std_tbl_bold(
+            *calculate_mean_sem_scores(results), maximum=True, decimals=3),
         ovrs_order=OVRS_NAMES, clfs_order=CLFS_NAMES
     )
     mean_sem_perc_diff_scores = sort_tbl(
-        generate_mean_std_tbl(*calculate_mean_sem_perc_diff_scores(results, ['SMOTE', 'K-SMOTE'])),
+        generate_mean_std_tbl(
+            *calculate_mean_sem_perc_diff_scores(results, ['SMOTE', 'K-SMOTE'])
+        ),
         ovrs_order=OVRS_NAMES, clfs_order=CLFS_NAMES
     )
     mean_sem_ranking = sort_tbl(
-        generate_mean_std_tbl_bold(*calculate_mean_sem_ranking(results), maximum=False),
+        generate_mean_std_tbl_bold(
+            *calculate_mean_sem_ranking(results), maximum=False),
         ovrs_order=OVRS_NAMES, clfs_order=CLFS_NAMES
     )
-    main_results_names = ('wide_optimal', 'mean_sem_scores', 'mean_sem_perc_diff_scores', 'mean_sem_ranking')
+    main_results_names = (
+        'wide_optimal',
+        'mean_sem_scores',
+        'mean_sem_perc_diff_scores',
+        'mean_sem_ranking'
+    )
 
-    return zip(main_results_names, (wide_optimal, mean_sem_scores, mean_sem_perc_diff_scores, mean_sem_ranking))
+    return zip(
+        main_results_names,
+        (wide_optimal, mean_sem_scores,
+         mean_sem_perc_diff_scores, mean_sem_ranking)
+    )
+
+
+def apply_wilcoxon_test(wide_optimal, dep_var, OVRS_NAMES, alpha):
+    """Performs a Wilcoxon signed-rank test"""
+    pvalues = []
+    for ovr in OVRS_NAMES[:-1]:
+        mask = (wide_optimal['Metric'] != 'accuracy') \
+            if ovr == 'NONE' \
+            else np.repeat(True, len(wide_optimal))
+
+        pvalues.append(wilcoxon(
+            wide_optimal.loc[mask, ovr],
+            wide_optimal.loc[mask, 'K-SMOTE']).pvalue
+        )
+    wilcoxon_results = pd.DataFrame({
+        'Oversampler': OVRS_NAMES[:-1],
+        'p-value': pvalues,
+        'Significance': np.array(pvalues) < alpha
+    })
+    return wilcoxon_results
+
 
 def generate_statistical_results():
     """Generate the statistical results of the experiment."""
 
-    friedman_test = sort_tbl(generate_pvalues_tbl(apply_friedman_test(results)), ovrs_order=OVRS_NAMES, clfs_order=CLFS_NAMES)
-    holms_test = sort_tbl(generate_pvalues_tbl_bold(apply_holms_test(results, control_oversampler='K-SMOTE')), ovrs_order=OVRS_NAMES[:-1], clfs_order=CLFS_NAMES)
-    statistical_results_names = ('friedman_test', 'holms_test')
-    statistical_results = zip(statistical_results_names, (friedman_test, holms_test))
+    wide_optimal = calculate_wide_optimal(results)
+
+    friedman_test = sort_tbl(
+        generate_pvalues_tbl(apply_friedman_test(results)),
+        ovrs_order=OVRS_NAMES, clfs_order=CLFS_NAMES
+    )
+
+    # Wilcoxon signed rank test
+    wilcoxon_test = []
+    for dataset in wide_optimal.Dataset.unique():
+        wilcoxon_results = apply_wilcoxon_test(
+            wide_optimal[wide_optimal['Dataset'] == dataset],
+            'K-MEANS',
+            OVRS_NAMES,
+            .05
+        ).set_index('Oversampler')['p-value'].rename(dataset)
+        wilcoxon_test.append(wilcoxon_results)
+    wilcoxon_test = pd.concat(wilcoxon_test, axis=1)\
+        .T.reset_index().rename(columns={'index': 'Dataset'})
+    wilcoxon_test = generate_pvalues_tbl_bold(wilcoxon_test)
+
+    statistical_results_names = ('friedman_test', 'wilcoxon_test')
+    statistical_results = zip(
+        statistical_results_names, (friedman_test, wilcoxon_test)
+    )
 
     return statistical_results
 
@@ -350,7 +408,7 @@ def make_resampling_example():
 
 if __name__=='__main__':
 
-    data_path, results_path, analysis_path = generate_paths()
+    data_path, results_path, analysis_path = generate_paths(__file__)
 
     # load datasets
     datasets = load_datasets(data_dir=data_path)
@@ -383,5 +441,6 @@ if __name__=='__main__':
     # Statistical results
     statistical_results = generate_statistical_results()
     for name, result in statistical_results:
-        result['Metric'] = result['Metric'].map(METRICS_MAPPING)
+        if name == 'friedman_test':
+            result['Metric'] = result['Metric'].map(METRICS_MAPPING)
         result.to_csv(join(analysis_path, f'{name}.csv'), index=False)
