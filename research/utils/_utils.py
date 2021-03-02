@@ -61,9 +61,12 @@ def generate_paths(filepath):
     return paths
 
 
-def make_bold(row, maximum=True, num_decimals=2, threshold=None):
+def make_bold(
+    row, maximum=True, num_decimals=2, threshold=None, with_sem=False
+):
     """
     Make bold the lowest or highest value(s).
+    with_sem simply returns an incomplete textbf latex function.
     """
     row = round(row, num_decimals)
     if threshold is None:
@@ -75,9 +78,16 @@ def make_bold(row, maximum=True, num_decimals=2, threshold=None):
     row = row.apply(lambda el: formatter.format(el))
     row[mask] = [
         '\\textbf{%s' % formatter.format(v)
+        if with_sem else '\\textbf{%s}' % formatter.format(v)
         for v in row[mask].astype(float)
     ]
-    return row, mask
+
+    # Return mask only if function is being used to generate
+    # a table with sem values
+    if with_sem:
+        return row, mask
+    else:
+        return row
 
 
 def generate_mean_std_tbl_bold(
@@ -87,10 +97,16 @@ def generate_mean_std_tbl_bold(
     Generate table that combines mean and sem values.
     """
     mean_bold = mean_vals.apply(
-        lambda row: make_bold(row, maximum, decimals, threshold)[0], axis=1
+        lambda row: make_bold(
+            row, maximum, decimals, threshold, with_sem=True
+        )[0],
+        axis=1
     )
     mask = mean_vals.apply(
-        lambda row: make_bold(row, maximum, decimals, threshold)[1], axis=1
+        lambda row: make_bold(
+            row, maximum, decimals, threshold, with_sem=True
+        )[1],
+        axis=1
     ).values
     std_bold = np.round(std_vals, decimals).astype(str)
     std_bold = np.where(mask, std_bold+'}', std_bold)
