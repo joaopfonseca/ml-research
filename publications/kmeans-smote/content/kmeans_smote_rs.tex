@@ -490,15 +490,21 @@ This last issue, the generation of noisy instances due to the existence of
 several minority class clusters, is particularly relevant in remote sensing.
 It is frequent that instances belonging to the same minority class can have
 different spectral signatures, meaning that they will be clustered in
-different parts of the input space. In this context, the use of SMOTE will
-lead to the generation of noisy instances of the minority class. This problem
-can be efficiently mitigated through the use of a cluster-based oversampling.
-According to our literature review cluster-based oversampling approaches have
-never been applied in the context of remote sensing. On the other hand, while
-there are several references of the application of cluster-based oversampling
-in the context of machine learning, there is no such \added{an} application
-for the multiclass case, a fundamental requirement for the application of
-oversampling in the context of LULC. 
+different parts of the input space. \added{For example, in the classification
+of a hyperspectral scene dominated by agricultural activities, patches
+relating to urban areas may constitute a minority class. These patches
+frequently refer to different types of land use, such as housing regions,
+small gardens, asphalt roads, etc., all these containing different spectral
+signatures.} In this context, the use of SMOTE will lead to the generation of
+noisy instances of the minority class. This problem can be efficiently
+mitigated through the use of a cluster-based oversampling method. According to
+our literature review cluster-based oversampling approaches have never been
+applied in the context of remote sensing. On the other hand, while there are
+\deleted{several} references of the application of cluster-based oversampling
+in the context of machine learning~\cite{Santos2015, Douzas2017, Ma2017,
+Douzas2018}, \replaced{the multiclass case is rarely addressed, which is
+}{there is no such application for the multiclass case,} a fundamental
+requirement for the application of oversampling in the context of LULC. 
 
 Cluster-based oversampling approaches introduce an additional layer to SMOTE's
 selection mechanism, which is done through the inclusion of a clustering
@@ -1042,7 +1048,9 @@ outperforms the remaining oversampling methods in 56 of the 63 tests.}
 The experiment's multi-dataset context was used to perform a Friedman
 test~\cite{friedman1937use}. Table~\ref{tab:friedman_test} shows the results
 obtained in the Friedman test performed, where the null hypothesis is rejected
-in all cases.
+in all cases. \added{The rejection of the null hypothesis implies that at
+least one method is capable of stochastically dominating the remaining
+methods.}
 
 \end{paracol}
 \begin{table}[H]
@@ -1061,6 +1069,38 @@ in all cases.
 \begin{paracol}{2}
 \linenumbers
 \switchcolumn
+
+\added{
+A Wilcoxon signed-rank test was also performed to understand whether K-SMOTE's
+superiority was statistically significant across datasets and oversamplers, as
+per the recommendations in \cite{Demsar2006}. This method is used as an
+alternative to the paired Student's t-test, since the distribution of the
+differences between the two samples cannot be assumed as normally distributed.
+Our test had as null hypothesis that the pairwise difference between K-SMOTE's
+scores and the ones from the remaining oversamplers follow a symmetric
+distribution around zero, i.e., K-SMOTE's performance is similar to the
+compared oversampler. Although the Accuracy metric is not used to test the
+statistical significance in the NONE case, all metrics are used to test the
+remaining methods. This decision is discussed in the next subsection.}
+
+\end{paracol}
+\begin{table}[H]
+    \caption{
+        \textit{p-values} of the Wilcoxon signed-rank test. Boldface values
+        are statistically significant at a significance level of $\alpha =
+        0.05$.
+    \vspace{-.6cm}}\label{tab:wilcoxon_test}
+    \pgfplotstabletypeset[
+    	begin table=\begin{longtable},
+    		end table=\end{longtable},  col sep=comma, header=true,
+    	columns={Dataset,NONE,ROS,SMOTE,B-SMOTE}, string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
+    	every last row/.style={after row=\bottomrule}
+    ]{../analysis/wilcoxon_test.csv}
+\end{table}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
+
 
 \subsection{Discussion}
 
@@ -1103,9 +1143,9 @@ accuracy, while 9 of these 11 are found among the four datasets with highest
 IR, showing the overall accuracy's class imbalance bias discussed
 in~\cite{Olofsson2013, Pontius2011}. Regardless, K-SMOTE is only outperformed
 by the control method in 3 out of 63 tests (approximately 4.7\%), where all of
-those tests use overall accuracy. This represents an improvement over the
-benchmark oversamplers, showing that generally K-SMOTE is the best choice even
-when overall accuracy is used as the main performance metric.
+those tests use overall accuracy. This is an improvement over the benchmark
+oversamplers, showing that generally K-SMOTE is the best choice even when
+overall accuracy is used as the main performance metric.
 
 In addition to its superior performance, in the majority of the cases
 K-SMOTE's mean ranking has a lower standard deviation than any of the
@@ -1125,12 +1165,25 @@ outperforms the remaining oversampling methods in 56 of the 63 tests
 Table~\ref{tab:cross_validation_scores} show that performance-wise, K-SMOTE is
 always better than or as good as SMOTE, with the exception of 4 situations
 (representing 6\% of the tests done), in which cases the percentage point
-difference is neglectable ($\leq 0.1$ percentage points). This shows that, in
-most cases, the usage of a cluster based procedure before employing the SMOTE
-algorithm (in this case, K-SMOTE) improves the quality of LULC classification
-when compared to using SMOTE in its original format, which remains the
-most popular oversampler among the remote sensing community.
+difference is neglectable ($\leq 0.1$ percentage points). 
 
+The statistical tests showed that not only there is a statistically
+significant difference across the oversamplers used in this problem (found in
+the Friedman test presented in Table~\ref{tab:friedman_test}), but also that
+K-SMOTE's superior performance is statistically significant at a level of 0.05
+in 27 out of 28 tests (approximately 96\% of the tests performed). This shows
+that, in most cases, the usage of a cluster based procedure before employing
+the SMOTE algorithm (in this case, K-SMOTE) improves the quality of LULC
+classification when compared to using SMOTE in its original format, which
+remains the most popular oversampler among the remote sensing community.
+
+Although the usage of a cluster based procedure successfully captured the
+spectral signatures of the minority classes, it was done using K-means, a
+problem-agnostic clusterer. Consequently, the implementation of this method
+using a GIS-specific clusterer that considers the geographical traits of
+different regions (e.g., using the sampled pixels' geographical coordinates),
+may be a promising direction towards the development of more appropriate
+oversampling techniques in the remote sensing domain.
 }
 
 \section{Conclusion}~\label{sec:conclusion} 
@@ -1168,13 +1221,14 @@ to better results than ROS, SMOTE, B-SMOTE and no oversampling. More
 importantly, we found that K-Means SMOTE is always better or equal than the
 second best oversampling method. K-SMOTE's performance was independent from
 both the classifier and performance metric under analysis. In general, K-SMOTE
-shows a higher performance among the non tree-based classifiers employed, when
-compared to the remaining oversamplers. Although these findings are case
-dependent, they are consistent with the results presented
-in~\cite{Douzas2018}. The proposed method also had the most consistent results
-across datasets, since it produced the lowest standard deviations across
-datasets in 7 out of 9 cases for both analyses, either based on ranking or
-mean cross-validation scores.
+shows a higher performance among the non tree-based classifiers employed
+\added{(LR and KNN)} when compared with the remaining oversamplers,
+\added{where these oversamplers generally failed to improve the quality of
+classification}. Although these findings are case dependent, they are
+consistent with the results presented in~\cite{Douzas2018}. The proposed
+method also had the most consistent results across datasets, since it produced
+the lowest standard deviations across datasets in 7 out of 9 cases for both
+analyses, either based on ranking or mean cross-validation scores.
 
 The proposed algorithm is a generalization of the original SMOTE algorithm. In
 fact, the SMOTE algorithm represents a corner case of K-SMOTE i.e. when the
