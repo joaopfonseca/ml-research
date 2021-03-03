@@ -45,6 +45,15 @@ OVRS_NAMES = ('NONE', 'ROS', 'SMOTE', 'B-SMOTE', 'K-SMOTE')
 CLFS_NAMES = ('LR', 'KNN', 'RF')
 METRICS_MAPPING = dict([('accuracy', 'Accuracy'), ('f1_macro', 'F-score'), ('geometric_mean_score_macro', 'G-mean')])
 DATASETS_NAMES = ('indian_pines', 'salinas', 'salinas_a', 'pavia_centre', 'pavia_university', 'kennedy_space_center', 'botswana')
+DATASETS_ORDER = [
+    'BOTSWANA',
+    'PAVIA CENTRE',
+    'KENNEDY SPACE CENTER',
+    'SALINAS A',
+    'PAVIA UNIVERSITY',
+    'SALINAS',
+    'INDIAN PINES'
+]
 
 
 def _make_bold_stat_signif(value, sig_level=.05):
@@ -125,6 +134,16 @@ def generate_main_results():
         .set_index(['Dataset', 'Classifier', 'Metric'])\
         .apply(lambda row: make_bold(row, num_decimals=3), axis=1)\
         .reset_index()
+
+    # Order by dataset's IR
+    wide_optimal['Dataset'] = pd.Categorical(
+        wide_optimal.Dataset.astype(str),
+        categories=DATASETS_ORDER,
+        ordered=True
+    )
+    wide_optimal.sort_values('Dataset', inplace=True)
+
+    # Set dataset names to acronyms
     wide_optimal['Dataset'] = wide_optimal['Dataset'].apply(
         lambda x: x.title()
         if len(x.split(' ')) == 1
@@ -199,11 +218,19 @@ def generate_statistical_results():
             'K-MEANS',
             OVRS_NAMES,
             .05
-        ).set_index('Oversampler')['p-value'].rename(dataset)
+        ).set_index('Oversampler')['p-value'].rename(dataset.title())
         wilcoxon_test.append(wilcoxon_results)
     wilcoxon_test = pd.concat(wilcoxon_test, axis=1)\
         .T.reset_index().rename(columns={'index': 'Dataset'})
     wilcoxon_test = generate_pvalues_tbl_bold(wilcoxon_test)
+
+    # Order by dataset's IR
+    wilcoxon_test['Dataset'] = pd.Categorical(
+        wilcoxon_test.Dataset.astype(str),
+        categories=[dat.title() for dat in DATASETS_ORDER],
+        ordered=True
+    )
+    wilcoxon_test.sort_values('Dataset', inplace=True)
 
     statistical_results_names = ('friedman_test', 'wilcoxon_test')
     statistical_results = zip(
