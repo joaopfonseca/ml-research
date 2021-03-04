@@ -65,7 +65,7 @@
     using SMOTE and Geometric SMOTE as data generators. We compare the new AL
     framework to the original one using similar acquisition functions and
     predictors over three AL-specific performance metrics in seven benchmark
-    datasets. We show that this modification to the AL framework significantly
+    datasets. We show that this modification of the AL framework significantly
     reduces cost and time requirements for a successful AL implementation in
     the context of remote sensing. 
 \end{abstract}
@@ -233,8 +233,8 @@ describe the state of the art in AL and Oversampling techniques,
 Section~\ref{sec:proposed-method} explains the proposed method,
 Section~\ref{sec:methodology} covers the datasets, evaluation metrics, ML
 classifiers and experimental procedure, Section~\ref{sec:results} presents the
-experiment's results and Section~\ref{sec:conclusion} presents the conclusions
-drawn from our findings.
+experiment's results and discussion and Section~\ref{sec:conclusion} presents
+the conclusions drawn from our findings.
 
 \section{Active Learning Approaches}~\label{sec:al-sota}
 
@@ -255,7 +255,7 @@ dataset each time~\cite{Ruzicka2020}. Typically, an AL framework is composed of
         classification uncertainty is higher.
     \item Initial training sample. It is a small sample of the unlabeled
         dataset, used to initiate the first AL iteration. The size of the
-        initial training sample normally varies between no observations at all
+        initial training sample normally varies between no instances at all
         and 10\%~\cite{Li2013}.
     \item Augmented training dataset. This dataset is the concatenation of the
         labeled initial training sample along with the datasets labeled by the
@@ -263,17 +263,17 @@ dataset each time~\cite{Ruzicka2020}. Typically, an AL framework is composed of
     \item Uncertainty map. The dataset containing the highest uncertainty
         points/patches to be labeled by the oracle.
     \item Oracle. An external entity to which the uncertainty map is presented
-        to. The oracle is responsible for annotating unlabeled samples to be
+        to. The oracle is responsible for annotating unlabeled instances to be
         added to the augmented dataset. In remote sensing, the oracle is
         typically a photo-interpreter, as is the case in~\cite{li2020}. Some of
         the research also refers to the oracle as the
         \textit{supervisor}~\cite{Su2020, Shrivastava2021}.
-    \item Chooser. Produces the class probabilities for each unlabeled sample.
-        This is a classifier trained using the augmented dataset. It is used to
-        estimate the class probabilities for each sample over the unlabeled
-        dataset.
+    \item Chooser. Produces the class probabilities for each unlabeled
+        instance. This is a classifier trained using the augmented dataset.
+        It is used to estimate the class probabilities for each instance over
+        the unlabeled dataset.
     \item Selection criterion. It quantifies the chooser's uncertainty level
-        for each sample belonging to the unlabeled dataset. It is typically
+        for each instance belonging to the unlabeled dataset. It is typically
         based on the class probabilities assigned by the chooser. In some
         situations, the chooser and the selection criterion are grouped
         together under the concept \textit{acquisition
@@ -297,7 +297,7 @@ applications, the oracle is frequently a group of
 photo-interpreters~\cite{Kottke2017}. The chooser is trained on the resulting
 dataset and is used to predict the class probabilities on the unlabeled
 dataset. The class probabilities are fed into a selection criterion to estimate
-the prediction's uncertainty, out of which the samples with the highest
+the prediction's uncertainty, out of which the instances with the highest
 uncertainty will be selected. This calculation is motivated by the absence of
 labels in the uncertainty dataset. Therefore, it is impossible to estimate the
 prediction's accuracy in a real case scenario. The iteration is completed when
@@ -324,18 +324,18 @@ phenomenon was observed and documented in a LULC classification context
 in~\cite{tuia2011using}.
 
 Selecting an efficient selection criterion is particularly important to find
-the samples closest to the decision border (\textit{i.e.}, samples difficult to
-classify)~\cite{Shrivastava2021}. Therefore, most of AL related studies focus
-on the design of the query/acquisition function~\cite{Su2020}.
+the instances closest to the decision border (\textit{i.e.}, instances
+difficult to classify)~\cite{Shrivastava2021}. Therefore, most of AL related
+studies focus on the design of the query/acquisition function~\cite{Su2020}.
 
 \subsection{Non-informed selection criteria}
 
 Only one non-informed (\textit{i.e.}, random) selection criterion was found in
-the literature. Random sampling selects unlabeled samples without considering
-any external information produced by the chooser. Since the method for
-selecting the unlabeled samples is random, this method disregards the usage of
-a chooser and is comparatively worse than any other selection criterion.
-However, random sampling is still a powerful baseline
+the literature. Random sampling selects unlabeled instances without
+considering any external information produced by the chooser. Since the method
+for selecting the unlabeled instances is random, this method disregards the
+usage of a chooser and is comparatively worse than any other selection
+criterion. However, random sampling is still a powerful baseline
 method~\cite{Cawley2011}. Generally, different AL initializations result in
 high performance variability~\cite{Kottke2017}. When this happens, the
 analysis of the mean performances over multiple repetitions is not of interest
@@ -346,16 +346,16 @@ methods along with their corresponding variances.
 
 Ensemble disagreement is based on the class predictions of a set of
 classifiers. The disagreement between all the predictions for a given
-observation is a common measure for uncertainty, although computationally
+instance is a common measure for uncertainty, although computationally
 inefficient~\cite{Ruzicka2020,Pasolli2016}. It is calculated using the set of
-classifications over a single observation, given by the number of votes
+classifications over a single instance, given by the number of votes
 assigned to the most frequent class~\cite{Shrivastava2021}. This method was
 implemented successfully for complex applications such as deep active
 learning~\cite{Ruzicka2020}.
 
 Multiview~\cite{Muslea2006} consists on the training of multiple independent
 classifiers using different views, which correspond to the selection of subsets
-of features or observations in the dataset. Therefore, it can be seen as a
+of features or instances in the dataset. Therefore, it can be seen as a
 bootstrap aggregation (bagging) ensemble disagreement method. It is represented
 by the maximum disagreement score out of set of disagreements calculated for
 each view~\cite{Shrivastava2021}. A lower value for this metric means a higher
@@ -395,21 +395,22 @@ follows:
 
 The measurement of entropy $H$ is based on the observed probability
 $p(y_{i}^{*}=\omega|x_i)$ of obtaining class $\omega$ as the predicted class
-label $y_{i}^{*}$, where $N_i$ is the number classes predicted for observation
+label $y_{i}^{*}$, where $N_i$ is the number classes predicted for instance  
 $x_i$.
 
-Entropy query-by-bagging (EQB), also defined as maximum entropy~\cite{Liu2020},
-is an ensemble approach of the entropy selection criterion, originally proposed
-in~\cite{Tuia2009}. This strategy uses the set of predictions produced by the
-ensemble classifier to calculate those many entropy measurements. The estimated
-uncertainty measure for one sample is given by the maximum entropy within that
-set. EQB was observed to be an efficient selection criterion.
-Specifically,~\cite{Shrivastava2021} applied EQB on hyper-spectral remote
-sensing imagery using Support Vector Machines (SVM) and Extreme Learning
-Machines (ELM) as choosers, achieving optimal results when combining EQB with
-ELM\@. Another study successfully implemented this method on an active deep
-learning application~\cite{Liu2020}. Another study improved over this method
-with a normalized EQB selection criterion~\cite{Copa2010}.
+Entropy query-by-bagging (EQB), also defined as maximum
+entropy~\cite{Liu2020}, is an ensemble approach of the entropy selection
+criterion, originally proposed in~\cite{Tuia2009}. This strategy uses the set
+of predictions produced by the ensemble classifier to calculate those many
+entropy measurements. The estimated uncertainty measure for one instance is
+given by the maximum entropy within that set. EQB was observed to be an
+efficient selection criterion. Specifically,~\cite{Shrivastava2021} applied
+EQB on hyper-spectral remote sensing imagery using Support Vector Machines
+(SVM) and Extreme Learning Machines (ELM) as choosers, achieving optimal
+results when combining EQB with ELM\@. Another study successfully implemented
+this method on an active deep learning application~\cite{Liu2020}. Another
+study improved over this method with a normalized EQB selection
+criterion~\cite{Copa2010}.
 
 \subsection{Other relevant criteria}
 
@@ -417,15 +418,15 @@ Margin Sampling is a SVM-specific criterion, based on the distance of a given
 point to the SVM's decision boundary~\cite{Shrivastava2021}. This method is
 less popular than the remaining methods because it is limited to one type of
 chooser (SVMs). One extension of this method is the multiclass level
-uncertainty~\cite{Shrivastava2021}, calculated by subtracting the observation's
+uncertainty~\cite{Shrivastava2021}, calculated by subtracting the instance's
 distance to the decision boundaries of the two most probable
 classes~\cite{Demir2011}.
 
-The Mutual Information-based (MI) criterion selects the new training samples by
-maximizing the mutual information between the classifier and class labels in
-order to select samples from regions that are difficult to classify. Although
-this method is commonly used, it is frequently outperformed by the breaking
-ties selection criterion~\cite{Li2011,Liu2018}.
+The Mutual Information-based (MI) criterion selects the new training instances
+by maximizing the mutual information between the classifier and class labels
+in order to select instances from regions that are difficult to classify.
+Although this method is commonly used, it is frequently outperformed by the
+breaking ties selection criterion~\cite{Li2011,Liu2018}.
 
 The breaking ties (BT) selection criterion was originally introduced
 in~\cite{Luo2003}. It is formulated as follows:
@@ -437,14 +438,14 @@ in~\cite{Luo2003}. It is formulated as follows:
 
 Which is the subtraction of the probabilities of the two most likely classes.
 Another related method is Modified Breaking Ties scheme (MBT), which aims at
-finding the samples containing the largest probabilities for the dominant
+finding the instances containing the largest probabilities for the dominant
 class~\cite{Liu2018,Li2013a}
 
 Another type of selection criteria identified is the loss prediction
 method~\cite{Yoo2019}. This method replaces the selection criterion with a
 predictor whose goal is to estimate the chooser's loss for a given
 prediction. This allows the new classifier to estimate the prediction loss on
-unlabeled observations and select the ones with the highest predicted loss.
+unlabeled instances and select the ones with the highest predicted loss.
 
 Some of the literature fails to specify the strategy employed, although
 inferring it is generally intuitive. For example,~\cite{Ertekin2007}
@@ -473,7 +474,7 @@ distribution of a dataset. The Synthetic Minority Oversampling Technique
 algorithm, proposed in 2002. The simplicity and effectiveness of this method
 contributes to its prevailing popularity. It generates a new instance
 $\overrightarrow{z}$ through a linear interpolation of a randomly selected
-minority-class observation $\overrightarrow{x}$ and one of its randomly
+minority-class instance $\overrightarrow{x}$ and one of its randomly
 selected $k$-nearest neighbors $\overrightarrow{y}$ such that
 $\overrightarrow{z} = \alpha\overrightarrow{x} + (1-\alpha)\overrightarrow{y}$
 where $\alpha$ is a random real number between 0 and 1, as shown in
@@ -483,13 +484,13 @@ Figure~\ref{fig:data_generation}.
 	\centering
 	\includegraphics[width=\linewidth]{../analysis/data_generation}
     \caption{Examples of SMOTE and G-SMOTE generation process. SMOTE randomly
-        selects sample $\protect\overrightarrow{x}$ and one of its nearest
-        neighbors $\protect\overrightarrow{y}$ to produce sample
-        $\protect\overrightarrow{z}$. Noisy sample
+        selects instance $\protect\overrightarrow{x}$ and one of its nearest
+        neighbors $\protect\overrightarrow{y}$ to produce instance 
+        $\protect\overrightarrow{z}$. Noisy instance 
         $\protect\overrightarrow{b}$ is generated with SMOTE using points
-        $\protect\overrightarrow{a}$ and $\protect\overrightarrow{c}$.  Sample
-        $\protect\overrightarrow{p}$ and one of its nearest neighbors
-        $\protect\overrightarrow{q}$ are used by G-SMOTE to originate sample
+        $\protect\overrightarrow{a}$ and $\protect\overrightarrow{c}$.
+        Instance $\protect\overrightarrow{p}$ and one of its nearest neighbors
+        $\protect\overrightarrow{q}$ are used by G-SMOTE to originate instance
         $\protect\overrightarrow{r}$.
     }~\label{fig:data_generation}
 \end{figure}
@@ -501,47 +502,49 @@ oversampling methods~\cite{Douzas2019}. The following issues are addressed in
 more recent papers:
 
 \begin{enumerate}
-    \item Generation of noisy samples due to the selection of $k$-nearest
-        neighbors and initial observation. The selection of a sample and/or
-        neighboring sample located inside a majority class region may produce
-        artificial samples within that region and amplify noisy data.
-        Borderline-SMOTE~\cite{Han2005} is a modification of SMOTE in which
-        only the minority examples near the borderline are over-sampled. This
-        method avoids the generation of noisy samples by disregarding minority
-        samples located in a majority class region as well as samples distant
-        from the decision borders. The Adaptive Synthetic Sampling approach
-        (ADASYN)~\cite{HaiboHe2008} uses a density distribution ratio to
-        address this limitation and focus the artificial data generation on
-        minority class regions that are more difficult to classify.
-    \item Generation of noisy instances due to the use of observations from two
-        different minority class clusters. Choosing a minority sample
+    \item Generation of noisy instances due to the selection of $k$-nearest
+        neighbors and initial instance. The selection of an instance and/or
+        neighboring instance located inside a majority class region may
+        produce artificial instances within that region and amplify noisy
+        data.  Borderline-SMOTE~\cite{Han2005} is a modification of SMOTE in
+        which only the minority examples near the borderline are over-sampled.
+        This method avoids the generation of noisy instances by disregarding
+        minority class instances located in a majority class region as well as
+        instances distant from the decision borders. The Adaptive Synthetic
+        Sampling approach (ADASYN)~\cite{HaiboHe2008} uses a density
+        distribution ratio to address this limitation and focus the artificial
+        data generation on minority class regions that are more difficult to
+        classify.
+    \item Generation of noisy data due to the use of instances from two
+        different minority class clusters. Choosing a minority class instance
         $\overrightarrow{a}$ and one of its nearest neighbors
-        $\overrightarrow{b}$ belonging to a different minority cluster may lead
-        to the generation of a sample $\overrightarrow{c}$ located within the
-        two classes, as shown in Figure~\ref{fig:data_generation}. K-means
-        SMOTE~\cite{Douzas2018} and Self-Organizing map oversampling
+        $\overrightarrow{b}$ belonging to a different minority cluster may
+        lead to the generation of an instance $\overrightarrow{c}$ located
+        within the two classes, as shown in Figure~\ref{fig:data_generation}.
+        K-means SMOTE~\cite{Douzas2018} and Self-Organizing map oversampling
         (SOMO)~\cite{Douzas2017} reduce this effect by oversampling minority
-        class samples within the same clusters.
+        class instances within the same clusters.
     \item Generation of nearly duplicated instances. The linear interpolation
-        of parent samples that are close to each other produces an artificial
-        sample with similar properties as its parents. Geometric SMOTE
+        of parent instances that are close to each other produces an artificial
+        instances with similar properties as its parents. Geometric SMOTE
         (G-SMOTE)~\cite{Douzas2019} introduces a modification of the SMOTE
         algorithm in the data generation mechanism to produce artificial
-        samples with higher variability.
+        instances with higher variability.
 \end{enumerate}
 
-The G-SMOTE algorithm is introduced as a generalization of the vanilla SMOTE\@.
-Instead of generating artificial data as a linear combination of the parent
-samples, it is done within a deformed, truncated hyper-spheroid. G-SMOTE
-generates an artificial sample $\overrightarrow{r}$ within a hyper-spheroid
-$H$, formed by selecting a minority sample $\overrightarrow{p}$ and one of its
-nearest neighbors $\overrightarrow{q}$, as shown in
-Figure~\ref{fig:data_generation}. The truncation and deformation parameters
-define the shape of the spheroid's geometry. The method also modifies the
-selection strategy for the $k$-nearest neighbors, accepting the generation of
-artificial samples using observations from different classes. G-SMOTE has shown
-superior performance when compared with other oversampling methods for LULC
-classification tasks, regardless of the classifier used~\cite{Douzas2019class}.
+The G-SMOTE algorithm is introduced as a generalization of the vanilla
+SMOTE\@.  Instead of generating artificial data as a linear combination of the
+parent instances, it is done within a deformed, truncated hyper-spheroid.
+G-SMOTE generates an artificial instance $\overrightarrow{r}$ within a
+hyper-spheroid $H$, formed by selecting a minority instance
+$\overrightarrow{p}$ and one of its nearest neighbors $\overrightarrow{q}$, as
+shown in Figure~\ref{fig:data_generation}. The truncation and deformation
+parameters define the shape of the spheroid's geometry. The method also
+modifies the selection strategy for the $k$-nearest neighbors, accepting the
+generation of artificial instances using instances from different classes.
+G-SMOTE has shown superior performance when compared with other oversampling
+methods for LULC classification tasks, regardless of the classifier
+used~\cite{Douzas2019class}.
 
 \section{Proposed method}~\label{sec:proposed-method}
 
@@ -580,7 +583,7 @@ addresses the limitations found in the previous sections:
         with the clearer definition of the decision boundaries across
         iterations.
     \item Annotation cost is expected to reduce as the need for labeled
-        observations reduces along with the early convergence of the
+        instances reduces along with the early convergence of the
         classification performance.
     \item The class imbalance bias observed in typical classification tasks, as
         well as in AL is mitigated by balancing the class frequencies at each
@@ -709,13 +712,13 @@ The sampling strategy is similar to all datasets. The pixels without a ground
 truth label are first discarded. All the classes with cardinality lower than
 150 are also discarded. This is done to maintain feasible Imbalance Ratios (IR)
 across datasets (where $IR = \frac{count(C_{maj})}{count(C_{min})}$). Finally,
-a stratified sample of 1500 observations are selected for the experiment. The
+a stratified sample of 1500 instances are selected for the experiment. The
 resulting datasets are described in Table~\ref{tab:datasets_description}. The
 motivation for this strategy is three fold: (1) reduce the datasets to a
 manageable size and allow the experimental procedure to be completed within a
 feasible time frame, (2) ensure the relative class frequencies in the scenes
 are preserved and (3) ensure equivalent analyses across datasets and AL
-frameworks. In this context, a fixed number of observations per dataset is
+frameworks. In this context, a fixed number of instances per dataset is
 especially important to standardize the AL-related performance metrics.
 
 \begin{table}
@@ -806,7 +809,7 @@ Kubat1997}. Therefore, we employ 3 performance metrics:
         \end{equation}
 
     \item OA consists of the ratio between the number of correctly classified
-        observations and the total number of observations. This metric, because
+        instances and the total number of instances. This metric, because
         of its popularity and easy interpretability, is kept for discussion
         purposes.  Considering $C$ as the set of classes within a dataset, it
         is expressed as: \begin{equation}\label{eq:oa} \textit{OA} =
@@ -824,14 +827,14 @@ values of all iterations. To facilitate the analysis of the results, we fix
 the range of this metric between $[0,1]$ by dividing it by the total amount of
 iterations (\textit{i.e.}, the maximum performance area). The \textit{Data
 Utilization Rate} (DUR)~\cite{Reitmaier2013} metric consists of the ratio
-between the minimum number of observations necessary to reach a given
+between the minimum number of instances necessary to reach a given
 performance threshold by an AL strategy and an equivalent baseline strategy.
 The deficiency score~\cite{Yanik2015} is used to compare the performance
 between two active learners. The deficiency of algorithm $A$ with respect to
 algorithm $B$ is calculated with the areas between the respective learning
 curves and the maximum performance line $MP$:
 
-\begin{equation}
+\begin{equation}~\label{eq:deficiency}
     deficiency = \frac{MP-AULC_A}{2MP-AULC_A-AULC_B} 
 \end{equation}
 
@@ -844,7 +847,7 @@ learners $A$ and $B$ are equivalent.
 
 A common practice in methodological evaluations is the implementation of an
 offline experiment~\cite{Kagy2019}. It consists of using an existing set of
-labeled data as a proxy for the population of unlabeled samples. Because the
+labeled data as a proxy for the population of unlabeled instances. Because the
 dataset is already fully labeled, the oracle's typical annotation process
 involved in each iteration is done at zero cost. Each AL and classifier
 configuration is tested using a stratified 5-fold cross validation testing
@@ -873,10 +876,10 @@ depicted in Figure~\ref{fig:experiment_pipeline}.
 
 To make the convergence metrics comparable across active learners, the
 configurations of the different frameworks must be similar. For each dataset,
-the number of observations is constant to facilitate the analysis of the same
+the number of instances is constant to facilitate the analysis of the same
 metrics. 
 
-In most practical AL applications it is assumed that the number of observations
+In most practical AL applications it is assumed that the number of instances 
 in the initial training sample is too small to perform hyperparameter tuning.
 Consequently, in order to ensure realistic results, our experimental procedure
 does not include hyperparameter optimization. The predefined hyperparameters
@@ -931,7 +934,7 @@ the
 \href{https://github.com/AlgoWit/publications/tree/master/remote-sensing/al-generator}{GitHub
 repository of the project}.
 
-\section{Results}~\label{sec:results}
+\section{Results \& Discussion}~\label{sec:results}
 
 The evaluation of the different AL frameworks in a multiple dataset context
 should not rely uniquely on the mean of the performance metrics across
@@ -939,19 +942,16 @@ datasets.~\cite{demvsar2006} recommends the use of mean ranking scores, since
 the performance levels of the different frameworks varies according to the
 data it is being used on. Consequently, evaluating these performance metrics
 solely based on their mean values might lead to inaccurate analyses.
-Accordingly, the results of this experiment is analysed using both the mean
-ranking and absolute scores for each model.  The rank values are assigned
+Accordingly, the results of this experiment are analysed using both the mean
+ranking and absolute scores for each model. The rank values are assigned
 based on the mean scores resulting from three different initializations of
 5-fold cross validation for each classifier and active learner.
 
+\subsection{Results}
+
 Table~\ref{tab:aulc_ranks} shows the average rankings and standard deviations
-across datasets of the AULC scores for each active learner. These results show
-that the convergence efficiency of the proposed method (\textit{i.e.}, using
-generators G-SMOTE and SMOTE) is consistently higher than the traditional AL
-framework (NONE). With the exception of two scenarios, the proposed framework
-using G-SMOTE was able to outperform the remaining methods. The only scenario
-where the baseline active learner was able to outperform the remaining methods
-was using the LR classifier and OA as the optimization goal. 
+across datasets of the AULC scores for each active learner. A lower ranking
+value (\textit{i.e.,} closer to 1) means a superior performance.
 
 \pgfplotstabletypeset[
 	begin table=\begin{longtable},
@@ -962,11 +962,11 @@ was using the LR classifier and OA as the optimization goal.
     experiment.}}
 ]{../analysis/mean_std_aulc_ranks.csv}
 
-The mean absolute scores are provided in Table~\ref{tab:aulc_scores}. In some
-situations, there is a significant performance superiority across active
-learners. The high AULC values are owed to the naturally high classification
-performance of baseline methods, which makes the performance variability among
-frameworks particularly meaningful. 
+The mean AULC absolute scores are provided in Table~\ref{tab:aulc_scores}.
+These values are computed as the mean of the sum of the scores of a specific
+performance metric over all iterations (for an AL configuration). In other
+words, these values correspond to the average AULC over $7\ datasets \times 5\
+folds \times 3\ initializations$.
 
 \begin{table}[H]
     \centering
@@ -987,11 +987,12 @@ frameworks particularly meaningful.
 \end{table}
 
 The mean deficiency scores of the proposed framework is shown in
-Table~\ref{tab:deficiency_scores}. This metric is calculated using the proposed
+Table~\ref{tab:deficiency_scores}. This metric is calculated using
+equation~\ref{eq:deficiency} having the proposed
 framework using G-SMOTE and SMOTE as algorithms $A$ and the baseline active
-learner as algorithm $B$. The proposed method shows consistent a improvement
-over the baseline method, except in three situations, where the difference
-among active learners is marginal.
+learner as algorithm $B$. As mentioned previously, a deficiency score below
+0.5 (represented in boldface) means that active learner $A$ (the proposed AL
+framework) is more efficient than active learner $B$.
 
 \begin{table}[H]
     \centering
@@ -1014,13 +1015,16 @@ among active learners is marginal.
 \end{table}
 
 The average DURs are shown in Figure~\ref{fig:dur}. They were calculated for
-various threshold levels, varying at a step of 5\% between 60\% and 95\%. The
-DURs shown in the figure use the typical AL framework as the baseline strategy.
-The results show a generalized decrease of data required to reach the
-performance thresholds in the various scenarios. For higher performance
-thresholds, the gap between the proposed and baseline methods tend to be
-reduced, since the amount of data required is larger and the benefits of data
-generation is less apparent.
+various threshold levels on each of the performance metrics used, varying at a
+step of 5\% between 60\% and 95\% (represented in the vertical lines of the
+figures). The DURs shown in the figure use the typical AL framework as the
+baseline strategy. A DUR above 1 means that the proposed framework requires
+that much percentage of extra data (when compared to the baseline framework)
+to reach that given performance threshold. Inversely, a DUR below 1 means that
+the proposed framework requires that much less data (as a percentage, relative
+to the amount of data required by the baseline framework). In other words, DUR
+is the percentage of data required by the proposed framework (relative to the
+baseline framework) to reach each of the given performance thresholds.
 
 \begin{figure}[H]
 	\centering
@@ -1038,9 +1042,7 @@ classification scores are shown as a benchmark and represent the performance
 of the corresponding classifier using the entire training set. One of the
 goals of this study is ensuring that the classification performance of the
 predictors resulting from the proposed framework are not worse than the
-predictors produced using the typical AL framework. Using a generator in AL's
-iterative process was capable of outperforming the baseline framework in most
-cases and the maximum performance classifier in 6 of those.
+predictors produced using the typical AL framework.
 
 \begin{table}[H]
     \centering
@@ -1072,10 +1074,170 @@ findings drawn from this experiment.
 	string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
 	every last row/.style={after row=\bottomrule
         \caption{\label{tab:wide_optimal_aulc}
-            Mean cross-validation scores of AL algorithms for each dataset.
-            Legend: IP Indian Pines, KSC Kennedy Space Center, PC Pavia Center, PU
-            Pavia University, SA Salinas A.}}
+            Mean cross-validation AULC scores of AL algorithms for each
+            dataset.  Legend: IP Indian Pines, KSC Kennedy Space Center, PC 
+            Pavia Center, PU Pavia University, SA Salinas A.}}
 ]{../analysis/wide_optimal_aulc.csv}
+
+
+\subsection{Statistical Analysis}~\label{sec:statistical-analysis}
+
+The methods used to test the experiment's results must be appropriate for a
+multi-dataset context. Therefore the statistical analysis is performed using
+the Friedman test~\cite{friedman1937use} and the Wilcoxon signed-rank
+test~\cite{Wilcoxon1945} for a post-hoc analysis. The variable used for this
+test is the AULC, considering the various performance metrics used.
+
+Table~\ref{tab:friedman_test} shows the results of the Friedman test. In most
+cases the null hypothesis is rejected, which indicates a statistically
+significant difference on the performance among AL frameworks and generators.
+
+\pgfplotstabletypeset[
+	begin table=\begin{longtable},
+		end table=\end{longtable},  col sep=comma, header=true,
+	string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
+	every last row/.style={after row=\bottomrule
+        \caption{\label{tab:friedman_test}
+			Results for Friedman test. Statistical significance is tested at a
+            level of $\alpha = 0.1$. The null hypothesis is that there is no 
+            difference in the classification across AL frameworks.}}
+]{../analysis/friedman_test.csv}
+
+The Wilcoxon signed-rank test results are shown in
+Table~\ref{tab:wilcoxon_test}. We test as null hypothesis that the performance
+of the proposed framework is the same as the original AL framework. The null
+hypothesis was rejected in all datasets.
+
+\pgfplotstabletypeset[
+	begin table=\begin{longtable},
+	end table=\end{longtable},  col sep=comma, header=true,
+	string type, 
+    every head row/.style={before row=\toprule, after row=\midrule\endhead},
+	every last row/.style={after row=\bottomrule
+        \caption{\label{tab:wilcoxon_test}
+				Adjusted p-values using the Wilcoxon signed-rank method. Bold values
+                are statistically significant at a level of $\alpha = 0.1$. The 
+                null hypothesis is that the performance of the proposed
+                framework is similar to that of the original framework.}}
+]{../analysis/wilcoxon_test.csv}
+
+\subsection{Discussion}
+
+The results found in Table~\ref{tab:aulc_ranks} show that the convergence
+efficiency of the proposed method (\textit{i.e.}, active learners using
+generators G-SMOTE and SMOTE) is consistently higher than the baseline AL
+framework (NONE). With the exception of two scenarios, the proposed framework
+using G-SMOTE was able to outperform the remaining methods. The only scenario
+where the baseline active learner was able to outperform the proposed AL
+framework was using the LR classifier and OA as the optimization goal.
+
+We use the AULC metric to compare the convergence efficiency among the
+different AL architectures. The comparison of the mean AULC scores in
+Table~\ref{tab:aulc_scores} shows a significant performance superiority across
+active learners in some situations, particularly when the classifier KNN is
+used. The proposed AL framework using G-SMOTE as generator improved the
+baseline performance in all settings except one. When analysing the
+performance of the two active learners using a data generation mechanism
+jointly, we find that the mean performance of the proposed framework can be
+optimized to be better than or as good as the baseline framework. This
+optimization may be owed to either (or both):
+
+\begin{enumerate}
+    \item The earlier convergence of the proposed AL framework, therefore
+        requiring less data to achieve comparable performance levels. This
+        increases the AULC scores before convergence is reached. This effect
+        is studied with the various data utilization rates presented in
+        Figure~\ref{fig:dur}.
+    \item Higher optimal classification performance, therefore reaching higher
+        performance levels overall. This increases the AULC scores once
+        convergence is reached. This effect analyzed using the optimal
+        classification scores shown in
+        Table~\ref{tab:optimal_mean_std_scores}.
+\end{enumerate} 
+
+Through the analysis both the MP threshold and the optimal classification
+scores of AL algorithms shown in Table~\ref{tab:optimal_mean_std_scores}, we
+can confirm that in general the classification scores are high. This makes the
+variability of AULC among frameworks particularly meaningful, since this could
+limit the magnitude of the differences among frameworks. Although, the
+proposed framework was capable of outperforming the baseline framework and the
+maximum performance classification threshold in 7 out of 9 tests. Therefore,
+the increased classification quality of the proposed framework is one of the
+causes of higher AULC scores.
+
+The results found in Figure~\ref{fig:dur} show a generalized decrease of data
+required to reach the performance thresholds in the various scenarios. For
+higher performance thresholds, the gap between the proposed and baseline
+methods tend to be reduced, since the amount of data required is larger and
+the benefits of data generation is less apparent. These results reflect the
+effect described previously, showing that AULC scores also improve due to the
+earlier convergence of the AL iterative process, since the amount of data
+necessary to reach a given performance threshold is generally reduced with the
+proposed AL framework.
+
+The deficiency scores measured in terms of the baseline AL framework in
+Table~\ref{tab:deficiency_scores} are used to measure the overall improvement
+or decline of the proposed AL framework. The results found with this metric
+show a consistent improvement over the baseline method with the exception of
+three situations, where the difference among active learners is marginal.
+
+We used Table~\ref{tab:wide_optimal_aulc} to compare the performance of the
+different active learners across the different datasets, classifiers and
+framework settings. We found that in 54 out of 63 cases (approximately 86\%)
+the proposed framework outperformed (or was as good as) the baseline. The
+datasets where the proposed method had more difficulties outperforming the
+baseline active learner were the Pavia University and Salinas A datasets,
+which is consistent with the p-values calculated in the Wilcoxon signed-rank
+test shown in Table~\ref{tab:wilcoxon_test}. Although, the results were still
+statistically significant.
+
+In most tests, our results were statistically significant. These tests were
+done considering two different perspectives:
+
+\begin{enumerate}
+    \item Examining whether there is a difference across AL frameworks and
+        generators used by conducting a Friedman test. The results of this
+        statistical test is shown in Table~\ref{tab:friedman_test}, where 6
+        out of 9 tests were statistically significant. The 3 tests whose
+        null hypothesis was not rejected indicate the occasions in which the
+        performance of the two configurations of the proposed framework was
+        not significantly different both among themselves and the baseline
+        method, which can be visually attested in Figure~\ref{fig:dur}.
+        Although, while Table~\ref{tab:aulc_ranks} shows that in these
+        situations the proposed framework performs better than the baseline
+        method, the difference is less apparent in terms of DUR, as shown in
+        Figure~\ref{fig:dur}. Regardless, the quality the classification
+        outputs are not affected by this difference, as in 2 out of those
+        3 situations the proposed framework was still capable of producing
+        better predictions than the baseline. This proves that in our
+        experiment, the implementation of the proposed framework did not
+        negatively affect the quality of the predictions.
+    \item Examining whether the proposed framework outperforms the baseline
+        framework with statistical significance on each dataset across
+        different classifiers and performance metrics. This is done
+        by comparing the optimal mean AULC scores of both the baseline method
+        and the proposed method for each combination of classifiers and
+        performance metrics, where the null hypothesis was rejected in all
+        datasets. This indicates that regardless of the context under which an
+        AL algorithm is used, the proposed framework outperforms the baseline
+        framework with statistical significance.
+\end{enumerate}
+
+This paper introduces the concept of applying data generation algorithm in the
+AL framework. This was done with the implementation of a popular data
+generation algorithm and a recent, SOTA generalization of this same method.
+Although, since these algorithms are based on heuristics, future work should
+focus on improving these results through the implementation of more
+sophisticated data generation mechanisms, at the cost of additional
+computational power. In addition, we also noticed significant standard
+errors in our experimental results. This indicates that AL procedures seem to
+be particularly sensitive to the initialization method, which is
+still a limitation of AL, regardless of the framework used. This is
+consistent with the findings in~\cite{Kottke2017}, which future work should
+attempt to address. Although the Generator component marginally reduced this
+standard error found in AULC and optimal classification scores found in
+Tables~\ref{tab:aulc_scores} and~\ref{tab:optimal_mean_std_scores}, it is not
+sufficient to address this specific limitation.
 
 \section{Conclusion}~\label{sec:conclusion}
 
@@ -1105,16 +1267,18 @@ framework is shown in Figure~\ref{fig:dur}. In most of the presented scenarios
 there is a substantial reduction of necessary data to reach each of the tested
 performance metric thresholds. 
 
-The results from this experiment show that the inclusion of a data generator in
-the AL framework will yield significant improvements in the convergence of the
-method. The proposed method successfully anticipated the predictor's optimal
-performance, as shown in Tables~\ref{tab:aulc_ranks},~\ref{tab:aulc_scores}
-and~\ref{tab:deficiency_scores}. This means the annotation cost would have been
-reduced in a real application since the number of iterations and labeled
-samples necessary to reach near optimal classification performance is reduced,
-as shown in Figure~\ref{fig:dur}. The class imbalance bias observed in AL tasks
-is reduced, as shown in Table~\ref{tab:deficiency_scores}, where data
-imbalance appropriate metrics are always improved over the baseline scores.
+The results from this experiment show that the inclusion of a data generator
+in the AL framework will yield significant improvements in the convergence of
+the method. The proposed method successfully anticipated the predictor's
+optimal performance, as shown in
+Tables~\ref{tab:aulc_ranks},~\ref{tab:aulc_scores}
+and~\ref{tab:deficiency_scores}. This means the annotation cost would have
+been reduced in a real application since the number of iterations and labeled
+instances necessary to reach near optimal classification performance is
+reduced, as shown in Figure~\ref{fig:dur}. The class imbalance bias observed
+in AL tasks also is reduced, as shown in Table~\ref{tab:deficiency_scores},
+where data imbalance appropriate metrics are always improved over the baseline
+scores.
 
 \section{Acknowledgements}
 
