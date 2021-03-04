@@ -25,7 +25,7 @@ from research.utils import (
     load_plt_sns_configs
 )
 from rlearn.tools.reporting import _extract_pvalue
-from scipy.stats import ttest_rel
+from scipy.stats import ttest_rel, wilcoxon
 from statsmodels.stats.multitest import multipletests
 
 DATASETS_NAMES = [
@@ -65,7 +65,7 @@ GENERATOR_NAMES = [
 def _make_bold_stat_signif(value, sig_level=.05):
     """Make bold the lowest or highest value(s)."""
 
-    val = '{%.1e}' % value
+    val = '%.1e' % value
     val = (
         '\\textbf{%s}' % val
         if value <= sig_level
@@ -629,6 +629,24 @@ def generate_mean_rank_bar_chart(wide_optimal_al):
     plt.close()
 
 
+def apply_wilcoxon_test(wide_optimal, dep_var, OVRS_NAMES, alpha):
+    """Performs a Wilcoxon signed-rank test"""
+    pvalues = []
+    for ovr in OVRS_NAMES:
+        mask = np.repeat(True, len(wide_optimal))
+
+        pvalues.append(wilcoxon(
+            wide_optimal.loc[mask, ovr],
+            wide_optimal.loc[mask, dep_var]).pvalue
+        )
+    wilcoxon_results = pd.DataFrame({
+        'Oversampler': OVRS_NAMES,
+        'p-value': pvalues,
+        'Significance': np.array(pvalues) < alpha
+    })
+    return wilcoxon_results
+
+
 def generate_statistical_results(
     wide_optimal_al, alpha=.1, control_method='NONE'
 ):
@@ -659,37 +677,33 @@ def generate_statistical_results(
         lambda x: '{:.1e}'.format(x)
     )
 
-    # Holms test
-    ovrs_names = list(results.columns[3:])
-    ovrs_names.remove(control_method)
+    # Wilcoxon signed rank test
+    # Optimal proposed framework vs baseline framework
+    results['Optimal'] = results[['SMOTE', 'G-SMOTE']].max(1)
+    wilcoxon_test = []
+    for dataset in results.Dataset.unique():
+        wilcoxon_results = apply_wilcoxon_test(
+            results[results['Dataset'] == dataset],
+            'Optimal',
+            ['NONE'],
+            alpha
+        ).drop(columns='Oversampler')
+        wilcoxon_results['Dataset'] = dataset.replace('_', ' ').title()
+        wilcoxon_test.append(wilcoxon_results[
+            ['Dataset', 'p-value', 'Significance']
+        ])
 
-    # Define empty p-values table
-    pvalues = pd.DataFrame()
-
-    # Populate p-values table
-    for name in ovrs_names:
-        pvalues_pair = results.groupby(['Classifier', 'Metric'])[
-            [name, control_method]
-        ].apply(lambda df: ttest_rel(df[name], df[control_method])[1])
-        pvalues_pair = pd.DataFrame(pvalues_pair, columns=[name])
-        pvalues = pd.concat([pvalues, pvalues_pair], axis=1)
-
-    # Corrected p-values
-    holms_test = pd.DataFrame(
-        pvalues.apply(
-            lambda col: multipletests(col, method='holm')[1], axis=1
-        ).values.tolist(),
-        columns=ovrs_names,
-    )
-    holms_test = generate_pvalues_tbl_bold(
-        holms_test.set_index(pvalues.index).reset_index(),
-        sig_level=alpha
+    wilcoxon_test = pd.concat(wilcoxon_test, axis=0)
+    wilcoxon_test['p-value'] = wilcoxon_test['p-value'].apply(
+        lambda x: '{:.1e}'.format(x)
     )
 
-    statistical_results_names = ('friedman_test', 'holms_test')
+    statistical_results_names = (
+        'friedman_test', 'wilcoxon_test'
+    )
 
     statistical_results = zip(
-        statistical_results_names, (friedman_test, holms_test)
+        statistical_results_names, (friedman_test, wilcoxon_test)
     )
     return statistical_results
 
@@ -749,3 +763,14 @@ if __name__ == '__main__':
     # Main results - visualizations
     wide_optimal_al = calculate_wide_optimal_al(results)
     generate_dur_visualization(wide_optimal_al)
+    # generate_mean_rank_bar_chart(wide_optimal_al)
+
+    # Statistical results
+    statistical_results = generate_statistical_results(
+        wide_optimal_al, alpha=.1, control_method='NONE'
+    )
+    for name, result in statistical_results:
+        if 'Metric' in result.columns:
+            result['Metric'] = result['Metric'].map(METRICS_MAPPING)
+        result = result.rename(columns={'Metric': 'Evaluation Metric'})
+        result.to_csv(join(analysis_path, f'{name}.csv'), index=False)
