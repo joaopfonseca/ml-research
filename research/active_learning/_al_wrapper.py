@@ -18,6 +18,83 @@ from ._init_methods import init_strategy
 
 
 class ALWrapper(ClassifierMixin, BaseEstimator):
+    """
+    Class to perform Active Learning experiments.
+
+    This algorithm is an implementation of an Active Learning framework as
+    presented in [1]_. The initialization strategy is WIP.
+
+    Parameters
+    ----------
+    classifier : classifier object, default=None
+        Classifier to be used as Chooser and Predictor.
+
+    generator : generator estimator, default=None
+        Generator to be used for artificial data generation within Active
+        Learning iterations.
+
+    init_clusterer : clusterer estimator, default=None
+        WIP
+
+    init_strategy : WIP, default='random'
+        WIP
+
+    selection_strategy : function or {'entropy', 'breaking_ties',\
+        'random'}, default='entropy'
+        Method used to quantify the chooser's uncertainty level and select the
+        instances to be added to the labeled/training dataset.
+
+    max_iter : int, default=None
+        Maximum number of iterations allowed.
+
+    n_initial : int, default=100
+        Number of observations to include in the initial training dataset.
+
+    increment : int, default=50
+        Number of observations to be added to the training dataset at each
+        iteration.
+
+    save_classifiers : bool, default=False
+        Save classifiers fit at each iteration. These classifiers are stored
+        in a list ``self.classifiers_``.
+
+    save_test_scores : bool, default=True
+        If ``True``, test scores are saved in the list ``self.test_scores_``.
+        Size of the test set is defined with the ``test_size`` parameter.
+
+    auto_load : bool, default=True
+        If `True`, the classifier with the best training score is saved in the
+        method ``self.classifier_``. It's the classifier object used in the
+        ``predict`` method.
+
+    test_size : float or int, default=None
+        If float, should be between 0.0 and 1.0 and represent the proportion of
+        the dataset to include in the test split. If int, represents the
+        absolute number of test samples. If None, the value is set to 0.25.
+
+    evaluation_metric : string, default='accuracy'
+        Metric used to calculate the test scores. See
+        ``research.metrics`` for info on available
+        performance metrics.
+
+    random_state : int, RandomState instance, default=None
+        Control the randomization of the algorithm.
+
+        - If int, ``random_state`` is the seed used by the random number
+          generator;
+        - If ``RandomState`` instance, random_state is the random number
+          generator;
+        - If ``None``, the random number generator is the ``RandomState``
+          instance used by ``np.random``.
+
+    References
+    ----------
+    .. [1] J. Fonseca, G. Douzas, F. Bacao, "Increasing the Effectiveness of
+       Active Learning: Introducing Artificial Data Generation in Active
+       Learning for Land Use/Land Cover Classification", under submission
+       process.
+    """
+
     def __init__(
         self,
         classifier=None,
@@ -31,14 +108,10 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         save_classifiers=False,
         save_test_scores=True,
         auto_load=True,
-        test_size=.1,
+        test_size=None,
         evaluation_metric='accuracy',
         random_state=None
     ):
-        """
-        A wrapper to allow an automated Active Learning procedure for an
-        experimental environment.
-        """
         self.classifier = classifier
         self.generator = generator
         self.init_clusterer = init_clusterer
@@ -150,6 +223,22 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
                 self.top_score_iter_ = iter_n
 
     def fit(self, X, y):
+        """
+        Run an Active Learning procedure from training set (X, y).
+
+        Parameters
+        ----------
+        X : {array-like, sparse matrix} of shape (n_samples, n_features)
+            The training input samples.
+
+        y : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            The target values (class labels) as integers or strings.
+
+        Returns
+        -------
+        self : ALWrapper
+            Completed Active Learning procedure
+        """
 
         # Original "unlabeled" dataset
         iter_n = 0
@@ -215,6 +304,25 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         return self
 
     def load_best_classifier(self, X, y):
+        """
+        Loads the best classifier in the ``self.classifiers_`` list.
+
+        The best classifier is used in the predict method according to the
+        performance metric passed.
+
+        Parameters
+        ----------
+        X : {array-like, sparse matrix} of shape (n_samples, n_features)
+            The test input samples.
+
+        y : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            The target values (class labels) as integers or strings.
+
+        Returns
+        -------
+        self : ALWrapper
+            Completed Active Learning procedure
+        """
         scores = []
         for classifier in self.classifiers_:
             scores.append(
@@ -225,4 +333,21 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         return self
 
     def predict(self, X):
+        """
+        Predict class or regression value for X.
+
+        For a classification model, the predicted class for each sample in X is
+        returned. For a regression model, the predicted value based on X is
+        returned.
+
+        Parameters
+        ----------
+        X : {array-like, sparse matrix} of shape (n_samples, n_features)
+            The test input samples.
+
+        Returns
+        -------
+        y : array-like of shape (n_samples,) or (n_samples, n_outputs)
+            The predicted classes, or the predict values.
+        """
         return self.classifier_.predict(X)
