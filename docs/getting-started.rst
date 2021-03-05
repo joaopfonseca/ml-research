@@ -7,7 +7,7 @@ running::
     pip install -U git+https://github.com/joaopfonseca/research.git
 
 Prerequisites
--------------
+=============
 
 A Python distribution of version 3.7 or higher is required to run this
 project. It is generally recommended that you create a separate environment to
