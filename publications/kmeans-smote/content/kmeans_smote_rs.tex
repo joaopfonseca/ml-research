@@ -85,25 +85,26 @@ $^{1}$ \quad NOVA Information Management School (NOVA IMS), Universidade Nova
 \abstract{
     Land cover maps are a critical tool to support informed policy
     development, planning, and resource management decisions. The ability to
-    automatically produce Land Use/Land Cover maps, through the use of machine
-    learning methods, will improve the accuracy and timeliness of
-    decision-making. With significant upsides, the automatic
-    production of Land Use/Land Cover maps has been a topic of interest for the
-    remote sensing community for several years, but it is still fraught with
+    automatically produce Land Use/Land Cover \added{(LULC)} maps, through the
+    use of machine learning methods, will improve the accuracy and timeliness
+    of decision-making. With significant upsides, the automatic production of
+    Land Use/Land Cover maps has been a topic of interest for the remote
+    sensing community for several years, but it is still fraught with
     technical challenges. One such challenge is the imbalanced nature of most
     remotely sensed data, where the number of samples of a few classes is
     significantly greater than the number of samples of the remaining classes.
     This asymmetric class distribution impacts negatively the performance of
     classifiers and adds a new source of error to the production of these
     maps. In this paper, we address the imbalanced learning problem, by using
-    K-Means and SMOTE as an improved oversampling algorithm. K-Means SMOTE
-    improves the quality of newly created artificial data by avoiding the
-    generation of noisy data while effectively overcome data imbalance. The
-    performance of K-Means SMOTE is compared to other popular oversampling
-    methods using seven remote sensing benchmark datasets and a variety of
-    classifiers and evaluation metrics. The results show that the proposed
-    method consistently outperforms the remaining oversamplers and produces
-    higher quality land cover classifications.
+    K-means and \added{the Synthetic Minority Oversampling TEchnique (SMOTE)}
+    as an improved oversampling algorithm. K-Means SMOTE improves the quality
+    of newly created artificial data by avoiding the generation of noisy data
+    while effectively overcome data imbalance. The performance of K-means
+    SMOTE is compared to other popular oversampling methods using seven remote
+    sensing benchmark datasets and a variety of classifiers and evaluation
+    metrics. The results show that the proposed method consistently
+    outperforms the remaining oversamplers and produces higher quality land
+    cover classifications.
 }
 
 \keyword{
@@ -219,7 +220,10 @@ problem \cite{Fernandez2013,Kaur2019}:
 by}{have a significant advantage over the other approaches. By} operating at
 the data level, \replaced{they}{resampling strategies} allow the use of any
 off the shelf algorithm, without the need for any type of changes or adaptions
-to the algorithm. This is a significant advantage especially considering that
+to the algorithm. \added{Specifically, in the case of oversampling (defined
+below), the user is able to balance the dataset's class distribution by
+without the loss of information, which is not the case with undersampling
+techniques.} This is a significant advantage especially considering that
 most users in remote sensing are not expert machine learning engineers. 
 
 Within resampling approaches there are three subgroups of approaches
@@ -249,24 +253,25 @@ The imbalanced learning problem is not new in machine learning but its
 relevancy has been growing, as attested by \cite{Haixiang2017}. The problem
 has also been addressed in the context of remote sensing \cite{Douzas2019rs}.
 In this paper, we propose \added{the application of a recent oversampler based
-on the Synthetic Minority Oversampling Technique (SMOTE) \cite{Chawla2002},}
-the K-means SMOTE (K-SMOTE) \cite{Douzas2018} oversampler\added{,} to address
-the imbalanced learning problem in a multiclass context for LULC
-classification using various remote sensing datasets. \added{Specifically,
-we use seven benchmark land use datasets that vary among agricultural and
-urban land use}. The K-SMOTE algorithm
-presents significant advantages over other oversamplers, by coupling two
-different procedures in the generation of artificial data. The algorithm
-starts by clustering the\replaced{ instances}{ observations}; next, the
-generation of the artificial\replaced{ instances}{ observations} is done
-taking into consideration the distribution of majority/minority cases in each
-individual cluster. The idea of starting with a clustering procedure before
-the data generation phase is important in remote sensing because the spectral
-signature of the different classes can change significantly based on the
-geographical area in which it is represented.  In other words, the spectral
-signature of a specific class can vary greatly depending on the geography,
-meaning that often we will be facing within-class imbalance
-\cite{Japkowicz2001}.
+on SMOTE \cite{Chawla2002},} the K-means SMOTE \deleted{(K-SMOTE)}
+\cite{Douzas2018} oversampler\added{,} to address the imbalanced learning
+problem in a multiclass context for LULC classification using various remote
+sensing datasets. \added{Specifically, we use seven land use datasets commonly
+used in research literature, that vary among agricultural and urban land use}.
+The \replaced{K-means SMOTE}{K-SMOTE} algorithm \replaced{couples}{presents
+significant advantages over other oversamplers, by coupling} two different
+procedures in the generation of artificial data. The algorithm starts by
+\replaced{grouping the instances into clusters by using the K-means
+algorithm}{clustering the}; next, the generation of the artificial
+\replaced{data is generated using the smote algorithm, taking into}{
+observations is done taking into} consideration the distribution of
+majority/minority cases in each individual cluster. The idea of starting with
+a clustering procedure before the data generation phase is important in remote
+sensing because the spectral signature of the different classes can change
+significantly based on the geographical area in which it is represented. In
+other words, the spectral signature of a specific class can vary greatly
+depending on the geography, meaning that often we will be facing within-class
+imbalance \cite{Japkowicz2001}.
 
 In fact, we can decompose class imbalance into two different types:
 between-class imbalance and within-class imbalance \cite{Douzas2018, Jo2004}.
@@ -305,12 +310,13 @@ underrepresentation.
 \linenumbers
 \switchcolumn
 
-The efficacy of K-SMOTE is tested using different types of classifiers. To do
-so, we employ both commonly used and state-of-the-art oversamplers as
-benchmarking methods: Random oversampling (ROS), \deleted{Synthetic Minority
-Oversampling Technique (SMOTE) \cite{Chawla2002}} SMOTE and Borderline-SMOTE
-(B-SMOTE) \cite{Han2005}. Also as a baseline score we include classification
-results without the use of any resampling method.
+The efficacy of \replaced{K-means SMOTE}{K-SMOTE} is tested using different
+types of classifiers. To do so, we employ both commonly used and\added{/or}
+state-of-the-art oversamplers as benchmarking methods: Random oversampling
+(ROS), \deleted{Synthetic Minority Oversampling Technique (SMOTE)
+\cite{Chawla2002}} SMOTE and Borderline-SMOTE (B-SMOTE) \cite{Han2005}. Also
+as a baseline score we include classification results without the use of any
+resampling method.
 
 This paper is organized in 5 sections: section \ref{sec:sota} provides an
 overview of the state-of-art, section \ref{sec:methodology} describes the
@@ -414,16 +420,17 @@ random \replaced{real number}{floating point} between 0 and 1, as shown in
 Figure \ref{fig:smote_example}.
 
 \end{paracol}
-\begin{figure}[H]
+\begin{figure}
 	\centering
     \captionsetup{justification=centering}
     \caption{Example of SMOTE's data generation process. \added{SMOTE randomly
-        selects instance $\protect\overrightarrow{x}$ and one of its nearest neighbors 
-        $\protect\overrightarrow{y}$ to produce $\protect\overrightarrow{z}$.
-        Noisy instance $\protect\overrightarrow{r}$ was generated by randomly
-        selecting $\protect\overrightarrow{q}$ and nearest neighbor
-        $\protect\overrightarrow{p}$ from a different
-        minority class cluster. Noisy instance $\protect\overrightarrow{c}$ was generated by
+        selects instance $\protect\overrightarrow{x}$ and randomly selects one
+        of its k-nearest neighbors $\protect\overrightarrow{y}$ to produce
+        $\protect\overrightarrow{z}$.  Noisy instance
+        $\protect\overrightarrow{r}$ was generated by randomly selecting
+        $\protect\overrightarrow{q}$ and randomly selecting its nearest
+        neighbor $\protect\overrightarrow{p}$ from a different minority class
+        cluster. Noisy instance $\protect\overrightarrow{c}$ was generated by
         randomly selecting the noisy minority class instance
         $\protect\overrightarrow{a}$ and one of its nearest neighbors
         $\protect\overrightarrow{b}$.}
@@ -437,14 +444,14 @@ Figure \ref{fig:smote_example}.
 
 A number of studies implement SMOTE within the LULC classification context and
 reported improvements on the quality of the trained predictors
-\cite{Jozdani2019, Bogner2018}. Another study proposes an adaptation of SMOTE on
-an algorithmic level for deep learning applications \cite{Zhu2020}. This method
-combines both typical computer vision data augmentation techniques, such as
-image rotation, scaling and flipping on the generated instances to populate
-minority classes. Another algorithmic implementation is the variational
-semi-supervised learning model \cite{Cenggoro2018}. It consists of a generative
-model that allows learning from both labeled and unlabeled instances while
-using SMOTE to balance the data.
+\cite{Jozdani2019, Bogner2018}. Another study proposes an adaptation of SMOTE
+on an algorithmic level for deep learning applications \cite{Zhu2020}. This
+method combines both typical computer vision data augmentation techniques,
+such as image rotation, scaling and flipping on the generated instances to
+populate minority classes. Another algorithmic implementation is the
+variational semi-supervised learning model \cite{Cenggoro2018}. It consists of
+a generative model that allows learning from both labeled and unlabeled
+instances while using SMOTE to balance the data.
 
 Despite SMOTE's popularity, its limitations have motivated the development of
 more sophisticated oversampling algorithms \cite{Douzas2019, Han2005, Ma2017,
@@ -524,30 +531,33 @@ generated\replaced{ instance}{ observation}is copied from one of its parents.
 This method cannot ensure a balanced dataset since class imbalance is not
 specifically addressed, but rather dataset imbalance.
 
-K-SMOTE~\cite{Douzas2018} avoids noisy data generation by modifying the data
-selection mechanism. It employs $k$-means clustering to identify safe areas
-using cluster-specific Imbalance Ratio (\added{IR, }defined by
-$\frac{count(C_{majority})}{count(C_{minority})}$) and determine the quantity of
-generated samples per cluster based on a density measure. These samples are
-finally generated using the SMOTE algorithm. The K-SMOTE's data generation
-process is depicted in Figure~\ref{fig:kmeans_smote_example}. Note that the
-number of samples generated for each cluster varies according to the sparsity of
-each cluster (the sparser the cluster is, the more samples will be generated)
-and a cluster is rejected if the cluster's IR surpasses the threshold.
-Therefore, this method can be combined with any data generation mechanism, such
-as G-SMOTE. Also K-SMOTE includes the SMOTE algorithm as a special case when the
-number of clusters is set to one. Consequently, K-SMOTE is always guaranteed to
-return results as good as or better than SMOTE.
+\replaced{K-means SMOTE}{K-SMOTE}~\cite{Douzas2018} avoids noisy data
+generation by modifying the data selection mechanism. It employs $k$-means
+clustering to identify safe areas using cluster-specific Imbalance Ratio
+(\added{IR, }defined by $\frac{count(C_{majority})}{count(C_{minority})}$) and
+determine the quantity of generated samples per cluster based on a density
+measure. These samples are finally generated using the SMOTE algorithm. The
+\replaced{K-means SMOTE}{K-SMOTE}'s data generation process is depicted in
+Figure~\ref{fig:kmeans_smote_example}. Note that the number of samples
+generated for each cluster varies according to the sparsity of each cluster
+(the sparser the cluster is, the more samples will be generated) and a cluster
+is rejected if the cluster's IR surpasses the threshold.  Therefore, this
+method can be combined with any data generation mechanism, such as G-SMOTE.
+Also \replaced{K-means SMOTE}{K-SMOTE} includes the SMOTE algorithm as a
+special case when the number of clusters is set to one. Consequently,
+\replaced{K-means SMOTE}{K-SMOTE} \deleted{is always guaranteed to} returns
+results as good as or better than SMOTE.
 
 \end{paracol}
 \begin{figure}[H]
 	\centering
     \captionsetup{justification=centering}
-    \caption{Example of K-SMOTE's data generation process. Clusters $A$, $B$
-        and $C$ are selected for oversampling, whereas cluster $D$ was
-        rejected due to its high imbalance ratio. The oversampling is done
-        using the SMOTE algorithm and the $k$ nearest neighbors selection only
-        considers\replaced{ instances}{ observations} within the same cluster.
+    \caption{Example of \replaced{K-means SMOTE}{K-SMOTE}'s data generation
+        process. Clusters $A$, $B$ and $C$ are selected for oversampling,
+        whereas cluster $D$ was rejected due to its high imbalance ratio. The
+        oversampling is done using the SMOTE algorithm and the $k$ nearest
+        neighbors selection only considers\replaced{ instances}{ observations}
+        within the same cluster.
     \vspace{.2cm}}
 	\label{fig:kmeans_smote_example}
 	\includegraphics[width=1\linewidth]{../analysis/kmeans_smote_example}
@@ -578,14 +588,14 @@ This paper's main contributions are:
 
 \section{Methodology}\label{sec:methodology}
 
-The purpose of this work is to understand the performance of K-SMOTE as
-opposed to other popular and/or state-of-the-art oversamplers for LULC
-classification. \replaced{This is done using}{To do so, we use} 7
-\deleted{LULC} datasets \added{with predominantly land use information,} along
-with 3 evaluation metrics and \replaced{3}{ 5} classifiers to evaluate the performance of
-oversamplers. In this section we describe the datasets, evaluation metrics,
-oversamplers, classifiers and software used as well as the procedure
-developed.
+The purpose of this work is to understand the performance of \replaced{K-means
+SMOTE}{K-SMOTE} as opposed to other popular and/or state-of-the-art
+oversamplers for LULC classification. \replaced{This is done using}{To do so,
+we use} 7 \deleted{LULC} datasets \added{with predominantly land use
+information,} along with 3 evaluation metrics and \replaced{3}{ 5} classifiers
+to evaluate the performance of oversamplers. In this section we describe the
+datasets, evaluation metrics, oversamplers, classifiers and software used as
+well as the procedure developed.
 
 \subsection{Datasets}
 
@@ -629,7 +639,7 @@ and is common to all hyperspectral scenes:}{A similar data preprocessing procedu
 \end{enumerate}
 
 \end{paracol}
-\begin{figure}[H]
+\begin{figure}
 	\centering
     \captionsetup{justification=centering}
     \caption{\added{Data collection and preprocessing pipeline.}
@@ -780,11 +790,11 @@ contains low density buildup areas.
 
 \subsection{Machine Learning Algorithms}
 
-To assess the quality of the K-SMOTE algorithm, three other oversampling
-algorithms were used for benchmarking. ROS and SMOTE were chosen for their
-simplicity and popularity. B-SMOTE chosen as a popular
-variation of the SMOTE algorithm. We also include the classification
-results of no oversampling (NONE) as a baseline.
+To assess the quality of the \replaced{K-means SMOTE}{K-SMOTE} algorithm,
+three other oversampling algorithms were used for benchmarking. ROS and SMOTE
+were chosen for their simplicity and popularity. B-SMOTE chosen as a popular
+variation of the SMOTE algorithm. We also include the classification results
+of no oversampling (NONE) as a baseline.
 
 To assess the performance of each oversampler, we use the classifiers Logistic
 Regression (LR) \cite{Nelder1972}, K-Nearest Neighbors (KNN)
@@ -907,7 +917,7 @@ hyperparameters used are shown in table \ref{tab:grid}.
 		\toprule
 		Oversampler      &                      &                                   \\
 		\midrule
-		K-SMOTE          & \# neighbors  & {3, 5}                            \\
+        \replaced{K-means SMOTE}{K-SMOTE}          & \# neighbors  & {3, 5}                            \\
 		                 & \# clusters (as \% of number of\replaced{ instances}{ observations})   & {1$^*$, 0.1, 0.3, 0.5, 0.7, 0.9}      \\
                          & Exponent of mean distance & {auto, 2, 5, 7}       \\
                          & IR threshold  & {auto, 0.5, 0.75, 1.0}            \\
@@ -956,11 +966,11 @@ best results for every classifier and performance metric used.} The
 \deleted{quantitative results of this analysis is} mean ranking of
 oversamplers is presented in Table~\ref{tab:mean_sem_ranking}. \replaced{This
 ranking was computed by averaging the ranks of the mean cross-validation
-scores per dataset, oversampler and classifier. K-SMOTE achieves the best mean
-ranking across datasets with low standard deviation.}{In addition to its
-superior performance, in the majority of the cases K-SMOTE's mean ranking has
-a lower standard deviation than any of the remaining methods, and particularly
-when opposed to SMOTE (the best performing benchmark method).}
+scores per dataset, oversampler and classifier. K-means SMOTE achieves the
+best mean ranking across datasets with low standard deviation.}{In addition to
+its superior performance, in the majority of the cases K-SMOTE's mean ranking
+has a lower standard deviation than any of the remaining methods, and
+particularly when opposed to SMOTE (the best performing benchmark method).}
 
 \end{paracol}
 \captionsetup{justification=centering}
@@ -1014,11 +1024,12 @@ highest in most classifier/metric combinations and datasets.}
 Table~\ref{tab:cross_validation_scores}. This table allows the direct
 comparison of the performance metrics being analysed.}
 
-\deleted{The performance of both oversamplers and classifiers is generally dependent on
-the dataset being used. Although both absolute and relative scores between the
-different oversamplers are dependent on the choice of metric and classifier,
-K-SMOTE's relative performance is consistent across datasets and generally
-outperforms the remaining oversampling methods in 56 of the 63 tests.}
+\deleted{The performance of both oversamplers and classifiers is generally
+dependent on the dataset being used. Although both absolute and relative
+scores between the different oversamplers are dependent on the choice of
+metric and classifier, K-SMOTE's relative performance is consistent across
+datasets and generally outperforms the remaining oversampling methods in 56 of
+the 63 tests.}
 
 \end{paracol}
 \captionsetup{justification=centering}
@@ -1048,9 +1059,9 @@ outperforms the remaining oversampling methods in 56 of the 63 tests.}
 The experiment's multi-dataset context was used to perform a Friedman
 test~\cite{friedman1937use}. Table~\ref{tab:friedman_test} shows the results
 obtained in the Friedman test performed, where the null hypothesis is rejected
-in all cases. \added{The rejection of the null hypothesis implies that at
-least one method is capable of stochastically dominating the remaining
-methods.}
+in all cases. \added{The rejection of the null hypothesis implies that the
+differences between the differences among the different oversamplers are not
+random, in other words, these differences are statistically significant.}
 
 \end{paracol}
 \begin{table}[H]
@@ -1071,17 +1082,14 @@ methods.}
 \switchcolumn
 
 \added{
-A Wilcoxon signed-rank test was also performed to understand whether K-SMOTE's
-superiority was statistically significant across datasets and oversamplers, as
-per the recommendations in \cite{Demsar2006}. This method is used as an
+A Wilcoxon signed-rank test was also performed to understand whether K-means
+SMOTE's superiority was statistically significant across datasets and
+oversamplers, as suggested in \cite{Demsar2006}. This method is used as an
 alternative to the paired Student's t-test, since the distribution of the
 differences between the two samples cannot be assumed as normally distributed.
-Our test had as null hypothesis that the pairwise difference between K-SMOTE's
-scores and the ones from the remaining oversamplers follow a symmetric
-distribution around zero, i.e., K-SMOTE's performance is similar to the
-compared oversampler. Although the Accuracy metric is not used to test the
-statistical significance in the NONE case, all metrics are used to test the
-remaining methods. This decision is discussed in the next subsection.}
+The null hypothesis of the test is that K-means SMOTE's performance is similar
+to the compared oversampler (i.e., the oversamplers used follow a symmetric
+distribution around zero).}
 
 \end{paracol}
 \begin{table}[H]
@@ -1107,23 +1115,20 @@ remaining methods. This decision is discussed in the next subsection.}
 \added{
 
 The mean rankings presented in Table~\ref{tab:mean_sem_ranking} show that on
-average, K-SMOTE produced the best results for every classifier and
-performance metric used. This is owed to the clustering phase and subsequent
+average, K-means SMOTE produced the best results for every classifier and
+performance metric used. This is due to the clustering phase and subsequent
 selection of data to be considered for oversampling. By successfully
 clustering and selecting the relevant areas in the data space to oversample,
-the SMOTE procedure was only used on minority classes within regions that
-represent well their spectral signature. This implies that this method,
-although successful in label noise free datasets such as the ones used in this
-experiment, is particularly effective for training classifiers whenever the
-ground truth data is both imbalanced and outdated.
+the generation of artificial instances is done only in the context of minority
+regions that represent well their spectral signature.
 
 As previously discussed, the direct comparison of performance metrics averaged
 over various datasets is not recommended due to the varying levels of
 performance of classifiers across datasets~\cite{demvsar2006}. Nonetheless,
 these results are shown in Table~\ref{tab:mean_sem_scores} to provide a fuller
 picture of the results obtained in the experiment. We found that on average
-K-SMOTE provides increased performance, regardless of the classifier and
-performance metric used. More importantly, K-SMOTE guaranteed a more
+K-means SMOTE provides increased performance, regardless of the classifier and
+performance metric used. More importantly, K-means SMOTE guaranteed a more
 consistent performance across datasets and with less variability, which can be
 attested in Tables~\ref{tab:mean_sem_ranking},~\ref{tab:mean_sem_scores}
 and~\ref{tab:cross_validation_scores}. 
@@ -1133,58 +1138,55 @@ our results are consistent with the findings in~\cite{Olofsson2013,
 Pontius2011}. Particularly, we consider the results obtained in our experiment
 using Overall Accuracy to be less informative than the results obtained with
 the remaining performance metrics, since this metric is affected by imbalanced
-class distributions. The class imbalance bias in this metric can be observed
+class distributions. The majority class bias in this metric can be observed
 in our experiment in Table~\ref{tab:mean_sem_ranking} with the classifiers LR
-and KNN, where the control method (NONE) is only outperformed by K-SMOTE. This
-effect is observed with more detail in Table~\ref{tab:mean_sem_scores}, where
-the benchmark oversamplers are outperformed by the control method in 16 out of
-63 tests (approximately 25\%). Out of these, 11 refer to tests using overall
-accuracy, while 9 of these 11 are found among the four datasets with highest
-IR, showing the overall accuracy's class imbalance bias discussed
-in~\cite{Olofsson2013, Pontius2011}. Regardless, K-SMOTE is only outperformed
-by the control method in 3 out of 63 tests (approximately 4.7\%), where all of
-those tests use overall accuracy. This is an improvement over the benchmark
-oversamplers, showing that generally K-SMOTE is the best choice even when
-overall accuracy is used as the main performance metric.
+and KNN, where the control method (NONE) is only outperformed by K-means
+SMOTE. This effect is observed with more detail in
+Table~\ref{tab:mean_sem_scores}, where the benchmark oversamplers are
+outperformed by the control method in 16 out of 63 tests (approximately 25\%).
+Out of these, most refer to tests using overall accuracy among the four
+datasets with highest IR, showing the overall accuracy's class imbalance bias
+discussed in~\cite{Olofsson2013, Pontius2011}. The K-means SMOTE oversampler
+is only outperformed by the control method in 3 of tests (all of them using
+overall accuracy). This is an improvement over the benchmark oversamplers,
+showing that generally K-means SMOTE is the best choice even when overall
+accuracy is used as the main performance metric.
 
-In addition to its superior performance, in the majority of the cases
-K-SMOTE's mean ranking has a lower standard deviation than any of the
-remaining methods, and particularly when opposed to SMOTE (the best performing
-benchmark method). This shows that the non-random selection of data spaces to
-oversample contributes to the quality of the data generated even on label
-noise-free data, making it a more informed data generation method in the
-context of LULC, as label noise and rare classes are particularly frequent in
-this domain. 
+In the majority of the cases, K-means SMOTE was able to generate higher
+quality data due to the non-random selection of data spaces to oversample.
+This can be seen in the performance of the classifiers trained on top of this
+data generation step, making it a more informed data generation method in the
+context of LULC\@.
 
 The performance of both oversamplers and classifiers is generally dependent on
 the dataset being used. Although both absolute and relative scores between the
 different oversamplers are dependent on the choice of metric and classifier,
-K-SMOTE's relative performance is consistent across datasets and generally
-outperforms the remaining oversampling methods in 56 of the 63 tests
+K-means SMOTE's relative performance is consistent across datasets and
+generally outperforms the remaining oversampling methods in 56 of the 63 tests
 (approximately 89\%). The mean cross-validation results found in
-Table~\ref{tab:cross_validation_scores} show that performance-wise, K-SMOTE is
-always better than or as good as SMOTE, with the exception of 4 situations
-(representing 6\% of the tests done), in which cases the percentage point
-difference is neglectable ($\leq 0.1$ percentage points). 
+Table~\ref{tab:cross_validation_scores} show that performance-wise, K-means
+SMOTE is always better than or as good as SMOTE, with the exception of 4
+situations (representing 6\% of the tests done), in which cases the percentage
+point difference is neglectable ($\leq 0.1$ percentage points). 
 
 The statistical tests showed that not only there is a statistically
 significant difference across the oversamplers used in this problem (found in
 the Friedman test presented in Table~\ref{tab:friedman_test}), but also that
-K-SMOTE's superior performance is statistically significant at a level of 0.05
-in 27 out of 28 tests (approximately 96\% of the tests performed). This shows
-that, in most cases, the usage of a cluster based procedure before employing
-the SMOTE algorithm (in this case, K-SMOTE) improves the quality of LULC
-classification when compared to using SMOTE in its original format, which
-remains the most popular oversampler among the remote sensing community.
+K-means SMOTE's superior performance is statistically significant at a level
+of 0.05 in 27 out of 28 tests in the Wilcoxon signed-rank test shown in
+Table~\ref{tab:wilcoxon_test} (approximately 96\% of the tests performed).
+This shows that, in most cases, the usage of k-Means SMOTE improves the
+quality of LULC classification when compared to using SMOTE in its original
+format, which remains the most popular oversampler among the remote sensing
+community.
 
-Although the usage of a cluster based procedure successfully captured the
-spectral signatures of the minority classes, it was done using K-means, a
+Although the usage of K-means SMOTE successfully captured the spectral
+signatures of the minority classes, it was done using K-means, a
 problem-agnostic clusterer. Consequently, the implementation of this method
 using a GIS-specific clusterer that considers the geographical traits of
 different regions (e.g., using the sampled pixels' geographical coordinates),
 may be a promising direction towards the development of more appropriate
-oversampling techniques in the remote sensing domain.
-}
+oversampling techniques in the remote sensing domain.}
 
 \section{Conclusion}~\label{sec:conclusion} 
 
@@ -1216,35 +1218,38 @@ classification task was averaged across a 5 fold stratification strategy with
 classification tasks. The mean validation score of each combination was then
 used to perform the analyses presented in this report.
 
-In 56 out of 63 classification tasks \added{(approximately 89\%)}, K-SMOTE led
-to better results than ROS, SMOTE, B-SMOTE and no oversampling. More
-importantly, we found that K-Means SMOTE is always better or equal than the
-second best oversampling method. K-SMOTE's performance was independent from
-both the classifier and performance metric under analysis. In general, K-SMOTE
-shows a higher performance among the non tree-based classifiers employed
-\added{(LR and KNN)} when compared with the remaining oversamplers,
-\added{where these oversamplers generally failed to improve the quality of
-classification}. Although these findings are case dependent, they are
-consistent with the results presented in~\cite{Douzas2018}. The proposed
-method also had the most consistent results across datasets, since it produced
-the lowest standard deviations across datasets in 7 out of 9 cases for both
-analyses, either based on ranking or mean cross-validation scores.
+In 56 out of 63 classification tasks \added{(approximately 89\%)},
+\replaced{K-means SMOTE}{K-SMOTE} led to better results than ROS, SMOTE,
+B-SMOTE and no oversampling. More importantly, we found that K-Means SMOTE is
+always better or equal than the second best oversampling method.
+\replaced{K-means SMOTE}{K-SMOTE}'s performance was independent from both the
+classifier and performance metric under analysis. In general,
+\replaced{K-means SMOTE}{K-SMOTE} shows a higher performance among the non
+tree-based classifiers employed \added{(LR and KNN)} when compared with the
+remaining oversamplers, \added{where these oversamplers generally failed to
+improve the quality of classification}. Although these findings are case
+dependent, they are consistent with the results presented
+in~\cite{Douzas2018}. The proposed method also had the most consistent results
+across datasets, since it produced the lowest standard deviations across
+datasets in 7 out of 9 cases for both analyses, either based on ranking or
+mean cross-validation scores.
 
 The proposed algorithm is a generalization of the original SMOTE algorithm. In
-fact, the SMOTE algorithm represents a corner case of K-SMOTE i.e. when the
-number of clusters equals to 1. Its data selection phase differs from the one
-used in SMOTE and Borderline SMOTE, providing artificially augmented datasets
-with less noisy data than the commonly used methods. This allows the training
-of classifiers with better defined decision boundaries, especially in the most
-important regions of the data space (the ones populated by a higher percentage
-of minority class instances).
+fact, the SMOTE algorithm represents a corner case of \replaced{K-means
+SMOTE}{K-SMOTE} i.e., when the number of clusters equals to 1. Its data
+selection phase differs from the one used in SMOTE and Borderline SMOTE,
+providing artificially augmented datasets with less noisy data than the
+commonly used methods. This allows the training of classifiers with better
+defined decision boundaries, especially in the most important regions of the
+data space (the ones populated by a higher percentage of minority class
+instances).
 
 As stated previously, the usage of this oversampler is technically simple. It
 can be applied to any classification problem relying on an imbalanced dataset,
-alongside any classifier. K-SMOTE is available as an open source implementation
-for the Python programming language (see Subsection~\ref{sec:implementation}).
-Consequently, it can be a useful tool for both remote sensing researchers and
-practitioners.
+alongside any classifier. \replaced{K-means SMOTE}{K-SMOTE} is available as an
+open source implementation for the Python programming language (see
+Subsection~\ref{sec:implementation}).  Consequently, it can be a useful tool
+for both remote sensing researchers and practitioners.
 
 \authorcontributions{Conceptualization, F.B.; Methodology, J.F. and G.D.; Software,
 	J.F. and G.D.; Validation, F.B., G.D.; Formal Analysis, J.F; Writing -
