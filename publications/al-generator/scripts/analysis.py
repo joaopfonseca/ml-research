@@ -22,11 +22,11 @@ from research.utils import (
     generate_paths,
     generate_mean_std_tbl_bold,
     load_datasets,
-    load_plt_sns_configs
+    load_plt_sns_configs,
+    make_bold
 )
 from rlearn.tools.reporting import _extract_pvalue
-from scipy.stats import ttest_rel, wilcoxon
-from statsmodels.stats.multitest import multipletests
+from scipy.stats import wilcoxon
 
 DATASETS_NAMES = [
     d.replace('fetch_', '')
@@ -481,6 +481,35 @@ def generate_main_results(results):
     )
 
 
+def generate_data_utilization_tables(wide_optimal):
+
+    # Mean data utilization to reach the .85 g-mean threshold
+    data_utilization = wide_optimal_al[0].reset_index()
+
+    # Data utilization per dataset and performance threshold
+    optimal_du = data_utilization[
+        (data_utilization['Evaluation Metric'] == 'geometric_mean_score_macro')
+        &
+        (data_utilization.variable.str.startswith('dur_'))
+    ].drop(columns='Evaluation Metric')
+
+    optimal_du = optimal_du.groupby(['Classifier', 'variable']).mean()\
+        .apply(
+            lambda row: make_bold(row, maximum=False, num_decimals=3), axis=1
+    ).reset_index()
+
+    optimal_du['G-mean Score'] = optimal_du.variable.str.replace('dur_', '')
+    optimal_du['G-mean Score'] = optimal_du['G-mean Score'] + '\\%'
+
+    return optimal_du[[
+        'Classifier',
+        'G-mean Score',
+        'NONE',
+        'SMOTE',
+        'G-SMOTE'
+    ]]
+
+
 def generate_dur_visualization(wide_optimal_al):
     """Visualize data utilization rates"""
     dur = data_utilization_rate(*wide_optimal_al)
@@ -655,11 +684,10 @@ def generate_statistical_results(
     # Get results
     results = wide_optimal_al[0][GENERATOR_NAMES]\
         .reset_index()[
-            wide_optimal_al[0].reset_index().variable
-            ==
-            'area_under_learning_curve'
+            wide_optimal_al[0].reset_index().variable.str.startswith('dur_')
         ].drop(columns=['variable'])\
         .rename(columns={'Evaluation Metric': 'Metric'})
+    results = results[results['Metric'] == 'geometric_mean_score_macro']
 
     # Calculate rankings
     ranks = results\
@@ -757,20 +785,44 @@ if __name__ == '__main__':
             ]]
         )
 
+        result.reset_index(inplace=True)
+        # Keep only G-mean
+        if ('Evaluation Metric' in result.columns or
+                'Metric' in result.columns):
+
+            query_col = 'Evaluation Metric'\
+                if 'Evaluation Metric' in result.columns\
+                else 'Metric'
+
+            result = result[
+                result[query_col] == 'G-mean'
+            ].drop(columns=query_col)
+
         # Export LaTeX-ready dataframe
-        result.to_csv(join(analysis_path, f'{name}.csv'))
+        result.to_csv(join(analysis_path, f'{name}.csv'), index=False)
 
     # Main results - visualizations
     wide_optimal_al = calculate_wide_optimal_al(results)
     generate_dur_visualization(wide_optimal_al)
     # generate_mean_rank_bar_chart(wide_optimal_al)
 
+    # Data utilization - dataframes
+    optimal_data_utilization = generate_data_utilization_tables(
+        wide_optimal_al
+    )
+    optimal_data_utilization = optimal_data_utilization.rename(index={
+            **METRICS_MAPPING, **DATASETS_MAPPING
+        })\
+        .to_csv(join(analysis_path, 'optimal_data_utilization.csv'),
+                index=False)
+
     # Statistical results
     statistical_results = generate_statistical_results(
-        wide_optimal_al, alpha=.1, control_method='NONE'
+        wide_optimal_al, alpha=.05, control_method='NONE'
     )
     for name, result in statistical_results:
         if 'Metric' in result.columns:
             result['Metric'] = result['Metric'].map(METRICS_MAPPING)
-        result = result.rename(columns={'Metric': 'Evaluation Metric'})
+            result = result[result['Metric'] == 'G-mean'].copy()
+            result.drop(columns='Metric', inplace=True)
         result.to_csv(join(analysis_path, f'{name}.csv'), index=False)
