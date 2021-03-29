@@ -98,13 +98,19 @@ $^{1}$ \quad NOVA Information Management School (NOVA IMS), Universidade Nova
     maps. In this paper, we address the imbalanced learning problem, by using
     K-means and \added{the Synthetic Minority Oversampling TEchnique (SMOTE)}
     as an improved oversampling algorithm. K-Means SMOTE improves the quality
-    of newly created artificial data by avoiding the generation of noisy data
-    while effectively overcome data imbalance. The performance of K-means
-    SMOTE is compared to other popular oversampling methods using seven remote
-    sensing benchmark datasets and a variety of classifiers and evaluation
-    metrics. The results show that the proposed method consistently
-    outperforms the remaining oversamplers and produces higher quality land
-    cover classifications.
+    of newly created artificial data by \added{addressing both the
+    between-class imbalance, as traditional oversamplers do, but also the
+    within-class imbalance, }avoiding the generation of noisy data while
+    effectively overcom\replaced{ing}{e} data imbalance. The performance of
+    K-means SMOTE is compared to other popular oversampling methods using
+    seven remote sensing benchmark datasets and a variety of classifiers and
+    evaluation metrics. The \added{statistical analysis of the} results show
+    that the proposed method consistently outperforms the remaining
+    oversamplers \replaced{producing}{and produces} higher quality land cover
+    classifications. \added{These results suggest that LULC data can benefit
+    significantly from the use of more sophisticated oversamplers as spectral
+    signatures for the same class can vary according to geographical
+    distribution.}
 }
 
 \keyword{
@@ -880,9 +886,12 @@ described (except for the baseline method NONE), creating an augmented
 dataset} with the exact same number of \replaced{instances}{ observations} for
 each class. The newly formed training dataset is used to train the classifier
 and the test set ($\frac{1}{5}$ of the dataset\deleted{, the remaining fold})
-is used to evaluate the performance of the classifier.  The evaluation scores
+is used to evaluate the performance of the classifier. The evaluation scores
 are then averaged over the 5 times the process is repeated. The range of
-hyperparameters used are shown in table \ref{tab:grid}.
+hyperparameters used are shown in table \ref{tab:grid}. \added{The definition of
+hyperparameters for the K-means SMOTE oversampler is defined according to the
+recommendations discussed in the original K-means SMOTE
+paper~\cite{Douzas2018}.}
 
 \end{paracol}
 \begin{figure}
