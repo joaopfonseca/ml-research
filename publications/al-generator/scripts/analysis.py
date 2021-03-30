@@ -25,7 +25,6 @@ from research.utils import (
     load_plt_sns_configs,
     make_bold
 )
-from rlearn.tools.reporting import _extract_pvalue
 from scipy.stats import wilcoxon
 
 DATASETS_NAMES = [
@@ -57,7 +56,6 @@ GROUP_KEYS = [
 
 GENERATOR_NAMES = [
     'NONE',
-    'SMOTE',
     'G-SMOTE'
 ]
 
@@ -267,7 +265,10 @@ def calculate_wide_optimal(results):
             ['mean', 'std']
         )
 
-    return wide_optimal['mean'], wide_optimal['std']
+    return (
+        wide_optimal['mean'].drop(columns='SMOTE'),
+        wide_optimal['std'].drop(columns='SMOTE')
+    )
 
 
 def calculate_wide_optimal_al(results):
@@ -321,7 +322,10 @@ def calculate_wide_optimal_al(results):
             ['mean', 'std']
         )
 
-    return wide_optimal['mean'], wide_optimal['std']
+    return (
+        wide_optimal['mean'].drop(columns='SMOTE'),
+        wide_optimal['std'].drop(columns='SMOTE')
+    )
 
 
 def calculate_mean_std_table(wide_optimal):
@@ -505,7 +509,6 @@ def generate_data_utilization_tables(wide_optimal):
         'Classifier',
         'G-mean Score',
         'NONE',
-        'SMOTE',
         'G-SMOTE'
     ]]
 
@@ -689,30 +692,13 @@ def generate_statistical_results(
         .rename(columns={'Evaluation Metric': 'Metric'})
     results = results[results['Metric'] == 'geometric_mean_score_macro']
 
-    # Calculate rankings
-    ranks = results\
-        .set_index(['Dataset', 'Classifier', 'Metric'])\
-        .rank(axis=1, ascending=0).reset_index()
-
-    # Friedman test
-    friedman_test = ranks.groupby(['Classifier', 'Metric'])\
-        .apply(_extract_pvalue)\
-        .reset_index()\
-        .rename(columns={0: 'p-value'})
-
-    friedman_test['Significance'] = friedman_test['p-value'] < alpha
-    friedman_test['p-value'] = friedman_test['p-value'].apply(
-        lambda x: '{:.1e}'.format(x)
-    )
-
     # Wilcoxon signed rank test
     # Optimal proposed framework vs baseline framework
-    results['Optimal'] = results[['SMOTE', 'G-SMOTE']].max(1)
     wilcoxon_test = []
     for dataset in results.Dataset.unique():
         wilcoxon_results = apply_wilcoxon_test(
             results[results['Dataset'] == dataset],
-            'Optimal',
+            'G-SMOTE',
             ['NONE'],
             alpha
         ).drop(columns='Oversampler')
@@ -726,14 +712,7 @@ def generate_statistical_results(
         lambda x: '{:.1e}'.format(x)
     )
 
-    statistical_results_names = (
-        'friedman_test', 'wilcoxon_test'
-    )
-
-    statistical_results = zip(
-        statistical_results_names, (friedman_test, wilcoxon_test)
-    )
-    return statistical_results
+    return 'wilcoxon_test', wilcoxon_test
 
 
 if __name__ == '__main__':
@@ -817,12 +796,7 @@ if __name__ == '__main__':
                 index=False)
 
     # Statistical results
-    statistical_results = generate_statistical_results(
+    name, result = generate_statistical_results(
         wide_optimal_al, alpha=.05, control_method='NONE'
     )
-    for name, result in statistical_results:
-        if 'Metric' in result.columns:
-            result['Metric'] = result['Metric'].map(METRICS_MAPPING)
-            result = result[result['Metric'] == 'G-mean'].copy()
-            result.drop(columns='Metric', inplace=True)
-        result.to_csv(join(analysis_path, f'{name}.csv'), index=False)
+    result.to_csv(join(analysis_path, f'{name}.csv'), index=False)

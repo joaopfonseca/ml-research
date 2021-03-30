@@ -1,4 +1,4 @@
-Classifier,NONE,SMOTE,G-SMOTE
-KNN,3.00 $\pm$ 0.0,\textbf{1.00 $\pm$ 0.0},2.00 $\pm$ 0.0
-LR,2.86 $\pm$ 0.35,2.00 $\pm$ 0.53,\textbf{1.14 $\pm$ 0.35}
-RF,2.57 $\pm$ 0.49,2.29 $\pm$ 0.7,\textbf{1.14 $\pm$ 0.35}
+Classifier,NONE,G-SMOTE
+KNN,2.00 $\pm$ 0.0,\textbf{1.00 $\pm$ 0.0}
+LR,2.00 $\pm$ 0.0,\textbf{1.00 $\pm$ 0.0}
+RF,2.00 $\pm$ 0.0,\textbf{1.00 $\pm$ 0.0}

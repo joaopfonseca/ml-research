@@ -1,22 +1,22 @@
-Dataset,Classifier,NONE,SMOTE,G-SMOTE
-Botswana,KNN,0.898 $\pm$ 0.016,\textbf{0.922 $\pm$ 0.011},0.921 $\pm$ 0.011
-Botswana,LR,0.962 $\pm$ 0.005,\textbf{0.966 $\pm$ 0.005},\textbf{0.966 $\pm$ 0.005}
-Botswana,RF,0.920 $\pm$ 0.012,0.921 $\pm$ 0.013,\textbf{0.924 $\pm$ 0.011}
-IP,KNN,0.711 $\pm$ 0.012,\textbf{0.755 $\pm$ 0.016},0.740 $\pm$ 0.015
-IP,LR,0.747 $\pm$ 0.015,\textbf{0.754 $\pm$ 0.016},\textbf{0.754 $\pm$ 0.015}
-IP,RF,0.768 $\pm$ 0.017,\textbf{0.791 $\pm$ 0.015},0.787 $\pm$ 0.015
-KSC,KNN,0.871 $\pm$ 0.008,\textbf{0.885 $\pm$ 0.007},0.884 $\pm$ 0.007
-KSC,LR,0.929 $\pm$ 0.01,\textbf{0.931 $\pm$ 0.01},\textbf{0.931 $\pm$ 0.008}
-KSC,RF,0.890 $\pm$ 0.008,0.893 $\pm$ 0.007,\textbf{0.896 $\pm$ 0.008}
-PC,KNN,0.912 $\pm$ 0.017,\textbf{0.931 $\pm$ 0.011},\textbf{0.931 $\pm$ 0.012}
-PC,LR,0.939 $\pm$ 0.018,0.940 $\pm$ 0.015,\textbf{0.941 $\pm$ 0.016}
-PC,RF,0.925 $\pm$ 0.016,0.922 $\pm$ 0.014,\textbf{0.932 $\pm$ 0.013}
-PU,KNN,0.791 $\pm$ 0.02,\textbf{0.847 $\pm$ 0.009},0.833 $\pm$ 0.006
-PU,LR,0.861 $\pm$ 0.013,0.876 $\pm$ 0.01,\textbf{0.878 $\pm$ 0.01}
-PU,RF,0.817 $\pm$ 0.021,0.839 $\pm$ 0.011,\textbf{0.852 $\pm$ 0.009}
-Salinas,KNN,0.896 $\pm$ 0.006,\textbf{0.922 $\pm$ 0.007},0.916 $\pm$ 0.007
-Salinas,LR,0.924 $\pm$ 0.013,0.924 $\pm$ 0.01,\textbf{0.927 $\pm$ 0.008}
-Salinas,RF,0.932 $\pm$ 0.009,0.930 $\pm$ 0.009,\textbf{0.934 $\pm$ 0.011}
-SA,KNN,0.966 $\pm$ 0.005,\textbf{0.980 $\pm$ 0.006},\textbf{0.980 $\pm$ 0.007}
-SA,LR,\textbf{0.983 $\pm$ 0.005},\textbf{0.983 $\pm$ 0.005},\textbf{0.983 $\pm$ 0.005}
-SA,RF,0.979 $\pm$ 0.012,0.979 $\pm$ 0.012,\textbf{0.980 $\pm$ 0.011}
+Dataset,Classifier,NONE,G-SMOTE
+Botswana,KNN,0.898 $\pm$ 0.016,\textbf{0.921 $\pm$ 0.011}
+Botswana,LR,0.962 $\pm$ 0.005,\textbf{0.966 $\pm$ 0.005}
+Botswana,RF,0.920 $\pm$ 0.012,\textbf{0.924 $\pm$ 0.011}
+IP,KNN,0.711 $\pm$ 0.012,\textbf{0.740 $\pm$ 0.015}
+IP,LR,0.747 $\pm$ 0.015,\textbf{0.754 $\pm$ 0.015}
+IP,RF,0.768 $\pm$ 0.017,\textbf{0.787 $\pm$ 0.015}
+KSC,KNN,0.871 $\pm$ 0.008,\textbf{0.884 $\pm$ 0.007}
+KSC,LR,0.929 $\pm$ 0.01,\textbf{0.931 $\pm$ 0.008}
+KSC,RF,0.890 $\pm$ 0.008,\textbf{0.896 $\pm$ 0.008}
+PC,KNN,0.912 $\pm$ 0.017,\textbf{0.931 $\pm$ 0.012}
+PC,LR,0.939 $\pm$ 0.018,\textbf{0.941 $\pm$ 0.016}
+PC,RF,0.925 $\pm$ 0.016,\textbf{0.932 $\pm$ 0.013}
+PU,KNN,0.791 $\pm$ 0.02,\textbf{0.833 $\pm$ 0.006}
+PU,LR,0.861 $\pm$ 0.013,\textbf{0.878 $\pm$ 0.01}
+PU,RF,0.817 $\pm$ 0.021,\textbf{0.852 $\pm$ 0.009}
+Salinas,KNN,0.896 $\pm$ 0.006,\textbf{0.916 $\pm$ 0.007}
+Salinas,LR,0.924 $\pm$ 0.013,\textbf{0.927 $\pm$ 0.008}
+Salinas,RF,0.932 $\pm$ 0.009,\textbf{0.934 $\pm$ 0.011}
+SA,KNN,0.966 $\pm$ 0.005,\textbf{0.980 $\pm$ 0.007}
+SA,LR,\textbf{0.983 $\pm$ 0.005},\textbf{0.983 $\pm$ 0.005}
+SA,RF,0.979 $\pm$ 0.012,\textbf{0.980 $\pm$ 0.011}

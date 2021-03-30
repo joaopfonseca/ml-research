@@ -62,12 +62,12 @@
     introduce a new component to the typical AL framework, the data generator,
     a source of artificial data to reduce the amount of user-labeled data
     required in AL\@. The implementation of the proposed AL framework is done
-    using SMOTE and Geometric SMOTE as data generators. We compare the new AL
-    framework to the original one using similar acquisition functions and
-    predictors over three AL-specific performance metrics in seven benchmark
-    datasets. We show that this modification of the AL framework significantly
-    reduces cost and time requirements for a successful AL implementation in
-    the context of remote sensing. 
+    using Geometric SMOTE as data generator. We compare the new AL framework
+    to the original one using similar acquisition functions and predictors
+    over three AL-specific performance metrics in seven benchmark datasets. We
+    show that this modification of the AL framework significantly reduces cost
+    and time requirements for a successful AL implementation in all of the
+    datasets used in the experiment. 
 \end{abstract}
 
 
@@ -83,8 +83,8 @@
     framework;
 \item The proposed modification significantly reduces the cost and time
     requirements for a successful AL implementation;
-\item The effectiveness of this framework was shown with simple,
-    context-agnostic data generation heuristics;
+\item The effectiveness of this framework was shown with a simple,
+    context-agnostic data generation heuristic;
 \item The amount of data required to reach the performance thresholds defined
     for the baseline AL methods were significantly reduced in all seven
     datasets used in this experiment;
@@ -550,7 +550,7 @@ artificial data that is generated between iterations reduces the amount of
 labeled data required to reach optimal performance and lower the amount of
 human labor required to train a classifier to its optimal performance. This
 process lowers the annotation and overall training costs by translating some
-the annotation cost into computational cost.
+of the annotation cost into computational cost.
 
 \begin{figure}[htb]
 	\centering
@@ -593,15 +593,15 @@ a relevant and appropriate domain to test this method.
 
 \section{Methodology}~\label{sec:methodology}
 
-In this section we describe the datasets, evaluation metrics, oversamplers,
+In this section we describe the datasets, evaluation metrics, oversampler,
 classifiers, software used and the procedure developed. We demonstrate the
 proposed method's efficiency over 7 datasets, sampled from publicly available,
-well-known remote sensing hyperspectral scenes frequently found in the
-literature. The datasets and sampling strategy are described in
+well-known remote sensing hyperspectral scenes frequently found in remote
+sensing literature. The datasets and sampling strategy are described in
 Subsection~\ref{sec:datasets}. On each of these datasets, we apply 3 different
 classifiers over the entire training set to estimate the optimal
 classification performance, the original AL framework as the baseline
-reference and the proposed method using two different generators, described in
+reference and the proposed method using G-SMOTE as a generator, described in
 Subsection~\ref{sec:machine_learning_algorithms}. The metrics used to estimate
 the performance of these algorithms are described in
 Subsections~\ref{sec:evaluation_metrics} and~\ref{sec:al_evaluation_metrics}.
@@ -610,7 +610,7 @@ Subsection~\ref{sec:experimental_procedure}.
 
 Our methodology focuses on two objectives: (1) Comparison of optimal
 classification performance among active learners and traditional supervised
-learning and (2) Comparison of classification convergence efficiency across AL
+learning and (2) Comparison of classification convergence efficiency among AL
 frameworks.
 
 \subsection{Datasets}~\label{sec:datasets}
@@ -623,7 +623,6 @@ Table~\ref{tab:rs_scene_description}. These scenes were chosen because of
 their popularity in the research community and their high baseline
 classification scores. Consequently, demonstrating an outperforming method in
 this context is particularly challenging and valuable.
-
 
 \begin{table}[bp]
     \centering
@@ -740,17 +739,17 @@ especially important to standardize the AL-related performance metrics.
 
 \subsection{Machine Learning Algorithms}~\label{sec:machine_learning_algorithms}
 
-We use two different types of ML algorithms. Data generation algorithms, used
+We use two different types of ML algorithms. A data generation algorithm, used
 to form the generator, and classification algorithms, used to form the chooser
 and predictor. In order to maintain simplicity and a common approach to most of
 the literature in the topic, the classifiers used to play the chooser and
 predictor are the same.
 
 Although any method capable of generating artificial data can be used as a
-generator, the ones used in this experiment are oversamplers, originally
+generator, the one used in this experiment is an oversampler, originally
 developed to deal with imbalanced learning problems. Specifically, we chose
-SMOTE for its popularity and simplicity. We also chose G-SMOTE as a better
-performing generalization of the former method.
+G-SMOTE as a better performing generalization of SMOTE, a popular and simple
+oversampler.
 
 Three classification algorithms are used as the chooser and predictor. We use
 different types of classifiers to test the framework's performance under
@@ -801,13 +800,13 @@ Particularly, we follow the recommendations found in~\cite{Kottke2017}. Each
 AL configuration is evaluated using the \textit{Area Under the Learning Curve}
 (AULC) performance metric. It is the sum of the classification performance
 values of all iterations. To facilitate the analysis of the results, we fix
-the range of this metric between $[0,1]$ by dividing it by the total amount of
+the range of this metric between $[0,1]$ by dividing it with the total amount of
 iterations (\textit{i.e.}, the maximum performance area). 
 
 The \textit{Data Utilization Rate} (DUR)~\cite{Reitmaier2013} metric consists
 of the ratio between the number of instances required to reach a given G-mean
 score threshold by an AL strategy and an equivalent baseline strategy. For
-easier interpretability, We simplify this metric by using the percentage
+easier interpretability, we simplify this metric by using the percentage
 of training data used by an AL strategy to reach the performance threshold,
 instead of presenting these values as a ratio of the baseline strategy. The
 DUR metric is measured at 9 different performance levels, between
@@ -880,14 +879,13 @@ to the augmented dataset.
 		\toprule
 		Generator  &                      &                    \\
 		\midrule
-		SMOTE      & \# neighbors         & 5                  \\
 		G-SMOTE    & \# neighbors         & 5                  \\
                    & deformation factor   & 0.5                \\
                    & truncation factor    & 0.5                \\
 		\bottomrule
 	\end{tabular}
     \caption{\label{tab:grid}Hyper-parameter definition for the classifiers and
-    generators used in the experiment.}
+    generator used in the experiment.}
 \end{table}
 
 \subsection{Software Implementation}
@@ -920,8 +918,7 @@ based on the mean scores resulting from three different initializations of
 \subsection{Results}
 
 Table~\ref{tab:aulc_ranks} shows the average rankings and standard deviations
-across datasets of the AULC scores for each active learner. A lower ranking
-value (\textit{i.e.,} closer to 1) means a superior performance.
+across datasets of the AULC scores for each active learner.
 
 \pgfplotstabletypeset[
 	begin table=\begin{longtable},
@@ -1002,25 +999,10 @@ predictors produced using the typical AL framework.
 
 The methods used to test the experiment's results must be appropriate for a
 multi-dataset context. Therefore the statistical analysis is performed using
-the Friedman test~\cite{friedman1937use} and the Wilcoxon signed-rank
-test~\cite{Wilcoxon1945} for a post-hoc analysis. The variable used for this
+the Wilcoxon signed-rank
+test~\cite{Wilcoxon1945} as a post-hoc analysis. The variable used for this
 test is the data utilization rate, considering the various performance
 thresholds from Table~\ref{tab:optimal_data_utilization}.
-
-Table~\ref{tab:friedman_test} shows the results of the Friedman test. In most
-cases the null hypothesis is rejected, which indicates a statistically
-significant difference on the performance among AL frameworks and generators.
-
-\pgfplotstabletypeset[
-	begin table=\begin{longtable},
-		end table=\end{longtable},  col sep=comma, header=true,
-	string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
-	every last row/.style={after row=\bottomrule
-        \caption{\label{tab:friedman_test}
-			Results for Friedman test. Statistical significance is tested at a
-            level of $\alpha = 0.05$. The null hypothesis is that there is no 
-            difference in the classification across AL frameworks.}}
-]{../analysis/friedman_test.csv}
 
 The Wilcoxon signed-rank test results are shown in
 Table~\ref{tab:wilcoxon_test}. We test as null hypothesis that the performance
@@ -1044,21 +1026,18 @@ hypothesis was rejected in all datasets.
 
 The results found in Table~\ref{tab:aulc_ranks} show that the convergence
 efficiency of the proposed method (\textit{i.e.}, active learners using
-generators G-SMOTE and SMOTE) is consistently higher than the baseline AL
-framework (NONE). With the exception of one scenario, the proposed framework
-using G-SMOTE was able to outperform the remaining methods. Our experiment
-shows that the proposed framework was always able to outperform the baseline
-framework, regardless of the performance metric.
+G-SMOTE as generators) is consistently higher than the baseline AL framework
+(NONE). The proposed framework was able to outperform the remaining methods in
+all scenarios. 
 
 We use the AULC metric as way to compare both the convergence efficiency and
 the maximum performance level of the different AL architectures in a single
 metric. The comparison of the mean AULC scores in Table~\ref{tab:aulc_scores}
 shows a significant performance superiority across active learners in some
-situations, especially when the KNN classifier is used. The proposed AL
-framework improved the baseline performance in all settings. When analysing
-the performance of the two active learners using a data generation mechanism,
+situations, especially when the KNN classifier is used. When analysing
+the performance of active learning with a data generation mechanism,
 we find that the mean performance of the proposed framework can be optimized
-to be better than or as good as the baseline framework. This optimization may
+to be always better than or as good as the baseline framework. This optimization may
 be owed to either (or both):
 
 \begin{enumerate}
@@ -1084,45 +1063,36 @@ one of the causes for higher AULC scores.
 The results in Table~\ref{tab:optimal_data_utilization} show that the proposed
 framework requires less data to reach a similar G-mean score, regardless of
 the classifier used. These results reflect the effect described previously,
-showing that AULC scores also improve due to the earlier convergence of the AL
-iterative process, since the amount of data necessary to reach a given
+showing that AULC scores also improve due to the earlier convergence of the
+AL's iterative process, since the amount of data necessary to reach a given
 performance threshold is generally reduced with the proposed AL framework.
 
-In most tests, our results were statistically significant. These tests were
-done considering two different perspectives:
+Our statistical analysis shows that the results from this experiment were
+statistically significant in every dataset. The proposed framework outperforms
+the baseline framework with statistical significance on each dataset across
+different classifiers and performance metrics at a level of $\alpha = 0.05$.
+This is done by comparing the DUR of both the baseline method and the proposed
+method using the diferent performance thresholds presented in
+Table~\ref{tab:optimal_data_utilization} for each dataset used. This indicates
+that regardless of the context under which an AL algorithm is used, the
+proposed framework always reduces the amount of data necessary in the AL's
+iterative process with statistical significance.
 
-\begin{enumerate}
-    \item Examining whether there is a difference across AL frameworks and
-        generators used by conducting a Friedman test. The results of this
-        statistical test is shown in Table~\ref{tab:friedman_test}, where the
-        null hypothesis is rejected in all cases. 
-    \item Examining whether the proposed framework outperforms the baseline
-        framework with statistical significance on each dataset across
-        different classifiers and performance metrics. This is done
-        by comparing the DUR scores of both the baseline method
-        and the proposed method for each combination of classifiers and
-        performance metrics, where the null hypothesis was rejected in all
-        datasets. This indicates that regardless of the context under which an
-        AL algorithm is used, the proposed framework always reduces the amount
-        of data necessary in the AL's iterative process with statistical
-        significance.
-\end{enumerate}
-
-This paper introduces the concept of applying data generation algorithm in the
-AL framework. This was done with the implementation of a popular data
-generation algorithm and a recent, SOTA generalization of this same method.
-Although, since these algorithms are based on heuristics, future work should
-focus on improving these results through the implementation of more
-sophisticated data generation mechanisms, at the cost of additional
-computational power. In addition, we also noticed significant standard
-errors in our experimental results. This indicates that AL procedures seem to
-be particularly sensitive to the initialization method, which is
-still a limitation of AL, regardless of the framework used. This is
-consistent with the findings in~\cite{Kottke2017}, which future work should
-attempt to address. Although the Generator component marginally reduced this
-standard error found in AULC and optimal classification scores found in
-Tables~\ref{tab:aulc_scores} and~\ref{tab:optimal_mean_std_scores}, it is not
-sufficient to address this specific limitation.
+This paper introduces the concept of applying data a generation algorithm in
+the AL framework. This was done with the implementation of a recent state of
+the art generalization of a popular data generation algorithm. Although, since
+this algorithm is based on heuristics, future work should focus on improving
+these results through the implementation of more sophisticated data generation
+mechanisms, at the cost of additional computational power. In addition, we
+also noticed significant standard errors in our experimental results. This
+indicates that AL procedures seem to be particularly sensitive to the
+initialization method, which is still a limitation of AL, regardless of the
+framework and configurations used. This is consistent with the findings
+in~\cite{Kottke2017}, which future work should attempt to address. Although
+the Generator component marginally reduced this standard error found in AULC
+and optimal classification scores found in Tables~\ref{tab:aulc_scores}
+and~\ref{tab:optimal_mean_std_scores}, it is not sufficient to address this
+specific limitation.
 
 \section{Conclusion}~\label{sec:conclusion}
 
@@ -1132,17 +1102,16 @@ of AL through the use of artificial data generation. The experiment was
 designed to test the proposed method under particularly challenging
 conditions, where the maximum performance line is naturally high in most
 datasets (with exception to the Indian Pines dataset). In order to test basic
-setups for this new framework, the elements that constitute the Generator
-component were set up in a plug-and-play scheme, without significant tuning of
-the data generators (SMOTE and G-SMOTE). The tests showed that this new
-framework is able to consistently outperform the original AL framework
-regardless of the scenario. These results could be further improved through
-the modification and more intense tuning of the data generation strategy. In
-our experiment, during each iteration, the new artificial data is generated
-only to match each non-majority class frequency with the majority class
-frequency, thus strictly balancing the class distribution. Generating a larger
-amount of data for all classes (especially in early iterations) can further
-improve these results. 
+setups for this new framework, the element that constitute the Generator
+component was set up in a plug-and-play scheme, without significant tuning of
+the G-SMOTE oversampler. The tests showed that this new framework is able to
+consistently outperform the original AL framework regardless of the scenario.
+These results could be further improved through the modification and more
+intense tuning of the data generation strategy. In our experiment, during each
+iteration, the new artificial data is generated only to match each
+non-majority class frequency with the majority class frequency, thus strictly
+balancing the class distribution. Generating a larger amount of data for all
+classes (especially in early iterations) can further improve these results. 
 
 The data selection efficiency of AL on these datasets is also considered. The
 high performance scores for the baseline AL framework made the achievement of

@@ -1,4 +1,4 @@
-Classifier,SMOTE,G-SMOTE
-KNN,\textbf{0.004 $\pm$ 0.673},\textbf{0.072 $\pm$ 0.651}
-LR,\textbf{0.462 $\pm$ 0.037},\textbf{0.453 $\pm$ 0.039}
-RF,\textbf{0.471 $\pm$ 0.068},\textbf{0.385 $\pm$ 0.095}
+Classifier,G-SMOTE
+KNN,\textbf{0.072 $\pm$ 0.651}
+LR,\textbf{0.453 $\pm$ 0.039}
+RF,\textbf{0.385 $\pm$ 0.095}
