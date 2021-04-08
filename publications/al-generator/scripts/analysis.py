@@ -499,18 +499,26 @@ def generate_data_utilization_tables(wide_optimal):
 
     optimal_du = optimal_du.groupby(['Classifier', 'variable']).mean()\
         .apply(
-            lambda row: make_bold(row, maximum=False, num_decimals=3), axis=1
+            lambda row: make_bold(row*100, maximum=False, num_decimals=1),
+            axis=1
     ).reset_index()
 
     optimal_du['G-mean Score'] = optimal_du.variable.str.replace('dur_', '')
-    optimal_du['G-mean Score'] = optimal_du['G-mean Score'] + '\\%'
+    optimal_du['G-mean Score'] = (
+        optimal_du['G-mean Score'].astype(int) / 100
+    ).apply(lambda x: '{0:.2f}'.format(x))
+
+    for generator in GENERATOR_NAMES:
+        optimal_du[generator] = optimal_du[generator].apply(
+            lambda x: x[:-1]+'\\%}' if x.endswith('}') else x+'\\%'
+        )
 
     return optimal_du[[
-        'Classifier',
         'G-mean Score',
+        'Classifier',
         'NONE',
         'G-SMOTE'
-    ]]
+    ]].sort_values(['G-mean Score', 'Classifier'])
 
 
 def generate_dur_visualization(wide_optimal_al):
@@ -778,7 +786,10 @@ if __name__ == '__main__':
             ].drop(columns=query_col)
 
         # Export LaTeX-ready dataframe
-        result.to_csv(join(analysis_path, f'{name}.csv'), index=False)
+        result.rename(columns={
+            'NONE': 'Standard',
+            'G-SMOTE': 'Proposed'
+        }).to_csv(join(analysis_path, f'{name}.csv'), index=False)
 
     # Main results - visualizations
     wide_optimal_al = calculate_wide_optimal_al(results)
@@ -789,8 +800,11 @@ if __name__ == '__main__':
     optimal_data_utilization = generate_data_utilization_tables(
         wide_optimal_al
     )
-    optimal_data_utilization = optimal_data_utilization.rename(index={
-            **METRICS_MAPPING, **DATASETS_MAPPING
+    optimal_data_utilization = optimal_data_utilization\
+        .rename(columns={
+            'G-mean Score': 'Performance',
+            'NONE': 'Standard',
+            'G-SMOTE': 'Proposed'
         })\
         .to_csv(join(analysis_path, 'optimal_data_utilization.csv'),
                 index=False)

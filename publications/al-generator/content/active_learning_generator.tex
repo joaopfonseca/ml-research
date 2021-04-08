@@ -55,26 +55,26 @@
     classification tasks. In spite of its effectiveness, it is still
     significantly reliant on user interaction, which makes it both expensive
     and time consuming to implement. Most of the current literature focuses on
-    the optimization of AL by modifying the selection criteria, the chooser
-    and/or predictors used. Although improvements in these areas will result
-    in more effective data collection, the use of artificial data sources to
-    reduce human-computer interaction remains unexplored. In this paper, we
-    introduce a new component to the typical AL framework, the data generator,
-    a source of artificial data to reduce the amount of user-labeled data
-    required in AL\@. The implementation of the proposed AL framework is done
-    using Geometric SMOTE as data generator. We compare the new AL framework
-    to the original one using similar acquisition functions and predictors
-    over three AL-specific performance metrics in seven benchmark datasets. We
-    show that this modification of the AL framework significantly reduces cost
-    and time requirements for a successful AL implementation in all of the
-    datasets used in the experiment. 
+    the optimization of AL by modifying the selection criteria and the
+    classifiers used. Although improvements in these areas will result in more
+    effective data collection, the use of artificial data sources to reduce
+    human-computer interaction remains unexplored. In this paper, we introduce
+    a new component to the typical AL framework, the data generator, a source
+    of artificial data to reduce the amount of user-labeled data required in
+    AL\@. The implementation of the proposed AL framework is done using
+    Geometric SMOTE as data generator. We compare the new AL framework to the
+    original one using similar acquisition functions and classifiers over three
+    AL-specific performance metrics in seven benchmark datasets. We show that
+    this modification of the AL framework significantly reduces cost and time
+    requirements for a successful AL implementation in all of the datasets
+    used in the experiment. 
 \end{abstract}
 
 
 %%Graphical abstract
 \begin{graphicalabstract}
 \centering
-\includegraphics[width=.85\linewidth]{../analysis/graphical_abstract}
+\includegraphics[width=\linewidth]{../analysis/graphical_abstract}
 \end{graphicalabstract}
 
 %%Research highlights
@@ -225,7 +225,7 @@ reduce the class imbalance bias. This is done with the introduction of an
 additional component in the iterative AL procedure (the generator), used to
 generate artificial data to both balance and augment the training dataset. The
 introduction of this component is expected to reduce the number of iterations
-required until convergence of the predictor's quality.
+required until convergence of the classifier's quality.
 
 This paper is organized as follows: Section~\ref{sec:introduction} explains
 the problem and its context, Sections~\ref{sec:al-sota} and~\ref{sec:ovs-sota}
@@ -251,25 +251,23 @@ the following elements~\cite{Sverchkov2017,Su2020,Ruzicka2020}:
         selection criterion to expand the training set in regions where the
         classification uncertainty is higher. Therefore, this dataset is used for both
         producing the initial training sample by selecting a set of
-        observations for the oracle to annotate (discussed in point 3) and
+        observations for the supervisor to annotate (discussed in point 3) and
         calculating the uncertainty map to augment the training dataset.
-    \item Initial training sample. It is a small sample of the unlabeled
-        dataset, used to initiate the first AL iteration. The size of the
-        initial training sample normally varies between no instances at all
-        and 10\%~\cite{Li2013}.
-    \item Oracle. An external entity to which the uncertainty map is presented
-        to. The oracle is responsible for annotating unlabeled instances to be
-        added to the augmented dataset. In remote sensing, the oracle is
+    \item Supervisor. An external entity to which the uncertainty map is presented
+        to. The supervisor is responsible for annotating unlabeled instances to be
+        added to the augmented dataset. In remote sensing, the supervisor is
         typically a photo-interpreter, as is the case in~\cite{li2020}. Some of
-        the research also refers to the oracle as the
-        \textit{supervisor}~\cite{Su2020, Shrivastava2021}.
-    \item Augmented training dataset. This dataset is the concatenation of the
-        labeled initial training sample along with the datasets labeled by the
-        oracle in past iterations (discussed in point 3).
-    \item Chooser. Produces the class probabilities for each unlabeled
-        instance. This is a classifier trained using the augmented dataset.
-        It is used to estimate the class probabilities for each instance over
-        the unlabeled dataset.
+        the research also refers to the supervisor as the
+        \textit{oracle}~\cite{Ruzicka2020, Yoo2019, Aghdam2019, Cawley2011}.
+    \item Initial training dataset. It is a small sample of data used to
+        initiate the first AL iteration. The size of the initial training
+        sample normally varies between no instances at all and
+        10\%~\cite{Li2013}.
+    \item Current and expanded training dataset. It is the concatenation of
+        the initial training and the datasets labeled by the supervisor in
+        past iterations (discussed in point 2).
+    \item Chooser (classifier). Produces the class probabilities for each
+        unlabeled instance.
     \item Selection criterion. It quantifies the chooser's uncertainty level
         for each instance belonging to the unlabeled dataset. It is typically
         based on the class probabilities assigned by the chooser. In some
@@ -278,25 +276,14 @@ the following elements~\cite{Sverchkov2017,Su2020,Ruzicka2020}:
         function}~\cite{Ruzicka2020} or \textit{query function}~\cite{Su2020}.
         Some of the literature refers to the selection criterion by using the
         concept \textit{sampling scheme}~\cite{Liu2020}.
-    \item Uncertainty map. The dataset containing the highest uncertainty
-        points/patches to be labeled by the oracle.
-    \item Data source. In the context of LULC classification, the data source
-        is usually a hyper/multi-spectral image, a Synthetic-aperture radar
-        (SAR) image, or a composite image.
-    \item Predictor. The classifier used to infer the land cover classes for
-        the final output map. Once a stopping criterion is met, the classifier
-        is trained using the augmented dataset and the LULC classes are
-        inferred from the data source.
-    \item Prediction output. In the context of LULC classification, the
-        prediction output is the estimated LULC map raster.
 \end{enumerate}
 
 Figure~\ref{fig:al_typical} schematizes the steps involved in a complete AL
 iteration. For a better context within the remote sensing domain, the
 prediction output is identified as the LULC map. This framework starts by
 collecting unlabeled data from the original data source. It is used to
-generate a random initial training sample and is labeled by the oracle. In
-practical applications, the oracle is frequently a group of
+generate a random initial training sample and is labeled by the supervisor. In
+practical applications, the supervisor is frequently a group of
 photo-interpreters~\cite{Kottke2017}. The chooser is trained on the resulting
 dataset and is used to predict the class probabilities on the unlabeled
 dataset. The class probabilities are fed into a selection criterion to
@@ -305,15 +292,13 @@ highest uncertainty will be selected. This calculation is motivated by the
 absence of labels in the uncertainty dataset. Therefore, it is impossible to
 estimate the prediction's accuracy in the unlabeled dataset in a real case
 scenario. The iteration is completed when the selected points are tagged by
-the oracle and added to the training dataset (\textit{i.e.}, the augmented
+the supervisor and added to the training dataset (\textit{i.e.}, the augmented
 dataset). 
 
 \begin{figure}[htb]
 	\centering
 	\includegraphics[width=\linewidth]{../analysis/al_typical}
-	\caption{Diagram depicting the typical AL framework. Although the chooser
-        and predictor are presented as separate entities, they are frequently
-        the same classifier.
+	\caption{Diagram depicting the typical AL framework.
     }~\label{fig:al_typical}
 \end{figure}
 
@@ -433,88 +418,18 @@ unlabeled instances and select the ones with the highest predicted loss.
 Some of the literature fails to specify the strategy employed, although
 inferring it is generally intuitive. For example,~\cite{Ertekin2007}
 successfully used AL to address the imbalanced learning problem. They employed
-an ensemble of SVMs as the chooser and predictor, as well as an ensemble-based
-selection criterion. All of the research found related to this topic focused on
-the improvement of AL through modifications on the selection criterion, chooser
-or predictor. None of these publications proposed significant variations to the
-original AL framework.
-
-\section{Artificial Data Generation Approaches}~\label{sec:ovs-sota}
-
-The generation of artificial data is a common approach to address imbalanced
-learning tasks~\cite{Kaur2019}, as well as improving the effectiveness of
-supervised learning tasks~\cite{DeVries2017}. In recent years some
-sophisticated data generation approaches were developed. However, the scope of
-this work is to propose the integration of a generator within the AL
-framework. To do this, we will focus on heuristic data generation approaches,
-specifically, oversamplers.
-
-Heuristic data resampling methods employ local and/or global information to
-generate new, relevant, non-duplicate instances. These methods are most
-commonly used to populate minority classes and balance the between-class
-distribution of a dataset. The Synthetic Minority Oversampling Technique
-(SMOTE)~\cite{Chawla2002} is a popular heuristic oversampling
-algorithm, proposed in 2002. The simplicity and effectiveness of this method
-contributes to its prevailing popularity. It generates a new instance
-through a linear interpolation of a randomly selected
-minority-class instance and one of its randomly
-selected $k$-nearest neighbors. 
-
-\begin{figure}[htb]
-	\centering
-	\includegraphics[width=.75\linewidth]{../analysis/data_generation}
-    \caption{Example of G-SMOTE's generation process. G-SMOTE randomly selects
-        instance $\protect\overrightarrow{x}$ and one of its nearest neighbors
-        $\protect\overrightarrow{y}$ to produce instance
-        $\protect\overrightarrow{z}$.
-    }~\label{fig:data_generation}
-\end{figure}
-
-The implementation of SMOTE for LULC classification tasks has been found to
-improve the quality of the predictors used~\cite{Jozdani2019,Bogner2018}.
-Despite its popularity, its drawbacks motivated the development of other
-oversampling methods~\cite{Douzas2019}. The following issues are addressed in
-more recent papers:
-
-\begin{enumerate}
-    \item Generation of noisy instances due to the selection of $k$-nearest
-        neighbors and initial instance. The selection of an instance and/or
-        neighboring instance located inside a majority class region may
-        produce artificial instances within that region and amplify noisy
-        data.
-    \item Generation of noisy data due to the use of instances from two
-        different minority class clusters. Choosing a minority class instance
-        and one of its nearest neighbors belonging to a different minority
-        cluster may lead to the generation of an instance located within the
-        two classes.
-    \item Generation of nearly duplicated instances. The linear interpolation
-        of parent instances that are close to each other produces artificial
-        instances with similar properties as its parents. Geometric SMOTE
-        (G-SMOTE)~\cite{Douzas2019} introduces a modification of the SMOTE
-        algorithm in the data generation mechanism to produce artificial
-        instances with higher variability.
-\end{enumerate}
-
-The G-SMOTE algorithm is introduced as a generalization of the vanilla
-SMOTE\@. Instead of generating artificial data as a linear combination of the
-parent instances, it is done within a deformed, truncated hyper-spheroid.
-G-SMOTE generates an artificial instance $\overrightarrow{z}$ within a
-hyper-spheroid, formed by selecting a minority instance $\overrightarrow{x}$
-and one of its nearest neighbors $\overrightarrow{y}$, as shown in
-Figure~\ref{fig:data_generation}. The truncation and deformation parameters
-define the shape of the spheroid's geometry. The method also modifies the
-selection strategy for the $k$-nearest neighbors, accepting the generation of
-artificial instances using instances from different classes, as shown in
-Figure~\ref{fig:data_generation}d. G-SMOTE has shown superior performance when
-compared with other oversampling methods for LULC classification tasks,
-regardless of the classifier used~\cite{Douzas2019class}.
+an ensemble of SVMs as the chooser, as well as an ensemble-based selection
+criterion. All of the research found related to this topic focused on the
+improvement of AL through modifications on the selection criterion and
+classifiers used. None of these publications proposed significant variations
+to the original AL framework.
 
 \section{Proposed method}~\label{sec:proposed-method}
 
 Within the literature identified, most of the work developed in the AL domain
-revolved around improving the quality of the chooser, predictor and/or
-selection criterion. Although these methods allow earlier convergence of the AL
-iterative process, the impact of these methods are only observed between
+revolved around improving the quality of classification algorithms and/or
+selection criteria. Although these methods allow earlier convergence of the
+AL iterative process, the impact of these methods are only observed between
 iterations. Consequently, none of these contributions focused on the
 definition of decision borders within iterations. The method proposed in this
 paper modifies the AL framework by introducing an artificial data generation
@@ -545,13 +460,13 @@ variability into the augmented dataset and facilitate the chooser's training
 phase with a more consistent definition of the decision boundaries at each
 iteration. Therefore, any algorithm capable of producing artificial data, be
 it agnostic or specific to the domain, can be employed. The artificial data is
-only used to train the classifiers involved in the process (chooser and
-predictor) and is discarded once the chooser's training phase is completed.
-The remaining steps in the AL framework remain unchanged. This method
-addresses the limitations found in the previous sections: 
+only used to train the classifiers involved in the process and is discarded
+once the training phase is completed. The remaining steps in the AL framework
+remain unchanged. This method addresses the limitations found in the previous
+sections:
 
 \begin{enumerate}
-    \item The convergence of the predictor's performance should be anticipated
+    \item The convergence of classification performance should be anticipated
         with the clearer definition of the decision boundaries across
         iterations.
     \item Annotation cost is expected to reduce as the need for labeled
@@ -569,6 +484,58 @@ challenging when the availability of labeled data is scarce and/or comes at a
 high cost, being subjected to the curse of dimensionality. Consequently, it is
 a relevant and appropriate domain to test this method.
 
+\section{Artificial Data Generation Approaches}~\label{sec:ovs-sota}
+
+The generation of artificial data is a common approach to address imbalanced
+learning tasks~\cite{Kaur2019}, as well as improving the effectiveness of
+supervised learning tasks~\cite{DeVries2017}. In recent years some
+sophisticated data generation approaches were developed. However, the scope of
+this work is to propose the integration of a generator within the AL
+framework. To do this, we will focus on heuristic data generation approaches,
+specifically, oversamplers.
+
+Heuristic data resampling methods employ local and/or global information to
+generate new, relevant, non-duplicate instances. These methods are most
+commonly used to populate minority classes and balance the between-class
+distribution of a dataset. The Synthetic Minority Oversampling Technique
+(SMOTE)~\cite{Chawla2002} is a popular heuristic oversampling algorithm,
+proposed in 2002. The simplicity and effectiveness of this method contributes
+to its prevailing popularity. It generates a new instance through a linear
+interpolation of a randomly selected minority-class instance and one of its
+randomly selected $k$-nearest neighbors. The implementation of SMOTE for LULC
+classification tasks has been found to improve the quality of the predictors
+used~\cite{Jozdani2019,Bogner2018}. Despite its popularity, its drawbacks
+motivated the development of other oversampling methods~\cite{Douzas2019}.
+
+Geometric SMOTE (G-SMOTE)~\cite{Douzas2019} introduces a modification of the
+SMOTE algorithm in the data generation mechanism to produce artificial
+instances with higher variability. Instead of generating artificial data as a
+linear combination of the parent instances, it is done within a deformed,
+truncated hyper-spheroid. G-SMOTE generates an artificial instance
+$\overrightarrow{z}$ within a hyper-spheroid, formed by selecting a minority
+instance $\overrightarrow{x}$ and one of its nearest neighbors
+$\overrightarrow{y}$, as shown in Figure~\ref{fig:data_generation}. The
+truncation and deformation parameters define the shape of the spheroid's
+geometry. The method also modifies the selection strategy for the $k$-nearest
+neighbors, accepting the generation of artificial instances using instances
+from different classes, as shown in Figure~\ref{fig:data_generation}d. The
+modification of both selection and generation mechanisms addresses the main
+drawbacks found in SMOTE, the generation of both noisy data (\textit{i.e.,}
+generate minority class instances within majority class regions) and
+near-duplicate minority class instances~\cite{Douzas2019}. G-SMOTE has shown
+superior performance when compared with other oversampling methods for LULC
+classification tasks, regardless of the classifier sed~\cite{Douzas2019class}.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=.6\linewidth]{../analysis/data_generation}
+    \caption{Example of G-SMOTE's generation process. G-SMOTE randomly selects
+        instance $\protect\overrightarrow{x}$ and one of its nearest neighbors
+        $\protect\overrightarrow{y}$ to produce instance
+        $\protect\overrightarrow{z}$.
+    }~\label{fig:data_generation}
+\end{figure}
+
 \section{Methodology}~\label{sec:methodology}
 
 In this section we describe the datasets, evaluation metrics, oversampler,
@@ -582,9 +549,8 @@ classification performance, the original AL framework as the baseline
 reference and the proposed method using G-SMOTE as a generator, described in
 Subsection~\ref{sec:machine_learning_algorithms}. The metrics used to estimate
 the performance of these algorithms are described in
-Subsections~\ref{sec:evaluation_metrics} and~\ref{sec:al_evaluation_metrics}.
-Finally, the experimental procedure is described in
-Subsection~\ref{sec:experimental_procedure}. 
+Subsection~\ref{sec:evaluation_metrics}. Finally, the experimental procedure
+is described in Subsection~\ref{sec:experimental_procedure}. 
 
 Our methodology focuses on two objectives: (1) Comparison of optimal
 classification performance among active learners and traditional supervised
@@ -718,49 +684,44 @@ especially important to standardize the AL-related performance metrics.
 \subsection{Machine Learning Algorithms}~\label{sec:machine_learning_algorithms}
 
 We use two different types of ML algorithms. A data generation algorithm, used
-to form the generator, and classification algorithms, used to form the chooser
-and predictor. In order to maintain simplicity and a common approach to most of
-the literature in the topic, the classifiers used to play the chooser and
-predictor are the same.
+to form the generator, and classification algorithms, used to calculate the
+classification uncertainties in the unlabeled dataset and predict the class
+labels in the validation and test sets.
 
 Although any method capable of generating artificial data can be used as a
 generator, the one used in this experiment is an oversampler, originally
 developed to deal with imbalanced learning problems. Specifically, we chose
-G-SMOTE as a better performing generalization of SMOTE, a popular and simple
-oversampler.
+G-SMOTE, a state-of-the-art oversampler.
 
-Three classification algorithms are used as the chooser and predictor. We use
-different types of classifiers to test the framework's performance under
-varying situations: neighbors-based, linear and ensemble models. The
-neighbors-based classifier chosen was $K$-nearest neighbors
-(KNN)~\cite{Cover1967}, a logistic regression (LR)~\cite{Nelder1972} is used as
-the linear model and a random forest classifier (RFC)~\cite{Ho1995} was used as
-the ensemble model.
+Three classification algorithms are used. We use different types of
+classifiers to test the framework's performance under varying situations:
+neighbors-based, linear and ensemble models. The neighbors-based classifier
+chosen was $K$-nearest neighbors (KNN)~\cite{Cover1967}, a logistic regression
+(LR)~\cite{Nelder1972} is used as the linear model and a random forest
+classifier (RFC)~\cite{Ho1995} was used as the ensemble model.
 
 The acquisition function is completed by testing three different selection
 criteria. Random selection is used as a baseline selection criterion, whereas
-entropy and breaking ties are used due to their popularity and classifier
-independence. 
+entropy and breaking ties are used due to their popularity and independence of
+the classifier used.
 
-\subsection{Non-AL Evaluation Metrics}~\label{sec:evaluation_metrics}
+\subsection{Evaluation Metrics}~\label{sec:evaluation_metrics}
 
-According to~\cite{Gavade2019}, nearly 80\% of the satellite-based LULC studies
-employ the \textit{Overall Accuracy} (OA) and \textit{Kappa coefficient}
-performance metrics. However, these metrics are frequently insufficient to
-accurately depict classification performance~\cite{Olofsson2013, Pontius2011}.
-Metrics such as Producer's Accuracy (or \textit{Recall}) and User's Accuracy
-(or \textit{Precision}) are also commonly used. Since they consist of ratios
-based on True/False Positives (TP and FP) and Negatives (TN and FN), formulated
-as $Precision = \frac{TP}{TP+FP}$ and $Recall = \frac{TP}{TP+FN}$, they provide
-per class information regarding the classifier's classification performance.
+Since the datasets used in this experiment have an imbalanced distribution of
+class frequencies, metrics such as the \textit{Overall Accuracy} (OA) and
+\textit{Kappa coefficient} are insufficient to accurately depict
+classification performance~\cite{Olofsson2013, Pontius2011}. Instead, metrics
+such as Producer's Accuracy (or \textit{Recall}) and User's Accuracy (or
+\textit{Precision}) can be used. Since they consist of ratios based on
+True/False Positives (TP and FP) and Negatives (TN and FN), they provide per
+class information regarding the classifier's classification performance.
 However, in this experiment, the meaning and number of classes available in
 each dataset varies, making these metrics difficult to synthesize.
 
-While OA and Kappa tend to overestimate a classifier's performance on datasets
-with high IR, other metrics \textit{Geometric mean} (G-mean) are less
+The performance metric \textit{Geometric mean} (G-mean) is less
 sensitive to the data imbalance bias~\cite{Jeni2013, Kubat1997}. Therefore, we
 employ the G-mean scorer. It consists of the geometric mean of $Specificity =
-\frac{TN}{TN + FP}$ and \textit{Sensitivity} (also known as
+\frac{TN}{TN + FP}$ and $Sensitivity = \frac{TP}{TP+FN}$ (also known as
 \textit{Recall})~\cite{Kubat1997}. Both metrics are calculated in a multiclass
 context considering a one-versus-all approach. For multiclass problems, the
 \textit{G-mean} scorer is calculated as its average per class values: 
@@ -770,16 +731,14 @@ context considering a one-versus-all approach. For multiclass problems, the
     \overline{Specificity}_i}
 \end{equation*}
     
-\subsection{AL Evaluation Metrics}~\label{sec:al_evaluation_metrics}
-
 The comparison of classification convergence across AL frameworks and
 selection criteria is done using 2 AL-specific performance metrics.
 Particularly, we follow the recommendations found in~\cite{Kottke2017}. Each
 AL configuration is evaluated using the \textit{Area Under the Learning Curve}
 (AULC) performance metric. It is the sum of the classification performance
 values of all iterations. To facilitate the analysis of the results, we fix
-the range of this metric between $[0,1]$ by dividing it with the total amount of
-iterations (\textit{i.e.}, the maximum performance area). 
+the range of this metric between $[0,1]$ by dividing it with the total amount
+of iterations (\textit{i.e.}, the maximum performance area). 
 
 The \textit{Data Utilization Rate} (DUR)~\cite{Reitmaier2013} metric consists
 of the ratio between the number of instances required to reach a given G-mean
@@ -788,14 +747,14 @@ easier interpretability, we simplify this metric by using the percentage
 of training data used by an AL strategy to reach the performance threshold,
 instead of presenting these values as a ratio of the baseline strategy. The
 DUR metric is measured at 9 different performance levels, between
-60\% and 95\% G-mean scores at a 5\% step.
+0.6 and 0.95 G-mean scores at a 0.05 step.
 
 \subsection{Experimental Procedure}~\label{sec:experimental_procedure}
 
 A common practice in methodological evaluations is the implementation of an
 offline experiment~\cite{Kagy2019}. It consists of using an existing set of
 labeled data as a proxy for the population of unlabeled instances. Because the
-dataset is already fully labeled, the oracle's typical annotation process
+dataset is already fully labeled, the supervisor's typical annotation process
 involved in each iteration is done at zero cost. Each AL and classifier
 configuration is tested using a stratified 5-fold cross validation testing
 scheme. For each round, the larger partition is split in a stratified fashion
@@ -895,11 +854,16 @@ the performance levels of the different frameworks varies according to the
 data it is being used on. Consequently, evaluating these performance metrics
 solely based on their mean values might lead to inaccurate analyses.
 Accordingly, the results of this experiment are analysed using both the mean
-ranking and absolute scores for each model. The rank values are assigned
-based on the mean scores resulting from three different initializations of
-5-fold cross validation for each classifier and active learner.
+ranking and absolute scores for each model. The rank values are assigned based
+on the mean scores resulting from three different initializations of 5-fold
+cross validation for each classifier and active learner. The goal of this
+analysis is to understand whether the proposed framework (AL with the
+integration of an artificial data generator) is capable of using less data
+from the original dataset while simultaneously achieving better classification
+results than the standard AL framework, \textit{i.e.}, guarantee a faster
+classification convergence. 
 
-\subsection{Results}
+\subsection{Results}~\label{sec:sub_results}
 
 Table~\ref{tab:aulc_ranks} shows the average rankings and standard deviations
 across datasets of the AULC scores for each active learner.
@@ -934,7 +898,11 @@ folds \times 3\ initializations$.
         every last row/.style={after row=\bottomrule},
     ]{../analysis/mean_std_aulc_scores.csv}
     \caption{\label{tab:aulc_scores}
-        Average AULC of each AL configuration tested.
+        Average AULC of each AL configuration tested. Each AULC score is
+        calculated using the G-mean scores of each iteration in the validation
+        set. By the end of the iterative process, each AL configuration used a
+        total of 750 instances of the 960 instances that compose the training
+        set.
     }
 \end{table}
 
@@ -1006,6 +974,12 @@ hypothesis was rejected in all datasets.
 
 \subsection{Discussion}
 
+This paper expands the AL framework by adding an artificial data generator
+into its iterative process. This modification is done to accelerate the
+classification convergence of the standard AL procedure, which is
+reflected in the reduction of the amount of data necessary to reach better
+classification results.
+
 The convergence efficiency of the proposed method is always higher than the
 baseline AL framework (NONE), as shown in Table~\ref{tab:aulc_ranks}. The AL
 using data generation was able to outperform the baseline AL in all scenarios. 
@@ -1038,30 +1012,32 @@ This paper introduces the concept of applying data a generation algorithm in
 the AL framework. This was done with the implementation of a recent state of
 the art generalization of a popular data generation algorithm. Although, since
 this algorithm is based on heuristics, future work should focus on improving
-these results through the implementation of more sophisticated data generation
-mechanisms, at the cost of additional computational power. In addition, we
-also noticed significant standard errors in our experimental results. This
-indicates that AL procedures seem to be particularly sensitive to the
-initialization method, which is still a limitation of AL, regardless of the
-framework and configurations used. This is consistent with the findings
+these results through the design of new data generation mechanisms, at the
+cost of additional computational power. In addition, we also noticed
+significant standard errors in our experimental results
+(see Subsection~\ref{sec:sub_results}). This indicates that
+AL procedures seem to be particularly sensitive to the initialization method,
+which is still a limitation of AL, regardless of the framework and
+configurations used. This is consistent with the findings
 in~\cite{Kottke2017}, which future work should attempt to address. Although
 using a generator marginally reduced this standard error, it is not sufficient
 to address this specific limitation.
 
 \section{Conclusion}~\label{sec:conclusion}
 
-The aim of this experiment was to test the effectiveness of a new AL
-framework. The experiment was designed to test the proposed method under
-particularly challenging conditions, where the maximum performance line is
-naturally high in most datasets. The element that constitute the Generator
-component was set up in a plug-and-play scheme, without significant tuning of
-the G-SMOTE oversampler. Using a generator in AL improved the original AL
-framework in all scenarios. These results could be further improved through
-the modification and more intense tuning of the data generation strategy. In
-our experiment, artificial data was generated only to match each non-majority
-class frequency with the majority class frequency, strictly balancing the
-class distribution. Generating a larger amount of data for all classes can
-further improve these results. 
+The aim of this experiment was to test the effectiveness of a new AL framework
+that introduces artificial data generation in its iterative process. The
+experiment was designed to test the proposed method under particularly
+challenging conditions, where the maximum performance line is naturally high
+in most datasets. The element that constitute the Generator component was set
+up in a plug-and-play scheme, without significant tuning of the G-SMOTE
+oversampler. Using a generator in AL improved the original AL framework in all
+scenarios. These results could be further improved through the modification
+and more intense tuning of the data generation strategy. In our experiment,
+artificial data was generated only to match each non-majority class frequency
+with the majority class frequency, strictly balancing the class distribution.
+Generating a larger amount of data for all classes can further improve these
+results. 
 
 The high performance scores for the baseline AL framework made the achievement
 of significant improvements over the traditional AL framework under these
@@ -1072,7 +1048,7 @@ performance threshold.
 
 The results from this experiment show that using a data generator in the AL
 framework will improve the convergence of the method. This framework
-successfully anticipated the predictor's optimal performance, as shown in
+successfully anticipate the predictor's optimal performance, as shown in
 Tables~\ref{tab:aulc_ranks},~\ref{tab:aulc_scores}
 and~\ref{tab:optimal_data_utilization}. Therefore, in a real application, the
 annotation cost would have been reduced since less iterations and labeled

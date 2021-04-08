@@ -1,4 +1,4 @@
-Dataset,Classifier,NONE,G-SMOTE
+Dataset,Classifier,Standard,Proposed
 Botswana,KNN,0.898 $\pm$ 0.016,\textbf{0.921 $\pm$ 0.011}
 Botswana,LR,0.962 $\pm$ 0.005,\textbf{0.966 $\pm$ 0.005}
 Botswana,RF,0.920 $\pm$ 0.012,\textbf{0.924 $\pm$ 0.011}

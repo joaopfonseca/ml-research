@@ -1,4 +1,4 @@
-Classifier,G-SMOTE
+Classifier,Proposed
 KNN,\textbf{0.072 $\pm$ 0.651}
 LR,\textbf{0.453 $\pm$ 0.039}
 RF,\textbf{0.385 $\pm$ 0.095}

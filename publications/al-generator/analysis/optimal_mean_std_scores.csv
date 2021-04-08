@@ -1,4 +1,4 @@
-Classifier,MP,NONE,G-SMOTE
+Classifier,MP,Standard,Proposed
 KNN,0.907 $\pm$ 0.063,0.904 $\pm$ 0.069,\textbf{0.912 $\pm$ 0.061}
 LR,0.935 $\pm$ 0.052,0.931 $\pm$ 0.059,\textbf{0.938 $\pm$ 0.055}
 RF,0.918 $\pm$ 0.051,0.921 $\pm$ 0.051,\textbf{0.930 $\pm$ 0.043}
