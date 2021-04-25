@@ -1,55 +1,73 @@
-\documentclass[preprint,12pt]{elsarticle}
+\documentclass[remotesensing,article,submit,moreauthors,pdftex]{Definitions/mdpi} 
 
-\pdfoutput=1
+\firstpage{1} 
+\makeatletter 
+\setcounter{page}{\@firstpage} 
+\makeatother
+\pubvolume{1}
+\issuenum{1}
+\articlenumber{0}
+\pubyear{2021}
+\copyrightyear{2021}
+\datereceived{} 
+\dateaccepted{} 
+\datepublished{} 
+\hreflink{https://doi.org/}
 
 \usepackage{breakcites}
 \usepackage{float}
 \usepackage{graphicx}
 \usepackage{subcaption}
 \usepackage{geometry}
-%\geometry{
-%	a4paper,
-%	left=18mm,
-%	right=18mm,
-%	top=8mm,
-%}
 \usepackage{amsmath}
-\newcommand{\inlineeqnum}{\refstepcounter{equation}~\mbox{(\theequation)}}
+\newcommand{\inlineeqnum}{\refstepcounter{equation}~~\mbox{(\theequation)}}
 \usepackage{enumitem}
 \usepackage[ruled,vlined]{algorithm2e}
 \usepackage{booktabs}
 \usepackage{pgfplotstable}
-\pgfplotsset{compat=1.14}
+\pgfplotsset{compat=1.17}
 \usepackage{longtable}
 \usepackage{tabu}
 \usepackage{hyperref}
-\date{}
 
-\journal{Expert Systems with Applications}
-
-\begin{document}
-
-\begin{frontmatter}
-
-\title{
-    Increasing the Effectiveness of Active Learning:\\
-    Introducing Artificial Data Generation in Active Learning for Land Use/Land Cover Classification}
-
-
-\author[inst1]{Joao Fonseca} 
-\author[inst1]{Georgios Douzas}
-\author[inst1]{Fernando Bacao}
-
-\affiliation[inst1]{
-    organization={NOVA Information Management School, Universidade Nova de Lisboa},
-    addressline={Campus de Campolide}, 
-    %city={Lisboa},
-    postcode={1070-312 Lisboa}, 
-    %state={},
-    country={Portugal}
+\Title{
+    Increasing the Effectiveness of Active Learning: Introducing Artificial
+    Data Generation in Active Learning for Land Use/Land Cover Classification
 }
 
-\begin{abstract}
+% MDPI internal command: Title for citation in the left column
+\TitleCitation{
+    Increasing the Effectiveness of Active Learning: Introducing Artificial
+    Data Generation in Active Learning for Land Use/Land Cover Classification
+}
+
+% Orcid ID
+\newcommand{\orcidauthorA}{0000-0001-5889-3575}
+\newcommand{\orcidauthorB}{0000-0001-7019-3782}
+\newcommand{\orcidauthorC}{0000-0002-0834-0275}
+
+\Author{
+    Joao Fonseca $^{1,}$*\orcidA{},
+    Georgios Douzas $^{1}$\orcidB{},
+    Fernando Bacao $^{1}$\orcidC{}
+}
+
+% MDPI internal command: Authors, for metadata in PDF
+\AuthorNames{Joao Fonseca, Georgios Douzas and Fernando Bacao}
+
+% MDPI internal command: Authors, for citation in the left column
+\AuthorCitation{Fonseca, J.; Douzas, G.; Bacao, F.}
+
+\address{%
+$^{1}$ \quad NOVA Information Management School (NOVA IMS), Universidade Nova
+    de Lisboa, Campus de Campolide, 1070-312 Lisboa, Portugal;
+    gdouzas@novaims.unl.pt (G.D.); bacao@novaims.unl.pt (F.B.)\\
+    * \quad Correspondence: jpfonseca@novaims.unl.pt (J.F.)
+}
+
+\corres{Correspondence: jpfonseca@novaims.unl.pt}
+
+\abstract{
     In remote sensing, Active Learning (AL) has become an important technique
     to collect informative ground truth data ``on-demand'' for supervised
     classification tasks. In spite of its effectiveness, it is still
@@ -63,40 +81,22 @@
     of artificial data to reduce the amount of user-labeled data required in
     AL\@. The implementation of the proposed AL framework is done using
     Geometric SMOTE as data generator. We compare the new AL framework to the
-    original one using similar acquisition functions and classifiers over three
-    AL-specific performance metrics in seven benchmark datasets. We show that
-    this modification of the AL framework significantly reduces cost and time
-    requirements for a successful AL implementation in all of the datasets
-    used in the experiment. 
-\end{abstract}
+    original one using similar acquisition functions and classifiers over
+    three AL-specific performance metrics in seven benchmark datasets. We show
+    that this modification of the AL framework significantly reduces cost and
+    time requirements for a successful AL implementation in all of the
+    datasets used in the experiment. 
+}
 
+\keyword{
+    Active Learning;
+    Artificial Data Generation;
+    Land Use/Land Cover Classification; 
+    Oversampling;
+    SMOTE
+}
 
-%%Graphical abstract
-\begin{graphicalabstract}
-\centering
-\includegraphics[width=\linewidth]{../analysis/graphical_abstract}
-\end{graphicalabstract}
-
-%%Research highlights
-\begin{highlights}
-\item We integrate artificial data generation into the Active Learning
-    framework;
-\item The proposed modification significantly reduces the cost and time
-    requirements for a successful AL implementation;
-\item The effectiveness of this framework was shown with a simple,
-    context-agnostic data generation heuristic;
-\item The amount of data required to reach the performance thresholds defined
-    for the baseline AL methods were significantly reduced in all seven
-    datasets used in this experiment;
-\end{highlights}
-
-\begin{keyword}
-Active Learning \sep Artificial Data Generation \sep Land Use/Land Cover
-Classification \sep Oversampling \sep SMOTE
-\end{keyword}
-
-\end{frontmatter}
-
+\begin{document}
 
 \section{Introduction}~\label{sec:introduction}
 
@@ -242,23 +242,24 @@ As the amount of unlabeled data increases, the interest and practical
 usefulness of AL follows that trend~\cite{Kottke2017}. AL is used as the
 general definition of frameworks aiming to train a learning system in multiple
 steps, where a set of new data points are chosen and added to the training
-dataset each time~\cite{Ruzicka2020}. Typically, an AL framework is composed of
-the following elements~\cite{Sverchkov2017,Su2020,Ruzicka2020}:
+dataset each time~\cite{Ruzicka2020}. Typically, an AL framework is composed
+of the following elements~\cite{Sverchkov2017,Su2020,Ruzicka2020}:
 
 \begin{enumerate}
     \item Unlabeled dataset. Consists of the original data source (or a sample
-        thereof). It is used in combination with the chooser and the
-        selection criterion to expand the training set in regions where the
-        classification uncertainty is higher. Therefore, this dataset is used for both
-        producing the initial training sample by selecting a set of
+        thereof). It is used in combination with the chooser and the selection
+        criterion to expand the training set in regions where the
+        classification uncertainty is higher. Therefore, this dataset is used
+        for both producing the initial training sample by selecting a set of
         observations for the supervisor to annotate (discussed in point 3) and
         calculating the uncertainty map to augment the training dataset.
-    \item Supervisor. An external entity to which the uncertainty map is presented
-        to. The supervisor is responsible for annotating unlabeled instances to be
-        added to the augmented dataset. In remote sensing, the supervisor is
-        typically a photo-interpreter, as is the case in~\cite{li2020}. Some of
-        the research also refers to the supervisor as the
-        \textit{oracle}~\cite{Ruzicka2020, Yoo2019, Aghdam2019, Cawley2011}.
+    \item Supervisor. An external entity to which the uncertainty map is
+        presented to. The supervisor is responsible for annotating unlabeled
+        instances to be added to the augmented dataset. In remote sensing, the
+        supervisor is typically a photo-interpreter, as is the case
+        in~\cite{li2020}. Some of the research also refers to the supervisor
+        as the \textit{oracle}~\cite{Ruzicka2020, Yoo2019, Aghdam2019,
+        Cawley2011}.
     \item Initial training dataset. It is a small sample of data used to
         initiate the first AL iteration. The size of the initial training
         sample normally varies between no instances at all and
@@ -568,11 +569,12 @@ their popularity in the research community and their high baseline
 classification scores. Consequently, demonstrating an outperforming method in
 this context is particularly challenging and valuable.
 
-\begin{table}[bp]
+\end{paracol}
+\begin{table}
     \centering
-    \addtolength{\leftskip} {-2cm}
-    \addtolength{\rightskip}{-2cm}
     \pgfplotstabletypeset[
+    	begin table=\begin{longtable},
+    	end table=\end{longtable},
         col sep=semicolon,
         string type,
         every head row/.style={%
@@ -582,11 +584,16 @@ this context is particularly challenging and valuable.
         every last row/.style={after row=\bottomrule},
         string type,
     ]{../analysis/rs_scene_description.csv}
+    \vspace{.2cm}
     \caption{\label{tab:rs_scene_description}
         Description of the hyperspectral scenes used in this experiment. The
         column ``Res. (m)'' refers to the resolution of the sensors (in
-        meters) that captured each of the scenes.}
+        meters) that captured each of the scenes.
+    }
 \end{table}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 The Indian Pines scene~\cite{Baumgardner2015} is composed of agriculture fields
 in approximately two thirds of its coverage, low density buildup areas and
@@ -604,42 +611,50 @@ the distal portion of the Delta (see Figure~\ref{fig:botswana}). The Kennedy
 Space Center scene contains a ground truth composed of both vegetation and
 urban-related coverage (see Figure~\ref{fig:kennedy_space_center})
 
+\pagebreak
+\end{paracol}
 \begin{figure}[H]
-	\centering
-	\begin{subfigure}{.20\textwidth}
+	\centering 
+	\begin{subfigure}{.24\textwidth}
 		\centering
-		\captionsetup{skip=12pt}
+        \captionsetup{justification=centering}
 		\includegraphics[height=1.5\linewidth]{../analysis/indian_pines}
 		\subcaption{{\medbreak}}\label{fig:indian_pines}
 	\end{subfigure}
-	\begin{subfigure}{.20\textwidth}
+	\begin{subfigure}{.24\textwidth}
 		\centering
+        \captionsetup{justification=centering}
 		\includegraphics[height=1.5\linewidth]{../analysis/pavia_centre}
 		\subcaption{{\medbreak}}\label{fig:pavia_centre}
 	\end{subfigure}
-	\begin{subfigure}{.20\textwidth}
+	\begin{subfigure}{.24\textwidth}
 		\centering
+        \captionsetup{justification=centering}
 		\includegraphics[height=1.5\linewidth]{../analysis/pavia_university}
 		\subcaption{{\medbreak}}\label{fig:pavia_university}
 	\end{subfigure}
 
-	\begin{subfigure}{.20\textwidth}
+	\begin{subfigure}{.24\textwidth}
 		\centering
+        \captionsetup{justification=centering}
 		\includegraphics[height=1.5\linewidth]{../analysis/salinas}
 		\subcaption{{\medbreak}}\label{fig:salinas}
 	\end{subfigure}
-	\begin{subfigure}{.20\textwidth}
+	\begin{subfigure}{.24\textwidth}
 		\centering
+        \captionsetup{justification=centering}
 		\includegraphics[height=1.5\linewidth]{../analysis/salinas_a}
 		\subcaption{{\medbreak}}\label{fig:salinas_a}
 	\end{subfigure}
-	\begin{subfigure}{.20\textwidth}
+	\begin{subfigure}{.24\textwidth}
 		\centering
+        \captionsetup{justification=centering}
 		\includegraphics[height=1.5\linewidth]{../analysis/botswana}
 		\subcaption{{\medbreak}}\label{fig:botswana}
 	\end{subfigure}
-	\begin{subfigure}{.20\textwidth}
+	\begin{subfigure}{.24\textwidth}
 		\centering
+        \captionsetup{justification=centering}
 		\includegraphics[height=1.5\linewidth]{../analysis/kennedy_space_center}
 		\subcaption{{\medbreak}}\label{fig:kennedy_space_center}
 	\end{subfigure}
@@ -648,6 +663,9 @@ urban-related coverage (see Figure~\ref{fig:kennedy_space_center})
         Pavia Centre, (c) Pavia University, (d) Salinas, (e) Salinas A, (f)
         Botswana, (g) Kennedy Space Center }\label{fig:scenes}
 \end{figure}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 The sampling strategy is similar to all datasets. The pixels without a ground
 truth label are first discarded. All the classes with cardinality lower than
@@ -662,6 +680,7 @@ are preserved and (3) ensure equivalent analyses across datasets and AL
 frameworks. In this context, a fixed number of instances per dataset is
 especially important to standardize the AL-related performance metrics.
 
+\end{paracol}
 \begin{table}
     \centering
     \addtolength{\leftskip} {-2cm}
@@ -680,6 +699,9 @@ especially important to standardize the AL-related performance metrics.
         The sampling strategy is similar to all scenes.
     }
 \end{table}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 \subsection{Machine Learning Algorithms}~\label{sec:machine_learning_algorithms}
 
@@ -771,9 +793,10 @@ runs are averaged (\textit{i.e.}, each configuration is trained and evaluated
 same approach. In those cases, the validation set is not used. The
 experimental procedure is depicted in Figure~\ref{fig:experiment_pipeline}.
 
+\end{paracol}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\linewidth]{../analysis/experiment_pipeline}
+	\includegraphics[width=.75\linewidth]{../analysis/experiment_pipeline}
     \caption{
         Experimental procedure. The datasets extracted from hyperspectral
         scenes are split in 5 folds. 1 of those (\textit{e.g.}, $K_1$) is used
@@ -785,6 +808,9 @@ experimental procedure is depicted in Figure~\ref{fig:experiment_pipeline}.
         procedure.
     }~\label{fig:experiment_pipeline}
 \end{figure}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 To make the AL-specific metrics comparable among active learners, the
 configurations of the different frameworks must be similar. For each dataset,
@@ -868,15 +894,23 @@ classification convergence.
 Table~\ref{tab:aulc_ranks} shows the average rankings and standard deviations
 across datasets of the AULC scores for each active learner.
 
-\pgfplotstabletypeset[
-	begin table=\begin{longtable},
-	end table=\end{longtable}, col sep=comma, header=true, string type, 
-    every head row/.style={before row=\toprule, after row=\midrule\endhead},
-	every last row/.style={after row=\bottomrule \caption{\label{tab:aulc_ranks}
+\begin{table}[H]
+    \centering
+    \pgfplotstabletypeset[
+        col sep=comma,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+    ]{../analysis/mean_std_aulc_ranks.csv}
+    \caption{
         Mean rankings of the AULC metric over the different datasets (7),
         folds (5) and runs (3) used in the experiment. This means that the use
-        of G-SMOTE always improves the results of the original framework.}}
-]{../analysis/mean_std_aulc_ranks.csv}
+        of G-SMOTE always improves the results of the original framework.
+    }\label{tab:aulc_ranks}
+\end{table}
 
 The mean AULC absolute scores are provided in Table~\ref{tab:aulc_scores}.
 These values are computed as the mean of the sum of the scores of a specific
@@ -884,10 +918,8 @@ performance metric over all iterations (for an AL configuration). In other
 words, these values correspond to the average AULC over $7\ datasets \times 5\
 folds \times 3\ initializations$.
 
-\begin{table}[H]
+\begin{table}[htb]
     \centering
-    \addtolength{\leftskip} {-2cm}
-    \addtolength{\rightskip}{-2cm}
     \pgfplotstabletypeset[
         col sep=comma,
         string type,
@@ -908,24 +940,40 @@ folds \times 3\ initializations$.
 
 The average DURs are shown in Table~\ref{tab:optimal_data_utilization}. They
 were calculated for various G-mean scores thresholds, varying at a step of 5\%
-between 60\% and 95\%. Each row shows the percentage of training data required by the
-different AL configurations to reach that specific G-mean score.
+between 60\% and 95\%. Each row shows the percentage of training data required
+by the different AL configurations to reach that specific G-mean score.
 
+\end{paracol}
+\captionsetup{justification=centering}
 \pgfplotstabletypeset[
 	begin table=\begin{longtable},
-		end table=\end{longtable},  col sep=comma, header=true,
-	string type, every head row/.style={before row=\toprule, after row=\midrule\endhead},
-	every last row/.style={after row=\bottomrule
-        \caption{\label{tab:optimal_data_utilization}
-            Mean data utilization of AL algorithms, as a percentage of the training set.}}
+	end table=\end{longtable},
+	col sep=comma,
+	header=true,
+    columns={Performance,Classifier,Standard,Proposed}, 
+    string type,
+    every head row/.style={before row=\toprule, after row=\midrule\endhead},
+	every last row/.style={
+        after row={
+            \bottomrule
+            \caption{
+                Mean data utilization of AL algorithms, as a percentage of the training set.
+            }\label{tab:optimal_data_utilization}
+        }
+    }
 ]{../analysis/optimal_data_utilization.csv}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
+
+
 
 The averaged optimal classification scores are shown in
 Table~\ref{tab:optimal_mean_std_scores}. The maximum performance (MP)
 classification scores are shown as a benchmark and represent the performance
 of the corresponding classifier using the entire training set. 
 
-\begin{table}[H]
+\begin{table}[htb]
     \centering
     \addtolength{\leftskip} {-2cm}
     \addtolength{\rightskip}{-2cm}
@@ -959,18 +1007,24 @@ Table~\ref{tab:wilcoxon_test}. We test as null hypothesis that the performance
 of the proposed framework is the same as the original AL framework. The null
 hypothesis was rejected in all datasets.
 
-\pgfplotstabletypeset[
-	begin table=\begin{longtable},
-	end table=\end{longtable},  col sep=comma, header=true,
-	string type, 
-    every head row/.style={before row=\toprule, after row=\midrule\endhead},
-	every last row/.style={after row=\bottomrule
-        \caption{\label{tab:wilcoxon_test}
-				Adjusted p-values using the Wilcoxon signed-rank method. Bold values
-                are statistically significant at a level of $\alpha = 0.05$. The 
-                null hypothesis is that the performance of the proposed
-                framework is similar to that of the original framework.}}
-]{../analysis/wilcoxon_test.csv}
+\begin{table}[htb]
+	\centering
+    \pgfplotstabletypeset[
+        col sep=comma,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+    ]{../analysis/wilcoxon_test.csv}
+    \caption{
+    	Adjusted p-values using the Wilcoxon signed-rank method. Bold values
+        are statistically significant at a level of $\alpha = 0.05$. The 
+        null hypothesis is that the performance of the proposed
+        framework is similar to that of the original framework.
+    }\label{tab:wilcoxon_test}
+\end{table}
 
 \subsection{Discussion}
 
@@ -1066,7 +1120,10 @@ This research was funded by ``Fundação para a Ciência e Tecnologia''
 (Portugal) [grant numbers PCIF/SSI/0102/2017 - foRESTER, DSAIPA/AI/0100/2018 -
 IPSTERS].
 
+\end{paracol}
+
+\reftitle{References}
+\externalbibliography{yes}
 \bibliography{references}
-\bibliographystyle{elsarticle-num}
 
 \end{document}
