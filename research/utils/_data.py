@@ -7,17 +7,30 @@ import pandas as pd
 from sqlite3 import connect
 
 
-def load_datasets(data_dir):
+def load_datasets(data_dir, suffix='', target_exists=True, **read_csv_kwargs):
     """Load datasets from sqlite database and/or csv files."""
     assert isdir(data_dir), '`data_dir` must be a directory.'
+
+    # Filter data by suffix
+    dat_names = [
+        dat for dat in listdir(data_dir)
+        if dat.endswith(suffix)
+    ]
+
+    # Read data
     datasets = []
-    for dat_name in listdir(data_dir):
+    for dat_name in dat_names:
         data_path = join(data_dir, dat_name)
+
+        # Handle csv data
         if dat_name.endswith('.csv'):
-            ds = pd.read_csv(data_path)
+            ds = pd.read_csv(data_path, **read_csv_kwargs)
             name = dat_name.replace('.csv', '').replace('_', ' ').upper()
-            X, y = ds.iloc[:, :-1], ds.iloc[:, -1]
-            datasets.append((name, (X, y)))
+            if target_exists:
+                ds = (ds.iloc[:, :-1], ds.iloc[:, -1])
+            datasets.append((name, ds))
+
+        # Handle sqlite database
         elif dat_name.endswith('.db'):
             with connect(data_path) as connection:
                 datasets_names = [
@@ -30,8 +43,9 @@ def load_datasets(data_dir):
                     ds = pd.read_sql(
                         f'select * from "{dataset_name}"', connection
                     )
-                    X, y = ds.iloc[:, :-1], ds.iloc[:, -1]
+                    if target_exists:
+                        ds = (ds.iloc[:, :-1], ds.iloc[:, -1])
                     datasets.append(
-                        (dataset_name.replace('_', ' ').upper(), (X, y))
+                        (dataset_name.replace('_', ' ').upper(), ds)
                     )
     return datasets
