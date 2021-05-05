@@ -1,0 +1,9 @@
+topic2,Title,Papers,Words
+1,GAN-based synthetic medical image augmentation for increased CNN performance in liver lesion classification,85,"histolog, hemorrhag, aircraft, fluid, prune, illumin_chang, caltech, frame, subtyp, team"
+2,A survey on Image Data Augmentation for Deep Learning,317,"point_cloud, attack, vae, coffe, melanoma, automat_speech_recognit, licens_plate, acoust_model, har, pose_estim"
+3,Return of the devil in the details: Delving deep into convolutional nets,453,"ecg, markov_chain, eeg, nodul, smoke, cardiac, nlp, web, defect_detect, markov_oper"
+4,Data augmentation for improving deep learning in image classification problem,121,"underwat, fish, thermal, marin, conform, vehicl_detect, style_transfer, min, restor, rest"
+5,U-net: Convolutional networks for biomedical image segmentation,300,"sketch, transmiss, drone, hyperspectr_imag, band, fault_diagnosi, room_impuls_respons, endoscop, spectra, low_qualiti"
+6,Jointly Optimize Data Augmentation and Network Training: Adversarial Data Augmentation in Human Pose Estimation,54,"pedestrian, tea, script, symbol, sourc_separ, child, upper, requir_lot, style_transfer, hard_exampl"
+7,Bayesian inference for logistic models using Pólya-Gamma latent variables,345,"multivari, misclassif, bayesian, illustr, regress, risk_factor, censor, markov_chain_mont_carlo, simul_studi, node"
+8,X-Vectors: Robust DNN Embeddings for Speaker Recognition,584,"imag, detect, gener, dataset, classif, sampl, network, cnn, featur, perform"
