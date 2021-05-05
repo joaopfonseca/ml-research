@@ -25,8 +25,8 @@ encoder = Pipeline([
     ('preprocess', preprocess),
     ('doc2vec', D2VTransformer(
         size=25,
-        iter=50,
-        min_count=20,
+        iter=100,
+        min_count=10,
         seed=42,
         workers=8
     )),
@@ -85,6 +85,8 @@ def lda_preprocessing(documents):
 
     docs = [bigram[doc] for doc in preprocessed_docs]
     docs = [trigram[doc] for doc in docs]
+
+    return docs
 
 
 if __name__ == '__main__':

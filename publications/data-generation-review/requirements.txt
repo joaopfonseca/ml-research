@@ -3,5 +3,9 @@ pandas
 scikit-learn
 gensim==3.8.3
 matplotlib
+seaborn
 git+https://github.com/joaopfonseca/SOMPY.git
 umap-learn
+plotly
+kaleido
+networkx
