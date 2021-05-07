@@ -141,7 +141,7 @@ def generate_main_results():
         categories=DATASETS_ORDER,
         ordered=True
     )
-    wide_optimal.sort_values('Dataset', inplace=True)
+    wide_optimal.sort_values(['Dataset', 'Classifier', 'Metric'], inplace=True)
 
     # Set dataset names to acronyms
     wide_optimal['Dataset'] = wide_optimal['Dataset'].apply(

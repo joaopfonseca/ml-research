@@ -1,6 +1,18 @@
-\documentclass[authoryear,preprint,12pt]{elsarticle}
+\documentclass[information,article,submit,moreauthors,pdftex]{Definitions/mdpi} 
 
-\pdfoutput=1
+\firstpage{1} 
+\makeatletter 
+\setcounter{page}{\@firstpage} 
+\makeatother
+\pubvolume{1}
+\issuenum{1}
+\articlenumber{0}
+\pubyear{2021}
+\copyrightyear{2021}
+\datereceived{} 
+\dateaccepted{} 
+\datepublished{} 
+\hreflink{https://doi.org/}
 
 \usepackage{breakcites}
 \usepackage{float}
@@ -17,41 +29,54 @@
 \usepackage{longtable}
 \usepackage{tabu}
 \usepackage{hyperref}
-\hypersetup{
-    colorlinks,
-    linkcolor={red!50!black},
-    citecolor={blue!50!black},
-    urlcolor={blue!80!black}
-}
-\usepackage{lineno}
 
-\date{}
+% Used to track changes. Can be deleted once the revision process is over.
+% commands:
+% \added
+% \deleted
+% \replaced
+\usepackage{changes}
 
-\journal{GIScience \& Remote Sensing}
+\makeatletter
+\@namedef{Changes@AuthorColor}{red}
+\colorlet{Changes@Color}{red}
+\makeatother
 
-\begin{document}
-
-\begin{frontmatter}
-
-\title{Improving Imbalanced Land Cover Classification with K-means SMOTE:
+\Title{Improving Imbalanced Land Cover Classification with K-means SMOTE:
 Detecting and Oversampling Distinctive Minority Spectral Signatures}
 
+% MDPI internal command: Title for citation in the left column
+\TitleCitation{Improving Imbalanced Land Cover Classification with K-means SMOTE:
+Detecting and Oversampling Distinctive Minority Spectral Signatures}
 
-\author[inst1]{Joao Fonseca} 
-\author[inst1]{Georgios Douzas}
-\author[inst1]{Fernando Bacao}
+% Orcid ID
+\newcommand{\orcidauthorA}{0000-0001-5889-3575}
+\newcommand{\orcidauthorB}{0000-0001-7019-3782}
+\newcommand{\orcidauthorC}{0000-0002-0834-0275}
 
-\affiliation[inst1]{
-    organization={NOVA Information Management School, Universidade Nova de Lisboa},
-    addressline={Campus de Campolide}, 
-    %city={Lisboa},
-    postcode={1070-312 Lisboa}, 
-    %state={},
-    country={Portugal}
+\Author{
+    Joao Fonseca $^{1,}$*\orcidA{},
+    Georgios Douzas $^{1}$\orcidB{},
+    Fernando Bacao $^{1}$\orcidC{}
 }
 
-\begin{abstract}
-    \begin{linenumbers}
+% MDPI internal command: Authors, for metadata in PDF
+\AuthorNames{Joao Fonseca, Georgios Douzas and Fernando Bacao}
+
+% MDPI internal command: Authors, for citation in the left column
+\AuthorCitation{Fonseca, J.; Douzas, G.; Bacao, F.}
+
+\address{%
+$^{1}$ \quad NOVA Information Management School (NOVA IMS), Universidade Nova
+    de Lisboa, Campus de Campolide, 1070-312 Lisboa, Portugal;
+    gdouzas@novaims.unl.pt (G.D.); bacao@novaims.unl.pt (F.B.)\\
+    * \quad Correspondence: jpfonseca@novaims.unl.pt (J.F.)
+}
+
+\corres{Correspondence: jpfonseca@novaims.unl.pt}
+
+
+\abstract{
     Land cover maps are a critical tool to support informed policy
     development, planning, and resource management decisions. The ability to
     automatically produce Land Use/Land Cover (LULC) maps, through the use of
@@ -79,35 +104,17 @@ Detecting and Oversampling Distinctive Minority Spectral Signatures}
     can benefit significantly from the use of more sophisticated oversamplers
     as spectral signatures for the same class can vary according to
     geographical distribution.
-    \end{linenumbers}
-\end{abstract}
+}
 
+\keyword{
+    LULC Classification; 
+    Imbalanced Learning; 
+    Oversampling; 
+    Data Augmentation; 
+    Clustering
+} 
 
-%%Graphical abstract
-\begin{graphicalabstract}
-\centering
-\includegraphics[width=\linewidth]{../analysis/graphical_abstract}
-\end{graphicalabstract}
-
-%%Research highlights
-\begin{highlights}
-\item We propose the application of a recent oversampler for LULC
-    classification;
-\item The method implemented is shown using a variety of classifiers,
-    oversamplers and performance metrics on seven different hyperspectral
-    scenes;
-\item The proposed method outperformed the remaining configurations in
-    the seven hyperspectral scenes used;
-\end{highlights}
-
-\begin{keyword}
-    LULC Classification \sep Imbalanced Learning \sep Oversampling \sep Data
-    Generation \sep Clustering
-\end{keyword}
-
-\end{frontmatter}
-
-\begin{linenumbers}
+\begin{document}
 
 \section{Introduction}
 
@@ -280,7 +287,9 @@ clusters can happen both in the minority and majority class, although they
 will tend to be more frequent in the minority class due to its
 underrepresentation.  
 
+\end{paracol}
 \begin{figure}[ht]
+    \widefigure
     \captionsetup{justification=centering}
 	\caption{Example of a complex input space. In this example, a classifier
         would need to separate the minority class' samples across 4
@@ -289,6 +298,9 @@ underrepresentation.
 	\label{fig:complex_input_space_example}
 	\includegraphics[width=1\linewidth]{../analysis/complex_input_space_example}
 \end{figure}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 The efficacy of K-means SMOTE is tested using different
 types of classifiers. To do so, we employ both commonly used and/or
@@ -395,6 +407,7 @@ neighbors $\overrightarrow{y}$ such that $\overrightarrow{z} =
 random real number between 0 and 1, as shown in
 Figure \ref{fig:smote_example}.
 
+\end{paracol}
 \begin{figure}
 	\centering
     \captionsetup{justification=centering}
@@ -413,6 +426,9 @@ Figure \ref{fig:smote_example}.
 	\label{fig:smote_example}
 	\includegraphics[width=1\linewidth]{../analysis/smote_example}
 \end{figure}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 A number of studies implement SMOTE within the LULC classification context and
 reported improvements on the quality of the trained predictors
@@ -517,6 +533,7 @@ special case when the number of clusters is set to one. Consequently,
 K-means SMOTE returns
 results as good as or better than SMOTE.
 
+\end{paracol}
 \begin{figure}[H]
 	\centering
     \captionsetup{justification=centering}
@@ -530,6 +547,9 @@ results as good as or better than SMOTE.
 	\label{fig:kmeans_smote_example}
 	\includegraphics[width=1\linewidth]{../analysis/kmeans_smote_example}
 \end{figure}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 Although no other study was found to implement cluster-based oversampling,
 another study \citep{Douzas2019rs} compared the performance of SMOTE, ROS,
@@ -602,15 +622,6 @@ hyperspectral scenes:
 
 \end{enumerate}
 
-\begin{figure}
-	\centering
-    \captionsetup{justification=centering}
-    \caption{Data collection and preprocessing pipeline.
-    \vspace{.2cm}}
-	\label{fig:data_preprocessing_pipeline}
-	\includegraphics[width=\linewidth]{../analysis/data_preprocessing_pipeline}
-\end{figure}
-
 Table~\ref{tab:datasets_description} provides a description of the final
 datasets used for this work, sorted according to its IR.
 Figure~\ref{fig:scenes} shows the original hyperspectral scene out of which
@@ -622,6 +633,20 @@ truth was photointerpreted in more limited regions of the scene. However, the
 scenes are still represented as they are in order to maintain a standardized
 analysis over all datasets extracted for the experiment.
 
+\end{paracol}
+\begin{figure}
+	\centering
+    \captionsetup{justification=centering}
+    \caption{Data collection and preprocessing pipeline.
+    \vspace{.2cm}}
+	\label{fig:data_preprocessing_pipeline}
+	\includegraphics[width=.75\linewidth]{../analysis/data_preprocessing_pipeline}
+\end{figure}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
+
+\end{paracol}
 \begin{table}
 	\centering
     \addtolength{\leftskip} {-2cm}
@@ -640,6 +665,9 @@ analysis over all datasets extracted for the experiment.
         string type,
     ]{../analysis/datasets_description.csv}
 \end{table}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 \subsubsection*{Botswana}
 
@@ -691,6 +719,7 @@ this scene is composed by agriculture and the other third is composed of
 forest and other natural perennial vegetation. Additionally, the scene also
 contains low density buildup areas.
 
+\end{paracol}
 \begin{figure}[H]
 	\centering
     \captionsetup{justification=centering}
@@ -744,6 +773,9 @@ contains low density buildup areas.
 		\subcaption{{\medbreak}}\label{fig:indian_pines}
 	\end{subfigure}
 \end{figure}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 \subsection{Machine Learning Algorithms}
 
@@ -841,6 +873,7 @@ hyperparameters for the K-means SMOTE oversampler is defined according to the
 recommendations discussed in the original K-means SMOTE
 paper~\citep{Douzas2018}.
 
+\end{paracol}
 \begin{figure}
 	\centering
     \captionsetup{justification=centering}
@@ -851,11 +884,13 @@ paper~\citep{Douzas2018}.
     \vspace{.25cm}}\label{fig:experiment_pipeline}
 	\includegraphics[width=1\linewidth]{../analysis/experiment_pipeline}
 \end{figure}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
+\end{paracol}
 \begin{table}
 	\centering
-    \addtolength{\leftskip} {-2cm}
-    \addtolength{\rightskip}{-2cm}
     \captionsetup{justification=centering}
     \caption{Hyper-parameters grid. $^*$~One cluster is generated in total, a
     corner case that mimics the behavior of SMOTE
@@ -880,6 +915,9 @@ paper~\citep{Douzas2018}.
 		\bottomrule
 	\end{tabular}
 \end{table}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 \subsection{Software Implementation}~\label{sec:implementation}
 
@@ -916,54 +954,55 @@ ranks of the mean cross-validation scores per dataset, oversampler and
 classifier. K-means SMOTE achieves the best mean ranking across datasets with
 low standard deviation.
 
-\begin{table}
-	\centering
-    \addtolength{\leftskip} {-2cm}
-    \addtolength{\rightskip}{-2cm}
-    \captionsetup{justification=centering}
+\end{paracol}
+\captionsetup{justification=centering}
+\pgfplotstabletypeset[
+	begin table=\begin{longtable},
+	end table=\end{longtable},
+	col sep=comma,
+	header=true,
+	columns={Classifier,Metric,NONE,ROS,SMOTE,B-SMOTE,K-SMOTE}, 
+    string type,
+    every head row/.style={before row={
     \caption{
-        Results for mean ranking of oversamplers across datasets.
-    }\label{tab:mean_sem_ranking}
-    \pgfplotstabletypeset[
-        col sep=comma,
-        string type,
-        every head row/.style={%
-            before row=\toprule,
-            after row=\midrule
-        },
-        every last row/.style={after row=\bottomrule},
-        string type,
-    ]{../analysis/mean_sem_ranking.csv}
-\end{table}
+    	Results for mean ranking of oversamplers across datasets.
+    }\label{tab:mean_sem_ranking}\\
+    \toprule}, after row=\midrule\endhead},
+	every last row/.style={after row=\bottomrule}
+]{../analysis/mean_sem_ranking.csv}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 The mean cross-validation scores are shown in Table~\ref{tab:mean_sem_scores}.
 As discussed previously in this section, the disparity of performance levels
 across datasets makes the analysis of these scores less informative.
 
-\begin{table}
-	\centering
-    \addtolength{\leftskip} {-2cm}
-    \addtolength{\rightskip}{-2cm}
-    \captionsetup{justification=centering}
+\end{paracol}
+\captionsetup{justification=centering}
+\pgfplotstabletypeset[
+	begin table=\begin{longtable},
+	end table=\end{longtable},
+	col sep=comma,
+	header=true,
+	columns={Classifier,Metric,NONE,ROS,SMOTE,B-SMOTE,K-SMOTE}, 
+    string type,
+    every head row/.style={before row={
     \caption{
-    	Mean cross-validation scores of oversamplers.
-    }\label{tab:mean_sem_scores}
-    \pgfplotstabletypeset[
-        col sep=comma,
-        string type,
-        every head row/.style={%
-            before row=\toprule,
-            after row=\midrule
-        },
-        every last row/.style={after row=\bottomrule},
-        string type,
-    ]{../analysis/mean_sem_scores.csv}
-\end{table}
+		Mean cross-validation scores of oversamplers.
+    }\label{tab:mean_sem_scores}\\
+    \toprule}, after row=\midrule\endhead},
+	every last row/.style={after row=\bottomrule}
+]{../analysis/mean_sem_scores.csv}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 The mean cross-validation scores for each dataset are presented in
 Table~\ref{tab:cross_validation_scores}. This table allows the direct
 comparison of the performance metrics being analysed.
 
+\end{paracol}
 \captionsetup{justification=centering}
 \pgfplotstabletypeset[
 	begin table=\begin{longtable},
@@ -982,6 +1021,9 @@ comparison of the performance metrics being analysed.
 	every last row/.style={after row=\bottomrule}
 ]
 {../analysis/wide_optimal.csv}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 \subsection{Statistical Analysis}~\label{sec:statistical_analysis}
 
@@ -992,6 +1034,7 @@ in all cases. The rejection of the null hypothesis implies that the
 differences between the differences among the different oversamplers are not
 random, in other words, these differences are statistically significant.
 
+\end{paracol}
 \begin{table}[H]
     \caption{
         Results for Friedman test. Statistical significance is tested at a
@@ -1005,6 +1048,9 @@ random, in other words, these differences are statistically significant.
     	every last row/.style={after row=\bottomrule}
     ]{../analysis/friedman_test.csv}
 \end{table}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 A Wilcoxon signed-rank test \citep{wilcoxon1992} was also performed to
 understand whether K-means SMOTE's superiority was statistically significant
@@ -1015,6 +1061,7 @@ normally distributed. The null hypothesis of the test is that K-means SMOTE's
 performance is similar to the compared oversampler (i.e., the oversamplers
 used follow a symmetric distribution around zero).
 
+\end{paracol}
 \begin{table}[H]
     \caption{
         \textit{p-values} of the Wilcoxon signed-rank test. Boldface values
@@ -1028,7 +1075,9 @@ used follow a symmetric distribution around zero).
     	every last row/.style={after row=\bottomrule}
     ]{../analysis/wilcoxon_test.csv}
 \end{table}
-
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
 
 \subsection{Discussion}
 
@@ -1166,30 +1215,33 @@ implementation for the Python programming language (see
 Subsection~\ref{sec:implementation}).  Consequently, it can be a useful tool
 for both remote sensing researchers and practitioners.
 
-\section{Funding}
+\authorcontributions{Conceptualization, F.B.; Methodology, J.F. and G.D.; Software,
+	J.F. and G.D.; Validation, F.B., G.D.; Formal Analysis, J.F; Writing -
+	Original Draft Preparation, J.F.; Writing - Review \& Editing, F.B.,
+	G.D., J.F.; Supervision, F.B.; Funding Acquisition, F.B.}
 
-This research was funded by "Fundação para a Ciência e a Tecnologia"
-(Portugal), grants' number PCIF/SSI/0102/2017 - foRESTER and
-DSAIPA/AI/0100/2018 - IPSTERS.
+\funding{
+    This research was funded by "Fundação para a Ciência e a Tecnologia"
+    (Portugal), grants' number PCIF/SSI/0102/2017 - foRESTER and
+    DSAIPA/AI/0100/2018 - IPSTERS.
+}
 
-\section{Data Availability}
+\dataavailability{
+    The data reported in this study is publicly available. It can be retrieved and
+    preprocessed using the Python source code provided at
+    \url{https://github.com/joaopfonseca/research}. Alternatively, the original
+    data is available at
+    \url{http://www.ehu.eus/ccwintco/index.php?title=Hyperspectral_Remote_Sensing_Scenes}.
+}
 
-The data reported in this study is publicly available. It can be retrieved and
-preprocessed using the Python source code provided at
-\url{https://github.com/joaopfonseca/research}. Alternatively, the original
-data is available at
-\url{http://www.ehu.eus/ccwintco/index.php?title=Hyperspectral_Remote_Sensing_Scenes}.
+\conflictsofinterest{The authors declare no conflict of interest. The funders
+	had no role in the design of the study; in the collection, analyses, or
+	interpretation of data; in the writing of the manuscript, or in the decision to
+	publish the results.}
 
-
-\section{Conflicts of Interest}
-
-The authors declare no conflict of interest. The funders had no role in the
-design of the study; in the collection, analyses, or interpretation of data;
-in the writing of the manuscript, or in the decision to publish the results.
-
-\end{linenumbers}
-
+\end{paracol}
+\reftitle{References}
+\externalbibliography{yes}
 \bibliography{references}
-\bibliographystyle{chicago}
 
 \end{document}
