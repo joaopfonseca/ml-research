@@ -5,11 +5,13 @@ from os.path import join
 import pickle
 import numpy as np
 import pandas as pd
+from gensim.corpora import Dictionary
+from gensim.models import TfidfModel, LdaModel, CoherenceModel
+import networkx as nx
+import networkx.algorithms.community as nxcom
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.graph_objects as go
-from gensim.corpora import Dictionary
-from gensim.models import TfidfModel, LdaModel, CoherenceModel
 from rlearn.utils import check_random_states
 from research.utils import (
     generate_paths,
@@ -17,7 +19,7 @@ from research.utils import (
 )
 
 RANDOM_STATE = 42
-LDA_TOPICS = 10
+LDA_TOPICS = 8
 
 
 def main_venues(df, top_n=10, min_docs=10):
@@ -246,6 +248,7 @@ def lda_analysis(corpus, num_topics=30, line_plot=True):
 
 
 def genSankey(df, cat_cols=[], value_cols='', title=''):
+    """Sets up a dictionary to generate a Sankey plot using Plotly."""
     # maximum of 6 value cols -> 6 colors
     colorPalette = [
         '#4B8BBE',
@@ -319,6 +322,91 @@ def genSankey(df, cat_cols=[], value_cols='', title=''):
 
     fig = dict(data=[data], layout=layout)
     return fig
+
+
+def set_node_community(G, communities):
+    """Add community to node attributes"""
+    for c, v_c in enumerate(communities):
+        for v in v_c:
+            # Add 1 to save 0 for external edges
+            G.nodes[v]['community'] = c + 1
+
+
+def set_edge_community(G):
+    """Find internal edges and add their community to their attributes"""
+    for v, w, in G.edges:
+        if G.nodes[v]['community'] == G.nodes[w]['community']:
+            # Internal edge, mark with community
+            G.edges[v, w]['community'] = G.nodes[v]['community']
+        else:
+            # External edge, mark as 0
+            G.edges[v, w]['community'] = 0
+
+
+def get_color(i, r_off=1, g_off=1, b_off=1):
+    """Assign a color to a vertex."""
+    n = 16
+    low, high = 0.1, 0.9
+    span = high - low
+    r = low + span * (((i + r_off) * 3) % n) / (n - 1)
+    g = low + span * (((i + g_off) * 5) % n) / (n - 1)
+    b = low + span * (((i + b_off) * 7) % n) / (n - 1)
+    return (r, g, b)
+
+
+def undirected_network_analysis(df, source_col, target_col, weights=None):
+    """
+    Analyses an undirected network graph.
+    Parameter weights can be a list of strings.
+    Exports node and edge data to produce visualizations via Gephy.
+    """
+    df = df[
+        (df['source'] != 'data augmentation')
+        &
+        (df['target'] != 'data augmentation')
+    ]
+
+    G = nx.from_pandas_edgelist(df, source_col, target_col, weights)
+
+    # Extract network data
+    eigenvector_centrality = nx.eigenvector_centrality(G)
+    closeness_centrality = nx.closeness_centrality(G)
+    betweeness_centrality = nx.betweenness_centrality(G)
+    clustering_coef = nx.clustering(G)
+    pagerank = nx.pagerank(G, alpha=0.85)
+
+    # Make nodes dataframe
+    df_nodes = pd.DataFrame(dict(
+        eigenvector=eigenvector_centrality,
+        closeness=closeness_centrality,
+        betweeness=betweeness_centrality,
+        clustering=clustering_coef,
+        pagerank=pagerank
+    ))
+    df_nodes.index.name = 'Keywords'
+
+    # Remove nodes with a betweeness of 0
+    # TODO
+
+    # Community detection
+    communities = nxcom.greedy_modularity_communities(G, weight='Avg Cites')
+    set_node_community(G, communities)
+    set_edge_community(G)
+
+    df_nodes['community'] = [G.nodes[node]['community'] for node in G.nodes]
+
+    node_color = [get_color(G.nodes[v]['community']) for v in G.nodes]
+
+    pos = nx.spring_layout(G)
+
+    nx.draw_networkx(
+        G,
+        pos=pos,
+        node_color=node_color,
+    )
+    plt.show()
+
+    return G
 
 
 if __name__ == '__main__':
@@ -418,3 +506,10 @@ if __name__ == '__main__':
     plt.close()
 
     # Network analysis
+    G = undirected_network_analysis(
+        results['network_data'],
+        'source',
+        'target',
+        ['Nbr of documents', 'Avg cites', 'weight']
+    )
+    nx.write_gexf(G, join(analysis_path, "keyword_graph.gexf"))
