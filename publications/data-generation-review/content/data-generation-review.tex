@@ -3,6 +3,7 @@
 \pdfoutput=1
 
 \usepackage{breakcites}
+\usepackage[square,numbers]{natbib}
 \usepackage{float}
 \usepackage{graphicx}
 \usepackage{geometry}
@@ -23,9 +24,16 @@
 \usepackage{hyperref}
 \date{}
 
+\definecolor{hypecol}{HTML}{0875b7}
+\hypersetup{%
+    colorlinks,
+    linkcolor={hypecol},
+    citecolor={hypecol},
+    urlcolor={hypecol}
+}
+
 \title{%
-    Research Trends in Data Augmentation Algorithms and Applications\\
-    \LARGE{A Systematic Literature Review}
+    Research Trends and Applications of Data Augmentation Algorithms
 }
 
 \author{%
@@ -57,24 +65,68 @@ absolutely necessary.
 
 \section{Methodology}
 
+In this section we describe the procedures defined for the literature
+collection, data preprocessing and literature analysis. The analysis of the
+literature was developed with 3 different approaches. Throughout the
+analyses, data preprocessing and hyperparameter tuning was developed
+iteratively. The procedure adopted in this manuscript is shown in
+Figure~\ref{fig:slr_diagram}.
+
+The analysis and modelling was developed using the Python programming
+language, along with the
+\href{https://scikit-learn.org/stable/}{Scikit-Learn}~\cite{Pedregosa2011},
+\href{https://radimrehurek.com/gensim/}{Gensim}~\cite{Rehurek2010},
+\href{https://github.com/lmcinnes/umap}{Umap-Learn}~\cite{Mcinnes2018} and
+\href{https://networkx.org/}{Networkx}~\cite{Hagberg2008} libraries. The final
+network analysis and visualization was done with
+\href{https://gephi.org/}{Gephi}~\cite{Bastian2009}. 
+
+An exploratory data analysis was done to understand which manuscripts, journals
+and conferences are most significant within the field of Data Augmentation. 
+
+Text Mining perspective
+
 \begin{itemize}
     \item General overview of the steps taken to produce the visualizations
         and analyses.
     \item Use diagrams and visualizations.
-    \item Discuss the PRISMA methodology.
     \item Discuss embedding techniques used.
 \end{itemize}
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.75\linewidth]{../analysis/slr_diagram}
+    \caption{Diagram of the proposed literature analysis approach.
+    }~\label{fig:slr_diagram}
+\end{figure}
+
 \subsection{Keyword Identification and Search}
 
-\begin{itemize}
-    \item Goal: Avoid Preconceived biases on relevant keywords
-    \item Primary keyword: ``Data Augmentation''
-    \item Append to query OR rules using top n keywords not domain specific
-    \item Refine results based on research domain
-    \item Discuss topics included (computer science, mathematics, engineering
-        etc)
-\end{itemize}
+The focus of this literature analysis is to understand the different
+algorithms, domains and/or tasks that employ data augmentation techniques.
+Therefore, we use the keyword ``data augmentation'' in order to ensure an
+unbiased analysis. The results were then limited to conference papers and
+journal articles written in English that were published in the past 15 years.
+Due to the already large amount of results found, the document retrieval was
+done using solely the \href{https://www.scopus.com/}{Scopus} database. The
+resulting query is shown below:
+
+\begin{verbatim}
+    KEY ( "data augmentation" )  AND  ( LIMIT-TO ( LANGUAGE ,  "English" ) )  
+    AND ( LIMIT-TO ( DOCTYPE ,  "cp" )  OR  LIMIT-TO ( DOCTYPE ,  "ar" ) )  
+    AND  (
+            LIMIT-TO ( PUBYEAR ,  2021 )  OR  LIMIT-TO ( PUBYEAR ,  2020 )  
+        OR  LIMIT-TO ( PUBYEAR ,  2019 )  OR  LIMIT-TO ( PUBYEAR ,  2018 )  
+        OR  LIMIT-TO ( PUBYEAR ,  2017 )  OR  LIMIT-TO ( PUBYEAR ,  2016 )  
+        OR  LIMIT-TO ( PUBYEAR ,  2015 )  OR  LIMIT-TO ( PUBYEAR ,  2014 )  
+        OR  LIMIT-TO ( PUBYEAR ,  2013 )  OR  LIMIT-TO ( PUBYEAR ,  2012 )  
+        OR  LIMIT-TO ( PUBYEAR ,  2011 )  OR  LIMIT-TO ( PUBYEAR ,  2010 )  
+        OR  LIMIT-TO ( PUBYEAR ,  2009 )  OR  LIMIT-TO ( PUBYEAR ,  2008 )  
+        OR  LIMIT-TO ( PUBYEAR ,  2007 )  OR  LIMIT-TO ( PUBYEAR ,  2006 ) 
+    )  
+\end{verbatim}
+
+
 
 Started with a single keyword: ``Data Augmentation'', 4618 results.
 
@@ -85,8 +137,6 @@ Only include articles and conference papers, 4443 results.
 Consider papers published in the past 15 years, 4281 results.
 
 Final query:
-
-KEY ( "data augmentation" )  AND  ( LIMIT-TO ( LANGUAGE ,  "English" ) )  AND  ( LIMIT-TO ( DOCTYPE ,  "cp" )  OR  LIMIT-TO ( DOCTYPE ,  "ar" ) )  AND  ( LIMIT-TO ( PUBYEAR ,  2021 )  OR  LIMIT-TO ( PUBYEAR ,  2020 )  OR  LIMIT-TO ( PUBYEAR ,  2019 )  OR  LIMIT-TO ( PUBYEAR ,  2018 )  OR  LIMIT-TO ( PUBYEAR ,  2017 )  OR  LIMIT-TO ( PUBYEAR ,  2016 )  OR  LIMIT-TO ( PUBYEAR ,  2015 )  OR  LIMIT-TO ( PUBYEAR ,  2014 )  OR  LIMIT-TO ( PUBYEAR ,  2013 )  OR  LIMIT-TO ( PUBYEAR ,  2012 )  OR  LIMIT-TO ( PUBYEAR ,  2011 )  OR  LIMIT-TO ( PUBYEAR ,  2010 )  OR  LIMIT-TO ( PUBYEAR ,  2009 )  OR  LIMIT-TO ( PUBYEAR ,  2008 )  OR  LIMIT-TO ( PUBYEAR ,  2007 )  OR  LIMIT-TO ( PUBYEAR ,  2006 ) )  
 
 Due to the limitations in the Scopus data export (maximum 2000 documents per
 export), the data was extracted in four parts: 2021, 2020, 2019 and 2018 --- 2006.
@@ -181,6 +231,7 @@ Discussion goes here.
 \section{Conclusions}
 
 \bibliography{references}
-\bibliographystyle{apalike}
+% \bibliographystyle{apalike}
+\bibliographystyle{ieeetr}
 
 \end{document}
