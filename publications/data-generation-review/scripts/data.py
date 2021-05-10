@@ -20,8 +20,12 @@ if __name__ == '__main__':
         target_exists=False,
         error_bad_lines=False
     )
-    df = pd.concat([dat for _, dat in data]).dropna(subset=['DOI', 'Cited by'])
-    df_journals = pd.concat([dat for _, dat in data]).dropna(subset=['DOI'])
+    df = pd.concat([dat for _, dat in data])\
+        .dropna(subset=['DOI', 'Cited by'])\
+        .drop_duplicates(['DOI'])
+    df_journals = pd.concat([dat for _, dat in data])\
+        .dropna(subset=['DOI'])\
+        .drop_duplicates(['DOI'])
 
     # Select relevant columns
     columns = [

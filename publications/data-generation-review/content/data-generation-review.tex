@@ -60,8 +60,15 @@ Introduction goes here.
 
 \section{Theory}
 
-This part is going to be the very last thing to be done, since it doesn't seem
-absolutely necessary.
+Jürgen Schmidhuber's group shows that a simple MLP architecture can achieve
+state-of-the-art performance on computer vision benchmarks given strong enough
+data augmentation [1,2].
+
+[1] Better digit recognition with a committee of simple Neural Nets. Meier,
+Cires, Gambardella and Schmidhuber 2011 [PDF]
+
+[2] Handwritten Digit Recognition with a Committee of DeepNeural Nets on GPUs.
+Ciresan, Meier, Gambardella and Schmidhuber 2011 [PDF]
 
 \section{Methodology}
 
@@ -72,26 +79,17 @@ analyses, data preprocessing and hyperparameter tuning was developed
 iteratively. The procedure adopted in this manuscript is shown in
 Figure~\ref{fig:slr_diagram}.
 
-The analysis and modelling was developed using the Python programming
-language, along with the
-\href{https://scikit-learn.org/stable/}{Scikit-Learn}~\cite{Pedregosa2011},
-\href{https://radimrehurek.com/gensim/}{Gensim}~\cite{Rehurek2010},
-\href{https://github.com/lmcinnes/umap}{Umap-Learn}~\cite{Mcinnes2018} and
-\href{https://networkx.org/}{Networkx}~\cite{Hagberg2008} libraries. The final
-network analysis and visualization was done with
-\href{https://gephi.org/}{Gephi}~\cite{Bastian2009}. 
-
-An exploratory data analysis was done to understand which manuscripts, journals
-and conferences are most significant within the field of Data Augmentation. 
-
-Text Mining perspective
-
-\begin{itemize}
-    \item General overview of the steps taken to produce the visualizations
-        and analyses.
-    \item Use diagrams and visualizations.
-    \item Discuss embedding techniques used.
-\end{itemize}
+The literature collection procedure is described in
+Subsection~\ref{sec:lit_collection}. The data and text preprocessing is
+described in Subsection~\ref{sec:data_preprocessing}. The exploratory data
+analysis described in Subsection~\ref{sec:journal_and_conference_analysis} was
+done to understand which manuscripts, journals and conferences are most
+significant within the field of Data Augmentation. The manuscripts' keywords
+were used to construct a network of keywords (described in
+Subsection~\ref{sec:keyword_analysis}) and study the different communities of
+keywords found in the network. The topic modelling and parameter tunning is described in
+Subsection~\ref{sec:topic_modelling}. The abstract embeddings procedure is
+described in Subsection~\ref{sec:abstract_embeddings}.
 
 \begin{figure}[H]
 	\centering
@@ -100,16 +98,16 @@ Text Mining perspective
     }~\label{fig:slr_diagram}
 \end{figure}
 
-\subsection{Keyword Identification and Search}
+\subsection{Literature Collection}~\label{sec:lit_collection}
 
 The focus of this literature analysis is to understand the different
 algorithms, domains and/or tasks that employ data augmentation techniques.
 Therefore, we use the keyword ``data augmentation'' in order to ensure an
 unbiased analysis. The results were then limited to conference papers and
 journal articles written in English that were published in the past 15 years.
-Due to the already large amount of results found, the document retrieval was
-done using solely the \href{https://www.scopus.com/}{Scopus} database. The
-resulting query is shown below:
+Due to the large amount of results found, using using solely the
+\href{https://www.scopus.com/}{Scopus} database was found to be sufficient.
+The resulting query is shown below:
 
 \begin{verbatim}
     KEY ( "data augmentation" )  AND  ( LIMIT-TO ( LANGUAGE ,  "English" ) )  
@@ -126,30 +124,25 @@ resulting query is shown below:
     )  
 \end{verbatim}
 
+The resulting data selection/filtering pipeline is shown in
+Figure~\ref{fig:data_filtering_pipeline}. Due to the limitations in the Scopus
+data export (maximum 2000 documents per export), the data was split in four
+different time periods and exported separately: 2006 until 2018, 2019, 2020
+and 2021, which produced four CSV files.
 
+\subsection{Data Preprocessing}~\label{sec:data_preprocessing}
 
-Started with a single keyword: ``Data Augmentation'', 4618 results.
-
-Limited results to documents written in English, 4517 results.
-
-Only include articles and conference papers, 4443 results.
-
-Consider papers published in the past 15 years, 4281 results.
-
-Final query:
-
-Due to the limitations in the Scopus data export (maximum 2000 documents per
-export), the data was extracted in four parts: 2021, 2020, 2019 and 2018 --- 2006.
-
-One of the exported references had a corrupted line, which caused the loss of one
-additional document.
-
-Removed references without a DOI, 3948 results.
+The each step of the data preprocessing stage and amount of documents dropped
+is represented in Figure~\ref{fig:data_filtering_pipeline}. The data was first
+concatenated into a single data frame. During this process, we found that one
+of the exported references had a corrupted line, which caused the loss of one
+additional document. References without a DOI were disregarded from further
+analysis. Since they are used as unique identifiers for intellectual
+property~\cite{Paskin1999}, we used this variable to detect and remove
+duplicate references from the dataset.
 
 Removed references without a single citation, 2259 results. Exception made for
 journals and conference analysis.  
-
-
 
 For the network analysis:
 
@@ -158,33 +151,52 @@ Out of the 2259 results, 1923 contained keywords in Scopus' database.
 Keyword combinations showing up in only one document are removed from further
 analysis.
 
+
+\begin{figure}[H]
+	\centering
+    \includegraphics[width=.55\linewidth]{../analysis/data_filtering_pipeline}
+    \caption{Data filtering pipeline.
+    }~\label{fig:data_filtering_pipeline}
+\end{figure}
+
+
 The network consists of an undirected graph whose weights consist of the
 following formula: $Keyword--pair weight = \log(Avg cites * Nbr of documents)$
 to avoid a disproportional bias of highly cited research articles.
-
-
-\subsection{Repositories}
-
-\begin{itemize}
-    \item Repositories: Scopus
-\end{itemize}
-
-\subsection{Bibliometric Analysis}
 
 \begin{itemize}
     \item Discuss data preprocessing done.
     \item Concatenate data, extract features (if possible), data cleaning etc
 \end{itemize}
 
-\subsection{Data Analysis Software for Bibliometric Research}
+\subsection{Journal and Conference analysis}~\label{sec:journal_and_conference_analysis}
 
-\begin{itemize}
-    \item Python
-    \item Streamlit
-    \item Text Mining and Embedding libraries
-    \item Data Visualization libraries
-    \item VOSviewer?
-\end{itemize}
+\subsection{Keyword Analysis}~\label{sec:keyword_analysis}
+
+\subsection{Topic Modelling}~\label{sec:topic_modelling}
+
+\subsection{Abstract embeddings}~\label{sec:abstract_embeddings}
+
+\subsection{Software Implementation}~\label{sec:software_implementation}
+
+The analysis and modelling was developed using the Python programming
+language, along with the
+\href{https://scikit-learn.org/stable/}{Scikit-Learn}~\cite{Pedregosa2011},
+\href{https://radimrehurek.com/gensim/}{Gensim}~\cite{Rehurek2010},
+\href{https://github.com/lmcinnes/umap}{Umap-Learn}~\cite{Mcinnes2018} and
+\href{https://networkx.org/}{Networkx}~\cite{Hagberg2008} libraries. The final
+network analysis and visualization was done with
+\href{https://gephi.org/}{Gephi}~\cite{Bastian2009}. All functions,
+algorithms, analyses and results are provided in the
+\href{https://github.com/joaopfonseca/research}{GitHub repository of the
+project}.
+
+
+
+
+
+
+
 
 \section{Results}
 

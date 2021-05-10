@@ -12,6 +12,7 @@ import networkx.algorithms.community as nxcom
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.graph_objects as go
+from rich.progress import track
 from rlearn.utils import check_random_states
 from research.utils import (
     generate_paths,
@@ -115,15 +116,17 @@ def compute_coherence_values(
     # Compute coherence for each value of num_topics
     coherence_values_temp = []
     coherence_values = []
-    for num_topics in range(start, limit, step):
+    for num_topics in track(
+        range(start, limit, step),
+        description='Mean coherence scores'
+    ):
         for rs in random_states:
             model = LdaModel(
                 corpus=corpus,
-                num_topics=num_topics,
                 id2word=dictionary,
+                num_topics=num_topics,
                 passes=20,
-                iterations=500,
-                alpha='auto',
+                alpha=.1,
                 eta='auto',
                 random_state=rs
             )
@@ -195,7 +198,7 @@ def lda_analysis(corpus, num_topics=30, line_plot=True):
 
     # Filtering extremes by removing tokens occuring in less than 5 documents
     # and have occured in more than 90% documents.
-    corpus_dict.filter_extremes(no_below=5, no_above=.5)
+    corpus_dict.filter_extremes(no_below=5, no_above=.45)
 
     # Create Corpus: Term Document Frequency
     corpus_ = [corpus_dict.doc2bow(doc) for doc in corpus]
@@ -384,9 +387,6 @@ def undirected_network_analysis(df, source_col, target_col, weights=None):
         pagerank=pagerank
     ))
     df_nodes.index.name = 'Keywords'
-
-    # Remove nodes with a betweeness of 0
-    # TODO
 
     # Community detection
     communities = nxcom.greedy_modularity_communities(G, weight='Avg Cites')
