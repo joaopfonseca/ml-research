@@ -132,9 +132,13 @@ if __name__ == '__main__':
     df_net.source = df_net.source.str.lower()
     df_net.target = df_net.target.str.lower()
     df_net = df_net.groupby(['source', 'target'])\
-        .agg({np.size, np.mean})['weight'].reset_index()\
-        .rename(columns={'mean': 'Avg cites', 'size': 'Nbr of documents'})
-    df_net['weight'] = np.log(df_net['Avg cites'] * df_net['Nbr of documents'])
+        .agg({np.size, np.mean, np.sum})['weight'].reset_index()\
+        .rename(columns={
+            'mean': 'Avg cites',
+            'size': 'Nbr of documents',
+            'sum': 'Total cites'
+        })
+    df_net['weight'] = np.log(df_net['Total cites'])+1
 
     df_net = df_net[df_net['Nbr of documents'] > 1]
 

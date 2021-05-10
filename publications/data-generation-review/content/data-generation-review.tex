@@ -132,7 +132,7 @@ and 2021, which produced four CSV files.
 
 \subsection{Data Preprocessing}~\label{sec:data_preprocessing}
 
-The each step of the data preprocessing stage and amount of documents dropped
+The data preprocessing stage and amount of documents dropped
 is represented in Figure~\ref{fig:data_filtering_pipeline}. The data was first
 concatenated into a single data frame. During this process, we found that one
 of the exported references had a corrupted line, which caused the loss of one
@@ -141,16 +141,13 @@ analysis. Since they are used as unique identifiers for intellectual
 property~\cite{Paskin1999}, we used this variable to detect and remove
 duplicate references from the dataset.
 
-Removed references without a single citation, 2259 results. Exception made for
-journals and conference analysis.  
-
-For the network analysis:
-
-Out of the 2259 results, 1923 contained keywords in Scopus' database.
-
-Keyword combinations showing up in only one document are removed from further
-analysis.
-
+This dataset was used to do the analysis described in
+Subsection~\ref{sec:journal_and_conference_analysis}. However, further
+preprocessing was done for the remaining parts of the literature analysis.
+References without any citations were excluded for the keyword network and
+topic modelling analyses. Finally, only the
+documents containing keywords in Scopus' database were used to prepare the
+network analysis.
 
 \begin{figure}[H]
 	\centering
@@ -159,19 +156,31 @@ analysis.
     }~\label{fig:data_filtering_pipeline}
 \end{figure}
 
-
-The network consists of an undirected graph whose weights consist of the
-following formula: $Keyword--pair weight = \log(Avg cites * Nbr of documents)$
-to avoid a disproportional bias of highly cited research articles.
-
-\begin{itemize}
-    \item Discuss data preprocessing done.
-    \item Concatenate data, extract features (if possible), data cleaning etc
-\end{itemize}
-
 \subsection{Journal and Conference analysis}~\label{sec:journal_and_conference_analysis}
 
+The exploratory analysis developed on the preprocessed dataset was targeted
+towards the identification of the most significant works, journals and
+conferences. To the lack of a better metric, we use the citation count as a
+proxy to understand the impact of a specific manuscript within the research
+community.
+
+The identification of the most significant conferences and journals is done by
+sorting each type of publication according to the number of citations per
+document. Conferences and journals with less than 10 papers published in the
+area are not considered in this analysis. 
+
 \subsection{Keyword Analysis}~\label{sec:keyword_analysis}
+
+The analysis of keywords is expected to uncover general trends in data
+augmentation research and its applications. Keywords are connected based on
+their co-occurrence in each research paper to form the edges of the network.
+It consists of an undirected graph whose weights are based on the total
+citation count for the papers containing a given keyword pair and is
+calculated as $\textrm{weight} = \log(\textrm{citations}) + 1$ to avoid a
+potential bias caused by highly cited research articles.
+
+Keyword combinations showing up in only one document are removed from further
+analysis.
 
 \subsection{Topic Modelling}~\label{sec:topic_modelling}
 
