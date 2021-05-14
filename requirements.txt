@@ -10,6 +10,7 @@ research-learn
 rich
 matplotlib
 seaborn
+requests
 
 # experiment dependencies
 geometric-smote
