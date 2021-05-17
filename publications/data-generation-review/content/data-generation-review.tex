@@ -132,22 +132,21 @@ and 2021, which produced four CSV files.
 
 \subsection{Data Preprocessing}~\label{sec:data_preprocessing}
 
-The data preprocessing stage and amount of documents dropped
-is represented in Figure~\ref{fig:data_filtering_pipeline}. The data was first
-concatenated into a single data frame. During this process, we found that one
-of the exported references had a corrupted line, which caused the loss of one
-additional document. References without a DOI were disregarded from further
-analysis. Since they are used as unique identifiers for intellectual
-property~\cite{Paskin1999}, we used this variable to detect and remove
-duplicate references from the dataset.
+The data preprocessing stage and amount of documents dropped is represented in
+Figure~\ref{fig:data_filtering_pipeline}. The data was first concatenated into
+a single data frame. During this process, we found that one of the exported
+references had a corrupted line, which caused the loss of one additional
+document.  Since the DOI can be used as a unique identifier for intellectual
+property~\cite{Paskin1999}, references without a DOI were disregarded from
+further analysis, while the ones with the same identifiers are removed
+(\textit{i.e.}, only one of the repeating entries is kept).
 
-This dataset was used to do the analysis described in
+This dataset was kept to perform the analysis described in
 Subsection~\ref{sec:journal_and_conference_analysis}. However, further
 preprocessing was done for the remaining parts of the literature analysis.
 References without any citations were excluded for the keyword network and
-topic modelling analyses. Finally, only the
-documents containing keywords in Scopus' database were used to prepare the
-network analysis.
+topic modelling analyses. Finally, only the documents containing keywords in
+Scopus' database were used to prepare the network analysis.
 
 \begin{figure}[H]
 	\centering
@@ -160,9 +159,8 @@ network analysis.
 
 The exploratory analysis developed on the preprocessed dataset was targeted
 towards the identification of the most significant works, journals and
-conferences. To the lack of a better metric, we use the citation count as a
-proxy to understand the impact of a specific manuscript within the research
-community.
+conferences. We used the citation count as a proxy to understand the impact of
+a specific manuscript within the research community.
 
 The identification of the most significant conferences and journals is done by
 sorting each type of publication according to the number of citations per
@@ -172,19 +170,76 @@ area are not considered in this analysis.
 \subsection{Keyword Analysis}~\label{sec:keyword_analysis}
 
 The analysis of keywords is expected to uncover general trends in data
-augmentation research and its applications. Keywords are connected based on
-their co-occurrence in each research paper to form the edges of the network.
-It consists of an undirected graph whose weights are based on the total
-citation count for the papers containing a given keyword pair and is
-calculated as $\textrm{weight} = \log(\textrm{citations}) + 1$ to avoid a
-potential bias caused by highly cited research articles.
+augmentation research and its applications. The keyword ``data augmentation''
+was removed since it would link with all other keywords. Keywords are
+connected based on their co-occurrence in each research paper to form the
+edges of the network.  It consists of an undirected graph whose weights are
+based on the total citation count for the papers containing a given keyword
+pair and is calculated as $\textrm{weight} = \log(\textrm{citations}) + 1$ to
+avoid a potential bias caused by highly cited research articles.
 
 Keyword combinations showing up in only one document are removed from further
-analysis.
+analysis. The keyword network is then analysed using Python and the
+communities were found using the greedy modularity maximization algotithm
+proposed in~\cite{Clauset2004}. The results of the analysis and community
+detection were ported to Gephi to produce the final visualizations.
 
 \subsection{Topic Modelling}~\label{sec:topic_modelling}
 
+The extraction of topics was done using the publication's abstracts. The words
+were tokenized and all tags, special characters, punctuation, multiple white
+spaces, numeric values, stop words and words with size smaller than 4 were
+removed. Finally, we enriched the corpus by constructing bi-grams and
+tri-grams.
+
+We used a Latent Dirichlet Allocation (LDA) model~\cite{Pritchard2000} to
+infer the topics present in our research domain. The tuning of the parameters
+was done through experimentation and qualitative interpretation of the results
+achieved. Additionally, the area under the coherence score curve shown in
+Figure~\ref{fig:lda_coherence_analysis} was also used as a reference for
+parameter tuning and the choice of parameters is described in
+Table~\ref{tab:hyperparameters}. 
+
+\begin{figure}[H]
+	\centering
+    \includegraphics[width=.9\linewidth]{../analysis/lda_coherence_analysis}
+    \caption{%
+        Analysis of the average coherence scores on an optimized LDA model
+        with varying number of topics. The red dotted line represents the
+        number of topics chosen for the final model. The coherence score curve
+        using the average coherence of 5 different initializations over each
+        number of topics.
+    }~\label{fig:lda_coherence_analysis}
+\end{figure}
+
 \subsection{Abstract embeddings}~\label{sec:abstract_embeddings}
+
+The embeddings of the abstracts was done using the Doc2Vec
+algorithm~\cite{Le2014} and the hyperparameters are defined in
+Table~\ref{tab:hyperparameters}. This allowed the representation of the corpus
+in a 25 dimension space and was further reduced using a
+U-map~\cite{Mcinnes2018} to allow the visualization of the output in a
+2-dimensional space.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lll}
+        \toprule
+        Model   &   Hyperparameter  &   Value \\
+        \midrule
+        LDA     &   Num Topics      &   8     \\
+                &   Chunk Size      &   2000  \\
+                &   Passes          &   20    \\
+                &   Alpha           &   0.1   \\
+                &   ETA             &   auto  \\
+        \midrule
+        Doc2Vec &   Size            &   25    \\
+                &   Iterations      &   100   \\
+                &   Min count       &   10    \\
+        \bottomrule
+    \end{tabular}
+    \caption{Hyperparameters used.}~\label{tab:hyperparameters}
+\end{table}
 
 \subsection{Software Implementation}~\label{sec:software_implementation}
 
@@ -200,22 +255,20 @@ algorithms, analyses and results are provided in the
 \href{https://github.com/joaopfonseca/research}{GitHub repository of the
 project}.
 
-
-
-
-
-
-
-
 \section{Results}
 
-Results go here.
+The popularity of research in data generation has grown significantly in the
+past 5 years, as shown in Figure~\ref{fig:area_chart_cited_documents}. Despite
+the significant amount of uncited publications, out of the ones published in
+2021 up to this date,\textbf{\ XX\%} have already been used in other works.
 
-\subsection{PRISMA Flow Diagram}
-
-\begin{itemize}
-    \item Create a flowchart with the data cleaning process and describe it.
-\end{itemize}
+\begin{figure}[H]
+	\centering
+    \includegraphics[width=\linewidth]{../analysis/area_chart_cited_documents}
+    \caption{Annual number of publications containing the keyword ``data
+        generation''.
+    }~\label{fig:area_chart_cited_documents}
+\end{figure}
 
 \subsection{Terms Frequency}
 
@@ -223,9 +276,82 @@ Results go here.
 
 LDA analysis goes here
 
+\begin{figure}[H]
+	\centering
+    \includegraphics[width=\linewidth]{../analysis/lda_topics_sankey}
+    \caption{Distribution of documents over the different topics found. The
+        left column represent the primary topics, the middle column represents
+        the secondary topics and the right columns represents the tertiary
+        topics.
+    }~\label{fig:lda_topics_sankey}
+\end{figure}
+
+\begin{table}
+    \centering
+    \pgfplotstabletypeset[
+    	begin table=\begin{longtable},
+    	end table=\end{longtable},
+        col sep=semicolon,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+        string type,
+        columns/Representative Paper/.style={column type={p{.4\linewidth}}},
+        columns/Words/.style={column type={p{.35\linewidth}}},
+    ]{../analysis/topic_analysis.csv}
+    \vspace{.2cm}
+    \caption{\label{tab:topic_analysis}
+        Description of the main topics found in the literature.
+    }
+\end{table}
+
 \subsubsection{Main Journals}
 
+\begin{table}
+    \centering
+    \pgfplotstabletypeset[
+    	begin table=\begin{longtable},
+    	end table=\end{longtable},
+        col sep=semicolon,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+        string type,
+    ]{../analysis/top_journals.csv}
+    \vspace{.2cm}
+    \caption{\label{tab:top_journals}
+        Top journals focusing on data augmentation techniques.
+    }
+\end{table}
+
 \subsubsection{Main Conference Proceedings}
+
+\begin{table}
+    \centering
+    \pgfplotstabletypeset[
+    	begin table=\begin{longtable},
+    	end table=\end{longtable},
+        col sep=semicolon,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+        string type,
+        columns/Source title/.style={column type={p{.4\linewidth}}},
+    ]{../analysis/top_conferences.csv}
+    \vspace{.2cm}
+    \caption{\label{tab:top_conferences}
+        Top conferences focusing on data augmentation techniques.
+    }
+\end{table}
 
 \subsection{Author Co-occurrence Analysis}
 
@@ -233,9 +359,49 @@ Not sure whether to keep this one.
 
 \subsection{Title and Abstract Text Occurrence Analysis}
 
-This can be done by text occurrence network visualization or embedings
+This can be done by text occurrence network visualization or embeddings.
+
+\begin{figure}[H]
+	\centering
+    \includegraphics[width=\linewidth]{../analysis/keyword_network}
+    \caption{Keyword network.
+    }~\label{fig:keyword_network}
+\end{figure}
+
+\subsection{Document embeddings}
+
+\begin{figure}[H]
+	\centering
+    \includegraphics[width=\linewidth]{../analysis/umap_scatterplot}
+    \caption{Document embeddings discriminated by LDA topic.
+    }~\label{fig:umap_scatterplot}
+\end{figure}
 
 \subsection{Most Cited Publications}
+
+\begin{table}
+    \centering
+    \pgfplotstabletypeset[
+    	begin table=\begin{longtable},
+    	end table=\end{longtable},
+        col sep=semicolon,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+        string type,
+        columns/Authors/.style={column type={p{.25\linewidth}}},
+        columns/Title/.style={column type={p{.4\linewidth}}},
+        columns/Year/.style={column type={p{.05\linewidth}}},
+        columns/Cited by/.style={column type={p{.09\linewidth}}}
+    ]{../analysis/top_papers.csv}
+    \vspace{.2cm}
+    \caption{\label{tab:top_papers}
+        Top papers using data augmentation techniques.
+    }
+\end{table}
 
 \subsection{Application and Method Analysis}
 

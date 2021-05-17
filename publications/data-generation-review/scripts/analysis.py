@@ -53,6 +53,11 @@ def main_venues(df, top_n=10, min_docs=10):
             inplace=True
         )
 
+        # Format values
+        df_['Average'] = df_['Average'].apply(lambda x: '{0:.2f}'.format(x))
+        df_['Citations'] = df_['Citations'].astype(int)
+        df_['Publications'] = df_['Publications'].astype(int)
+
         analyses.append(df_)
 
     return analyses
@@ -254,11 +259,9 @@ def genSankey(df, cat_cols=[], value_cols='', title=''):
     """Sets up a dictionary to generate a Sankey plot using Plotly."""
     # maximum of 6 value cols -> 6 colors
     colorPalette = [
-        '#4B8BBE',
         '#306998',
-        '#FFE873',
-        '#FFD43B',
-        '#646464'
+        '#306998',
+        '#306998',
     ]
     labelList = []
     colorNumList = []
@@ -417,7 +420,7 @@ if __name__ == '__main__':
     df = results['original_data']
 
     # Set up template formatting for plots
-    load_plt_sns_configs()
+    load_plt_sns_configs(font_size=12)
 
     # Journal and conference analysis
     top_journals, top_conferences = main_venues(
@@ -425,15 +428,18 @@ if __name__ == '__main__':
         top_n=10
     )
 
-    top_journals.to_csv(join(analysis_path, 'top_journals.csv'))
-    top_conferences.to_csv(join(analysis_path, 'top_conferences.csv'))
+    top_journals.to_csv(join(analysis_path, 'top_journals.csv'), sep=';')
+    top_conferences.to_csv(join(analysis_path, 'top_conferences.csv'), sep=';')
 
     # Papers with most citations
-    df.sort_values('Cited by', ascending=False)[[
-            'Authors', 'Title', 'Year', 'Cited by'
-    ]].head(10).to_csv(
+    top_papers = df.sort_values('Cited by', ascending=False)[[
+        'Authors', 'Title', 'Year', 'Cited by'
+    ]].head(10)
+    top_papers['Cited by'] = top_papers['Cited by'].astype(int)
+    top_papers.to_csv(
         join(analysis_path, 'top_papers.csv'),
-        index=False
+        index=False,
+        sep=';'
     )
 
     # Number of publications per year
@@ -471,7 +477,10 @@ if __name__ == '__main__':
 
     df_topics['Papers'] = df.groupby('topic2').size()
     df_topics = df_topics.join(pd.Series(topic_keywords, name='Words'))
-    df_topics.to_csv(join(analysis_path, 'topic_analysis.csv'))
+    df_topics.Words = df_topics.Words.apply(lambda x: x.replace('_','\_'))
+    df_topics.index.rename('Topic', inplace=True)
+    df_topics.rename(columns={'Title': 'Representative Paper'}, inplace=True)
+    df_topics.to_csv(join(analysis_path, 'topic_analysis.csv'), sep=';')
 
     # Topic analysis
     df_sankey = df\
@@ -493,7 +502,7 @@ if __name__ == '__main__':
         join(analysis_path, "lda_topics_sankey.pdf")
     )
 
-    # U-map analysis - UNFINISHED
+    # U-map analysis
     df['umap_x'], df['umap_y'] = results['document_umap_projections'].T
 
     sns.scatterplot(
@@ -502,7 +511,20 @@ if __name__ == '__main__':
         hue=df.topic2.values.astype(str),
         size=4
     )
-    plt.savefig(join(analysis_path, 'umap_scatterplot.pdf'))
+    plt.legend(bbox_to_anchor = (1.0, 0.75))
+    plt.savefig(
+        join(analysis_path, 'umap_lda_topics.pdf'),
+        bbox_inches='tight'
+    )
+    plt.close()
+
+    # Per Year topic frequency
+    df_topics_year = (
+        df.groupby(['Year', 'topic2']).size() / df.groupby(['Year']).size()
+    ).to_frame('perc').reset_index().rename(columns={'topic2': 'Topic'})
+    df_topics_year.pivot('Year', 'Topic', 'perc').plot.bar(stacked=True)
+    plt.legend(bbox_to_anchor = (1.0, 0.75))
+    plt.savefig(join(analysis_path, 'topics_per_year.pdf'), bbox_inches='tight')
     plt.close()
 
     # Network analysis
