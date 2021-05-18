@@ -89,9 +89,10 @@ This is the full API documentation of the `research` package.
     utils.sort_tbl
     utils.generate_paths
     utils.make_bold
+    utils.generate_mean_std_tbl_bold
     utils.img_array_to_pandas
     utils.load_datasets
     utils.check_pipelines
     utils.check_pipelines_wrapper
     utils.load_plt_sns_configs
-    utils.generate_mean_std_tbl_bold
+    utils.val_to_color
