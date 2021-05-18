@@ -52,7 +52,7 @@ def val_to_color(col, cmap='RdYlBu_r'):
 
     Returns
     -------
-    rgb_colors : array-like of shape (n_samples,)
+    colors : array-like of shape (n_samples,)
         Array with hex values as string type.
     """
     norm = Normalize(vmin=col.min(), vmax=col.max(), clip=True)
