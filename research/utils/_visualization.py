@@ -1,10 +1,13 @@
 """
-Function for visualization formatting or producing pre-formatted
+Functions for visualization formatting or producing pre-formatted
 visualizations.
 """
 
+import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+from matplotlib.colors import rgb2hex, Normalize
+from matplotlib.cm import ScalarMappable
 
 
 def load_plt_sns_configs(font_size=8):
@@ -33,3 +36,27 @@ def load_plt_sns_configs(font_size=8):
         "figure.subplot.hspace": .2
     }
     plt.rcParams.update(tex_fonts)
+
+
+def val_to_color(col, cmap='RdYlBu_r'):
+    """
+    Converts a column of values to hex-type colors.
+
+    Parameters
+    ----------
+    col : array-like of shape (n_samples,)
+        Values to convert to hex-type color code
+
+    cmap : str or `~matplotlib.colors.Colormap`
+        The colormap used to map normalized data values to RGBA colors
+
+    Returns
+    -------
+    rgb_colors : array-like of shape (n_samples,)
+        Array with hex values as string type.
+    """
+    norm = Normalize(vmin=col.min(), vmax=col.max(), clip=True)
+    mapper = ScalarMappable(norm=norm, cmap=cmap)
+    rgba = mapper.to_rgba(col)
+
+    return np.apply_along_axis(rgb2hex, 1, rgba)

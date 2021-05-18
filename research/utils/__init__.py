@@ -24,7 +24,10 @@ from ._check_pipelines import (
     check_pipelines,
     check_pipelines_wrapper
 )
-from ._visualization import load_plt_sns_configs
+from ._visualization import (
+    load_plt_sns_configs,
+    val_to_color
+)
 
 __all__ = [
     'generate_mean_std_tbl',
@@ -32,10 +35,11 @@ __all__ = [
     'sort_tbl',
     'generate_paths',
     'make_bold',
+    'generate_mean_std_tbl_bold',
     'img_array_to_pandas',
     'load_datasets',
     'check_pipelines',
     'check_pipelines_wrapper',
     'load_plt_sns_configs',
-    'generate_mean_std_tbl_bold'
+    'val_to_color'
 ]
