@@ -58,7 +58,7 @@
 
 Introduction goes here.
 
-\section{Theory}
+\section{Theory}~\label{sec:theory}
 
 Jürgen Schmidhuber's group shows that a simple MLP architecture can achieve
 state-of-the-art performance on computer vision benchmarks given strong enough
@@ -105,7 +105,7 @@ algorithms, domains and/or tasks that employ data augmentation techniques.
 Therefore, we use the keyword ``data augmentation'' in order to ensure an
 unbiased analysis. The results were then limited to conference papers and
 journal articles written in English that were published in the past 15 years.
-Due to the large amount of results found, using using solely the
+Due to the large amount of results found, using solely the
 \href{https://www.scopus.com/}{Scopus} database was found to be sufficient.
 The resulting query is shown below:
 
@@ -274,7 +274,11 @@ the significant amount of uncited publications, out of the ones published in
 
 \subsection{Journal and Conference Analysis}
 
-\begin{table}
+The initial exploration of the bibliometric data allows us to assess which
+journals focused in data augmentation more intensely over the past years, as
+shown in Figure~\ref{tab:top_journals}.
+
+\begin{table}[H]
     \centering
     \pgfplotstabletypeset[
     	begin table=\begin{longtable},
@@ -290,11 +294,16 @@ the significant amount of uncited publications, out of the ones published in
     ]{../analysis/top_journals.csv}
     \vspace{.2cm}
     \caption{\label{tab:top_journals}
-        Top journals focusing on data augmentation techniques.
+        Top journals focusing on data augmentation techniques, sorted by
+        citations per document.
     }
 \end{table}
 
-\begin{table}
+Citation-wise, the publications coming from conference proceedings tend to
+have a comparable impact in the research community, as shown in
+Table~\ref{tab:top_conferences}.
+
+\begin{table}[H]
     \centering
     \pgfplotstabletypeset[
     	begin table=\begin{longtable},
@@ -311,13 +320,21 @@ the significant amount of uncited publications, out of the ones published in
     ]{../analysis/top_conferences.csv}
     \vspace{.2cm}
     \caption{\label{tab:top_conferences}
-        Top conferences focusing on data augmentation techniques.
+        Top conferences focusing on data augmentation techniques, sorted by
+        citations per document.
     }
 \end{table}
 
-\subsection{Most Cited Publications}
+The papers with the highest citation count are listed in
+Table~\ref{tab:top_papers}. Most of these papers are also discussed in
+Section~\ref{sec:theory}. We found that many of these papers focused on
+improving deep learning classification, segmentation or object detection
+performance without a focus on a particular application domain. Other papers
+centered in the application of data augmentation methods for biomedical image
+classification and segmentation, sound and speech recognition and remote
+sensing. 
 
-\begin{table}
+\begin{table}[H]
     \centering
     \pgfplotstabletypeset[
     	begin table=\begin{longtable},
@@ -337,14 +354,20 @@ the significant amount of uncited publications, out of the ones published in
     ]{../analysis/top_papers.csv}
     \vspace{.2cm}
     \caption{\label{tab:top_papers}
-        Top papers using data augmentation techniques.
+        Top papers using data augmentation techniques, sorted by citation
+        count.
     }
 \end{table}
 
 
 \subsection{Keyword Analysis}
 
-This can be done by text occurrence network visualization or embeddings.
+The keyword network shown in Figure~\ref{fig:keyword_network} revealed 8 main
+communities of keywords, and 13 other small communities. The different
+communities are distinguished by the type of algorithms used and/or the
+application domain. The 3 larger communities are separated according to the
+different types of generative models available in the literature, while the
+smaller communities are distinguished according to the application domain.
 
 \begin{figure}[H]
 	\centering
@@ -357,7 +380,12 @@ This can be done by text occurrence network visualization or embeddings.
 
 \subsection{Topic Analysis}
 
-LDA analysis goes here
+The LDA topic extraction resulted in 8 different topics, and the distribution
+of topics is shown in Figure~\ref{fig:lda_topics_sankey}. The main topics
+within which most articles were included is topic 5, is defined by the
+main theoretical keywords related to image data augmentation. Rather, the
+secondary topic is more useful for this analysis. It is found based on each
+document's compatibility with the topic, excluding the most likely topic.
 
 \begin{figure}[H]
 	\centering
@@ -369,7 +397,14 @@ LDA analysis goes here
     }~\label{fig:lda_topics_sankey}
 \end{figure}
 
-\begin{table}
+The topics found in the bibliometric data are shown in
+Table~\ref{tab:topic_analysis}. A few topics seem to overlap each other,
+although they are generally distinguishable. The primary domains of
+application of data augmentation methods differ for each different topic
+identified. These topics are discussed in greater detail in
+Section~\ref{sec:discussion}.
+
+\begin{table}[H]
     \centering
     \pgfplotstabletypeset[
     	begin table=\begin{longtable},
@@ -391,6 +426,12 @@ LDA analysis goes here
     }
 \end{table}
 
+The per-year popularity of the different topics is shown in
+Figure~\ref{fig:topics_per_year}. Since 2015, topic 5 gained more research
+momentum, whereas topic 6 lost much of its relative popularity within the
+field. In the past 5 years topics 8 and 3 have become steady research streams
+while topic 1 saw a significant growth in popularity. 
+
 \begin{figure}[H]
 	\centering
     \includegraphics[width=\linewidth]{../analysis/topics_per_year}
@@ -400,6 +441,12 @@ LDA analysis goes here
 
 \subsection{Abstract embeddings}
 
+The document embeddings shown in Figure~\ref{fig:umap_lda_topics} allow the
+analysis of the abstract similarities within the collected documents. Two
+major clusters were found, the larger one containing the more recent research
+papers, and the smaller one containing most of the articles related to topic
+6, most of which written over 5 years ago. 
+
 \begin{figure}[H]
 	\centering
     \includegraphics[width=\linewidth]{../analysis/umap_lda_topics}
@@ -407,9 +454,7 @@ LDA analysis goes here
     }~\label{fig:umap_lda_topics}
 \end{figure}
 
-\subsection{Application and Method Analysis}
-
-\section{Discussion}
+\section{Discussion}~\label{sec:discussion}
 
 Discussion goes here.
 
@@ -422,7 +467,6 @@ Discussion goes here.
 \section{Conclusions}
 
 \bibliography{references}
-% \bibliographystyle{apalike}
 \bibliographystyle{ieeetr}
 
 \end{document}
