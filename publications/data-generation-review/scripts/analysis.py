@@ -16,7 +16,8 @@ from rich.progress import track
 from rlearn.utils import check_random_states
 from research.utils import (
     generate_paths,
-    load_plt_sns_configs
+    load_plt_sns_configs,
+    val_to_color
 )
 
 RANDOM_STATE = 42
@@ -477,7 +478,7 @@ if __name__ == '__main__':
 
     df_topics['Papers'] = df.groupby('topic2').size()
     df_topics = df_topics.join(pd.Series(topic_keywords, name='Words'))
-    df_topics.Words = df_topics.Words.apply(lambda x: x.replace('_','\_'))
+    df_topics.Words = df_topics.Words.apply(lambda x: x.replace('_', r'\_'))
     df_topics.index.rename('Topic', inplace=True)
     df_topics.rename(columns={'Title': 'Representative Paper'}, inplace=True)
     df_topics.to_csv(join(analysis_path, 'topic_analysis.csv'), sep=';')
@@ -504,14 +505,21 @@ if __name__ == '__main__':
 
     # U-map analysis
     df['umap_x'], df['umap_y'] = results['document_umap_projections'].T
+    df['color'] = val_to_color(df.topic2)
+    cmap = df[['topic2', 'color']]\
+        .drop_duplicates()\
+        .sort_values('topic2')\
+        .set_index('topic2').color.to_dict()
 
-    sns.scatterplot(
-        x=df.umap_x.values,
-        y=df.umap_y.values,
-        hue=df.topic2.values.astype(str),
-        size=4
-    )
-    plt.legend(bbox_to_anchor = (1.0, 0.75))
+    fig, ax = plt.subplots()
+    for label, color in cmap.items():
+        df[df['topic2'] == label]\
+            .rename(columns={'umap_x': 'x', 'umap_y': 'y'})\
+            .plot.scatter(x='x', y='y', c=color, label=label, ax=ax, s=5)
+
+    plt.xlabel('')
+    plt.ylabel('')
+    plt.legend(bbox_to_anchor=(1.0, 0.75))
     plt.savefig(
         join(analysis_path, 'umap_lda_topics.pdf'),
         bbox_inches='tight'
@@ -522,9 +530,13 @@ if __name__ == '__main__':
     df_topics_year = (
         df.groupby(['Year', 'topic2']).size() / df.groupby(['Year']).size()
     ).to_frame('perc').reset_index().rename(columns={'topic2': 'Topic'})
-    df_topics_year.pivot('Year', 'Topic', 'perc').plot.bar(stacked=True)
-    plt.legend(bbox_to_anchor = (1.0, 0.75))
-    plt.savefig(join(analysis_path, 'topics_per_year.pdf'), bbox_inches='tight')
+    df_topics_year.pivot('Year', 'Topic', 'perc')\
+        .plot.bar(stacked=True, color=cmap)
+    plt.legend(bbox_to_anchor=(1.0, 0.75))
+    plt.savefig(
+        join(analysis_path, 'topics_per_year.pdf'),
+        bbox_inches='tight'
+    )
     plt.close()
 
     # Network analysis

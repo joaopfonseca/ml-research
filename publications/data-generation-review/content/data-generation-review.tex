@@ -180,7 +180,7 @@ avoid a potential bias caused by highly cited research articles.
 
 Keyword combinations showing up in only one document are removed from further
 analysis. The keyword network is then analysed using Python and the
-communities were found using the greedy modularity maximization algotithm
+communities were found using the greedy modularity maximization algorithm
 proposed in~\cite{Clauset2004}. The results of the analysis and community
 detection were ported to Gephi to produce the final visualizations.
 
@@ -270,9 +270,92 @@ the significant amount of uncited publications, out of the ones published in
     }~\label{fig:area_chart_cited_documents}
 \end{figure}
 
-\subsection{Terms Frequency}
+%\subsection{Terms Frequency}
 
-\subsection{Topics Discovered}
+\subsection{Journal and Conference Analysis}
+
+\begin{table}
+    \centering
+    \pgfplotstabletypeset[
+    	begin table=\begin{longtable},
+    	end table=\end{longtable},
+        col sep=semicolon,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+        string type,
+    ]{../analysis/top_journals.csv}
+    \vspace{.2cm}
+    \caption{\label{tab:top_journals}
+        Top journals focusing on data augmentation techniques.
+    }
+\end{table}
+
+\begin{table}
+    \centering
+    \pgfplotstabletypeset[
+    	begin table=\begin{longtable},
+    	end table=\end{longtable},
+        col sep=semicolon,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+        string type,
+        columns/Source title/.style={column type={p{.4\linewidth}}},
+    ]{../analysis/top_conferences.csv}
+    \vspace{.2cm}
+    \caption{\label{tab:top_conferences}
+        Top conferences focusing on data augmentation techniques.
+    }
+\end{table}
+
+\subsection{Most Cited Publications}
+
+\begin{table}
+    \centering
+    \pgfplotstabletypeset[
+    	begin table=\begin{longtable},
+    	end table=\end{longtable},
+        col sep=semicolon,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+        string type,
+        columns/Authors/.style={column type={p{.25\linewidth}}},
+        columns/Title/.style={column type={p{.4\linewidth}}},
+        columns/Year/.style={column type={p{.05\linewidth}}},
+        columns/Cited by/.style={column type={p{.09\linewidth}}}
+    ]{../analysis/top_papers.csv}
+    \vspace{.2cm}
+    \caption{\label{tab:top_papers}
+        Top papers using data augmentation techniques.
+    }
+\end{table}
+
+
+\subsection{Keyword Analysis}
+
+This can be done by text occurrence network visualization or embeddings.
+
+\begin{figure}[H]
+	\centering
+    \includegraphics[width=\linewidth]{../analysis/keyword_network}
+    \caption{Keyword network.
+    }~\label{fig:keyword_network}
+\end{figure}
+
+
+
+\subsection{Topic Analysis}
 
 LDA analysis goes here
 
@@ -308,100 +391,21 @@ LDA analysis goes here
     }
 \end{table}
 
-\subsubsection{Main Journals}
-
-\begin{table}
-    \centering
-    \pgfplotstabletypeset[
-    	begin table=\begin{longtable},
-    	end table=\end{longtable},
-        col sep=semicolon,
-        string type,
-        every head row/.style={%
-            before row=\toprule,
-            after row=\midrule
-        },
-        every last row/.style={after row=\bottomrule},
-        string type,
-    ]{../analysis/top_journals.csv}
-    \vspace{.2cm}
-    \caption{\label{tab:top_journals}
-        Top journals focusing on data augmentation techniques.
-    }
-\end{table}
-
-\subsubsection{Main Conference Proceedings}
-
-\begin{table}
-    \centering
-    \pgfplotstabletypeset[
-    	begin table=\begin{longtable},
-    	end table=\end{longtable},
-        col sep=semicolon,
-        string type,
-        every head row/.style={%
-            before row=\toprule,
-            after row=\midrule
-        },
-        every last row/.style={after row=\bottomrule},
-        string type,
-        columns/Source title/.style={column type={p{.4\linewidth}}},
-    ]{../analysis/top_conferences.csv}
-    \vspace{.2cm}
-    \caption{\label{tab:top_conferences}
-        Top conferences focusing on data augmentation techniques.
-    }
-\end{table}
-
-\subsection{Author Co-occurrence Analysis}
-
-Not sure whether to keep this one.
-
-\subsection{Title and Abstract Text Occurrence Analysis}
-
-This can be done by text occurrence network visualization or embeddings.
-
 \begin{figure}[H]
 	\centering
-    \includegraphics[width=\linewidth]{../analysis/keyword_network}
-    \caption{Keyword network.
-    }~\label{fig:keyword_network}
+    \includegraphics[width=\linewidth]{../analysis/topics_per_year}
+    \caption{Topic frequency per year.
+    }~\label{fig:topics_per_year}
 \end{figure}
 
-\subsection{Document embeddings}
+\subsection{Abstract embeddings}
 
 \begin{figure}[H]
 	\centering
-    \includegraphics[width=\linewidth]{../analysis/umap_scatterplot}
+    \includegraphics[width=\linewidth]{../analysis/umap_lda_topics}
     \caption{Document embeddings discriminated by LDA topic.
-    }~\label{fig:umap_scatterplot}
+    }~\label{fig:umap_lda_topics}
 \end{figure}
-
-\subsection{Most Cited Publications}
-
-\begin{table}
-    \centering
-    \pgfplotstabletypeset[
-    	begin table=\begin{longtable},
-    	end table=\end{longtable},
-        col sep=semicolon,
-        string type,
-        every head row/.style={%
-            before row=\toprule,
-            after row=\midrule
-        },
-        every last row/.style={after row=\bottomrule},
-        string type,
-        columns/Authors/.style={column type={p{.25\linewidth}}},
-        columns/Title/.style={column type={p{.4\linewidth}}},
-        columns/Year/.style={column type={p{.05\linewidth}}},
-        columns/Cited by/.style={column type={p{.09\linewidth}}}
-    ]{../analysis/top_papers.csv}
-    \vspace{.2cm}
-    \caption{\label{tab:top_papers}
-        Top papers using data augmentation techniques.
-    }
-\end{table}
 
 \subsection{Application and Method Analysis}
 
