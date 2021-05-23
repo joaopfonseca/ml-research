@@ -56,9 +56,9 @@
 
 \section{Introduction}
 
-Introduction goes here.
+Why is data augmentation important?
 
-\section{Theory}~\label{sec:theory}
+What is it used for?
 
 Jürgen Schmidhuber's group shows that a simple MLP architecture can achieve
 state-of-the-art performance on computer vision benchmarks given strong enough
@@ -69,6 +69,22 @@ Cires, Gambardella and Schmidhuber 2011 [PDF]
 
 [2] Handwritten Digit Recognition with a Committee of DeepNeural Nets on GPUs.
 Ciresan, Meier, Gambardella and Schmidhuber 2011 [PDF]
+
+But that was 10 years ago, what about now?
+
+Discuss the importance of those two Google Brain research papers.
+
+\section{Theory}~\label{sec:theory}
+
+Discuss top papers found in the results section.
+
+Heuristic data augmentation algorithms
+- Oversampling techniques
+- Image classification techniques
+
+Neural Network-based algorithms
+
+Other types of algorithms, like bayesian-based approaches?
 
 \section{Methodology}
 
@@ -102,17 +118,18 @@ described in Subsection~\ref{sec:abstract_embeddings}.
 
 The focus of this literature analysis is to understand the different
 algorithms, domains and/or tasks that employ data augmentation techniques.
-Therefore, we use the keyword ``data augmentation'' in order to ensure an
-unbiased analysis. The results were then limited to conference papers and
-journal articles written in English that were published in the past 15 years.
-Due to the large amount of results found, using solely the
-\href{https://www.scopus.com/}{Scopus} database was found to be sufficient.
-The resulting query is shown below:
+Therefore, we search for documents containing the keyword ``data
+augmentation'' in the search query. The results were then limited to
+conference papers and journal articles written in English that were published
+in the past 15 years.  Due to the large amount of results found, using solely
+the \href{https://www.scopus.com/}{Scopus} database was found to be
+sufficient. One of the goals during the search query design was to come up
+with a simple and unbiased query. The resulting query is shown below:
 
 \begin{verbatim}
     KEY ( "data augmentation" )  AND  ( LIMIT-TO ( LANGUAGE ,  "English" ) )  
     AND ( LIMIT-TO ( DOCTYPE ,  "cp" )  OR  LIMIT-TO ( DOCTYPE ,  "ar" ) )  
-    AND  (
+    AND (
             LIMIT-TO ( PUBYEAR ,  2021 )  OR  LIMIT-TO ( PUBYEAR ,  2020 )  
         OR  LIMIT-TO ( PUBYEAR ,  2019 )  OR  LIMIT-TO ( PUBYEAR ,  2018 )  
         OR  LIMIT-TO ( PUBYEAR ,  2017 )  OR  LIMIT-TO ( PUBYEAR ,  2016 )  
@@ -124,7 +141,8 @@ The resulting query is shown below:
     )  
 \end{verbatim}
 
-The resulting data selection/filtering pipeline is shown in
+The search query resulted in 4281 documents. The resulting data
+selection/filtering pipeline is shown in
 Figure~\ref{fig:data_filtering_pipeline}. Due to the limitations in the Scopus
 data export (maximum 2000 documents per export), the data was split in four
 different time periods and exported separately: 2006 until 2018, 2019, 2020
@@ -176,7 +194,9 @@ connected based on their co-occurrence in each research paper to form the
 edges of the network.  It consists of an undirected graph whose weights are
 based on the total citation count for the papers containing a given keyword
 pair and is calculated as $\textrm{weight} = \log(\textrm{citations}) + 1$ to
-avoid a potential bias caused by highly cited research articles.
+avoid a potential bias caused by highly cited research articles. The size of
+the nodes were determined with a logarithmic transformation of each
+node's page rank.
 
 Keyword combinations showing up in only one document are removed from further
 analysis. The keyword network is then analysed using Python and the
@@ -195,22 +215,9 @@ tri-grams.
 We used a Latent Dirichlet Allocation (LDA) model~\cite{Pritchard2000} to
 infer the topics present in our research domain. The tuning of the parameters
 was done through experimentation and qualitative interpretation of the results
-achieved. Additionally, the area under the coherence score curve shown in
-Figure~\ref{fig:lda_coherence_analysis} was also used as a reference for
-parameter tuning and the choice of parameters is described in
+achieved. Additionally, the coherence score curve was also used as a reference for
+parameter tuning and the choice of parameters, which are described in
 Table~\ref{tab:hyperparameters}. 
-
-\begin{figure}[H]
-	\centering
-    \includegraphics[width=.9\linewidth]{../analysis/lda_coherence_analysis}
-    \caption{%
-        Analysis of the average coherence scores on an optimized LDA model
-        with varying number of topics. The red dotted line represents the
-        number of topics chosen for the final model. The coherence score curve
-        using the average coherence of 5 different initializations over each
-        number of topics.
-    }~\label{fig:lda_coherence_analysis}
-\end{figure}
 
 \subsection{Abstract embeddings}~\label{sec:abstract_embeddings}
 
@@ -255,18 +262,20 @@ algorithms, analyses and results are provided in the
 \href{https://github.com/joaopfonseca/research}{GitHub repository of the
 project}.
 
-\section{Results}
+\section{Results \& Discussion}
 
 The popularity of research in data generation has grown significantly in the
 past 5 years, as shown in Figure~\ref{fig:area_chart_cited_documents}. Despite
 the significant amount of uncited publications, out of the ones published in
-2021 up to this date,\textbf{\ XX\%} have already been used in other works.
+2020, 39\% have already been used in other works. Although most of the
+research developed before 2016 was used in other works, the amount of cited
+research increased significantly after that period.
 
 \begin{figure}[H]
 	\centering
     \includegraphics[width=\linewidth]{../analysis/area_chart_cited_documents}
     \caption{Annual number of publications containing the keyword ``data
-        generation''.
+        augmentation''.
     }~\label{fig:area_chart_cited_documents}
 \end{figure}
 
@@ -276,7 +285,11 @@ the significant amount of uncited publications, out of the ones published in
 
 The initial exploration of the bibliometric data allows us to assess which
 journals focused in data augmentation more intensely over the past years, as
-shown in Figure~\ref{tab:top_journals}.
+shown in Figure~\ref{tab:top_journals}. Most of the top journals belong to
+technical fields, predominantly from Statistics, Remote Sensing, Medical
+Imaging and other domains of applications such as agriculture. In addition,
+all these journals have a high impact in their respective fields (based on 
+\href{https://www.scimagojr.com/}{Scimago Journal \& Country Rankings}).   
 
 \begin{table}[H]
     \centering
@@ -301,7 +314,13 @@ shown in Figure~\ref{tab:top_journals}.
 
 Citation-wise, the publications coming from conference proceedings tend to
 have a comparable impact in the research community, as shown in
-Table~\ref{tab:top_conferences}.
+Table~\ref{tab:top_conferences}. The most relevant conferences are positioned
+in the computer science and information management fields. Research developed
+in other areas of application, such as computer vision, speech recognition,
+acoustic modelling, natural language processing and signal processing have
+more activity in the form of conference proceedings publications. Conversely,
+the domains most frequent in journal publications are not as active on
+conference proceedings publications.
 
 \begin{table}[H]
     \centering
@@ -327,9 +346,9 @@ Table~\ref{tab:top_conferences}.
 
 The papers with the highest citation count are listed in
 Table~\ref{tab:top_papers}. Most of these papers are also discussed in
-Section~\ref{sec:theory}. We found that many of these papers focused on
+Section~\ref{sec:theory}. We found that much of the research focused on
 improving deep learning classification, segmentation or object detection
-performance without a focus on a particular application domain. Other papers
+without a focus on a particular domain of application. Other papers
 centered in the application of data augmentation methods for biomedical image
 classification and segmentation, sound and speech recognition and remote
 sensing. 
@@ -364,10 +383,83 @@ sensing.
 
 The keyword network shown in Figure~\ref{fig:keyword_network} revealed 8 main
 communities of keywords, and 13 other small communities. The different
-communities are distinguished by the type of algorithms used and/or the
-application domain. The 3 larger communities are separated according to the
-different types of generative models available in the literature, while the
-smaller communities are distinguished according to the application domain.
+communities are distinguished by the type of algorithms used and/or the domain
+of application. The main distinctive factor for the larger communities are the
+types of generative models used, while the smaller communities are
+distinguished according to the domain of application. The most significant
+findings we found from this analysis are:
+
+\begin{enumerate}
+    \item The community marked with pink-colored nodes is characterized by the
+        usage of neural network-based data augmentation methods in
+        convolutional neural networks. The keyword ``deep learning'' is
+        positioned as a central node (although not labelled in the figure to
+        maintain readability). Other relevant keywords are related to
+        machine/deep learning frameworks, deep learning classifiers and data
+        augmentation algorithms, such as ``tensorflow'', ``keras'',
+        ``convolutional neural network'' and ``generative adversarial
+        networks''. Domain specific keywords are also present:
+        \begin{itemize}
+            \item Medical keywords located in this community cover a variety
+                of applications. Relevant sub communities are [``hand
+                writing'', ``parkinson's disease (pd)'', ``transfer
+                learning''], [``breast cancer'', ``computer-aided
+                detection''], [``melanoma'', ``skin cancer'', ``image
+                processing'', ``googlenet''], [``chest x-ray'',
+                ``computer-aided diagnosis'', ``tuberculosis'',
+                ``segmentation''] and [``brain'', ``mri'', ``multiple
+                sclerosis'']. 
+            \item Remote sensing keywords are typically related to
+                classification and object detection tasks. Relevant sub
+                communities are [``object detection'', ``aerial image'',
+                ``drone'', ``generative adversarial network'', ``semantic
+                segmentation''], [``attributed scattering center (asc)'',
+                ``synthetic aperture radar (sar)'', ``convolutional neural
+                network (cnn)''], [``remote sensing'', ``road extraction'',
+                ``transfer learning'', ``generative adversarial network''].
+                Keywords such as ``hyperspectral imaging'' and ``weather
+                classification'' are also scattered around the community.
+            \item Facial recognition research is also represented in few sub
+                communities: [``micro expression recognition'', ``small
+                training data'', ``convolutional neural network (cnn)'', ``local
+                binary pattern-three orthogonal planes (lbp-top)''] and
+                [``training data augmentation'', ``sequence-to-sequence speech
+                synthesis'', ``sequence-to-sequence speech recognition''].
+            \item Fault detection studies also used data augmentation to deal
+                with imbalanced datasets: [``fault diagnosis'', ``imbalanced
+                data'', ``gan'']
+            \item Data augmentation was also associated to regularization
+                methods and feature extraction tasks, based on the presence of
+                the sub communities [``overfitting'', ``dropout'' and ``cnn'']
+                and [``feature extraction'', ``cnn'', ``svm''].
+        \end{itemize}
+    \item The community marked with blue-colored nodes is characterized by the
+        usage of Markov Chain-based algorithms. The keywords ``markov chain'',
+        ``data augmentation algorithm'' and ``monte carlo'' appear as central
+        nodes. No application-specific sub-community was found.
+    \item The community marked with green-colored nodes is characterized by
+        the usage of Markov Chain and Bayesian-based algorithms. The keywords
+        ``bayesian inference'', ``markov chain monte carlo'', ``mcmc'',
+        ``bayesian analysis'', ``missing data'' and ``em algorithm''
+        (expectation maximization algorithm). Application-specific keywords
+        may be found sparsely distributed across the community, all of them
+        related to biological applications. Specifically, the sub community
+        [``ecological health'', ``stressor-response'', ``biological
+        monitoring'', ``bayesian methods''] and the keyword ``camera
+        trapping'' were found in this community. 
+    \item The community marked with orange-colored nodes is characterized by
+        keywords specific to big data and data warehousing applications. The
+        network is composed of the keywords ``big data'', ``data lake'',
+        ``olap'', ``map reduce'', ``cmm'', ``data warehouse'',
+        ``augmentation'' and ``dm''.
+    \item The remaining communities consist mostly of data augmentation
+        methods applied to specific domains. Specifically, the usage of
+        temporal-dynamic neural network architectures with ``eeg
+        (electroencephalogram)'', music information retrieval applications
+        (e.g., ``chord recognition''), speech/speaker recognition and
+        embedding, time series forecasting of diabetes and natural language
+        processing and text classification.
+\end{enumerate}
 
 \begin{figure}[H]
 	\centering
@@ -401,8 +493,7 @@ The topics found in the bibliometric data are shown in
 Table~\ref{tab:topic_analysis}. A few topics seem to overlap each other,
 although they are generally distinguishable. The primary domains of
 application of data augmentation methods differ for each different topic
-identified. These topics are discussed in greater detail in
-Section~\ref{sec:discussion}.
+identified.
 
 \begin{table}[H]
     \centering
@@ -439,32 +530,34 @@ while topic 1 saw a significant growth in popularity.
     }~\label{fig:topics_per_year}
 \end{figure}
 
-\subsection{Abstract embeddings}
-
-The document embeddings shown in Figure~\ref{fig:umap_lda_topics} allow the
-analysis of the abstract similarities within the collected documents. Two
-major clusters were found, the larger one containing the more recent research
-papers, and the smaller one containing most of the articles related to topic
-6, most of which written over 5 years ago. 
-
-\begin{figure}[H]
-	\centering
-    \includegraphics[width=\linewidth]{../analysis/umap_lda_topics}
-    \caption{Document embeddings discriminated by LDA topic.
-    }~\label{fig:umap_lda_topics}
-\end{figure}
-
-\section{Discussion}~\label{sec:discussion}
-
-Discussion goes here.
+% \subsection{Abstract embeddings}
+% 
+% The document embeddings shown in Figure~\ref{fig:umap_lda_topics} allow the
+% analysis of the abstract similarities within the collected documents. Two
+% major clusters were found, the larger one containing the more recent research
+% papers, and the smaller one containing most of the articles related to topic
+% 6, most of which written over 5 years ago. 
+% 
+% \begin{figure}[H]
+% 	\centering
+%     \includegraphics[width=\linewidth]{../analysis/umap_lda_topics}
+%     \caption{Document embeddings discriminated by LDA topic.
+%     }~\label{fig:umap_lda_topics}
+% \end{figure}
 
 \subsection{Research Question Discussion}
+
 
 \subsection{Research Gap Discussion}
 
 \subsection{Study Limitation Discussion}
 
 \section{Conclusions}
+
+Depending on the domain of application, data augmentation research differs in
+the format of publication. On the one hand, domains like Statistics, Remote
+Sensing and Medical Imaging seem more active on journal publications,
+typically in journals with high impact factor. On the other hand, 
 
 \bibliography{references}
 \bibliographystyle{ieeetr}
