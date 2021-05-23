@@ -10,7 +10,6 @@ from gensim.models import TfidfModel, LdaModel, CoherenceModel
 import networkx as nx
 import networkx.algorithms.community as nxcom
 import matplotlib.pyplot as plt
-import seaborn as sns
 import plotly.graph_objects as go
 from rich.progress import track
 from rlearn.utils import check_random_states
@@ -68,7 +67,7 @@ def per_year_publications(df):
     """Plot the number of documents per year"""
 
     df['Is cited'] = df['Cited by'].isna().apply(
-        lambda x: 'Cited' if x else 'Uncited'
+        lambda x: 'Cited' if not x else 'Uncited'
     )
 
     df_ = df.groupby(['Year', 'Is cited'])\
@@ -525,6 +524,21 @@ if __name__ == '__main__':
         bbox_inches='tight'
     )
     plt.close()
+
+    # # U-map analysis 2
+    # df_plot = df.groupby(['topic2', 'color']).mean()[['umap_x', 'umap_y']]\
+    #     .rename(columns={'umap_x': 'x', 'umap_y': 'y'})\
+    #     .reset_index().set_index('topic2')
+
+    # fig, ax = plt.subplots()
+    # for label, color in cmap.items():
+    #     df_plot.loc[label].to_frame().T.plot.scatter(
+    #         x='x', y='y', c=color, label=label, ax=ax, s=10
+    #     )
+
+    # plt.xlabel('')
+    # plt.ylabel('')
+    # plt.legend(bbox_to_anchor=(1.0, 0.75))
 
     # Per Year topic frequency
     df_topics_year = (
