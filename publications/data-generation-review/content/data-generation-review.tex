@@ -74,6 +74,17 @@ But that was 10 years ago, what about now?
 
 Discuss the importance of those two Google Brain research papers.
 
+Research on data augmentation methods has gained significant popularity in
+recent years. As such, there were some efforts in the past to establish a
+taxonomy and distinction of the different types of data augmentations
+methods~\cite{Shorten2019}, although outdated/incomplete.
+
+The most cited literature review on data augmentation was focused on image
+data augmentation for deep learning in 2019~\cite{Shorten2019}. Since then,
+research on data augmentation methods have progressed significantly. In this
+paper we focus on current and past research trends of data augmentation
+methods, its different applications and use cases.
+
 \section{Theory}~\label{sec:theory}
 
 Discuss top papers found in the results section.
@@ -472,12 +483,14 @@ findings we found from this analysis are:
 
 \subsection{Topic Analysis}
 
-The LDA topic extraction resulted in 8 different topics, and the distribution
-of topics is shown in Figure~\ref{fig:lda_topics_sankey}. The main topics
-within which most articles were included is topic 5, is defined by the
-main theoretical keywords related to image data augmentation. Rather, the
-secondary topic is more useful for this analysis. It is found based on each
-document's compatibility with the topic, excluding the most likely topic.
+The LDA topic extraction resulted in 8 different topics, whose distribution of
+topics is shown in Figure~\ref{fig:lda_topics_sankey}. The main topics within
+which most articles were included is topic 5, which is defined by the main
+theoretical keywords related to image data augmentation. Rather, the secondary
+topic is more useful for this analysis. It is found based on the topic
+likelihood of each document, excluding the dominant topic. Documents belonging
+to the same group across primary, secondary and/or tertiary topics had a
+likelihood of zero of belonging to any other topic.
 
 \begin{figure}[H]
 	\centering
@@ -493,7 +506,62 @@ The topics found in the bibliometric data are shown in
 Table~\ref{tab:topic_analysis}. A few topics seem to overlap each other,
 although they are generally distinguishable. The primary domains of
 application of data augmentation methods differ for each different topic
-identified.
+identified:
+
+\begin{enumerate}
+    \item Documents in Topic 1 frequently use the word ``yolov'', which refers
+        to the YOLOvX family of deep learning object detection
+        models~\cite{Redmon2015}, where X refers to the version of the model
+        used (the most recent version is 5). Another relevant keyword is
+        ``style\_transfer'', which refers to a specific technique of data
+        augmentation (see Section~\ref{sec:theory}).
+
+        This topic has two primary domains of application. The keywords
+        ``pest'' and ``coffe'' refer to data augmentation on agriculture
+        research. The keywords ``biomed'', ``histolog'' and ``nodul'' refer to
+        biomedical applications such as pulmonary nodule detection and
+        histology image classification. Within these topics, a few
+        domain-specific data augmentation algorithms were proposed. For
+        example, in~\cite{Cicalese2020} the authors propose a style-transfer
+        data augmentation method for histology image classification.  
+
+    \item Documents in Topic 2 are primarily associated to the study of
+        applications that include image data augmentation. The dominant
+        keyword, ``hyperspectr\_imag'', refers to the application of data
+        augmentation on hyperspectral images, commonly used in remote sensing
+        and medicine. Other classification tasks include license plate
+        detection (``licens\_plate''), inpainting (``inpaint''), background
+        subtraction (``illumin\_chang'') and cloud shadow
+        detection/segmentation (``shadow'').
+    
+    \item Documents in topic 3 refer to the application of data augmentation
+        to deal with censored data (a condition in which the value of an
+        observation is only partially known) and/or supervised tasks on data
+        structured as graphs. Other domains of application involve chest
+        x-rays classification (``cxr''), epidemiology (``risk\_factor'') and
+        few audio/music information retrieval (``sourc\_separ'') articles.
+
+    \item Documents in topic 4 refer to the application of data augmentation
+        methods on object detection tasks. Specifically fire and smoke,
+        pedestrians and crowd counting. Other applications within this topic
+        are focused on speech recognition and angiography
+        segmentation/classification.
+
+    \item Documents in topic 5 are focused on image segmentation
+        and classification methods where data augmentation algorithms are
+        involved. It includes common keywords present in a large set of
+        articles. These articles are mainly focused on the development of
+        different convolutional neural network architectures (``cnn'') and
+        neural network-based data augmentation methods.
+
+    \item Documents in topic 6 are focused on Bayesian-based algorithms and
+        Markov Chain algorithms.
+
+    \item Documents in topic 7 
+
+    \item Documents in topic 8
+
+\end{enumerate}
 
 \begin{table}[H]
     \centering
