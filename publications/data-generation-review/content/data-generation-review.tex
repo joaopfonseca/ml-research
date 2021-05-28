@@ -62,17 +62,13 @@ What is it used for?
 
 Jürgen Schmidhuber's group shows that a simple MLP architecture can achieve
 state-of-the-art performance on computer vision benchmarks given strong enough
-data augmentation [1,2].
-
-[1] Better digit recognition with a committee of simple Neural Nets. Meier,
-Cires, Gambardella and Schmidhuber 2011 [PDF]
-
-[2] Handwritten Digit Recognition with a Committee of DeepNeural Nets on GPUs.
-Ciresan, Meier, Gambardella and Schmidhuber 2011 [PDF]
+data augmentation~\cite{Meier2011, Ciresan2011}.
 
 But that was 10 years ago, what about now?
 
-Discuss the importance of those two Google Brain research papers.
+Discuss the importance of those two Google Brain research
+papers~\cite{Tolstikhin2021, Liu2021} and related Facebook research
+paper~\cite{Touvron2021}.
 
 Research on data augmentation methods has gained significant popularity in
 recent years. As such, there were some efforts in the past to establish a
@@ -96,6 +92,8 @@ Heuristic data augmentation algorithms
 Neural Network-based algorithms
 
 Other types of algorithms, like bayesian-based approaches?
+
+Random erasing~\cite{Zhong2017}
 
 \section{Methodology}
 
@@ -467,7 +465,7 @@ findings we found from this analysis are:
         methods applied to specific domains. Specifically, the usage of
         temporal-dynamic neural network architectures with ``eeg
         (electroencephalogram)'', music information retrieval applications
-        (e.g., ``chord recognition''), speech/speaker recognition and
+        (e.g., ``chord recognition''), speech/ speaker recognition and
         embedding, time series forecasting of diabetes and natural language
         processing and text classification.
 \end{enumerate}
@@ -555,12 +553,19 @@ identified:
         neural network-based data augmentation methods.
 
     \item Documents in topic 6 are focused on Bayesian-based algorithms and
-        Markov Chain algorithms.
+        Markov Chain algorithms. This topic includes data augmentation on
+        regression tasks and misclassification detection.
 
-    \item Documents in topic 7 
+    \item Documents in topic 7 covers the application of data augmentation
+        into various domains. Specifically, music information retrieval
+        (``music''), fish/marine organisms recognition, gender bias, speech
+        recognition, random erasing 
 
-    \item Documents in topic 8
-
+    \item Documents in topic 8 contains remote sensing and biomedicine as the
+        primary research domains. The keywords ``drone'' and ``aircraft''
+        refer to the sources of data collected for remote sensing work,
+        whereas ``pneumonia'' and ``chest\_rai\_imag'' refers to biomedicine
+        research topics/image data.
 \end{enumerate}
 
 \begin{table}[H]
@@ -598,34 +603,104 @@ while topic 1 saw a significant growth in popularity.
     }~\label{fig:topics_per_year}
 \end{figure}
 
-% \subsection{Abstract embeddings}
-% 
-% The document embeddings shown in Figure~\ref{fig:umap_lda_topics} allow the
-% analysis of the abstract similarities within the collected documents. Two
-% major clusters were found, the larger one containing the more recent research
-% papers, and the smaller one containing most of the articles related to topic
-% 6, most of which written over 5 years ago. 
-% 
-% \begin{figure}[H]
-% 	\centering
-%     \includegraphics[width=\linewidth]{../analysis/umap_lda_topics}
-%     \caption{Document embeddings discriminated by LDA topic.
-%     }~\label{fig:umap_lda_topics}
-% \end{figure}
-
-\subsection{Research Question Discussion}
-
-
 \subsection{Research Gap Discussion}
 
+Data augmentation mechanisms are often used as regularization methods for
+deep learning classifiers. The study of data augmentation mechanisms in
+ensembles of simple classifiers have achieved state-of-the-art performance not
+only 10 years ago~\cite{Meier2011, Ciresan2011}, but also when compared to
+modern deep learning architectures~\cite{Tolstikhin2021, Touvron2021,
+Liu2021}. However, the implementation of different data augmentation methods
+shows a promising path to improve the performance of simple classifiers
+(and/or recent ensemble architectures) and requires further research.
+
+A research application that was not frequently found in the literature was
+small dataset augmentation. This is particularly useful for any complex
+problem when the amount of labeled data available to use as training data is
+scarce, which limits the usage of classification algorithms and especially
+deep learning algorithms. In this context, techniques such as Active Learning
+can be used to annotate a small amount of data, while maximizing the
+classification performance~\cite{Su2020}. However, classifiers may not be
+capable of generalizing with small training datasets and the ability to
+reproduce and augment the labelled data available can further reduce
+annotation cost and allow the usage of data intensive classifiers.
+
+Another limitation found in the literature relates to the problem of
+initialization on network-based data augmentation methods. The same data
+augmentation algorithm trained with different initialization settings
+(different random seed or training subset) may lead to different model
+parameters and quality of the trained classifier.
+
+The rapid development of data augmentation algorithms raises additional open
+questions on how the data used and store for model training. Specifically, the
+lower data storage and processing power available to the general public
+(\textit{i.e.}, organizations and individuals) is a limitation for producing
+state-of-the-art classifiers. Another problem arises from data privacy
+concerns, since the usage of user data to train machine learning models
+typically involve the storage of such information. However, if data
+augmentation algorithms were continuously updated and capable of producing
+reliable data on an as-needed basis, not only would storage requirements
+decrease, but it would also become possible to work with fully artificial
+data, without the need to store as much data. This would also facilitate the
+sharing of datasets (in the form of an algorithm) without compromising
+sensitive data.
+
 \subsection{Study Limitation Discussion}
+
+The design of the search query was done based on a single keyword. Although
+this reduces possible bias, it may have been too broad and didn't include some
+significant research papers from related techniques such as oversampling. The
+design of the LDA analysis involved a significant amount of time spent on
+parameter tuning.  Although, due to the subjectivity of the subject, other
+configurations may be tested in order to optimize the results.
 
 \section{Conclusions}
 
 Depending on the domain of application, data augmentation research differs in
 the format of publication. On the one hand, domains like Statistics, Remote
 Sensing and Medical Imaging seem more active on journal publications,
-typically in journals with high impact factor. On the other hand, 
+typically in journals with high impact factor. On the other hand, research
+developed in the domains of computer vision, speech recognition, acoustic
+modelling, natural language processing and signal processing seem to attribute
+higher importance to conference papers. Many of the influential papers we found
+were focused on deep learning methods for classification, segmentation, sound
+and speech recognition and remote sensing.
+
+We analysed the different communities of keywords formed using document
+keywords, as well as topic analysis using a LDA analysis over the document's
+abstracts. We found various distinctive areas of research, both regarding the
+data augmentation methods used and the domain of application. We found that in
+recent years research on augmentation methods using Bayesian-based algorithms,
+as well as Markov Chain algorithms reduced its popularity, whereas data
+augmentation methods based on neural networks and deep learning classifiers
+have increased its popularity.
+
+Data augmentation is most commonly applied/studied in the realm of computer
+vision for tasks like image classification, segmentation, object detection
+inpainting and background subtraction tasks, even though it may be applied to
+many other data structures. It is frequently used in studies within the
+domains of biomedicine, agriculture, speech recognition, acoustic modelling,
+remote sensing and computational creativity. It is also used alongside other
+data preprocessing techniques, such as feature extraction and dimensionality
+reduction.
+
+Although data augmentation is a vibrant area of research, there are still
+significant gaps to be addressed. Data augmentation methods are increasingly
+used as regularization methods for deep learning. Although, recent research
+shows that the same can be done for simpler classifier configurations in order
+to achieve a classification performance comparable to that of state-of-the-art
+deep learning, which require further confirmation, as well as the development
+of less computational intensive data augmentation methods. Other less popular
+topics, such as small data augmentation, appear to have a relevant practical
+importance and require further research. In addition, other limitations of
+data augmentation algorithms should be addressed. One problem commonly found
+in the literature is the impact the weights initialization and training set
+used have in the quality of the trained algorithm. In the future, using data
+augmentation methods as a source of artificial datasets can address a variety
+of concerns, such as data privacy, sharing and storage. Finally, exploring
+data augmentation algorithms to complement or replace techniques such as
+Active Learning may reduce the cost of data collection, although it is yet to
+be explored.
 
 \bibliography{references}
 \bibliographystyle{ieeetr}
