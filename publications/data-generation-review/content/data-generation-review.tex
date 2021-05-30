@@ -54,48 +54,127 @@
 
 \maketitle
 
+\begin{abstract}
+    Over past years, researchers have developed complex deep learning
+    classifiers, which typically require a tremendous amount of data and
+    computational power to train. Although, these resources are not always
+    accessible to most organizations and/or practitioners.  Concurrently,
+    current and past research have shown that even simple classification
+    algorithms can reach state-of-the-art performance on computer vision tasks
+    given a robust method to artificially augment the training dataset.
+    Because of this, data augmentation became a popular topic in the past few
+    years, particularly among computer vision researchers. In this paper we
+    identify the main areas of application of data augmentation algorithms,
+    the main types of algorithms used, significant research trends and their
+    progression over time and research gaps in data augmentation literature.
+    This was done through using a network-based, text mining-based and
+    exploratory analysis of literature collected through the Scopus database.
+    We expect readers to understand the potential of data augmentation as well
+    as identify future research directions and open questions within data
+    augmentation research.
+\end{abstract}
+
 \section{Introduction}
 
-Why is data augmentation important?
+Machine Learning models are highly dependent on the quality of the training
+dataset used~\cite{Fenza2021}. The presence of imbalanced and/or small
+datasets, target labels incorrectly assigned, outliers and high dimensional
+input spaces may significantly reduce the prospects of a successful machine
+learning model implementation. Although the quality of all classifiers are
+affected by a small training dataset, Deep Learning classifiers are
+particularly sensitive to it. Depending on the complexity of the model, deep
+learning models show a high degree of performance variability even with large
+amounts of training data, particularly when the model is tested over a fully
+independent validation/test set~\cite{Hu2020}. Various problems contribute
+towards this performance variability, \textit{e.g.,} biased training dataset,
+varying conditions of data collection across test/train set and small
+training data.
 
-What is it used for?
+% Expand on the overfitting problem here and sources of problems in data
 
-Jürgen Schmidhuber's group shows that a simple MLP architecture can achieve
-state-of-the-art performance on computer vision benchmarks given strong enough
-data augmentation~\cite{Meier2011, Ciresan2011}.
+When the training set contains significant limitations, the trained model
+model runs into the problem of overfitting. There are different strategies to
+reduce overfitting, known as regularization methods, such as pruning, early
+stopping, dropout, batch normalization, transfer learning, pretraining,
+one-shot and zero-shot learning, and data augmentation~\cite{Shorten2019}. The
+later, data augmentation, are techniques used to increase the diversity of data
+in a training dataset through the production of artificial observations.
 
-But that was 10 years ago, what about now?
+% Define each regularization method carefully
+% 
+% \begin{enumerate}
+%     \item Dropout
+%     \item Batch normalization
+%     \item Transfer Learning
+%     \item Pretraining
+%     \item One-shot and Zero-shot learning
+%     \item Data Augmentation
+% \end{enumerate}
 
-Discuss the importance of those two Google Brain research
-papers~\cite{Tolstikhin2021, Liu2021} and related Facebook research
-paper~\cite{Touvron2021}.
+% What is it used for?
+
+Depending on the generative model used, data augmentation may be used to
+various types of problems and data. In 2011, Jürgen Schmidhuber's group showed
+that a MLP ensemble architecture can achieve state-of-the-art performance on
+computer vision benchmarks given strong enough data
+augmentation~\cite{Meier2011, Ciresan2011}. Although state-of-the-art research
+has progressed significantly since then, two recent papers developed by Google
+Brain and Facebook research teams show that Schmidhuber's group's findings
+still hold true. Specifically, in~\cite{Tolstikhin2021, Touvron2021} the
+authors discuss two similar MLP ensemble architectures, showing that the
+proposed model attains a comparable performance to convolutional neural
+networks and attention-based networks. Another recent study also discusses a
+related MLP architecture with similar findings, while suggesting that the
+strong performance of computer vision models may be attributable mainly to the
+inducive bias produced by the patch embedding and the carefully-curated
+set of training augmentations~\cite{Melaskyriazi2021}.
 
 Research on data augmentation methods has gained significant popularity in
 recent years. As such, there were some efforts in the past to establish a
 taxonomy and distinction of the different types of data augmentations
-methods~\cite{Shorten2019}, although outdated/incomplete.
+methods~\cite{Shorten2019}, although outdated/incomplete. The most cited
+literature review on data augmentation was focused on image data augmentation
+for deep learning in 2019~\cite{Shorten2019}. Since then, research on data
+augmentation methods have progressed significantly. In this paper we focus on
+current and past research trends of data augmentation methods, its different
+applications and use cases. This was done with an extensive analysis of the
+title, keywords and abstract of a large set of literature related to data
+augmentation, collected through the \href{https://www.scopus.com/}{Scopus}
+database. The analysis was done in three phases. We started by performing an
+exploratory data analysis to identify the most significant literature,
+journals and conferences within the field of data augmentation. Then, we
+analyse the articles' author keywords by constructing a network and extracting
+and identifying communities of keywords. Finally we used a text mining
+approach to extract additional applications and methods using the articles'
+abstracts, as well as validate the findings discussed with the keyword
+analysis.
 
-The most cited literature review on data augmentation was focused on image
-data augmentation for deep learning in 2019~\cite{Shorten2019}. Since then,
-research on data augmentation methods have progressed significantly. In this
-paper we focus on current and past research trends of data augmentation
-methods, its different applications and use cases.
+This paper is structured as follows: Section~\ref{sec:methodology} describes
+the procedures defined throughout the different analyses.
+Section~\ref{sec:results_discussion} presents and discusses the findings drawn
+from the analyses, as well as research gaps and open questions in data
+augmentation research. Section~\ref{sec:conclusion} summarizes the main
+findings discussed throughout the study.
 
-\section{Theory}~\label{sec:theory}
+% Develop Theory section later
 
-Discuss top papers found in the results section.
+% \section{Theory}~\label{sec:theory}
+% 
+% Add Taxonomy of generative models here
+%
+% Discuss top papers found in the results section.
+% 
+% Heuristic data augmentation algorithms
+% - Oversampling techniques
+% - Image classification techniques
+% 
+% Neural Network-based algorithms
+% 
+% Other types of algorithms, like bayesian-based approaches?
+% 
+% Random erasing~\cite{Zhong2017}
 
-Heuristic data augmentation algorithms
-- Oversampling techniques
-- Image classification techniques
-
-Neural Network-based algorithms
-
-Other types of algorithms, like bayesian-based approaches?
-
-Random erasing~\cite{Zhong2017}
-
-\section{Methodology}
+\section{Methodology}~\label{sec:methodology}
 
 In this section we describe the procedures defined for the literature
 collection, data preprocessing and literature analysis. The analysis of the
@@ -271,7 +350,7 @@ algorithms, analyses and results are provided in the
 \href{https://github.com/joaopfonseca/research}{GitHub repository of the
 project}.
 
-\section{Results \& Discussion}
+\section{Results \& Discussion}~\label{sec:results_discussion}
 
 The popularity of research in data generation has grown significantly in the
 past 5 years, as shown in Figure~\ref{fig:area_chart_cited_documents}. Despite
@@ -354,13 +433,13 @@ conference proceedings publications.
 \end{table}
 
 The papers with the highest citation count are listed in
-Table~\ref{tab:top_papers}. Most of these papers are also discussed in
-Section~\ref{sec:theory}. We found that much of the research focused on
-improving deep learning classification, segmentation or object detection
-without a focus on a particular domain of application. Other papers
-centered in the application of data augmentation methods for biomedical image
-classification and segmentation, sound and speech recognition and remote
-sensing. 
+Table~\ref{tab:top_papers}. 
+% Most of these papers are also discussed in Section~\ref{sec:theory}. 
+We found that much of the research focused on improving deep learning
+classification, segmentation or object detection without a focus on a
+particular domain of application. Other papers centered in the application of
+data augmentation methods for biomedical image classification and
+segmentation, sound and speech recognition and remote sensing. 
 
 \begin{table}[H]
     \centering
@@ -512,7 +591,7 @@ identified:
         models~\cite{Redmon2015}, where X refers to the version of the model
         used (the most recent version is 5). Another relevant keyword is
         ``style\_transfer'', which refers to a specific technique of data
-        augmentation (see Section~\ref{sec:theory}).
+        augmentation. % (see Section~\ref{sec:theory}).
 
         This topic has two primary domains of application. The keywords
         ``pest'' and ``coffe'' refer to data augmentation on agriculture
@@ -654,7 +733,7 @@ design of the LDA analysis involved a significant amount of time spent on
 parameter tuning.  Although, due to the subjectivity of the subject, other
 configurations may be tested in order to optimize the results.
 
-\section{Conclusions}
+\section{Conclusion}~\label{sec:conclusion}
 
 Depending on the domain of application, data augmentation research differs in
 the format of publication. On the one hand, domains like Statistics, Remote
