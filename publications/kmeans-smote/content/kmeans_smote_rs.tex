@@ -315,6 +315,21 @@ proposed methodology, section \ref{sec:results} covers the results and
 discussion and section \ref{sec:conclusion} presents the conclusions taken from
 this study.
 
+\added{This paper's main contributions are:}
+\begin{itemize}
+    \item \added{Propose a cluster-based multiclass oversampling method appropriate
+        for LULC classification and compare its performance with the remaining
+        oversamplers in a multiclass context with seven benchmark LULC
+        classification datasets. Allows us to check the oversamplers'
+        performance across benchmark LULC datasets.}
+    \item \added{Introducing a cluster-based oversampling algorithm within the remote
+        sensing domain, as well as comparing its performance with the remaining
+        oversamplers in a multiclass context.}
+    \item \added{Make available to the remote sensing community the implementation
+        of the algorithm in a Python library and the experiment's source
+        code.}
+\end{itemize}
+
 \section{Imbalanced Learning Approaches} \label{sec:sota}
 
 Imbalanced learning has been addressed in three different ways:
@@ -347,16 +362,16 @@ adaptations of Cross-entropy classification loss by adding different
 formulations of class rectification loss.
 
 Resampling (over/undersampling) is the most common approach to imbalanced
-learning addressing the problem through data resampling in machine learning in
-general and remote sensing in particular \citep{Feng2019}. The generation of
-artificial instances (i.e., augmenting the dataset), based on rare instances,
-is done independently of any other step in the learning process. Once the
-procedure is applied, any standard machine learning algorithm can be used. Its
-simplicity makes resampling strategies particularly appealing for any user
-(especially the non-sophisticated user) interested in applying several
-classifiers, while maintaining a simple approach.  It is also important to
-notice that over/undersampling methods can also be easily applied to
-multiclass problems, common in LULC classification tasks.
+learning \deleted{addressing the problem through data resampling} in machine
+learning in general and remote sensing in particular \citep{Feng2019}. The
+generation of artificial instances (i.e., augmenting the dataset), based on
+rare instances, is done independently of any other step in the learning
+process. Once the procedure is applied, any standard machine learning
+algorithm can be used. Its simplicity makes resampling strategies particularly
+appealing for any user (especially the non-sophisticated user) interested in
+applying several classifiers, while maintaining a simple approach. It is also
+important to notice that over/undersampling methods can also be easily applied
+to multiclass problems, common in LULC classification tasks.
 
 \subsection{Non-informed resampling methods}
 
@@ -557,18 +572,19 @@ ADASYN, B-SMOTE and G-SMOTE in a highly imbalanced LULC classification dataset.
 The authors found that G-SMOTE consistently outperformed the remaining
 oversampling algorithms regardless of the classifier used.
 
-This paper's main contributions are:
+\deleted{This paper's main contributions are:}
 \begin{itemize}
-    \item Propose a cluster-based multiclass oversampling method appropriate
+    \item \deleted{Propose a cluster-based multiclass oversampling method appropriate
         for LULC classification and compare its performance with the remaining
         oversamplers in a multiclass context with seven benchmark LULC
         classification datasets. Allows us to check the oversamplers'
-        performance across benchmark LULC datasets.
-    \item Introducing a cluster-based oversampling algorithm within the remote
+        performance across benchmark LULC datasets.}
+    \item \deleted{Introducing a cluster-based oversampling algorithm within the remote
         sensing domain, as well as comparing its performance with the remaining
-        oversamplers in a multiclass context.
-    \item Make available to the remote sensing community the implementation
-        of the algorithm in a Python library and the experiment's source code.
+        oversamplers in a multiclass context.}
+    \item \deleted{Make available to the remote sensing community the implementation
+        of the algorithm in a Python library and the experiment's source
+        code.}
 \end{itemize}
 
 \section{Methodology}\label{sec:methodology}
@@ -676,7 +692,8 @@ satellite over the Okavango Delta, Botswana in 2001-2004 at a 30m spatial
 resolution. Data preprocessing was performed by the UT Center for Space
 Research. The scene comprises a $1476 \times 256$ pixels with 145 bands and 14
 classes regarding land cover types in seasonal and occasional swamps, as well
-as drier woodlands (see figure~\ref{fig:botswana}).
+as drier woodlands (see Figure~\ref{fig:botswana}). \added{The classes with
+rare instances are Short mopane and Hippo grass.}
 
 \subsubsection*{Pavia Center and University}
 
@@ -686,7 +703,9 @@ These scenes are located in Pavia, northern Italy. Pavia Center is a $1096
 a $610 \times 610$ pixels image with 103 spectral bands. Both images have a
 geometrical resolution of 1.3m and their ground truths are
 composed of 9 classes each (see Figures~\ref{fig:pavia_center}
-and~\ref{fig:pavia_university}).
+and~\ref{fig:pavia_university}). \added{After data preprocessing, the classes
+with rare instances are Asphalt and Bitumen (the class Shadows was removed for
+being too rare for cross validation after random sampling).}
 
 \subsubsection*{Kennedy Space Center}
 
@@ -695,7 +714,10 @@ Kennedy Space Center, Florida, on March 23, 1996. Out of the original 224
 bands, water absorption and low SNR bands were removed and a total of 176
 bands at a spatial resolution of 18m are used. The scene is a $512 \times 614$
 pixel image and contains a total of 16 classes (see
-figure~\ref{fig:kennedy_space_center}).
+figure~\ref{fig:kennedy_space_center}). \added{The classes with rare instances
+are hardwood swamp, slash pine and willow swamp (both hardwood swamp and slash
+pine were removed for being too rare for cross validation after random
+sampling).}
 
 \subsubsection*{Salinas and Salinas-A}
 
@@ -705,7 +727,9 @@ pixels image with 224 bands and 16 classes regarding vegetables, bare soil and
 vineyard fields (see Figure~\ref{fig:salinas}). Salinas-A, a subscene of
 Salinas, comprises $86 \times 83$ pixels and contains 6 classes regarding
 vegetables (see Figure~\ref{fig:salinas_a}). These scenes have a geometrical
-resolution of 3.7m.
+resolution of 3.7m. \added{Salinas-A's minority class has the label
+``Brocoli\_green\_weeds\_1'' and Salina's minority class has the label
+``Lettuce\_romaine\_6wk''}
 
 \subsubsection*{Indian Pines} 
 
@@ -717,8 +741,13 @@ and 220 spectral reflectance bands in the wavelength range 400 to 2500
 nanometers at a spatial resolution of 20m. Approximately two thirds of
 this scene is composed by agriculture and the other third is composed of
 forest and other natural perennial vegetation. Additionally, the scene also
-contains low density buildup areas.
+contains low density buildup areas. \added{The classes with rare instances are
+Alfalfa, Oats, Grass-pasture-mowed, Wheat and Stone-Steel-Towers (which
+removed for being too rare for cross validation after random sampling).  After
+data preprocessing, the classes with rare instances are Corn,
+Buildings-Grass-Trees-Drives and Grass-Pasture.}
 
+\pagebreak
 \end{paracol}
 \begin{figure}[H]
 	\centering
@@ -789,7 +818,11 @@ To assess the performance of each oversampler, we use the classifiers Logistic
 Regression (LR) \citep{Nelder1972}, K-Nearest Neighbors (KNN)
 \citep{Cover1967} and Random Forest (RF)
 \citep{Liaw2002}. This choice was based on the classifiers' popularity for LULC
-classification, learning type and training time \citep{Maxwell2018,Gavade2019}.
+classification, learning type and training time
+\citep{Maxwell2018,Gavade2019}. \added{Since this is a multinomial classification
+task, for the LR classification we adopted a one-versus-all approach for each
+label. The predicted label is assigned according to the class predicted with
+highest probability.}
 
 \subsection{Evaluation Metrics}~\label{sec:evaluation-metrics}
 
@@ -845,6 +878,13 @@ and 3) \textit{Overall Accuracy}, for discussion purposes.
 			      \sum\limits_{c}{ (\text{TP}_{c}  + \text{FP}_{c}) } } $$
 
 \end{itemize}
+
+\added{
+In the case of \textit{G-mean} and \textit{F-score}, both metrics are computed
+for each label and their unweighted mean is calculated (\textit{i.e.},
+following a ``macro'' approach). In this study we assume that all labels
+have an equivalent importance for the classification task.
+}
 
 \subsection{Experimental Procedure}
 
@@ -944,32 +984,39 @@ The rank values are assigned based on the mean validation scores resulting
 from the experiment described in Section~\ref{sec:methodology}. The averaged
 ranking results are computed over 3 different initialization seeds and a 5
 fold cross validation scheme, returning a real number within the interval
-$[1,5]$. The mean rankings are presented in Table~\ref{tab:mean_sem_ranking}.
+$[1,5]$. \deleted{The mean rankings are presented in
+Table~\ref{fig:mean_sem_ranking}.}
+
+\added{
+The hyperparameter optimization ensures that both oversamplers and classifiers
+are well adapted to each of the datasets used in the experiment. Specifically,
+the optimization of classifiers' hyperparameters is not particularly relevant
+since our focus is to study the relative performance scores across
+oversamplers. This will provide insights on the quality of the artificial data
+generated by each oversampler. The classifiers' hyperparameter tuning was done
+to avoid the over/underfitting of classifiers, since they are trained on the same
+data subsets along with artificial data generated with different methods.
+}
 
 \subsection{Results}
 
 The mean ranking of oversamplers is presented in
-Table~\ref{tab:mean_sem_ranking}. This ranking was computed by averaging the
+\replaced{Figure}{Table}~\ref{fig:mean_sem_ranking}. This ranking was computed by averaging the
 ranks of the mean cross-validation scores per dataset, oversampler and
 classifier. K-means SMOTE achieves the best mean ranking across datasets with
 low standard deviation.
 
+
 \end{paracol}
-\captionsetup{justification=centering}
-\pgfplotstabletypeset[
-	begin table=\begin{longtable},
-	end table=\end{longtable},
-	col sep=comma,
-	header=true,
-	columns={Classifier,Metric,NONE,ROS,SMOTE,B-SMOTE,K-SMOTE}, 
-    string type,
-    every head row/.style={before row={
-    \caption{
+\begin{figure}[ht]
+    \widefigure
+    \captionsetup{justification=centering}
+	\caption{
     	Results for mean ranking of oversamplers across datasets.
-    }\label{tab:mean_sem_ranking}\\
-    \toprule}, after row=\midrule\endhead},
-	every last row/.style={after row=\bottomrule}
-]{../analysis/mean_sem_ranking.csv}
+    \vspace{.2cm}}
+	\label{fig:mean_sem_ranking}
+	\includegraphics[width=.65\linewidth]{../analysis/mean_rankings_bar_chart}
+\end{figure}
 \begin{paracol}{2}
 \linenumbers
 \switchcolumn
@@ -999,31 +1046,8 @@ across datasets makes the analysis of these scores less informative.
 \switchcolumn
 
 The mean cross-validation scores for each dataset are presented in
-Table~\ref{tab:cross_validation_scores}. This table allows the direct
+Table~\ref{tab:cross_validation_scores} \added{(see appendix)}. This table allows the direct
 comparison of the performance metrics being analysed.
-
-\end{paracol}
-\captionsetup{justification=centering}
-\pgfplotstabletypeset[
-	begin table=\begin{longtable},
-	end table=\end{longtable},
-	col sep=comma,
-	header=true,
-	columns={Dataset,Classifier,Metric,NONE,ROS,SMOTE,B-SMOTE,K-SMOTE}, 
-    string type,
-    every head row/.style={before row={
-            \caption{Mean cross-validation scores 
-            for each dataset.  Legend: IP - Indian Pines, KSC - Kennedy
-            Space Center, PC - Pavia Center, PU - Pavia University, SA -
-            Salinas A.
-        }\label{tab:cross_validation_scores}\\
-    \toprule}, after row=\midrule\endhead},
-	every last row/.style={after row=\bottomrule}
-]
-{../analysis/wide_optimal.csv}
-\begin{paracol}{2}
-\linenumbers
-\switchcolumn
 
 \subsection{Statistical Analysis}~\label{sec:statistical_analysis}
 
@@ -1054,13 +1078,14 @@ random, in other words, these differences are statistically significant.
 
 A Wilcoxon signed-rank test \citep{wilcoxon1992} was also performed to
 understand whether K-means SMOTE's superiority was statistically significant
-across datasets and oversamplers, as suggested in \citep{Demsar2006}. This
+across datasets and oversamplers, as suggested in \citep{demvsar2006}. This
 method is used as an alternative to the paired Student's t-test, since the
 distribution of the differences between the two samples cannot be assumed as
 normally distributed. The null hypothesis of the test is that K-means SMOTE's
 performance is similar to the compared oversampler (i.e., the oversamplers
 used follow a symmetric distribution around zero).
 
+\pagebreak
 \end{paracol}
 \begin{table}[H]
     \caption{
@@ -1081,13 +1106,14 @@ used follow a symmetric distribution around zero).
 
 \subsection{Discussion}
 
-The mean rankings presented in Table~\ref{tab:mean_sem_ranking} show that on
-average, K-means SMOTE produced the best results for every classifier and
-performance metric used. This is due to the clustering phase and subsequent
-selection of data to be considered for oversampling. By successfully
-clustering and selecting the relevant areas in the data space to oversample,
-the generation of artificial instances is done only in the context of minority
-regions that represent well their spectral signature.
+The mean rankings presented in
+\replaced{Figure}{Table}~\ref{fig:mean_sem_ranking} show that on average,
+K-means SMOTE produced the best results for every classifier and performance
+metric used. This is due to the clustering phase and subsequent selection of
+data to be considered for oversampling. By successfully clustering and
+selecting the relevant areas in the data space to oversample, the generation
+of artificial instances is done only in the context of minority regions that
+represent well their spectral signature.
 
 As previously discussed, the direct comparison of performance metrics averaged
 over various datasets is not recommended due to the varying levels of
@@ -1097,18 +1123,18 @@ picture of the results obtained in the experiment. We found that on average
 K-means SMOTE provides increased performance, regardless of the classifier and
 performance metric used. More importantly, K-means SMOTE guaranteed a more
 consistent performance across datasets and with less variability, which can be
-attested in Tables~\ref{tab:mean_sem_ranking},~\ref{tab:mean_sem_scores}
-and~\ref{tab:cross_validation_scores}. 
+attested in \replaced{Figure}{Table}~\ref{fig:mean_sem_ranking} and
+Tables~\ref{tab:mean_sem_scores} and~\ref{tab:cross_validation_scores}.
 
 As discussed in Subsection~\ref{sec:evaluation-metrics}, Evaluation Metrics,
 our results are consistent with the findings in~\citep{Olofsson2013,
 Pontius2011}. Particularly, we consider the results obtained in our experiment
 using Overall Accuracy to be less informative than the results obtained with
 the remaining performance metrics, since this metric is affected by imbalanced
-class distributions. The majority class bias in this metric can be observed
-in our experiment in Table~\ref{tab:mean_sem_ranking} with the classifiers LR
-and KNN, where the control method (NONE) is only outperformed by K-means
-SMOTE. This effect is observed with more detail in
+class distributions. The majority class bias in this metric can be observed in
+our experiment in \replaced{Figure}{Table}~\ref{fig:mean_sem_ranking} with the
+classifiers LR and KNN, where the control method (NONE) is only outperformed
+by K-means SMOTE. This effect is observed with more detail in
 Table~\ref{tab:mean_sem_scores}, where the benchmark oversamplers are
 outperformed by the control method in 16 out of 63 tests (approximately 25\%).
 Out of these, most refer to tests using overall accuracy among the four
@@ -1243,5 +1269,29 @@ for both remote sensing researchers and practitioners.
 \reftitle{References}
 \externalbibliography{yes}
 \bibliography{references}
+\begin{paracol}{2}
+\linenumbers
+\switchcolumn
+\pagebreak
+\section{Appendix}
 
+\end{paracol}
+\captionsetup{justification=centering}
+\pgfplotstabletypeset[
+	begin table=\begin{longtable},
+	end table=\end{longtable},
+	col sep=comma,
+	header=true,
+	columns={Dataset,Classifier,Metric,NONE,ROS,SMOTE,B-SMOTE,K-SMOTE}, 
+    string type,
+    every head row/.style={before row={
+            \caption{Mean cross-validation scores 
+            for each dataset.  Legend: IP - Indian Pines, KSC - Kennedy
+            Space Center, PC - Pavia Center, PU - Pavia University, SA -
+            Salinas A.
+        }\label{tab:cross_validation_scores}\\
+    \toprule}, after row=\midrule\endhead},
+	every last row/.style={after row=\bottomrule}
+]
+{../analysis/wide_optimal.csv}
 \end{document}

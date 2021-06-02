@@ -273,22 +273,29 @@ def make_mean_rank_bar_chart():
 
     load_plt_sns_configs()
 
-    ranks = calculate_mean_sem_ranking(results)[0]
-    ranks['Metric'] = ranks['Metric'].apply(lambda x: METRICS_MAPPING[x])
+    ranks, sem = calculate_mean_sem_ranking(results)
+
+    for rs in (ranks, sem):
+        rs['Metric'] = rs['Metric'].apply(lambda x: METRICS_MAPPING[x])
+
     fig, axes = plt.subplots(
-        ranks.Classifier.unique().shape[0],
-        ranks.Metric.unique().shape[0],
+        rs.Classifier.unique().shape[0],
+        rs.Metric.unique().shape[0],
         figsize=(5,6)
     )
+
     lranks = ranks.set_index(['Classifier', 'Metric'])
+    lsem = sem.set_index(['Classifier', 'Metric'])
     for (row, clf), (col, metric) in product(
             enumerate(ranks.Classifier.unique()),
             enumerate(ranks.Metric.unique())
     ):
         dat = len(OVRS_NAMES) - lranks.loc[(clf,metric)].loc[list(OVRS_NAMES[::-1])]
+        err = lsem.loc[(clf,metric)].loc[list(OVRS_NAMES[::-1])]
         axes[row, col].bar(
             dat.index,
             dat.values,
+            yerr=err,
             color=['indianred']+['steelblue' for i in range(len(OVRS_NAMES)-1)]
         )
         plt.sca(axes[row, col])
@@ -379,6 +386,7 @@ def plot_lulc_images():
             )
             plt.axis('off')
         plt.savefig(join(analysis_path, figname), bbox_inches='tight', pad_inches = 0)
+        plt.close()
 
 def make_resampling_example():
     def create_dataset(n_samples=100, weights=(.05, .95), n_classes=2,
@@ -432,6 +440,7 @@ def make_resampling_example():
         bbox_inches='tight',
         pad_inches = 0
     )
+    plt.close()
 
 if __name__=='__main__':
 
