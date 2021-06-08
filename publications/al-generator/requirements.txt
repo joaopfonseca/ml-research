@@ -1,4 +1,4 @@
--e git+https://github.com/joaopfonseca/research.git@8c9f6a5b93c24ddc21f4f9db8f775176f4b80538#egg=research
+git+https://github.com/joaopfonseca/research.git@4e609ae31148d44c11a4aa64ce029e23e4c33cad#egg=research
 
 alabaster==0.7.12
 awscli==1.18.219
