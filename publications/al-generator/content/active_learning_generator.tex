@@ -30,6 +30,18 @@
 \usepackage{tabu}
 \usepackage{hyperref}
 
+% Used to track changes. Can be deleted once the revision process is over.
+% commands:
+% \added
+% \deleted
+% \replaced
+\usepackage{changes}
+
+\makeatletter
+\@namedef{Changes@AuthorColor}{red}
+\colorlet{Changes@Color}{red}
+\makeatother
+
 \Title{
     Increasing the Effectiveness of Active Learning: Introducing Artificial
     Data Generation in Active Learning for Land Use/Land Cover Classification
@@ -308,14 +320,33 @@ different initializations~\cite{Kottke2017}. There are two factors involved in
 this phenomenon. On one hand, the implementation of the same method over
 different initializations may result in significantly different initial
 training samples, amounts to varying accuracy curves. On the other hand, the
-lack of a robust selection criterion and/or chooser may also result in
-inconsistencies across AL experiments with different initializations. This
-phenomenon was observed and documented in a LULC classification context
-in~\cite{tuia2011using}.
+lack of a robust selection criterion and/or \replaced{classifier}{chooser} may
+also result in inconsistencies across AL experiments with different
+initializations. This phenomenon was observed and documented in a LULC
+classification context in~\cite{tuia2011using}.
+
+\added{
+The classification method plays a central role in the efficacy of AL. The
+classifier used should be able to generalise with a relatively small training
+dataset. Specifically, deep learning models are used in image classification
+due to its capability of producing high quality predictions. Although, to make
+such models generalizable the training set must be large enough, making its
+suitability for AL applications an open challenge~\cite{Cao2020, Wu2020,
+Bi2019}. Some studies in the Remote Sensing domain were developed to address
+this gap. In~\cite{Cao2020, Bi2019}, the authors propose a deep learning-based
+AL approach by training the same Convolutional Neural Network incrementally
+across iterations and smoothen the decision boundaries of the model using the
+Markov Random Field model and a Best-versus-Second Best labelling approach.
+This allows the introduction of additional data variability in the final
+training dataset. Another study~\cite{Wu2020} combined transfer learning,
+active classification and segmentation techniques for vehicle detection. By
+combining different techniques, they were able to produce a classification
+mechanism that performed well when the amount of training data is limited.
+}
 
 Selecting an efficient selection criterion is particularly important to find
 the instances closest to the decision border (\textit{i.e.}, instances
-difficult to classify)~\cite{Shrivastava2021}. Therefore, most of AL related
+difficult to classify)~\cite{Shrivastava2021}. Therefore, many AL related
 studies focus on the design of the query/acquisition function~\cite{Su2020}.
 
 \subsection{Non-informed selection criteria}
@@ -425,66 +456,6 @@ improvement of AL through modifications on the selection criterion and
 classifiers used. None of these publications proposed significant variations
 to the original AL framework.
 
-\section{Proposed method}~\label{sec:proposed-method}
-
-Within the literature identified, most of the work developed in the AL domain
-revolved around improving the quality of classification algorithms and/or
-selection criteria. Although these methods allow earlier convergence of the
-AL iterative process, the impact of these methods are only observed between
-iterations. Consequently, none of these contributions focused on the
-definition of decision borders within iterations. The method proposed in this
-paper modifies the AL framework by introducing an artificial data generation
-step within AL's iterative process. We define this component as the generator
-and is intended to be integrated into the AL framework as shown in
-Figure~\ref{fig:al_new}. 
-
-This modification, by using a new source of data to augment the training set,
-leverages the data annotation work conducted by the human operator. The
-artificial data that is generated between iterations reduces the amount of
-labeled data required to reach optimal performance and lower the amount of
-human labor required to train a classifier to its optimal performance. This
-process lowers the annotation and overall training costs by translating some
-of the annotation cost into computational cost.
-
-\begin{figure}[htb]
-	\centering
-	\includegraphics[width=\linewidth]{../analysis/al_new}
-    \caption{Proposed AL framework. The data generation mechanism is
-        represented as the generator (marked with~\textit{C}), which is used to add artificial
-        instances to the data generation phase. The remaining steps are left
-        unchanged.
-    }~\label{fig:al_new}
-\end{figure}
-
-This method leverages the capability of artificial data to introduce more data
-variability into the augmented dataset and facilitate the chooser's training
-phase with a more consistent definition of the decision boundaries at each
-iteration. Therefore, any algorithm capable of producing artificial data, be
-it agnostic or specific to the domain, can be employed. The artificial data is
-only used to train the classifiers involved in the process and is discarded
-once the training phase is completed. The remaining steps in the AL framework
-remain unchanged. This method addresses the limitations found in the previous
-sections:
-
-\begin{enumerate}
-    \item The convergence of classification performance should be anticipated
-        with the clearer definition of the decision boundaries across
-        iterations.
-    \item Annotation cost is expected to reduce as the need for labeled
-        instances reduces along with the early convergence of the
-        classification performance.
-    \item The class imbalance bias observed in typical classification tasks, as
-        well as in AL is mitigated by balancing the class frequencies at each
-        iteration.
-\end{enumerate}
-
-Although the performance of this method is shown within a LULC classification
-context, the proposed framework is independent from the domain. The high
-dimensionality of remotely sensed imagery make its classification particularly
-challenging when the availability of labeled data is scarce and/or comes at a
-high cost, being subjected to the curse of dimensionality. Consequently, it is
-a relevant and appropriate domain to test this method.
-
 \section{Artificial Data Generation Approaches}~\label{sec:ovs-sota}
 
 The generation of artificial data is a common approach to address imbalanced
@@ -536,6 +507,69 @@ classification tasks, regardless of the classifier sed~\cite{Douzas2019class}.
         $\protect\overrightarrow{z}$.
     }~\label{fig:data_generation}
 \end{figure}
+
+\section{Proposed method}~\label{sec:proposed-method}
+
+Within the literature identified, most of the work developed in the AL domain
+revolved around improving the quality of classification algorithms and/or
+selection criteria. Although these methods allow earlier convergence of the
+AL iterative process, the impact of these methods are only observed between
+iterations. Consequently, none of these contributions focused on the
+definition of decision borders within iterations. The method proposed in this
+paper modifies the AL framework by introducing an artificial data generation
+step within AL's iterative process. We define this component as the generator
+and is intended to be integrated into the AL framework as shown in
+Figure~\ref{fig:al_new}. 
+
+This modification, by using a new source of data to augment the training set,
+leverages the data annotation work conducted by the human operator. The
+artificial data that is generated between iterations reduces the amount of
+labeled data required to reach optimal performance and lower the amount of
+human labor required to train a classifier to its optimal performance. This
+process lowers the annotation and overall training costs by translating some
+of the annotation cost into computational cost.
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=\linewidth]{../analysis/al_new}
+    \caption{
+        Proposed AL framework. \added{This paper's contribution, }the data
+        generation mechanism, is represented as the generator (marked
+        with~\textit{C}), which is used to add artificial instances to the
+        data generation phase. \deleted{The remaining steps are left
+        unchanged.}
+    }~\label{fig:al_new}
+\end{figure}
+
+This method leverages the capability of artificial data to introduce more data
+variability into the augmented dataset and facilitate the chooser's training
+phase with a more consistent definition of the decision boundaries at each
+iteration. Therefore, any algorithm capable of producing artificial data, be
+it agnostic or specific to the domain, can be employed. The artificial data is
+only used to train the classifiers involved in the process and is discarded
+once the training phase is completed. The remaining steps in the AL framework
+remain unchanged. This method addresses the limitations found in the previous
+sections:
+
+\begin{enumerate}
+    \item The convergence of classification performance should be anticipated
+        with the clearer definition of the decision boundaries across
+        iterations.
+    \item Annotation cost is expected to reduce as the need for labeled
+        instances reduces along with the early convergence of the
+        classification performance.
+    \item The class imbalance bias observed in typical classification tasks, as
+        well as in AL is mitigated by balancing the class frequencies at each
+        iteration.
+\end{enumerate}
+
+Although the performance of this method is shown within a LULC classification
+context, the proposed framework is independent from the domain. The high
+dimensionality of remotely sensed imagery make its classification particularly
+challenging when the availability of labeled data is scarce and/or comes at a
+high cost, being subjected to the curse of dimensionality. Consequently, it is
+a relevant and appropriate domain to test this method.
+
 
 \section{Methodology}~\label{sec:methodology}
 
