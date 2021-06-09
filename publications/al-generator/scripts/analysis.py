@@ -571,19 +571,6 @@ def generate_dur_visualization(wide_optimal_al):
             }
         )
 
-        err_fills = dur_std.loc[(clf, metric)].T
-        for col_ in err_fills.columns:
-            ax.fill_between(
-                err_fills.index,
-                (dur_mean.loc[(clf, metric, col_)].T - err_fills[col_]),
-                (dur_mean.loc[(clf, metric, col_)].T + err_fills[col_]),
-                alpha=0.1,
-                color={
-                    'Standard': 'indianred',
-                    'Proposed': 'steelblue'
-                }[col_]
-            )
-
         ax.set_ylabel(clf)
         ax.set_ylim(
             bottom=(

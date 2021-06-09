@@ -541,11 +541,12 @@ of the annotation cost into computational cost.
 	\centering
 	\includegraphics[width=\linewidth]{../analysis/al_new}
     \caption{
-        Proposed AL framework. \added{This paper's contribution, }the data
-        generation mechanism, is represented as the generator (marked
-        with~\textit{C}), which is used to add artificial instances to the
-        data generation phase. \deleted{The remaining steps are left
-        unchanged.}
+        Proposed AL framework. \added{This paper's contribution, comprises a
+        change in the AL framework through the introduction of a data
+        generation mechanism, } \deleted{the data generation mechanism, is}
+        represented as the generator (marked with~\textit{C}), which is used
+        to add artificial instances to the \replaced{training dataset. }{data
+        generation phase.} \deleted{The remaining steps are left unchanged.}
     }~\label{fig:al_new}
 \end{figure}
 
@@ -612,7 +613,7 @@ classification scores. Consequently, demonstrating an outperforming method in
 this context is particularly challenging and valuable.
 
 \end{paracol}
-\begin{table}
+\begin{table}[H]
     \centering
     \pgfplotstabletypeset[
     	begin table=\begin{longtable},
@@ -653,11 +654,10 @@ the distal portion of the Delta (see Figure~\ref{fig:scenes}f). The Kennedy
 Space Center scene contains a ground truth composed of both vegetation and
 urban-related coverage (see Figure~\ref{fig:scenes}g).
 
-\pagebreak
 \end{paracol}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.51\linewidth]{../analysis/scenes}
+	\includegraphics[width=.85\linewidth]{../analysis/scenes}
     \caption{Gray scale visualization of a band (top row) and ground truth
         (bottom row) of each scene used in this study. (a) Indian Pines, (b)
         Pavia Centre, (c) Pavia University, (d) Salinas, (e) Salinas A, (f)
@@ -681,7 +681,7 @@ frameworks. In this context, a fixed number of instances per dataset is
 especially important to standardize the AL-related performance metrics.
 
 \end{paracol}
-\begin{table}
+\begin{table}[H]
     \centering
     \addtolength{\leftskip} {-2cm}
     \addtolength{\rightskip}{-2cm}
@@ -985,11 +985,12 @@ by the different AL configurations to reach that specific G-mean score.
 \added{
 
 The DUR of the proposed method relative to the baseline method is shown in
-Figure~\ref{fig:dur}. A DUR above 1 means that the proposed framework requires
-that much percentage of extra data (when compared to the baseline framework)
-to reach that given performance threshold. Inversely, a DUR below 1 means that
-the proposed framework requires that much less data (as a percentage, relative
-to the amount of data required by the baseline framework).
+Figure~\ref{fig:dur}. A DUR below 1 means that the proposed framework requires
+less data to reach the same performance threshold (as a percentage, relative
+to the amount of data required by the baseline framework). For instance, in the
+upper left graphic we can see that the proposed framework achieves 90\%
+classification using F-score while using 91\% of the amount of data used by the
+traditional AL framework, in other words 9\% less data.
 
 \begin{figure}[H]
 	\centering
@@ -1008,7 +1009,7 @@ Table~\ref{tab:optimal_mean_std_scores}. The maximum performance (MP)
 classification scores are shown as a benchmark and represent the performance
 of the corresponding classifier using the entire training set. 
 
-\begin{table}[htb]
+\begin{table}[H]
     \centering
     \addtolength{\leftskip} {-2cm}
     \addtolength{\rightskip}{-2cm}
