@@ -1,4 +1,7 @@
-Classifier,Standard,Proposed
-KNN,0.864 $\pm$ 0.079,\textbf{0.886 $\pm$ 0.073}
-LR,0.907 $\pm$ 0.074,\textbf{0.911 $\pm$ 0.071}
-RF,0.890 $\pm$ 0.068,\textbf{0.901 $\pm$ 0.059}
+Classifier,Evaluation Metric,Standard,Proposed
+KNN,F-score,0.762 $\pm$ 0.131,\textbf{0.794 $\pm$ 0.123}
+KNN,G-mean,0.864 $\pm$ 0.079,\textbf{0.886 $\pm$ 0.073}
+LR,F-score,0.839 $\pm$ 0.119,\textbf{0.843 $\pm$ 0.116}
+LR,G-mean,0.907 $\pm$ 0.074,\textbf{0.911 $\pm$ 0.071}
+RF,F-score,0.810 $\pm$ 0.109,\textbf{0.819 $\pm$ 0.1}
+RF,G-mean,0.890 $\pm$ 0.068,\textbf{0.901 $\pm$ 0.059}

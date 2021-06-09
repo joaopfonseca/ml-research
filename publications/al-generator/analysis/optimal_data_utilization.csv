@@ -1,4 +1,4 @@
-Performance,Classifier,Standard,Proposed
+G-mean Score,Classifier,Standard,Proposed
 0.60,KNN,4.0\%,\textbf{2.1\%}
 0.60,LR,2.2\%,\textbf{2.1\%}
 0.60,RF,2.2\%,\textbf{2.1\%}

@@ -209,35 +209,40 @@ These challenges have different sources:
 
 Research developed in the field of AL typically focus on the reduction of
 human error by minimizing the human interaction with the process through the
-development of more efficient choosers and selection criteria within the
-generally accepted AL framework. Concurrently, the problem of rare land cover
-classes is rarely addressed. This is a frequent problem in the ML community,
-known as the Imbalanced Learning problem. This problem exists whenever there
-is an uneven between-class distribution in the dataset~\cite{Chawla2004}.
-Specifically, most classifiers are optimized and evaluted using accuracy-like
-metrics, which are designed to work primarily with balanced datasets.
-Consequently, these metrics tend to introduce a bias towards the majority
-class by attributing an importance to each class proportional to its relative
-frequency~\cite{Maxwell2018}. As an example, such a classifier could achieve
-an overall accuracy of 99\% on a binary dataset where the minority class
-represents 1\% of the overall dataset and still be useless. A number of
-methods have been developed to deal with this problem. They can be categorized
-into three different types of approaches~\cite{Fernandez2013,Kaur2019}.
-Cost-sensitive solutions perform changes to the cost matrix in the learning
-phase. Algorithmic level solutions modify specific classifiers to reinforce
-learning on minority classes. Resampling solutions modify the dataset by
-removing majority samples and/or generating artificial minority samples. The
-latter is independent from the context and can be used alongside any
-classifier. Because of this we will focus on artificial data generation
-techniques, presented in Section~\ref{sec:ovs-sota}.
+development of more efficient \replaced{classifiers }{choosers} and selection
+criteria within the generally accepted AL framework. Concurrently, the problem
+of rare land cover classes is rarely addressed. This is a frequent problem in
+the ML community, known as the Imbalanced Learning problem. This problem
+exists whenever there is an uneven between-class distribution in the
+dataset~\cite{Chawla2004}.  Specifically, most classifiers are optimized and
+evaluted using accuracy-like metrics, which are designed to work primarily
+with balanced datasets.  Consequently, these metrics tend to introduce a bias
+towards the majority class by attributing an importance to each class
+proportional to its relative frequency~\cite{Maxwell2018}. As an example, such
+a classifier could achieve an overall accuracy of 99\% on a binary dataset
+where the minority class represents 1\% of the overall dataset and still be
+useless. A number of methods have been developed to deal with this problem.
+They can be categorized into three different types of
+approaches~\cite{Fernandez2013,Kaur2019}.  Cost-sensitive solutions perform
+changes to the cost matrix in the learning phase. Algorithmic level solutions
+modify specific classifiers to reinforce learning on minority classes.
+Resampling solutions modify the \added{training} data\deleted{set} by removing
+majority samples and/or generating artificial minority samples. The latter is
+independent from the context and can be used alongside any classifier.
+\replaced{Since we are interested in the introduction of artificial data
+generation in AL, we will analyze the state-of-the-art on resampling
+techniques (specifically oversampling) in Section~\ref{sec:ovs-sota}}{ Because
+of this we will focus on artificial data generation techniques, presented in
+Section~\ref{sec:ovs-sota}}.
 
 In this paper, we propose a novel AL framework to address two limitations
 commonly found in the literature: minimize human-computer interaction and
 reduce the class imbalance bias. This is done with the introduction of an
-additional component in the iterative AL procedure (the generator), used to
-generate artificial data to both balance and augment the training dataset. The
-introduction of this component is expected to reduce the number of iterations
-required until convergence of the classifier's quality.
+additional component in the iterative AL procedure (the generator) \added{that
+is} used to generate artificial data to both balance and augment the training
+dataset. The introduction of this component is expected to reduce the number
+of iterations required until \replaced{the classifier reaches a satisfactory
+performance }{convergence of the classifier's quality}.
 
 This paper is organized as follows: Section~\ref{sec:introduction} explains
 the problem and its context, Sections~\ref{sec:al-sota} and~\ref{sec:ovs-sota}
@@ -260,25 +265,28 @@ of the following elements~\cite{Sverchkov2017,Su2020,Ruzicka2020}:
 \begin{enumerate}
     \item Unlabeled dataset. Consists of the original data source (or a sample
         thereof). It is used in combination with the chooser and the selection
-        criterion to expand the training set in regions where the
-        classification uncertainty is higher. Therefore, this dataset is used
-        for both producing the initial training sample by selecting a set of
-        observations for the supervisor to annotate (discussed in point 3) and
-        calculating the uncertainty map to augment the training dataset.
-    \item Supervisor. An external entity to which the uncertainty map is
+        criterion to expand the training \added{data}set in regions where the
+        classification uncertainty is higher. Therefore, the \added{unlabeled}
+        dataset is used for both producing the initial training
+        \added{dataset} by selecting a set of \added{instances} for the
+        supervisor to annotate (discussed in point 3) and calculating the
+        uncertainty map to augment the training dataset.
+    \item Supervisor. \replaced{A human annotator (or team of human
+        annotators)}{An external entity} to which the uncertainty map is
         presented to. The supervisor is responsible for annotating unlabeled
         instances to be added to the augmented dataset. In remote sensing, the
         supervisor is typically a photo-interpreter, as is the case
         in~\cite{li2020}. Some of the research also refers to the supervisor
         as the \textit{oracle}~\cite{Ruzicka2020, Yoo2019, Aghdam2019,
         Cawley2011}.
-    \item Initial training dataset. It is a small sample of data used to
-        initiate the first AL iteration. The size of the initial training
-        sample normally varies between no instances at all and
-        10\%~\cite{Li2013}.
+    \item Initial training dataset. It is a small\added{, labeled} sample of
+        \added{the original} data \added{source} used to initiate the first AL
+        iteration. The size of the initial training sample normally varies
+        between no instances at all and 10\% \added{of the unlabeled
+        dataset}~\cite{Li2013}.
     \item Current and expanded training dataset. It is the concatenation of
-        the initial training and the datasets labeled by the supervisor in
-        past iterations (discussed in point 2).
+        the initial training \added{dataset} and the datasets labeled by the
+        supervisor in past iterations (discussed in point 2).
     \item Chooser (classifier). Produces the class probabilities for each
         unlabeled instance.
     \item Selection criterion. It quantifies the chooser's uncertainty level
@@ -293,10 +301,10 @@ of the following elements~\cite{Sverchkov2017,Su2020,Ruzicka2020}:
 
 Figure~\ref{fig:al_typical} schematizes the steps involved in a complete AL
 iteration. For a better context within the remote sensing domain, the
-prediction output is identified as the LULC map. This framework starts by
-collecting unlabeled data from the original data source. It is used to
-generate a random initial training sample and is labeled by the supervisor. In
-practical applications, the supervisor is frequently a group of
+prediction output \replaced{can be}{ is} identified as the LULC map. This
+framework starts by collecting unlabeled data from the original data source.
+It is used to generate a random initial training sample and is labeled by the
+supervisor. In practical applications, the supervisor is frequently a group of
 photo-interpreters~\cite{Kottke2017}. The chooser is trained on the resulting
 dataset and is used to predict the class probabilities on the unlabeled
 dataset. The class probabilities are fed into a selection criterion to
@@ -595,7 +603,7 @@ frameworks.
 \subsection{Datasets}~\label{sec:datasets}
 
 The datasets used were extracted from publicly available repositories
-containing hyperspectral images and groud truth data. Additionally, all
+containing hyperspectral images and ground truth data. Additionally, all
 datasets were collected using the same sampling procedure. The description of
 the hyperspectral scenes used in this study is provided in
 Table~\ref{tab:rs_scene_description}. These scenes were chosen because of
@@ -632,66 +640,24 @@ this context is particularly challenging and valuable.
 The Indian Pines scene~\cite{Baumgardner2015} is composed of agriculture fields
 in approximately two thirds of its coverage, low density buildup areas and
 natural perennial vegetation in the remainder of its area (see
-Figure~\ref{fig:indian_pines}). The Pavia Centre and University scenes are
+Figure~\ref{fig:scenes}a). The Pavia Centre and University scenes are
 hyperspectral, high-resolution images containing ground truth data composed of
-urban-related coverage (see Figures~\ref{fig:pavia_centre}
-and~\ref{fig:pavia_university}). The Salinas and Salinas A scenes contain
+urban-related coverage (see Figures~\ref{fig:scenes}b
+and~\ref{fig:scenes}c). The Salinas and Salinas A scenes contain
 at-sensor radiance data. As subset of Salinas, the Salinas A scene contains
 contains the vegetables fields present in Salinas and the latter is also
-composed of bare soils and vineyard fields (see Figures~\ref{fig:salinas}
-and~\ref{fig:salinas_a}). The Botswana scene contains ground truth data
+composed of bare soils and vineyard fields (see Figures~\ref{fig:scenes}d
+and~\ref{fig:scenes}e). The Botswana scene contains ground truth data
 composed of seasonal swamps, occasional swamps, and drier woodlands located in
-the distal portion of the Delta (see Figure~\ref{fig:botswana}). The Kennedy
+the distal portion of the Delta (see Figure~\ref{fig:scenes}f). The Kennedy
 Space Center scene contains a ground truth composed of both vegetation and
-urban-related coverage (see Figure~\ref{fig:kennedy_space_center})
+urban-related coverage (see Figure~\ref{fig:scenes}g).
 
 \pagebreak
 \end{paracol}
 \begin{figure}[H]
-	\centering 
-	\begin{subfigure}{.24\textwidth}
-		\centering
-        \captionsetup{justification=centering}
-		\includegraphics[height=1.5\linewidth]{../analysis/indian_pines}
-		\subcaption{{\medbreak}}\label{fig:indian_pines}
-	\end{subfigure}
-	\begin{subfigure}{.24\textwidth}
-		\centering
-        \captionsetup{justification=centering}
-		\includegraphics[height=1.5\linewidth]{../analysis/pavia_centre}
-		\subcaption{{\medbreak}}\label{fig:pavia_centre}
-	\end{subfigure}
-	\begin{subfigure}{.24\textwidth}
-		\centering
-        \captionsetup{justification=centering}
-		\includegraphics[height=1.5\linewidth]{../analysis/pavia_university}
-		\subcaption{{\medbreak}}\label{fig:pavia_university}
-	\end{subfigure}
-
-	\begin{subfigure}{.24\textwidth}
-		\centering
-        \captionsetup{justification=centering}
-		\includegraphics[height=1.5\linewidth]{../analysis/salinas}
-		\subcaption{{\medbreak}}\label{fig:salinas}
-	\end{subfigure}
-	\begin{subfigure}{.24\textwidth}
-		\centering
-        \captionsetup{justification=centering}
-		\includegraphics[height=1.5\linewidth]{../analysis/salinas_a}
-		\subcaption{{\medbreak}}\label{fig:salinas_a}
-	\end{subfigure}
-	\begin{subfigure}{.24\textwidth}
-		\centering
-        \captionsetup{justification=centering}
-		\includegraphics[height=1.5\linewidth]{../analysis/botswana}
-		\subcaption{{\medbreak}}\label{fig:botswana}
-	\end{subfigure}
-	\begin{subfigure}{.24\textwidth}
-		\centering
-        \captionsetup{justification=centering}
-		\includegraphics[height=1.5\linewidth]{../analysis/kennedy_space_center}
-		\subcaption{{\medbreak}}\label{fig:kennedy_space_center}
-	\end{subfigure}
+	\centering
+	\includegraphics[width=.51\linewidth]{../analysis/scenes}
     \caption{Gray scale visualization of a band (top row) and ground truth
         (bottom row) of each scene used in this study. (a) Indian Pines, (b)
         Pavia Centre, (c) Pavia University, (d) Salinas, (e) Salinas A, (f)
@@ -774,10 +740,11 @@ class information regarding the classifier's classification performance.
 However, in this experiment, the meaning and number of classes available in
 each dataset varies, making these metrics difficult to synthesize.
 
-The performance metric \textit{Geometric mean} (G-mean) is less
-sensitive to the data imbalance bias~\cite{Jeni2013, Kubat1997}. Therefore, we
-employ the G-mean scorer. It consists of the geometric mean of $Specificity =
-\frac{TN}{TN + FP}$ and $Sensitivity = \frac{TP}{TP+FN}$ (also known as
+The performance metric \textit{Geometric mean} (G-mean) \added{and
+\textit{F-score} are} less sensitive to the data imbalance
+bias~\cite{Jeni2013, Kubat1997}.  Therefore, we employ \added{both of these
+scorers}. G-mean consists of the geometric mean of $Specificity = \frac{TN}{TN
++ FP}$ and $Sensitivity = \frac{TP}{TP+FN}$ (also known as
 \textit{Recall})~\cite{Kubat1997}. Both metrics are calculated in a multiclass
 context considering a one-versus-all approach. For multiclass problems, the
 \textit{G-mean} scorer is calculated as its average per class values: 
@@ -786,6 +753,20 @@ context considering a one-versus-all approach. For multiclass problems, the
     \textit{G-mean} = \sqrt{\overline{Sensitivity}_i \times
     \overline{Specificity}_i}
 \end{equation*}
+
+\added{
+
+The F-score performance metric is the harmonic mean of \textit{Precision} and
+\textit{Recall}. The two metrics are also calculated considering a
+one-versus-all approach. The \textit{F-score} for the multi-class case can be
+calculated using its average per class values~\cite{He2009}:
+
+\begin{equation*}
+    \textit{F-score}=2\frac{\overline{Precision} \times
+    \overline{Recall}}{\overline{Precision} + \overline{Recall}}
+\end{equation*}
+
+}
     
 The comparison of classification convergence across AL frameworks and
 selection criteria is done using 2 AL-specific performance metrics.
@@ -942,7 +923,8 @@ across datasets of the AULC scores for each active learner.
     \caption{
         Mean rankings of the AULC metric over the different datasets (7),
         folds (5) and runs (3) used in the experiment. This means that the use
-        of G-SMOTE always improves the results of the original framework.
+        of G-SMOTE \added{almost} always improves the results of the original
+        framework.
     }\label{tab:aulc_ranks}
 \end{table}
 
@@ -984,7 +966,7 @@ by the different AL configurations to reach that specific G-mean score.
 	end table=\end{longtable},
 	col sep=comma,
 	header=true,
-    columns={Performance,Classifier,Standard,Proposed}, 
+    columns={G-mean Score,Classifier,Standard,Proposed}, 
     string type,
     every head row/.style={before row=\toprule, after row=\midrule\endhead},
 	every last row/.style={
@@ -1000,7 +982,26 @@ by the different AL configurations to reach that specific G-mean score.
 \linenumbers
 \switchcolumn
 
+\added{
 
+The DUR of the proposed method relative to the baseline method is shown in
+Figure~\ref{fig:dur}. A DUR above 1 means that the proposed framework requires
+that much percentage of extra data (when compared to the baseline framework)
+to reach that given performance threshold. Inversely, a DUR below 1 means that
+the proposed framework requires that much less data (as a percentage, relative
+to the amount of data required by the baseline framework).
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{../analysis/data_utilization_rate}
+    \caption{
+        Mean data utilization rates. The y-axis shows the percentage of data
+        (relative to the baseline AL framework) required to reach the
+        different performance thresholds.
+    }~\label{fig:dur}
+\end{figure}
+
+}
 
 The averaged optimal classification scores are shown in
 Table~\ref{tab:optimal_mean_std_scores}. The maximum performance (MP)
@@ -1031,10 +1032,10 @@ of the corresponding classifier using the entire training set.
 
 The methods used to test the experiment's results must be appropriate for a
 multi-dataset context. Therefore the statistical analysis is performed using
-the Wilcoxon signed-rank
-test~\cite{Wilcoxon1945} as a post-hoc analysis. The variable used for this
-test is the data utilization rate, considering the various performance
-thresholds from Table~\ref{tab:optimal_data_utilization}.
+the Wilcoxon signed-rank test~\cite{Wilcoxon1945} as a post-hoc analysis. The
+variable used for this test is the data utilization rate \added{based on the
+G-mean performance metric}, considering the various performance thresholds
+from Table~\ref{tab:optimal_data_utilization}.
 
 The Wilcoxon signed-rank test results are shown in
 Table~\ref{tab:wilcoxon_test}. We test as null hypothesis that the performance
@@ -1069,8 +1070,11 @@ reflected in the reduction of the amount of data necessary to reach better
 classification results.
 
 The convergence efficiency of the proposed method is always higher than the
-baseline AL framework (NONE), as shown in Table~\ref{tab:aulc_ranks}. The AL
-using data generation was able to outperform the baseline AL in all scenarios. 
+baseline AL framework \deleted{(NONE)}, \added{with the exception of one
+comparison,} as shown in Table~\ref{tab:aulc_ranks} \added{and
+Figure~\ref{fig:dur}}. \replaced{This means the proposed}{The} AL
+\added{framework} using data generation was able to outperform the baseline AL
+in \added{nearly} all scenarios. 
 
 The mean AULC scores in Table~\ref{tab:aulc_scores} show a significant
 improvement in the performance of AL when a generator is used. The mean
@@ -1084,7 +1088,7 @@ baseline framework. This improvement is explained by:
         proposed framework always uses less data for similar performance
         levels, regardless of the classifier used.
     \item Higher optimal classification performance, \textit{i.e.}, reaching
-        higher performance levels overall. This effect is studied in
+        higher performance levels overall. This effect is shown in
         Table~\ref{tab:optimal_mean_std_scores}, where we found that using a
         generator in AL led to a better classification performance and was
         capable of outperforming the MP threshold. 

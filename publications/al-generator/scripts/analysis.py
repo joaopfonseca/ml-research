@@ -485,7 +485,7 @@ def generate_main_results(results):
     )
 
 
-def generate_data_utilization_tables(wide_optimal):
+def generate_data_utilization_tables(wide_optimal_al):
 
     # Mean data utilization to reach the .85 g-mean threshold
     data_utilization = wide_optimal_al[0].reset_index()
@@ -525,15 +525,25 @@ def generate_dur_visualization(wide_optimal_al):
     """Visualize data utilization rates"""
     dur = data_utilization_rate(*wide_optimal_al)
     dur_mean, dur_std = (
-        df.rename(
+        df.loc[
+            df.index.get_level_values('Evaluation Metric').isin(
+                ['geometric_mean_score_macro','f1_macro']
+            )
+        ].rename(
             columns={
                 col: int(col.replace('dur_', ''))
                 for col in df.columns
             }
-        ) for df in dur
+        ).rename(
+            index={
+                'NONE': 'Standard',
+                'G-SMOTE': 'Proposed'
+            }
+        )
+        for df in dur
     )
 
-    load_plt_sns_configs()
+    load_plt_sns_configs(10)
 
     col_values = dur_mean.index.get_level_values('Evaluation Metric').unique()
     row_values = dur_mean.index.get_level_values('Classifier').unique()
@@ -542,7 +552,7 @@ def generate_dur_visualization(wide_optimal_al):
     fig, axes = plt.subplots(
         row_values.shape[0],
         col_values.shape[0],
-        figsize=(10, 6),
+        figsize=(7, 6),
         sharex='col',
         sharey='row',
         constrained_layout=True
@@ -556,9 +566,8 @@ def generate_dur_visualization(wide_optimal_al):
             ax=ax,
             xlabel='',
             color={
-                'SMOTE': 'steelblue',
-                'G-SMOTE': 'burlywood',
-                'NONE': 'indianred'
+                'Standard': 'indianred',
+                'Proposed': 'steelblue'
             }
         )
 
@@ -570,26 +579,30 @@ def generate_dur_visualization(wide_optimal_al):
                 (dur_mean.loc[(clf, metric, col_)].T + err_fills[col_]),
                 alpha=0.1,
                 color={
-                    'SMOTE': 'steelblue',
-                    'G-SMOTE': 'burlywood',
-                    'NONE': 'indianred'
+                    'Standard': 'indianred',
+                    'Proposed': 'steelblue'
                 }[col_]
             )
 
         ax.set_ylabel(clf)
         ax.set_ylim(
-            bottom=dur_mean.loc[clf].values.min(),
-            top=dur_mean.loc[clf].values.max()
+            bottom=(
+                dur_mean.loc[clf].values.min()-.05
+                if dur_mean.loc[clf].values.min() < .6
+                else .8
+            ),
+            top=(
+                dur_mean.loc[clf].values.max()
+                if dur_mean.loc[clf].values.max() >= 1.05
+                else 1.05
+
+            )
         )
         ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
         ax.set_xticks(dur_mean.columns)
 
-        # Set x label
-        if (row == 2) and (col == 1):
-            ax.set_xlabel('Performance Thresholds')
-
         # Set legend
-        if (row == 1) and (col == 2):
+        if (row == 1) and (col == 1):
             ax.legend(
                 loc='center left',
                 bbox_to_anchor=(1, .5),
@@ -600,6 +613,8 @@ def generate_dur_visualization(wide_optimal_al):
             )
         else:
             ax.get_legend().remove()
+
+    fig.text(0.45, -0.025, 'Performance Thresholds', ha='center', va='bottom')
 
     for ax, metric in zip(axes[0, :], col_values):
         ax.set_title(METRICS_MAPPING[metric])
@@ -773,7 +788,7 @@ if __name__ == '__main__':
         )
 
         result.reset_index(inplace=True)
-        # Keep only G-mean
+        # Keep only G-mean and F-score
         if ('Evaluation Metric' in result.columns or
                 'Metric' in result.columns):
 
@@ -782,8 +797,8 @@ if __name__ == '__main__':
                 else 'Metric'
 
             result = result[
-                result[query_col] == 'G-mean'
-            ].drop(columns=query_col)
+                result[query_col].isin(['G-mean', 'F-score'])
+            ]
 
         # Export LaTeX-ready dataframe
         result.rename(columns={
@@ -802,7 +817,6 @@ if __name__ == '__main__':
     )
     optimal_data_utilization = optimal_data_utilization\
         .rename(columns={
-            'G-mean Score': 'Performance',
             'NONE': 'Standard',
             'G-SMOTE': 'Proposed'
         })\
