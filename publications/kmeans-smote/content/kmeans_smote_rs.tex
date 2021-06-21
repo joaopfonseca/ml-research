@@ -78,32 +78,36 @@ $^{1}$ \quad NOVA Information Management School (NOVA IMS), Universidade Nova
 
 \abstract{
     Land cover maps are a critical tool to support informed policy
-    development, planning, and resource management decisions. The ability to
-    automatically produce Land Use/Land Cover (LULC) maps, through the use of
-    machine learning methods, will improve the accuracy and timeliness of
-    decision-making. With significant upsides, the automatic production of
-    Land Use/Land Cover maps has been a topic of interest for the remote
-    sensing community for several years, but it is still fraught with
-    technical challenges. One such challenge is the imbalanced nature of most
-    remotely sensed data, where the number of samples of a few classes is
-    significantly greater than the number of samples of the remaining classes.
-    This asymmetric class distribution impacts negatively the performance of
-    classifiers and adds a new source of error to the production of these
-    maps. In this paper, we address the imbalanced learning problem, by using
-    K-means and the Synthetic Minority Oversampling TEchnique (SMOTE) as an
-    improved oversampling algorithm. K-Means SMOTE improves the quality of
-    newly created artificial data by addressing both the between-class
-    imbalance, as traditional oversamplers do, but also the within-class
-    imbalance, avoiding the generation of noisy data while effectively
-    overcoming data imbalance. The performance of K-means SMOTE is compared to
-    other popular oversampling methods using seven remote sensing benchmark
-    datasets and a variety of classifiers and evaluation metrics. The
-    statistical analysis of the results show that the proposed method
-    consistently outperforms the remaining oversamplers producing higher
-    quality land cover classifications. These results suggest that LULC data
-    can benefit significantly from the use of more sophisticated oversamplers
-    as spectral signatures for the same class can vary according to
-    geographical distribution.
+    development, planning, and resource management decisions. \deleted{The
+    ability to automatically produce Land Use/Land Cover (LULC) maps, through
+    the use of machine learning methods, will improve the accuracy and
+    timeliness of decision-making.} With significant upsides, the automatic
+    production of Land Use/Land Cover maps has been a topic of interest for
+    the remote sensing community for several years, but it is still fraught
+    with technical challenges. One such challenge is the imbalanced nature of
+    most remotely sensed data\deleted{, where the number of samples of a few
+    classes is significantly greater than the number of samples of the
+    remaining classes}. \replaced{The}{This} asymmetric class distribution
+    impacts negatively the performance of classifiers and adds a new source of
+    error to the production of these maps. In this paper, we address the
+    imbalanced learning problem, by using K-means and the Synthetic Minority
+    Oversampling TEchnique (SMOTE) as an improved oversampling algorithm.
+    K-Means SMOTE improves the quality of newly created artificial data by
+    addressing both the between-class imbalance, as traditional oversamplers
+    do, but also the within-class imbalance, avoiding the generation of noisy
+    data while effectively overcoming data imbalance. The performance of
+    K-means SMOTE is compared to \added{three} popular oversampling methods
+    \added{(Random Oversampling, SMOTE and Borderline-SMOTE)} using seven
+    remote sensing benchmark datasets, three classifiers \added{(Logistic
+    Regression, K-Nearest Neighbors and Random Forest Classifier)} and
+    \added{three} evaluation metrics \added{using a 5-fold cross-validation
+    approach with 3 different initialization seeds}. The statistical analysis
+    of the results show that the proposed method consistently outperforms the
+    remaining oversamplers producing higher quality land cover
+    classifications. These results suggest that LULC data can benefit
+    significantly from the use of more sophisticated oversamplers as spectral
+    signatures for the same class can vary according to geographical
+    distribution.
 }
 
 \keyword{
@@ -315,19 +319,19 @@ proposed methodology, section \ref{sec:results} covers the results and
 discussion and section \ref{sec:conclusion} presents the conclusions taken from
 this study.
 
-\added{This paper's main contributions are:}
+This paper's main contributions are:
 \begin{itemize}
-    \item \added{Propose a cluster-based multiclass oversampling method appropriate
+    \item Propose a cluster-based multiclass oversampling method appropriate
         for LULC classification and compare its performance with the remaining
         oversamplers in a multiclass context with seven benchmark LULC
         classification datasets. Allows us to check the oversamplers'
-        performance across benchmark LULC datasets.}
-    \item \added{Introducing a cluster-based oversampling algorithm within the remote
+        performance across benchmark LULC datasets.
+    \item Introducing a cluster-based oversampling algorithm within the remote
         sensing domain, as well as comparing its performance with the remaining
-        oversamplers in a multiclass context.}
-    \item \added{Make available to the remote sensing community the implementation
+        oversamplers in a multiclass context.
+    \item Make available to the remote sensing community the implementation
         of the algorithm in a Python library and the experiment's source
-        code.}
+        code.
 \end{itemize}
 
 \section{Imbalanced Learning Approaches} \label{sec:sota}
@@ -362,7 +366,7 @@ adaptations of Cross-entropy classification loss by adding different
 formulations of class rectification loss.
 
 Resampling (over/undersampling) is the most common approach to imbalanced
-learning \deleted{addressing the problem through data resampling} in machine
+learning in machine
 learning in general and remote sensing in particular \citep{Feng2019}. The
 generation of artificial instances (i.e., augmenting the dataset), based on
 rare instances, is done independently of any other step in the learning
@@ -548,6 +552,8 @@ special case when the number of clusters is set to one. Consequently,
 K-means SMOTE returns
 results as good as or better than SMOTE.
 
+\pagebreak
+
 \end{paracol}
 \begin{figure}[H]
 	\centering
@@ -571,21 +577,6 @@ another study \citep{Douzas2019rs} compared the performance of SMOTE, ROS,
 ADASYN, B-SMOTE and G-SMOTE in a highly imbalanced LULC classification dataset.
 The authors found that G-SMOTE consistently outperformed the remaining
 oversampling algorithms regardless of the classifier used.
-
-\deleted{This paper's main contributions are:}
-\begin{itemize}
-    \item \deleted{Propose a cluster-based multiclass oversampling method appropriate
-        for LULC classification and compare its performance with the remaining
-        oversamplers in a multiclass context with seven benchmark LULC
-        classification datasets. Allows us to check the oversamplers'
-        performance across benchmark LULC datasets.}
-    \item \deleted{Introducing a cluster-based oversampling algorithm within the remote
-        sensing domain, as well as comparing its performance with the remaining
-        oversamplers in a multiclass context.}
-    \item \deleted{Make available to the remote sensing community the implementation
-        of the algorithm in a Python library and the experiment's source
-        code.}
-\end{itemize}
 
 \section{Methodology}\label{sec:methodology}
 
@@ -692,8 +683,8 @@ satellite over the Okavango Delta, Botswana in 2001-2004 at a 30m spatial
 resolution. Data preprocessing was performed by the UT Center for Space
 Research. The scene comprises a $1476 \times 256$ pixels with 145 bands and 14
 classes regarding land cover types in seasonal and occasional swamps, as well
-as drier woodlands (see Figure~\ref{fig:botswana}). \added{The classes with
-rare instances are Short mopane and Hippo grass.}
+as drier woodlands (see Figure~\ref{fig:botswana}). The classes with
+rare instances are Short mopane and Hippo grass.
 
 \subsubsection*{Pavia Center and University}
 
@@ -703,9 +694,9 @@ These scenes are located in Pavia, northern Italy. Pavia Center is a $1096
 a $610 \times 610$ pixels image with 103 spectral bands. Both images have a
 geometrical resolution of 1.3m and their ground truths are
 composed of 9 classes each (see Figures~\ref{fig:pavia_center}
-and~\ref{fig:pavia_university}). \added{After data preprocessing, the classes
+and~\ref{fig:pavia_university}). After data preprocessing, the classes
 with rare instances are Asphalt and Bitumen (the class Shadows was removed for
-being too rare for cross validation after random sampling).}
+being too rare for cross validation after random sampling).
 
 \subsubsection*{Kennedy Space Center}
 
@@ -714,10 +705,10 @@ Kennedy Space Center, Florida, on March 23, 1996. Out of the original 224
 bands, water absorption and low SNR bands were removed and a total of 176
 bands at a spatial resolution of 18m are used. The scene is a $512 \times 614$
 pixel image and contains a total of 16 classes (see
-figure~\ref{fig:kennedy_space_center}). \added{The classes with rare instances
+figure~\ref{fig:kennedy_space_center}). The classes with rare instances
 are hardwood swamp, slash pine and willow swamp (both hardwood swamp and slash
 pine were removed for being too rare for cross validation after random
-sampling).}
+sampling).
 
 \subsubsection*{Salinas and Salinas-A}
 
@@ -727,9 +718,9 @@ pixels image with 224 bands and 16 classes regarding vegetables, bare soil and
 vineyard fields (see Figure~\ref{fig:salinas}). Salinas-A, a subscene of
 Salinas, comprises $86 \times 83$ pixels and contains 6 classes regarding
 vegetables (see Figure~\ref{fig:salinas_a}). These scenes have a geometrical
-resolution of 3.7m. \added{Salinas-A's minority class has the label
+resolution of 3.7m. Salinas-A's minority class has the label
 ``Brocoli\_green\_weeds\_1'' and Salina's minority class has the label
-``Lettuce\_romaine\_6wk''}
+``Lettuce\_romaine\_6wk''
 
 \subsubsection*{Indian Pines} 
 
@@ -741,11 +732,11 @@ and 220 spectral reflectance bands in the wavelength range 400 to 2500
 nanometers at a spatial resolution of 20m. Approximately two thirds of
 this scene is composed by agriculture and the other third is composed of
 forest and other natural perennial vegetation. Additionally, the scene also
-contains low density buildup areas. \added{The classes with rare instances are
+contains low density buildup areas. The classes with rare instances are
 Alfalfa, Oats, Grass-pasture-mowed, Wheat and Stone-Steel-Towers (which
 removed for being too rare for cross validation after random sampling).  After
 data preprocessing, the classes with rare instances are Corn,
-Buildings-Grass-Trees-Drives and Grass-Pasture.}
+Buildings-Grass-Trees-Drives and Grass-Pasture.
 
 \pagebreak
 \end{paracol}
@@ -819,10 +810,10 @@ Regression (LR) \citep{Nelder1972}, K-Nearest Neighbors (KNN)
 \citep{Cover1967} and Random Forest (RF)
 \citep{Liaw2002}. This choice was based on the classifiers' popularity for LULC
 classification, learning type and training time
-\citep{Maxwell2018,Gavade2019}. \added{Since this is a multinomial classification
+\citep{Maxwell2018,Gavade2019}. Since this is a multinomial classification
 task, for the LR classification we adopted a one-versus-all approach for each
 label. The predicted label is assigned according to the class predicted with
-highest probability.}
+highest probability.
 
 \subsection{Evaluation Metrics}~\label{sec:evaluation-metrics}
 
@@ -879,12 +870,10 @@ and 3) \textit{Overall Accuracy}, for discussion purposes.
 
 \end{itemize}
 
-\added{
 In the case of \textit{G-mean} and \textit{F-score}, both metrics are computed
 for each label and their unweighted mean is calculated (\textit{i.e.},
 following a ``macro'' approach). In this study we assume that all labels
 have an equivalent importance for the classification task.
-}
 
 \subsection{Experimental Procedure}
 
@@ -984,10 +973,8 @@ The rank values are assigned based on the mean validation scores resulting
 from the experiment described in Section~\ref{sec:methodology}. The averaged
 ranking results are computed over 3 different initialization seeds and a 5
 fold cross validation scheme, returning a real number within the interval
-$[1,5]$. \deleted{The mean rankings are presented in
-Table~\ref{fig:mean_sem_ranking}.}
+$[1,5]$.
 
-\added{
 The hyperparameter optimization ensures that both oversamplers and classifiers
 are well adapted to each of the datasets used in the experiment. Specifically,
 the optimization of classifiers' hyperparameters is not particularly relevant
@@ -996,12 +983,11 @@ oversamplers. This will provide insights on the quality of the artificial data
 generated by each oversampler. The classifiers' hyperparameter tuning was done
 to avoid the over/underfitting of classifiers, since they are trained on the same
 data subsets along with artificial data generated with different methods.
-}
 
 \subsection{Results}
 
 The mean ranking of oversamplers is presented in
-\replaced{Figure}{Table}~\ref{fig:mean_sem_ranking}. This ranking was computed by averaging the
+Figure~\ref{fig:mean_sem_ranking}. This ranking was computed by averaging the
 ranks of the mean cross-validation scores per dataset, oversampler and
 classifier. K-means SMOTE achieves the best mean ranking across datasets with
 low standard deviation.
@@ -1046,7 +1032,7 @@ across datasets makes the analysis of these scores less informative.
 \switchcolumn
 
 The mean cross-validation scores for each dataset are presented in
-Table~\ref{tab:cross_validation_scores} \added{(see appendix)}. This table allows the direct
+Table~\ref{tab:cross_validation_scores} (see appendix). This table allows the direct
 comparison of the performance metrics being analysed.
 
 \subsection{Statistical Analysis}~\label{sec:statistical_analysis}
@@ -1107,7 +1093,7 @@ used follow a symmetric distribution around zero).
 \subsection{Discussion}
 
 The mean rankings presented in
-\replaced{Figure}{Table}~\ref{fig:mean_sem_ranking} show that on average,
+Figure~\ref{fig:mean_sem_ranking} show that on average,
 K-means SMOTE produced the best results for every classifier and performance
 metric used. This is due to the clustering phase and subsequent selection of
 data to be considered for oversampling. By successfully clustering and
@@ -1123,7 +1109,7 @@ picture of the results obtained in the experiment. We found that on average
 K-means SMOTE provides increased performance, regardless of the classifier and
 performance metric used. More importantly, K-means SMOTE guaranteed a more
 consistent performance across datasets and with less variability, which can be
-attested in \replaced{Figure}{Table}~\ref{fig:mean_sem_ranking} and
+attested in Figure~\ref{fig:mean_sem_ranking} and
 Tables~\ref{tab:mean_sem_scores} and~\ref{tab:cross_validation_scores}.
 
 As discussed in Subsection~\ref{sec:evaluation-metrics}, Evaluation Metrics,
@@ -1132,7 +1118,7 @@ Pontius2011}. Particularly, we consider the results obtained in our experiment
 using Overall Accuracy to be less informative than the results obtained with
 the remaining performance metrics, since this metric is affected by imbalanced
 class distributions. The majority class bias in this metric can be observed in
-our experiment in \replaced{Figure}{Table}~\ref{fig:mean_sem_ranking} with the
+our experiment in Figure~\ref{fig:mean_sem_ranking} with the
 classifiers LR and KNN, where the control method (NONE) is only outperformed
 by K-means SMOTE. This effect is observed with more detail in
 Table~\ref{tab:mean_sem_scores}, where the benchmark oversamplers are

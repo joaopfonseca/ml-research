@@ -209,40 +209,38 @@ These challenges have different sources:
 
 Research developed in the field of AL typically focus on the reduction of
 human error by minimizing the human interaction with the process through the
-development of more efficient \replaced{classifiers }{choosers} and selection
-criteria within the generally accepted AL framework. Concurrently, the problem
-of rare land cover classes is rarely addressed. This is a frequent problem in
-the ML community, known as the Imbalanced Learning problem. This problem
-exists whenever there is an uneven between-class distribution in the
-dataset~\cite{Chawla2004}.  Specifically, most classifiers are optimized and
-evaluted using accuracy-like metrics, which are designed to work primarily
-with balanced datasets.  Consequently, these metrics tend to introduce a bias
-towards the majority class by attributing an importance to each class
-proportional to its relative frequency~\cite{Maxwell2018}. As an example, such
-a classifier could achieve an overall accuracy of 99\% on a binary dataset
-where the minority class represents 1\% of the overall dataset and still be
-useless. A number of methods have been developed to deal with this problem.
-They can be categorized into three different types of
+development of more efficient classifiers and selection criteria within the
+generally accepted AL framework. Concurrently, the problem of rare land cover
+classes is rarely addressed. This is a frequent problem in the ML community,
+known as the Imbalanced Learning problem. This problem exists whenever there
+is an uneven between-class distribution in the dataset~\cite{Chawla2004}.
+Specifically, most classifiers are optimized and evaluted using accuracy-like
+metrics, which are designed to work primarily with balanced datasets.
+Consequently, these metrics tend to introduce a bias towards the majority
+class by attributing an importance to each class proportional to its relative
+frequency~\cite{Maxwell2018}. As an example, such a classifier could achieve
+an overall accuracy of 99\% on a binary dataset where the minority class
+represents 1\% of the overall dataset and still be useless. A number of
+methods have been developed to deal with this problem.  They can be
+categorized into three different types of
 approaches~\cite{Fernandez2013,Kaur2019}.  Cost-sensitive solutions perform
 changes to the cost matrix in the learning phase. Algorithmic level solutions
 modify specific classifiers to reinforce learning on minority classes.
-Resampling solutions modify the \added{training} data\deleted{set} by removing
-majority samples and/or generating artificial minority samples. The latter is
-independent from the context and can be used alongside any classifier.
-\replaced{Since we are interested in the introduction of artificial data
-generation in AL, we will analyze the state-of-the-art on resampling
-techniques (specifically oversampling) in Section~\ref{sec:ovs-sota}}{ Because
-of this we will focus on artificial data generation techniques, presented in
-Section~\ref{sec:ovs-sota}}.
+Resampling solutions modify the training data by removing majority samples
+and/or generating artificial minority samples. The latter is independent from
+the context and can be used alongside any classifier.  Since we are interested
+in the introduction of artificial data generation in AL, we will analyze the
+state-of-the-art on resampling techniques (specifically oversampling) in
+Section~\ref{sec:ovs-sota}.
 
 In this paper, we propose a novel AL framework to address two limitations
 commonly found in the literature: minimize human-computer interaction and
 reduce the class imbalance bias. This is done with the introduction of an
-additional component in the iterative AL procedure (the generator) \added{that
-is} used to generate artificial data to both balance and augment the training
+additional component in the iterative AL procedure (the generator) that
+is used to generate artificial data to both balance and augment the training
 dataset. The introduction of this component is expected to reduce the number
-of iterations required until \replaced{the classifier reaches a satisfactory
-performance }{convergence of the classifier's quality}.
+of iterations required until the classifier reaches a satisfactory
+performance.
 
 This paper is organized as follows: Section~\ref{sec:introduction} explains
 the problem and its context, Sections~\ref{sec:al-sota} and~\ref{sec:ovs-sota}
@@ -265,27 +263,27 @@ of the following elements~\cite{Sverchkov2017,Su2020,Ruzicka2020}:
 \begin{enumerate}
     \item Unlabeled dataset. Consists of the original data source (or a sample
         thereof). It is used in combination with the chooser and the selection
-        criterion to expand the training \added{data}set in regions where the
-        classification uncertainty is higher. Therefore, the \added{unlabeled}
+        criterion to expand the training dataset in regions where the
+        classification uncertainty is higher. Therefore, the unlabeled
         dataset is used for both producing the initial training
-        \added{dataset} by selecting a set of \added{instances} for the
+        dataset by selecting a set of instances for the
         supervisor to annotate (discussed in point 3) and calculating the
         uncertainty map to augment the training dataset.
-    \item Supervisor. \replaced{A human annotator (or team of human
-        annotators)}{An external entity} to which the uncertainty map is
+    \item Supervisor. A human annotator (or team of human
+        annotators) to which the uncertainty map is
         presented to. The supervisor is responsible for annotating unlabeled
         instances to be added to the augmented dataset. In remote sensing, the
         supervisor is typically a photo-interpreter, as is the case
         in~\cite{li2020}. Some of the research also refers to the supervisor
         as the \textit{oracle}~\cite{Ruzicka2020, Yoo2019, Aghdam2019,
         Cawley2011}.
-    \item Initial training dataset. It is a small\added{, labeled} sample of
-        \added{the original} data \added{source} used to initiate the first AL
+    \item Initial training dataset. It is a small, labeled sample of
+        the original data source used to initiate the first AL
         iteration. The size of the initial training sample normally varies
-        between no instances at all and 10\% \added{of the unlabeled
-        dataset}~\cite{Li2013}.
+        between no instances at all and 10\% of the unlabeled
+        dataset~\cite{Li2013}.
     \item Current and expanded training dataset. It is the concatenation of
-        the initial training \added{dataset} and the datasets labeled by the
+        the initial training dataset and the datasets labeled by the
         supervisor in past iterations (discussed in point 2).
     \item Chooser (classifier). Produces the class probabilities for each
         unlabeled instance.
@@ -301,7 +299,7 @@ of the following elements~\cite{Sverchkov2017,Su2020,Ruzicka2020}:
 
 Figure~\ref{fig:al_typical} schematizes the steps involved in a complete AL
 iteration. For a better context within the remote sensing domain, the
-prediction output \replaced{can be}{ is} identified as the LULC map. This
+prediction output can be identified as the LULC map. This
 framework starts by collecting unlabeled data from the original data source.
 It is used to generate a random initial training sample and is labeled by the
 supervisor. In practical applications, the supervisor is frequently a group of
@@ -328,12 +326,11 @@ different initializations~\cite{Kottke2017}. There are two factors involved in
 this phenomenon. On one hand, the implementation of the same method over
 different initializations may result in significantly different initial
 training samples, amounts to varying accuracy curves. On the other hand, the
-lack of a robust selection criterion and/or \replaced{classifier}{chooser} may
+lack of a robust selection criterion and/or classifier may
 also result in inconsistencies across AL experiments with different
 initializations. This phenomenon was observed and documented in a LULC
 classification context in~\cite{tuia2011using}.
 
-\added{
 The classification method plays a central role in the efficacy of AL. The
 classifier used should be able to generalise with a relatively small training
 dataset. Specifically, deep learning models are used in image classification
@@ -350,7 +347,6 @@ training dataset. Another study~\cite{Wu2020} combined transfer learning,
 active classification and segmentation techniques for vehicle detection. By
 combining different techniques, they were able to produce a classification
 mechanism that performed well when the amount of training data is limited.
-}
 
 Selecting an efficient selection criterion is particularly important to find
 the instances closest to the decision border (\textit{i.e.}, instances
@@ -541,12 +537,10 @@ of the annotation cost into computational cost.
 	\centering
 	\includegraphics[width=\linewidth]{../analysis/al_new}
     \caption{
-        Proposed AL framework. \added{This paper's contribution, comprises a
-        change in the AL framework through the introduction of a data
-        generation mechanism, } \deleted{the data generation mechanism, is}
-        represented as the generator (marked with~\textit{C}), which is used
-        to add artificial instances to the \replaced{training dataset. }{data
-        generation phase.} \deleted{The remaining steps are left unchanged.}
+        Proposed AL framework. This paper's contribution comprises a change in
+        the AL framework through the introduction of a data generation
+        mechanism, represented as the generator (marked with~\textit{C}),
+        which is used to add artificial instances to the training dataset.
     }~\label{fig:al_new}
 \end{figure}
 
@@ -740,10 +734,10 @@ class information regarding the classifier's classification performance.
 However, in this experiment, the meaning and number of classes available in
 each dataset varies, making these metrics difficult to synthesize.
 
-The performance metric \textit{Geometric mean} (G-mean) \added{and
-\textit{F-score} are} less sensitive to the data imbalance
-bias~\cite{Jeni2013, Kubat1997}.  Therefore, we employ \added{both of these
-scorers}. G-mean consists of the geometric mean of $Specificity = \frac{TN}{TN
+The performance metric \textit{Geometric mean} (G-mean) and
+\textit{F-score} are less sensitive to the data imbalance
+bias~\cite{Jeni2013, Kubat1997}.  Therefore, we employ both of these
+scorers. G-mean consists of the geometric mean of $Specificity = \frac{TN}{TN
 + FP}$ and $Sensitivity = \frac{TP}{TP+FN}$ (also known as
 \textit{Recall})~\cite{Kubat1997}. Both metrics are calculated in a multiclass
 context considering a one-versus-all approach. For multiclass problems, the
@@ -754,8 +748,6 @@ context considering a one-versus-all approach. For multiclass problems, the
     \overline{Specificity}_i}
 \end{equation*}
 
-\added{
-
 The F-score performance metric is the harmonic mean of \textit{Precision} and
 \textit{Recall}. The two metrics are also calculated considering a
 one-versus-all approach. The \textit{F-score} for the multi-class case can be
@@ -765,9 +757,7 @@ calculated using its average per class values~\cite{He2009}:
     \textit{F-score}=2\frac{\overline{Precision} \times
     \overline{Recall}}{\overline{Precision} + \overline{Recall}}
 \end{equation*}
-
-}
-    
+ 
 The comparison of classification convergence across AL frameworks and
 selection criteria is done using 2 AL-specific performance metrics.
 Particularly, we follow the recommendations found in~\cite{Kottke2017}. Each
@@ -923,7 +913,7 @@ across datasets of the AULC scores for each active learner.
     \caption{
         Mean rankings of the AULC metric over the different datasets (7),
         folds (5) and runs (3) used in the experiment. This means that the use
-        of G-SMOTE \added{almost} always improves the results of the original
+        of G-SMOTE almost always improves the results of the original
         framework.
     }\label{tab:aulc_ranks}
 \end{table}
@@ -982,8 +972,6 @@ by the different AL configurations to reach that specific G-mean score.
 \linenumbers
 \switchcolumn
 
-\added{
-
 The DUR of the proposed method relative to the baseline method is shown in
 Figure~\ref{fig:dur}. A DUR below 1 means that the proposed framework requires
 less data to reach the same performance threshold (as a percentage, relative
@@ -1001,8 +989,6 @@ traditional AL framework, in other words 9\% less data.
         different performance thresholds.
     }~\label{fig:dur}
 \end{figure}
-
-}
 
 The averaged optimal classification scores are shown in
 Table~\ref{tab:optimal_mean_std_scores}. The maximum performance (MP)
@@ -1034,8 +1020,8 @@ of the corresponding classifier using the entire training set.
 The methods used to test the experiment's results must be appropriate for a
 multi-dataset context. Therefore the statistical analysis is performed using
 the Wilcoxon signed-rank test~\cite{Wilcoxon1945} as a post-hoc analysis. The
-variable used for this test is the data utilization rate \added{based on the
-G-mean performance metric}, considering the various performance thresholds
+variable used for this test is the data utilization rate based on the
+G-mean performance metric, considering the various performance thresholds
 from Table~\ref{tab:optimal_data_utilization}.
 
 The Wilcoxon signed-rank test results are shown in
@@ -1071,11 +1057,10 @@ reflected in the reduction of the amount of data necessary to reach better
 classification results.
 
 The convergence efficiency of the proposed method is always higher than the
-baseline AL framework \deleted{(NONE)}, \added{with the exception of one
-comparison,} as shown in Table~\ref{tab:aulc_ranks} \added{and
-Figure~\ref{fig:dur}}. \replaced{This means the proposed}{The} AL
-\added{framework} using data generation was able to outperform the baseline AL
-in \added{nearly} all scenarios. 
+baseline AL framework, with the exception of one comparison, as shown in
+Table~\ref{tab:aulc_ranks} and Figure~\ref{fig:dur}. This means the proposed
+AL framework using data generation was able to outperform the baseline AL in
+nearly all scenarios. 
 
 The mean AULC scores in Table~\ref{tab:aulc_scores} show a significant
 improvement in the performance of AL when a generator is used. The mean
