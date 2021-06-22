@@ -535,27 +535,8 @@ generated instance is copied from one of its parents.
 This method cannot ensure a balanced dataset since class imbalance is not
 specifically addressed, but rather dataset imbalance.
 
-K-means SMOTE~\citep{Douzas2018} avoids noisy data
-generation by modifying the data selection mechanism. It employs $k$-means
-clustering to identify safe areas using cluster-specific Imbalance Ratio
-(IR, defined by $\frac{count(C_{majority})}{count(C_{minority})}$) and
-determine the quantity of generated samples per cluster based on a density
-measure. These samples are finally generated using the SMOTE algorithm. The
-K-means SMOTE's data generation process is depicted in
-Figure~\ref{fig:kmeans_smote_example}. Note that the number of samples
-generated for each cluster varies according to the sparsity of each cluster
-(the sparser the cluster is, the more samples will be generated) and a cluster
-is rejected if the cluster's IR surpasses the threshold.  Therefore, this
-method can be combined with any data generation mechanism, such as G-SMOTE.
-Also K-means SMOTE includes the SMOTE algorithm as a
-special case when the number of clusters is set to one. Consequently,
-K-means SMOTE returns
-results as good as or better than SMOTE.
-
-\pagebreak
-
 \end{paracol}
-\begin{figure}[H]
+\begin{figure}
 	\centering
     \captionsetup{justification=centering}
     \caption{Example of K-means SMOTE's data generation
@@ -571,6 +552,21 @@ results as good as or better than SMOTE.
 \begin{paracol}{2}
 \linenumbers
 \switchcolumn
+
+K-means SMOTE~\citep{Douzas2018} avoids noisy data generation by modifying the
+data selection mechanism. It employs $k$-means clustering to identify safe
+areas using cluster-specific Imbalance Ratio (IR, defined by
+$\frac{count(C_{majority})}{count(C_{minority})}$) and determine the quantity
+of generated samples per cluster based on a density measure. These samples are
+finally generated using the SMOTE algorithm. The K-means SMOTE's data
+generation process is depicted in Figure~\ref{fig:kmeans_smote_example}. Note
+that the number of samples generated for each cluster varies according to the
+sparsity of each cluster (the sparser the cluster is, the more samples will be
+generated) and a cluster is rejected if the cluster's IR surpasses the
+threshold.  Therefore, this method can be combined with any data generation
+mechanism, such as G-SMOTE.  Also K-means SMOTE includes the SMOTE algorithm
+as a special case when the number of clusters is set to one. Consequently,
+K-means SMOTE returns results as good as or better than SMOTE.
 
 Although no other study was found to implement cluster-based oversampling,
 another study \citep{Douzas2019rs} compared the performance of SMOTE, ROS,
