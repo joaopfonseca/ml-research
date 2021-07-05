@@ -76,19 +76,19 @@
 
 \section{Introduction}
 
-Machine Learning models are highly dependent on the quality of the training
-dataset used~\cite{Fenza2021}. The presence of imbalanced and/or small
-datasets, target labels incorrectly assigned, outliers and high dimensional
-input spaces may significantly reduce the prospects of a successful machine
-learning model implementation. Although the quality of all classifiers are
-affected by a small training dataset, Deep Learning classifiers are
-particularly sensitive to it. Depending on the complexity of the model, deep
-learning models show a high degree of performance variability even with large
-amounts of training data, particularly when the model is tested over a fully
-independent validation/test set~\cite{Hu2020}. Various problems contribute
-towards this performance variability, \textit{e.g.,} biased training dataset,
-varying conditions of data collection across test/train set and small
-training data.
+The performance of Machine Learning models is highly dependent on the quality
+of the training dataset used~\cite{Fenza2021}. The presence of imbalanced
+and/or small datasets, target labels incorrectly assigned, outliers and high
+dimensional input spaces may significantly reduce the prospects of a
+successful machine learning model implementation. Although the quality of all
+classifiers are affected by a small training dataset, Deep Learning
+classifiers are particularly sensitive to it. Depending on the complexity of
+the model, deep learning models show a high degree of performance variability
+even with large amounts of training data, particularly when the model is
+tested over a fully independent validation/test set~\cite{Hu2020}. Various
+problems contribute towards this performance variability, \textit{e.g.,}
+biased training dataset, varying conditions of data collection across
+test/train set and small training data.
 
 % Expand on the overfitting problem here and sources of problems in data
 
@@ -192,8 +192,7 @@ significant within the field of Data Augmentation. The manuscripts' keywords
 were used to construct a network of keywords (described in
 Subsection~\ref{sec:keyword_analysis}) and study the different communities of
 keywords found in the network. The topic modelling and parameter tunning is described in
-Subsection~\ref{sec:topic_modelling}. The abstract embeddings procedure is
-described in Subsection~\ref{sec:abstract_embeddings}.
+Subsection~\ref{sec:topic_modelling}. 
 
 \begin{figure}[H]
 	\centering
@@ -307,15 +306,6 @@ achieved. Additionally, the coherence score curve was also used as a reference f
 parameter tuning and the choice of parameters, which are described in
 Table~\ref{tab:hyperparameters}. 
 
-\subsection{Abstract embeddings}~\label{sec:abstract_embeddings}
-
-The embeddings of the abstracts was done using the Doc2Vec
-algorithm~\cite{Le2014} and the hyperparameters are defined in
-Table~\ref{tab:hyperparameters}. This allowed the representation of the corpus
-in a 25 dimension space and was further reduced using a
-U-map~\cite{Mcinnes2018} to allow the visualization of the output in a
-2-dimensional space.
-
 \begin{table}[H]
     \centering
     \begin{tabular}{lll}
@@ -327,10 +317,6 @@ U-map~\cite{Mcinnes2018} to allow the visualization of the output in a
                 &   Passes          &   20    \\
                 &   Alpha           &   0.1   \\
                 &   ETA             &   auto  \\
-        \midrule
-        Doc2Vec &   Size            &   25    \\
-                &   Iterations      &   100   \\
-                &   Min count       &   10    \\
         \bottomrule
     \end{tabular}
     \caption{Hyperparameters used.}~\label{tab:hyperparameters}
@@ -341,8 +327,7 @@ U-map~\cite{Mcinnes2018} to allow the visualization of the output in a
 The analysis and modelling was developed using the Python programming
 language, along with the
 \href{https://scikit-learn.org/stable/}{Scikit-Learn}~\cite{Pedregosa2011},
-\href{https://radimrehurek.com/gensim/}{Gensim}~\cite{Rehurek2010},
-\href{https://github.com/lmcinnes/umap}{Umap-Learn}~\cite{Mcinnes2018} and
+\href{https://radimrehurek.com/gensim/}{Gensim}~\cite{Rehurek2010}, and
 \href{https://networkx.org/}{Networkx}~\cite{Hagberg2008} libraries. The final
 network analysis and visualization was done with
 \href{https://gephi.org/}{Gephi}~\cite{Bastian2009}. All functions,
@@ -730,8 +715,8 @@ The design of the search query was done based on a single keyword. Although
 this reduces possible bias, it may have been too broad and didn't include some
 significant research papers from related techniques such as oversampling. The
 design of the LDA analysis involved a significant amount of time spent on
-parameter tuning.  Although, due to the subjectivity of the subject, other
-configurations may be tested in order to optimize the results.
+parameter tuning.  Although, due to the subjectivity of the subject, the
+results may benefit from a more extensive exploration of hyperparameters. 
 
 \section{Conclusion}~\label{sec:conclusion}
 

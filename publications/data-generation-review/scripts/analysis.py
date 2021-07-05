@@ -70,6 +70,8 @@ def per_year_publications(df):
         lambda x: 'Cited' if not x else 'Uncited'
     )
 
+    df = df[df['Year'] <= 2020]
+
     df_ = df.groupby(['Year', 'Is cited'])\
         .size().to_frame('count').reset_index()\
         .pivot('Year', 'Is cited', 'count').fillna(0)
@@ -86,7 +88,7 @@ def per_year_publications(df):
     )
     plt.xlabel('Year', fontsize=8)
     plt.ylabel('Number of Documents', fontsize=8)
-    ax.set_xlim(2006, 2021)
+    ax.set_xlim(2006, 2020)
 
     plt.savefig(
         join(analysis_path, 'area_chart_cited_documents.pdf'),
