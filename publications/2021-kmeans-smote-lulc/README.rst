@@ -2,7 +2,7 @@
 Improving Imbalanced Land Cover Classification with K-means SMOTE: Detecting and Oversampling Distinctive Minority Spectral Signatures
 ======================================================================================================================================
 
-[**Link to publication**](https://doi.org/10.3390/info12070266)
+`Link to publication <https://doi.org/10.3390/info12070266>`_
 
 Abstract
 ========
