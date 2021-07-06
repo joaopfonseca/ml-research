@@ -85,7 +85,7 @@ RANDOM_STATE = 0
 
 
 class Datasets:
-    """Class to download and save datasets."""
+    """Base class to download and save datasets."""
 
     def __init__(self, names='all'):
         self.names = names
@@ -863,7 +863,6 @@ class ContinuousCategoricalDatasets(Datasets):
             22, 24, 26, 27
         ]
         return data, categorical_features
-
 
 class RemoteSensingDatasets(Datasets):
     """Class to download, transform and save remote sensing datasets."""
