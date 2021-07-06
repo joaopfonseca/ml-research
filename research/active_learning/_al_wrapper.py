@@ -89,10 +89,10 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
 
     References
     ----------
-    .. [1] J. Fonseca, G. Douzas, F. Bacao, "Increasing the Effectiveness of
-       Active Learning: Introducing Artificial Data Generation in Active
-       Learning for Land Use/Land Cover Classification", under submission
-       process.
+    .. [1] Fonseca, J., Douzas, G., Bacao, F. (2021). Increasing the
+       Effectiveness of Active Learning: Introducing Artificial Data Generation
+       in Active Learning for Land Use/Land Cover Classification. Remote
+       Sensing, 13(13), 2619. https://doi.org/10.3390/rs13132619
     """
 
     def __init__(
