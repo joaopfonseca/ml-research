@@ -46,6 +46,7 @@ This is the full API documentation of the `research` package.
     datasets.BinaryDatasets
     datasets.ImbalancedBinaryDatasets
     datasets.ContinuousCategoricalDatasets
+    datasets.MulticlassDatasets
     datasets.RemoteSensingDatasets
 
 :mod:`research.metrics`
