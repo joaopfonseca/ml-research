@@ -3,7 +3,7 @@ This submodule contains the code developed for experiments related to Active
 Learning.
 """
 
-from ._al_wrapper import ALWrapper
+from ._active_learning import ALWrapper
 from ._selection_methods import (
     entropy,
     breaking_ties,
