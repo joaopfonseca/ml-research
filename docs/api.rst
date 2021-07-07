@@ -20,6 +20,7 @@ This is the full API documentation of the `research` package.
     :template: class.rst
     
     active_learning.ALWrapper
+    active_learning.OverSamplingAugmentation
 
 .. autosummary::
     :toctree: _generated/
