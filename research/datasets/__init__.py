@@ -12,6 +12,7 @@ from ._base import (
     ImbalancedBinaryDatasets,
     BinaryDatasets,
     ContinuousCategoricalDatasets,
+    MulticlassDatasets,
     RemoteSensingDatasets
 )
 
@@ -20,5 +21,6 @@ __all__ = [
     'ImbalancedBinaryDatasets',
     'BinaryDatasets',
     'ContinuousCategoricalDatasets',
+    'MulticlassDatasets',
     'RemoteSensingDatasets'
 ]

@@ -13,6 +13,7 @@ from itertools import product
 from urllib.parse import urljoin
 from string import ascii_lowercase
 from zipfile import ZipFile
+import zlib
 from io import BytesIO, StringIO
 from sqlite3 import connect
 from scipy.io import loadmat
@@ -30,10 +31,11 @@ from research.utils import img_array_to_pandas
 UCI_URL = 'https://archive.ics.uci.edu/ml/machine-learning-databases/'
 KEEL_URL = 'http://sci2s.ugr.es/keel/keel-dataset/datasets/imbalanced/'
 GIC_URL = 'http://www.ehu.eus/ccwintco/uploads/'
+OPENML_URL = 'https://www.openml.org/data/get_csv/'
 FETCH_URLS = {
     'breast_tissue': urljoin(UCI_URL, '00192/BreastTissue.xls'),
     'ecoli': urljoin(UCI_URL, 'ecoli/ecoli.data'),
-    'eucalyptus': 'https://www.openml.org/data/get_csv/3625/dataset_194_eucalyptus.arff',
+    'eucalyptus': urljoin(OPENML_URL, '3625/dataset_194_eucalyptus.arff'),
     'glass': urljoin(UCI_URL, 'glass/glass.data'),
     'haberman': urljoin(UCI_URL, 'haberman/haberman.data'),
     'heart': urljoin(UCI_URL, 'statlog/heart/heart.dat'),
@@ -46,7 +48,6 @@ FETCH_URLS = {
     'new_thyroid_1': urljoin(urljoin(KEEL_URL, 'imb_IRlowerThan9/'), 'new-thyroid1.zip'),
     'new_thyroid_2': urljoin(urljoin(KEEL_URL, 'imb_IRlowerThan9/'), 'new-thyroid2.zip'),
     'cleveland': urljoin(urljoin(KEEL_URL, 'imb_IRhigherThan9p2/'), 'cleveland-0_vs_4.zip'),
-    'dermatology': urljoin(urljoin(KEEL_URL, 'imb_IRhigherThan9p3/'), 'dermatology-6.zip'),
     'led': urljoin(urljoin(KEEL_URL, 'imb_IRhigherThan9p2/'), 'led7digit-0-2-4-5-6-7-8-9_vs_1.zip'),
     'page_blocks_1_3': urljoin(urljoin(KEEL_URL, 'imb_IRhigherThan9p1/'), 'page-blocks-1-3_vs_4.zip'),
     'vowel': urljoin(urljoin(KEEL_URL, 'imb_IRhigherThan9p1/'), 'vowel0.zip'),
@@ -73,6 +74,15 @@ FETCH_URLS = {
     'hepatitis': urljoin(UCI_URL, 'hepatitis/hepatitis.data'),
     'german_credit': urljoin(UCI_URL, 'statlog/german/german.data'),
     'thyroid': urljoin(UCI_URL, 'thyroid-disease/thyroid0387.data'),
+    'first_order_theorem': urljoin(OPENML_URL, '1587932/phpPbCMyg'),
+    'gas_drift': urljoin(OPENML_URL, '1588715/phpbL6t4U'),
+    'autouniv_au7': urljoin(OPENML_URL, '1593748/phpmRPvKy'),
+    'autouniv_au4': urljoin(OPENML_URL, '1593744/phpiubDlf'),
+    'mice_protein': urljoin(OPENML_URL, '17928620/phpchCuL5'),
+    'steel_plates': urljoin(OPENML_URL, '18151921/php5s7Ep8'),
+    'cardiotocography': urljoin(OPENML_URL, '1593756/phpW0AXSQ'),
+    'waveform': urljoin(OPENML_URL, '60/dataset_60_waveform-5000.arff'),
+    'volkert': urljoin(OPENML_URL, '19335689/file1c556e3db171.arff'),
     'indian_pines': [urljoin(GIC_URL,'2/22/Indian_pines.mat'), urljoin(GIC_URL,'c/c4/Indian_pines_gt.mat')],
     'salinas': [urljoin(GIC_URL,'f/f1/Salinas.mat'), urljoin(GIC_URL,'f/fa/Salinas_gt.mat')],
     'salinas_a': [urljoin(GIC_URL,'d/df/SalinasA.mat'), urljoin(GIC_URL,'a/aa/SalinasA_gt.mat')],
@@ -85,7 +95,7 @@ RANDOM_STATE = 0
 
 
 class Datasets:
-    """Class to download and save datasets."""
+    """Base class to download and save datasets."""
 
     def __init__(self, names='all'):
         self.names = names
@@ -863,6 +873,128 @@ class ContinuousCategoricalDatasets(Datasets):
             22, 24, 26, 27
         ]
         return data, categorical_features
+
+
+class MulticlassDatasets(Datasets):
+    """Class to download, transform and save multiclass datasets."""
+
+    def fetch_first_order_theorem(self):
+        """Download and transform the First Order Theorem Data Set.
+
+        https://www.openml.org/d/1475
+        """
+        data = pd.read_csv(FETCH_URLS['first_order_theorem'])
+        data.rename(columns={'Class': 'target'}, inplace=True)
+        return data
+
+    def fetch_gas_drift(self):
+        """Download and transform the Gas Drift Data Set.
+
+        https://www.openml.org/d/1476
+        """
+        data = pd.read_csv(FETCH_URLS['gas_drift'])
+        data.rename(columns={'Class': 'target'}, inplace=True)
+        return data
+
+    def fetch_autouniv_au7(self):
+        """Download and transform the AutoUniv au7 Data Set
+
+        https://www.openml.org/d/1552
+        """
+        data = pd.read_csv(FETCH_URLS['autouniv_au7'])
+        data.rename(columns={'Class': 'target'}, inplace=True)
+        data.target = data.target\
+            .apply(lambda x: x.replace('class', ''))\
+            .astype(int)
+        return data
+
+    def fetch_autouniv_au4(self):
+        """Download and transform the AutoUniv au4 Data Set
+
+        https://www.openml.org/d/1548
+        """
+        data = pd.read_csv(FETCH_URLS['autouniv_au4'])
+        data.rename(columns={'Class': 'target'}, inplace=True)
+        data.target = data.target\
+            .apply(lambda x: x.replace('class', ''))\
+            .astype(int)
+
+        mask = (data.iloc[:, :-1].nunique() > 10).tolist()
+        mask.append(True)
+        data = data.loc[:, mask].copy()
+        return data
+
+    def fetch_mice_protein(self):
+        """Download and transform the Mice Protein Data Set
+
+        https://www.openml.org/d/40966
+        """
+        data = pd.read_csv(FETCH_URLS['mice_protein'])
+        data.rename(columns={'class': 'target'}, inplace=True)
+        data.drop(columns=['MouseID'], inplace=True)
+
+        mask = (data.iloc[:, :-1].nunique() > 10).tolist()
+        mask.append(True)
+        mask2 = data.isna().sum() < 10
+
+        data = data.loc[:, mask & mask2].dropna().copy()
+        data.replace('?', np.nan, inplace=True)
+        data.iloc[:, :-1] = data.iloc[:, :-1].astype(float)
+
+        mapper = {v: k for k, v in enumerate(data.target.unique())}
+        data.target = data.target.map(mapper)
+        return data
+
+    def fetch_steel_plates(self):
+        """Download and transform the Steel Plates Fault Data Set.
+
+        https://www.openml.org/d/40982
+        """
+        data = pd.read_csv(FETCH_URLS['steel_plates'])
+
+        mask = (data.iloc[:, :-1].nunique() > 10).tolist()
+        mask.append(True)
+        data = data.loc[:, mask].copy()
+
+        mapper = {v: k for k, v in enumerate(data.target.unique())}
+        data.target = data.target.map(mapper)
+        return data
+
+    def fetch_cardiotocography(self):
+        """Download and transform the Cardiotocography Data Set.
+
+        https://www.openml.org/d/1560
+        """
+        data = pd.read_csv(FETCH_URLS['cardiotocography'])
+        data.rename(columns={'Class': 'target'}, inplace=True)
+
+        mask = (data.iloc[:, :-1].nunique() > 10).tolist()
+        mask.append(True)
+        data = data.loc[:, mask].copy()
+
+        return data
+
+    def fetch_waveform(self):
+        """Download and transform the Waveform Database Generator (version 2) Data Set.
+
+        https://www.openml.org/d/60
+        """
+        data = pd.read_csv(FETCH_URLS['waveform'])
+        data.rename(columns={'class': 'target'}, inplace=True)
+        return data
+
+    def fetch_volkert(self):
+        """Download and transform the Volkert Data Set.
+
+        https://www.openml.org/d/41166
+        """
+        data = pd.read_csv(FETCH_URLS['volkert'], nrows=3000)
+        data.rename(columns={'class': 'target'}, inplace=True)
+
+        mask = (data.iloc[:, 1:].nunique() > 100).tolist()
+        mask.insert(0, True)
+        data = data.loc[:, mask].copy()
+        return data
 
 
 class RemoteSensingDatasets(Datasets):

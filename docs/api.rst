@@ -20,6 +20,7 @@ This is the full API documentation of the `research` package.
     :template: class.rst
     
     active_learning.ALWrapper
+    active_learning.OverSamplingAugmentation
 
 .. autosummary::
     :toctree: _generated/
@@ -46,6 +47,7 @@ This is the full API documentation of the `research` package.
     datasets.BinaryDatasets
     datasets.ImbalancedBinaryDatasets
     datasets.ContinuousCategoricalDatasets
+    datasets.MulticlassDatasets
     datasets.RemoteSensingDatasets
 
 :mod:`research.metrics`
