@@ -2,7 +2,7 @@
 Increasing the Effectiveness of Active Learning: Introducing Artificial Data Generation in Active Learning for Land Use/Land Cover Classification
 =================================================================================================================================================
 
-`Link to publication <https://doi.org/10.3390/rs13132619)>`_
+`Link to publication <https://doi.org/10.3390/rs13132619>`_
 
 Abstract
 ========
