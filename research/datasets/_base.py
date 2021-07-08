@@ -393,15 +393,12 @@ class ImbalancedBinaryDatasets(Datasets):
 
         http://sci2s.ugr.es/keel/dataset.php?cod=1330
         """
-        zipped_data = requests.get(FETCH_URLS['dermatology']).content
-        unzipped_data = ZipFile(BytesIO(zipped_data))\
-            .read('dermatology-6.dat')\
-            .decode('utf-8')
         data = pd.read_csv(
-            StringIO(sub(r'@.+\n+', '', unzipped_data)),
+            FETCH_URLS['dermatology'],
             header=None
         )
         data.rename(columns={34: 'target'}, inplace=True)
+        data.drop(columns=33, inplace=True)
         data['target'] = data['target'].isin(['positive']).astype(int)
         return data
 
