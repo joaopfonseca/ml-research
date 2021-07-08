@@ -7,9 +7,18 @@ Extract the dadtabase.
 
 from os import pardir
 from os.path import join, dirname
-from research.datasets import MulticlassDatasets, ImbalancedBinaryDatasets
+# from sklearn.model_selection import train_test_split
+from research.datasets import (
+    MulticlassDatasets
+)
 
 DATA_PATH = join(dirname(__file__), pardir, 'data')
 
-datasets = MulticlassDatasets().download()
-datasets2 = ImbalancedBinaryDatasets().download()
+
+if __name__ == '__main__':
+
+    # Download datasets
+    datasets = MulticlassDatasets().download()
+
+    # Save database
+    datasets.save(DATA_PATH, 'active_learning_augmentation')
