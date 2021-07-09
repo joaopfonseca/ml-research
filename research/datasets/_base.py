@@ -13,7 +13,6 @@ from itertools import product
 from urllib.parse import urljoin
 from string import ascii_lowercase
 from zipfile import ZipFile
-import zlib
 from io import BytesIO, StringIO
 from sqlite3 import connect
 from scipy.io import loadmat
@@ -83,6 +82,16 @@ FETCH_URLS = {
     'cardiotocography': urljoin(OPENML_URL, '1593756/phpW0AXSQ'),
     'waveform': urljoin(OPENML_URL, '60/dataset_60_waveform-5000.arff'),
     'volkert': urljoin(OPENML_URL, '19335689/file1c556e3db171.arff'),
+    'asp_potassco': urljoin(OPENML_URL, '21377447/file18547f421393.arff'),
+    'wine_quality': urljoin(OPENML_URL, '4965268/wine-quality-red.arff'),
+    'mfeat_zernike': urljoin(OPENML_URL, '22/dataset_22_mfeat-zernike.arff'),
+    'gesture_segmentation': urljoin(OPENML_URL, '1798765/phpYLeydd'),
+    'texture': urljoin(OPENML_URL, '4535764/phpBDgUyY'),
+    'usps': urljoin(OPENML_URL, '19329737/usps.arff'),
+    'japanese_vowels': urljoin(OPENML_URL, '52415/JapaneseVowels.arff'),
+    'pendigits': urljoin(OPENML_URL, '32/dataset_32_pendigits.arff'),
+    'image_segmentation': urljoin(OPENML_URL, '18151937/phpyM5ND4'),
+    'baseball': urljoin(OPENML_URL, '3622/dataset_189_baseball.arff'),
     'indian_pines': [urljoin(GIC_URL,'2/22/Indian_pines.mat'), urljoin(GIC_URL,'c/c4/Indian_pines_gt.mat')],
     'salinas': [urljoin(GIC_URL,'f/f1/Salinas.mat'), urljoin(GIC_URL,'f/fa/Salinas_gt.mat')],
     'salinas_a': [urljoin(GIC_URL,'d/df/SalinasA.mat'), urljoin(GIC_URL,'a/aa/SalinasA_gt.mat')],
@@ -393,15 +402,12 @@ class ImbalancedBinaryDatasets(Datasets):
 
         http://sci2s.ugr.es/keel/dataset.php?cod=1330
         """
-        zipped_data = requests.get(FETCH_URLS['dermatology']).content
-        unzipped_data = ZipFile(BytesIO(zipped_data))\
-            .read('dermatology-6.dat')\
-            .decode('utf-8')
         data = pd.read_csv(
-            StringIO(sub(r'@.+\n+', '', unzipped_data)),
+            FETCH_URLS['dermatology'],
             header=None
         )
         data.rename(columns={34: 'target'}, inplace=True)
+        data.drop(columns=33, inplace=True)
         data['target'] = data['target'].isin(['positive']).astype(int)
         return data
 
@@ -762,7 +768,7 @@ class ContinuousCategoricalDatasets(Datasets):
             na_values='?'
         ).dropna()
         data.rename(columns={data.columns[-1]: 'target'}, inplace=True)
-        categorical_features = list(range(data.shape[0]))
+        categorical_features = list(range(data.shape[1]-1))
         categorical_features.remove(33)
         return data, categorical_features
 
@@ -988,12 +994,143 @@ class MulticlassDatasets(Datasets):
 
         https://www.openml.org/d/41166
         """
-        data = pd.read_csv(FETCH_URLS['volkert'], nrows=3000)
+        data = pd.read_csv(FETCH_URLS['volkert'])
         data.rename(columns={'class': 'target'}, inplace=True)
 
         mask = (data.iloc[:, 1:].nunique() > 100).tolist()
         mask.insert(0, True)
         data = data.loc[:, mask].copy()
+        return data
+
+    def fetch_vehicle(self):
+        """Download and transform the Vehicle Silhouettes Data Set.
+
+        https://archive.ics.uci.edu/ml/datasets/Statlog+(Vehicle+Silhouettes)
+        """
+        data = pd.DataFrame()
+        for letter in ascii_lowercase[0:9]:
+            partial_data = pd.read_csv(
+                urljoin(FETCH_URLS['vehicle'], 'xa%s.dat' % letter),
+                header=None, delim_whitespace=True
+            )
+            partial_data = partial_data.rename(columns={18: 'target'})
+            data = data.append(partial_data)
+
+        mapper = {v: k for k, v in enumerate(data.target.unique())}
+        data.target = data.target.map(mapper)
+
+        return data
+
+    def fetch_asp_potassco(self):
+        """Download and transform the ASP-POTASSCO Data Set.
+
+        https://www.openml.org/d/41705
+        """
+        data = pd.read_csv(FETCH_URLS['asp_potassco'], na_values='?')
+        data.dropna(inplace=True)
+        data['target'] = data['algorithm']
+        data.drop(columns=['instance_id', 'algorithm'], inplace=True)
+
+        mask = (data.iloc[:, :-1].nunique() > 100).tolist()
+        mask.append(True)
+        data = data.loc[:, mask].copy()
+
+        mapper = {v: k for k, v in enumerate(data.target.unique())}
+        data.target = data.target.map(mapper)
+
+        return data
+
+    def fetch_wine_quality(self):
+        """Download and transform the Wine Quality Data Set.
+
+        https://www.openml.org/d/40691
+        """
+        data = pd.read_csv(FETCH_URLS['wine_quality'])
+        data.rename(columns={'class': 'target'}, inplace=True)
+        return data
+
+    def fetch_mfeat_zernike(self):
+        """Download and transform the Multiple Features Dataset: Zernike Data Set.
+
+        https://www.openml.org/d/22
+        """
+        data = pd.read_csv(FETCH_URLS['mfeat_zernike'])
+        data.drop_duplicates(inplace=True)
+        data.rename(columns={'class': 'target'}, inplace=True)
+        return data
+
+    def fetch_gesture_segmentation(self):
+        """Download and transform the Gesture Phase Segmentation Data Set.
+
+        https://www.openml.org/d/4538
+        """
+        data = pd.read_csv(FETCH_URLS['gesture_segmentation'])
+        data.rename(columns={'Phase': 'target'}, inplace=True)
+
+        mapper = {v: k for k, v in enumerate(data.target.unique())}
+        data.target = data.target.map(mapper)
+        return data
+
+    def fetch_texture(self):
+        """Download and transform the Texture Data Set.
+
+        https://www.openml.org/d/40499
+        """
+        data = pd.read_csv(FETCH_URLS['texture'])
+        data.drop_duplicates(inplace=True)
+        data.rename(columns={'Class': 'target'}, inplace=True)
+        return data
+
+    def fetch_usps(self):
+        """Download and transform the USPS Data Set.
+
+        https://www.openml.org/data/get_csv/19329737/usps.arff
+        """
+        data = pd.read_csv(FETCH_URLS['usps'])
+        data.rename(columns={'int0': 'target'}, inplace=True)
+        return data
+
+    def fetch_japanese_vowels(self):
+        """Download and transform the Japanese Vowels Data Set.
+
+        https://www.openml.org/d/375
+        """
+        data = pd.read_csv(FETCH_URLS['japanese_vowels'])
+        data.rename(columns={'speaker': 'target'}, inplace=True)
+        data.drop(columns=['utterance', 'frame'], inplace=True)
+        return data
+
+    def fetch_pendigits(self):
+        """Download and transform the Pen-Based Recognition of Handwritten
+        Digits Data Set.
+
+        https://www.openml.org/d/32
+        """
+        data = pd.read_csv(FETCH_URLS['pendigits'])
+        data.rename(columns={'class': 'target'}, inplace=True)
+        return data
+
+    def fetch_image_segmentation(self):
+        """Download and transform the Image Segmentation Data Set.
+
+        https://www.openml.org/d/40984
+        """
+        data = pd.read_csv(FETCH_URLS['image_segmentation'])
+        data.drop(columns=data.columns[:5], inplace=True)
+        data.rename(columns={'class': 'target'}, inplace=True)
+
+        mapper = {v: k for k, v in enumerate(data.target.unique())}
+        data.target = data.target.map(mapper)
+        return data
+
+    def fetch_baseball(self):
+        """Download and transform the Baseball Hall of Fame Data Set.
+
+        https://www.openml.org/d/185
+        """
+        data = pd.read_csv(FETCH_URLS['baseball'])
+        data.drop(columns=['Player', 'Position'], inplace=True)
+        data.rename(columns={'Hall_of_Fame': 'target'}, inplace=True)
         return data
 
 
