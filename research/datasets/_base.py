@@ -942,13 +942,13 @@ class MulticlassDatasets(Datasets):
         data = pd.read_csv(FETCH_URLS['mice_protein'])
         data.rename(columns={'class': 'target'}, inplace=True)
         data.drop(columns=['MouseID'], inplace=True)
+        data.replace('?', np.nan, inplace=True)
 
         mask = (data.iloc[:, :-1].nunique() > 10).tolist()
         mask.append(True)
         mask2 = data.isna().sum() < 10
-
         data = data.loc[:, mask & mask2].dropna().copy()
-        data.replace('?', np.nan, inplace=True)
+
         data.iloc[:, :-1] = data.iloc[:, :-1].astype(float)
 
         mapper = {v: k for k, v in enumerate(data.target.unique())}
