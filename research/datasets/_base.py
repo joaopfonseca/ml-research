@@ -1132,9 +1132,10 @@ class MulticlassDatasets(Datasets):
 
         https://www.openml.org/d/185
         """
-        data = pd.read_csv(FETCH_URLS['baseball'])
+        data = pd.read_csv(FETCH_URLS['baseball'], na_values='?')
         data.drop(columns=['Player', 'Position'], inplace=True)
         data.rename(columns={'Hall_of_Fame': 'target'}, inplace=True)
+        data.dropna(inplace=True)
         return data
 
 
