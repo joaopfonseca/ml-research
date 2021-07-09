@@ -912,6 +912,10 @@ class MulticlassDatasets(Datasets):
         data.target = data.target\
             .apply(lambda x: x.replace('class', ''))\
             .astype(int)
+
+        mask = (data.iloc[:, :-1].nunique() > 10).tolist()
+        mask.append(True)
+        data = data.loc[:, mask].copy()
         return data
 
     def fetch_autouniv_au4(self):
