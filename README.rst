@@ -1,4 +1,4 @@
-|Python Versions| |Documentation Status|
+|Python Versions| |Documentation Status| |Pypi Version|
 
 Research
 ========
@@ -62,5 +62,9 @@ minimal effort:
 
 
 .. |Python Versions| image:: https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9-blue
+
 .. |Documentation Status| image:: https://readthedocs.org/projects/joaopfonseca-research/badge/?version=latest
    :target: https://joaopfonseca-research.readthedocs.io/en/latest/?badge=latest
+
+.. |Pypi Version| image:: https://badge.fury.io/py/ml-research.svg
+   :target: https://badge.fury.io/py/ml-research
