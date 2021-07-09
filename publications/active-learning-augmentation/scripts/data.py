@@ -5,8 +5,9 @@ Extract the dadtabase.
 # Author: Joao Fonseca <jpfonseca@novaims.unl.pt>
 # License: MIT
 
-from os import pardir
+import os
 from os.path import join, dirname
+from zipfile import ZipFile, ZIP_DEFLATED
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
@@ -15,7 +16,7 @@ from research.datasets import (
 )
 
 RANDOM_STATE = 42
-DATA_PATH = join(dirname(__file__), pardir, 'data')
+DATA_PATH = join(dirname(__file__), os.pardir, 'data')
 
 
 def set_sample_size(n_instances):
@@ -40,7 +41,6 @@ if __name__ == '__main__':
     # Sample and standardize datasets
     content = []
     for name, data in datasets.content_:
-        print(name)
         n_instances = data.shape[0]
         if n_instances > 2000:
             data, _ = train_test_split(
@@ -63,3 +63,11 @@ if __name__ == '__main__':
 
     # Save database
     datasets.save(DATA_PATH, 'active_learning_augmentation')
+
+    # Zip database (it was too large to store directly on GitHub)
+    db_path = join(DATA_PATH, 'active_learning_augmentation.db')
+    ZipFile(db_path + '.zip', 'w')\
+        .write(db_path, compress_type=ZIP_DEFLATED)
+
+    # Remove uncompressed database file
+    os.remove(db_path)
