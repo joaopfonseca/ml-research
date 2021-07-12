@@ -66,8 +66,11 @@ if __name__ == '__main__':
 
     # Zip database (it was too large to store directly on GitHub)
     db_path = join(DATA_PATH, 'active_learning_augmentation.db')
-    ZipFile(db_path + '.zip', 'w')\
-        .write(db_path, compress_type=ZIP_DEFLATED)
+    ZipFile(db_path + '.zip', 'w').write(
+        db_path,
+        arcname='active_learning_augmentation.db',
+        compress_type=ZIP_DEFLATED
+    )
 
     # Remove uncompressed database file
     os.remove(db_path)
