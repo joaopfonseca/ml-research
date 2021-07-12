@@ -61,6 +61,8 @@ if __name__ == '__main__':
         )
         content.append((name, data))
 
+    datasets.content_ = content
+
     # Save database
     datasets.save(DATA_PATH, 'active_learning_augmentation')
 
