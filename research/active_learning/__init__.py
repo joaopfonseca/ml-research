@@ -10,11 +10,9 @@ from ._selection_methods import (
     random,
     SELECTION_CRITERIA
 )
-from ._generator import OverSamplingAugmentation
 
 __all__ = [
     'ALWrapper',
-    'OverSamplingAugmentation',
     'entropy',
     'breaking_ties',
     'random',
