@@ -209,8 +209,6 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         if self.save_test_scores:
             self.test_scores_.append(score)
 
-            # TODO: This is useless. DUR can be calculated without this
-            #       list. Just need to adapt the code accordingly.
             self.data_utilization_.append(
                 (selection.sum(), selection.sum()/selection.shape[0])
             )
