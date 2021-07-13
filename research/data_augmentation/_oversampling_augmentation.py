@@ -16,7 +16,7 @@ AUGMENTATION_STRATEGIES = [
 class OverSamplingAugmentation(BaseOverSampler):
     """
     A wrapper to facilitate the use of `imblearn.over_sampling` objects for
-    data augmentation in Active Learning experiments with multiple datasets.
+    data augmentation.
 
     Parameters
     ----------
@@ -33,7 +33,7 @@ class OverSamplingAugmentation(BaseOverSampler):
         - When ``oversampling``, the data augmentation is done according to the
           sampling strategy passed in the ``oversampler`` object.
 
-        - When ``constant``, then each class frequency is augmented to match
+        - When ``constant``, each class frequency is augmented to match
           the value passed in the parameter ``value``.
 
     value : int, float, default=None
