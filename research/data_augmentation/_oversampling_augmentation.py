@@ -127,7 +127,7 @@ class OverSamplingAugmentation(BaseOverSampler):
 
         return self
 
-    def fit_resample(self, X, y):
+    def fit_resample(self, X, y, **fit_params):
         """
         Resample the dataset.
 
@@ -158,6 +158,6 @@ class OverSamplingAugmentation(BaseOverSampler):
                     random_state=self.random_state,
                     sampling_strategy=self.sampling_strategy_
                 )
-            return self.oversampler_.fit_resample(X, y)
+            return self.oversampler_.fit_resample(X, y, **fit_params)
         else:
             return X, y
