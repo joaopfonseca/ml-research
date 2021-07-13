@@ -20,7 +20,6 @@ This is the full API documentation of the `research` package.
     :template: class.rst
     
     active_learning.ALWrapper
-    active_learning.OverSamplingAugmentation
 
 .. autosummary::
     :toctree: _generated/
@@ -29,6 +28,22 @@ This is the full API documentation of the `research` package.
     active_learning.entropy
     active_learning.breaking_ties
     active_learning.random
+
+:mod:`research.data_augmentation`
+---------------------------------
+
+.. automodule:: research.data_augmentation
+    :no-members:
+    :no-inherited-members:
+
+.. currentmodule:: research
+
+.. autosummary::
+    :toctree: _generated/
+    :template: class.rst
+    
+    data_augmentation.GeometricSMOTE
+    data_augmentation.OverSamplingAugmentation
 
 :mod:`research.datasets`
 ------------------------
