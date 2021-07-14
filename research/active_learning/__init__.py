@@ -5,16 +5,10 @@ Learning.
 
 from ._active_learning import ALWrapper
 from ._selection_methods import (
-    entropy,
-    breaking_ties,
-    random,
-    SELECTION_CRITERIA
+    UNCERTAINTY_FUNCTIONS
 )
 
 __all__ = [
     'ALWrapper',
-    'entropy',
-    'breaking_ties',
-    'random',
-    'SELECTION_CRITERIA'
+    'UNCERTAINTY_FUNCTIONS'
 ]

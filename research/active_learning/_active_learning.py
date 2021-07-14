@@ -13,7 +13,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from imblearn.pipeline import Pipeline
 from ..metrics import SCORERS
-from ._selection_methods import SELECTION_CRITERIA
+from ._selection_methods import UNCERTAINTY_FUNCTIONS
 from ._init_methods import init_strategy
 
 
@@ -33,6 +33,12 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         Generator to be used for artificial data generation within Active
         Learning iterations.
 
+    use_sample_weight : bool, default=False
+        Pass ``sample_weights`` as a fit parameter to the generator object. Used to
+        generate artificial data around samples with high uncertainty. ``sample_weights``
+        is an array-like of shape (n_samples,) containing the probabilities (based on
+        uncertainty) for selecting a sample as a center point.
+
     init_clusterer : clusterer estimator, default=None
         WIP
 
@@ -41,7 +47,9 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
 
     selection_strategy : function or {'entropy', 'breaking_ties',\
         'random'}, default='entropy'
-        Method used to quantify the chooser's uncertainty level and select the
+        Method used to quantify the chooser's uncertainty level. All predefined functions
+        are set up so that a higher value means higher uncertainty (higher likelihood of
+        selection) and vice-versa. The uncertainty estimate is used to select the
         instances to be added to the labeled/training dataset.
 
     max_iter : int, default=None
@@ -99,6 +107,7 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         self,
         classifier=None,
         generator=None,
+        use_sample_weight=False,
         init_clusterer=None,
         init_strategy='random',
         selection_strategy='entropy',
@@ -114,6 +123,7 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
     ):
         self.classifier = classifier
         self.generator = generator
+        self.use_sample_weight = use_sample_weight
         self.init_clusterer = init_clusterer
         self.init_strategy = init_strategy
         self.selection_strategy = selection_strategy
@@ -147,11 +157,15 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
             self._classifier = clone(self.classifier)
 
         if type(self.selection_strategy) == str:
-            self.selection_strategy_ = SELECTION_CRITERIA[
+            self.selection_strategy_ = UNCERTAINTY_FUNCTIONS[
                 self.selection_strategy
             ]
         else:
             self.selection_strategy_ = self.selection_strategy
+
+        if type(self.use_sample_weights) != bool:
+            raise TypeError("``use_sample_weights`` must be of type ``bool``. Got"
+                            f" {self.use_sample_weights} instead.")
 
         self.max_iter_ = self.max_iter \
             if self.max_iter is not None \
@@ -242,8 +256,9 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         iter_n = 0
         X, X_test, y, y_test = self._check(X, y)
         selection = np.zeros(shape=(X.shape[0])).astype(bool)
+        sample_weight = None
 
-        # Oracle - Get data according to passed initialization method
+        # Supervisor - Get data according to passed initialization method
         self.init_clusterer_, ids = init_strategy(
             X=X,
             n_initial=self.n_initial,
@@ -267,8 +282,16 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
                 ('chooser', chooser)
             ])
 
-            # Train classifier and get probabilities
-            classifier.fit(X[selection], y[selection])
+            # Generate artificial data and train classifier
+            if self.use_sample_weight:
+                classifier.fit(X[selection], y[selection], sample_weight)
+
+                # Compute the class probabilities of labeled observations
+                labeled_ids = np.argwhere(selection).squeeze()
+                probabs_labeled = classifier.predict_proba(X[selection])
+                probabs_labeled = np.where(probabs_labeled == 0., 1e-10, probabs_labeled)
+            else:
+                classifier.fit(X[selection], y[selection])
 
             # Save metadata from current iteration
             self._save_metadata(
@@ -278,17 +301,28 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
             # Compute the class probabilities of unlabeled observations
             unlabeled_ids = np.argwhere(~selection).squeeze()
             probabs = classifier.predict_proba(X[~selection])
-
-            # Some selection strategies can't deal with 0. values
             probabs = np.where(probabs == 0., 1e-10, probabs)
 
+            # Calculate uncertainty
+            uncertainty = self.selection_strategy_(probabs)
+            if self.use_sample_weight:
+                uncertainty_labeled = self.selection_strategy_(probabs_labeled)
+
             # Get data according to passed selection criterion
-            ids = self.selection_strategy_(
-                probabilities=probabs,
-                unlabeled_ids=unlabeled_ids,
-                increment=self.increment_,
-                random_state=self.random_state
-            )
+            if self.selection_strategy != 'random':
+                ids = unlabeled_ids[np.argsort(uncertainty)[::-1][:self.increment]]
+            else:
+                rng = np.random.RandomState(self.random_state)
+                ids = rng.choice(unlabeled_ids, self.increment, replace=False)
+
+            selection[ids] = True
+
+            # Update sample weights for the following iteration
+            if self.use_sample_weight:
+                sample_weight = np.zeros(selection.shape)
+                sample_weight[labeled_ids] = uncertainty_labeled
+                sample_weight[ids] = uncertainty
+                sample_weight = sample_weight[selection]
 
             # keep track of iter_n
             iter_n += 1
