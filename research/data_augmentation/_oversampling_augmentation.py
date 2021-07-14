@@ -87,8 +87,6 @@ class OverSamplingAugmentation(BaseOverSampler):
             Return the instance itself.
         """
 
-        self._deprecate_ratio()
-
         X, y, _ = self._check_X_y(X, y)
 
         if type(self.augmentation_strategy) not in [int, float, dict] \
@@ -161,3 +159,7 @@ class OverSamplingAugmentation(BaseOverSampler):
             return self.oversampler_.fit_resample(X, y, **fit_params)
         else:
             return X, y
+
+    def _fit_resample(self, X, y):
+        """A placeholder. It was overriden by the self.fit_resample method."""
+        return
