@@ -359,6 +359,8 @@ class GeometricSMOTE(BaseOverSampler):
                 if sample_weight_pos.sum() != 0
                 else None
             )
+        else:
+            sample_weight_pos = None
 
         # Force minority strategy if no negative class samples are present
         self.selection_strategy_ = (
@@ -385,6 +387,9 @@ class GeometricSMOTE(BaseOverSampler):
                     if sample_weight_neg.sum() != 0
                     else None
                 )
+            else:
+                sample_weight_neg = None
+
             self.nn_neg_.fit(X_neg)
             points_neg = self.nn_neg_.kneighbors(X_pos)[1]
             if self.selection_strategy_ == 'majority':
