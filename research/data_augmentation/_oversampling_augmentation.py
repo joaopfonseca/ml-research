@@ -9,7 +9,8 @@ from imblearn.over_sampling.base import BaseOverSampler
 
 AUGMENTATION_STRATEGIES = [
     'oversampling',
-    'constant'
+    'constant',
+    'proportional'
 ]
 
 
@@ -23,8 +24,8 @@ class OverSamplingAugmentation(BaseOverSampler):
     oversampler : oversampler estimator, default=None
         Over-sampler to be used for data augmentation.
 
-    augmentation_strategy : float, dict or {'oversampling', 'constant'}, \
-        default='oversampling'
+    augmentation_strategy : float, dict or {'oversampling', 'constant', 'proportional'}\
+        , default='oversampling'
         Specifies how the data augmentation is done.
 
         - When ``float`` or ``int``, each class' frequency is augmented
@@ -35,6 +36,10 @@ class OverSamplingAugmentation(BaseOverSampler):
 
         - When ``constant``, each class frequency is augmented to match
           the value passed in the parameter ``value``.
+
+        - When ``proportional``, relative class frequencies are preserved and the
+          number of samples in the dataset is matched with the value passed in the
+          parameter ``value``.
 
     value : int, float, default=None
         Value to be used as the new absolute frequency of each class. It is
@@ -98,26 +103,43 @@ class OverSamplingAugmentation(BaseOverSampler):
             )
 
         if (type(self.value) not in [int, float]) \
-                and (self.augmentation_strategy == 'constant'):
+                and (self.augmentation_strategy in ['constant', 'proportional']):
             raise ValueError(
-                f"When 'augmentation_strategy' is 'constant',"
+                f"When 'augmentation_strategy' is 'constant' or 'proportional',"
                 f" 'value' needs to be an int or float. Got "
                 f"{self.value} instead."
             )
 
         # Setup the sampling strategy based on the augmentation strategy
         if self.augmentation_strategy == 'constant':
+            counts = OrderedDict(Counter(y))
             self.sampling_strategy_ = {
-                k: np.round(self.value)
-                for k in np.sort(np.unique(y))
+                k: int(np.round(self.value))
+                if self.value > freq
+                else freq
+                for k, freq in counts.items()
             }
+        elif self.augmentation_strategy == 'proportional':
+            counts = OrderedDict(Counter(y))
+            ratio = self.value / y.shape[0]
+            if ratio > 1:
+                self.sampling_strategy_ = {
+                    k: int(np.round(freq*ratio))
+                    for k, freq in counts.items()
+                }
+            else:
+                raise ValueError(
+                    "The new size of the augmented dataset must be larger than the"
+                    f" original dataset. Originally, there are {y.shape[0]} samples"
+                    f" and {self.value} samples are asked."
+                )
         elif self.augmentation_strategy == 'oversampling':
             self.sampling_strategy_ = self.oversampler.sampling_strategy
 
         elif type(self.augmentation_strategy) in [int, float]:
             counts = OrderedDict(Counter(y))
             self.sampling_strategy_ = {
-                k: np.round(v*self.augmentation_strategy)
+                k: int(np.round(v*self.augmentation_strategy))
                 for k, v in counts.items()
             }
         else:
