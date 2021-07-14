@@ -21,14 +21,6 @@ This is the full API documentation of the `research` package.
     
     active_learning.ALWrapper
 
-.. autosummary::
-    :toctree: _generated/
-    :template: function.rst
-
-    active_learning.entropy
-    active_learning.breaking_ties
-    active_learning.random
-
 :mod:`research.data_augmentation`
 ---------------------------------
 

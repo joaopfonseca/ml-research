@@ -50,7 +50,8 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         Method used to quantify the chooser's uncertainty level. All predefined functions
         are set up so that a higher value means higher uncertainty (higher likelihood of
         selection) and vice-versa. The uncertainty estimate is used to select the
-        instances to be added to the labeled/training dataset.
+        instances to be added to the labeled/training dataset. Selection strategies may
+        be added or changed in the ``UNCERTAINTY_FUNCTIONS`` dictionary.
 
     max_iter : int, default=None
         Maximum number of iterations allowed.
