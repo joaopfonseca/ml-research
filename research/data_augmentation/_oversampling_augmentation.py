@@ -6,13 +6,58 @@ import warnings
 from collections import Counter, OrderedDict
 import numpy as np
 from sklearn.base import clone
+from sklearn.neighbors import NearestNeighbors
 from imblearn.over_sampling.base import BaseOverSampler
+from imblearn.over_sampling import RandomOverSampler
 
 AUGMENTATION_STRATEGIES = [
     'oversampling',
     'constant',
     'proportional'
 ]
+
+
+def _modify_nn(n_neighbors, n_samples):
+    """Modify nearest neighbors object or integer."""
+    if isinstance(n_neighbors, NearestNeighbors):
+        n_neighbors = (
+            clone(n_neighbors).set_params(n_neighbors=n_samples - 1)
+            if n_neighbors.n_neighbors >= n_samples
+            else clone(n_neighbors)
+        )
+    elif isinstance(n_neighbors, int) and n_neighbors >= n_samples:
+        n_neighbors = n_samples - 1
+    return n_neighbors
+
+
+def _clone_modify(oversampler, y):
+    """Clone and modify attributes of oversampler for corner cases."""
+
+    # Clone oversampler
+    oversampler = clone(oversampler)
+
+    # Not modify attributes case
+    if isinstance(oversampler, RandomOverSampler):
+        return oversampler
+
+    # Select and modify oversampler
+    n_minority_samples = Counter(y).most_common()[-1][1]
+    if n_minority_samples == 1:
+        oversampler = RandomOverSampler()
+    else:
+        if hasattr(oversampler, 'k_neighbors'):
+            oversampler.k_neighbors = _modify_nn(
+                oversampler.k_neighbors, n_minority_samples
+            )
+        if hasattr(oversampler, 'm_neighbors'):
+            oversampler.m_neighbors = _modify_nn(
+                oversampler.m_neighbors, y.size
+            )
+        if hasattr(oversampler, 'n_neighbors'):
+            oversampler.n_neighbors = _modify_nn(
+                oversampler.n_neighbors, n_minority_samples
+            )
+    return oversampler
 
 
 class OverSamplingAugmentation(BaseOverSampler):
@@ -176,7 +221,7 @@ class OverSamplingAugmentation(BaseOverSampler):
         self.fit(X, y)
 
         if self.oversampler is not None:
-            self.oversampler_ = clone(self.oversampler)\
+            self.oversampler_ = _clone_modify(self.oversampler, y)\
                 .set_params(
                     random_state=self.random_state,
                     sampling_strategy=self.sampling_strategy_
