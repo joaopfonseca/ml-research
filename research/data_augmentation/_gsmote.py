@@ -353,10 +353,9 @@ class GeometricSMOTE(BaseOverSampler):
         # Select positive class samples
         X_pos = X[y == pos_class_label]
         if sample_weight is not None:
-            sample_weight_pos = sample_weight[y == pos_class_label]
             sample_weight_pos = (
-                sample_weight_pos / sample_weight_pos.sum()
-                if sample_weight_pos.sum() != 0
+                sample_weight[y == pos_class_label]
+                if sample_weight[y == pos_class_label].sum() != 0
                 else None
             )
         else:
@@ -371,8 +370,13 @@ class GeometricSMOTE(BaseOverSampler):
         if self.selection_strategy_ in ('minority', 'combined'):
             self.nns_pos_.fit(X_pos)
             points_pos = self.nns_pos_.kneighbors(X_pos)[1][:, 1:]
+            weight_pos = (
+                np.repeat(sample_weight_pos, self.k_neighbors) /
+                (sample_weight_pos.sum()*self.k_neighbors)
+                if sample_weight_pos is not None else None
+            )
             samples_indices = self.random_state_.choice(
-                range(0, len(points_pos.flatten())), size=n_samples, p=sample_weight_pos
+                range(0, len(points_pos.flatten())), size=n_samples, p=weight_pos
             )
             rows = np.floor_divide(samples_indices, points_pos.shape[1])
             cols = np.mod(samples_indices, points_pos.shape[1])
@@ -380,22 +384,16 @@ class GeometricSMOTE(BaseOverSampler):
         # Majority or combined strategy
         if self.selection_strategy_ in ('majority', 'combined'):
             X_neg = X[y != pos_class_label]
-            if sample_weight is not None:
-                sample_weight_neg = sample_weight[y != pos_class_label]
-                sample_weight_neg = (
-                    sample_weight_neg / sample_weight_neg.sum()
-                    if sample_weight_neg.sum() != 0
-                    else None
-                )
-            else:
-                sample_weight_neg = None
-
             self.nn_neg_.fit(X_neg)
             points_neg = self.nn_neg_.kneighbors(X_pos)[1]
+            weight_neg = (
+                sample_weight_pos / sample_weight_pos.sum()
+                if sample_weight_pos is not None else None
+            )
             if self.selection_strategy_ == 'majority':
                 samples_indices = self.random_state_.choice(
                     range(0, len(points_neg.flatten())),
-                    size=n_samples, p=sample_weight_neg
+                    size=n_samples, p=weight_neg
                 )
                 rows = np.floor_divide(samples_indices, points_neg.shape[1])
                 cols = np.mod(samples_indices, points_neg.shape[1])
