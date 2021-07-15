@@ -2,6 +2,7 @@
 A wrapper to allow the use of oversampling algorithms for data augmentation
 in Active Learning experiments with multiple datasets.
 """
+import warnings
 from collections import Counter, OrderedDict
 import numpy as np
 from sklearn.base import clone
@@ -70,6 +71,8 @@ class OverSamplingAugmentation(BaseOverSampler):
         self.augmentation_strategy = augmentation_strategy
         self.value = value
         self.random_state = random_state
+
+        warnings.filterwarnings("ignore")
 
     def fit(self, X, y):
         """
