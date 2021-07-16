@@ -9,6 +9,8 @@ import numpy as np
 def breaking_ties(probabilities):
     """Breaking Ties uncertainty measurement. The output is scaled and reversed."""
     probs_sorted = np.sort(probabilities, axis=1)[:, ::-1]
+    # The extra minus is redundant but I kept as a highlight of the change in the
+    # original formula.
     bt = -(probs_sorted[:, 0] - probs_sorted[:, 1])
     return (bt - bt.min(0)) / (bt.max(0) - bt.min(0))
 

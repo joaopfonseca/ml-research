@@ -3,7 +3,7 @@ Wrapper for cluster-based initialization methods and random initialization.
 """
 import numpy as np
 from scipy.special import softmax
-from ._selection_methods import random, SELECTION_CRITERIA
+from ._selection_methods import UNCERTAINTY_FUNCTIONS
 
 
 def init_strategy(
@@ -27,20 +27,12 @@ def init_strategy(
     unlabeled_ids = np.indices(X.shape[:1]).squeeze()
 
     # Random selection
-    if clusterer is None:
-        ids = random(
-            unlabeled_ids=unlabeled_ids,
-            increment=n_initial,
-            random_state=random_state
-        )
+    if clusterer is None or selection_method in ['random', None]:
+        rng = np.random.RandomState(random_state)
+        ids = rng.choice(unlabeled_ids, n_initial, replace=False)
         return None, ids
 
     # Cluster-based selection
-    if selection_method is None:
-        # TODO
-        # selection_method = 'centroid'
-        pass
-
     clusterer.fit(X)
 
     if hasattr(clusterer, 'predict_proba'):
@@ -54,11 +46,7 @@ def init_strategy(
         dist_inv = (np.expand_dims(dist.max(1), 1) / dist) - 1
         probs = softmax(dist_inv, axis=1)
 
-    ids = SELECTION_CRITERIA[selection_method](
-        unlabeled_ids=unlabeled_ids,
-        increment=n_initial,
-        probabilities=probs,
-        random_state=random_state
-    )
+    uncertainty = UNCERTAINTY_FUNCTIONS[selection_method](probs)
+    ids = unlabeled_ids[np.argsort(uncertainty)[::-1][:n_initial]]
 
     return clusterer, ids
