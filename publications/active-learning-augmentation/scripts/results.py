@@ -8,9 +8,10 @@ Generate the main experimental results.
 import os
 from os.path import join
 from zipfile import ZipFile
-from sklearn.base import SamplerMixin
-from skleran.ensemble import RandomForestClassifier
+from imblearn.base import SamplerMixin
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
+from research.active_learning import ALWrapper
 from research.utils import (
     generate_paths,
     load_datasets
@@ -19,6 +20,10 @@ from research.metrics import (
     data_utilization_rate,
     ALScorer,
     SCORERS
+)
+from research.data_augmentation import (
+    GeometricSMOTE,
+    OverSamplingAugmentation
 )
 
 DATA_PATH, RESULTS_PATH, ANALYSIS_PATH = generate_paths(__file__)
@@ -62,6 +67,20 @@ class remove_test(SamplerMixin):
 
 # Experiment setup - Non-AL specific configurations
 CONFIG = {
+    'generator': [
+        ('NONE', None, {}),
+        # Pure oversampling (same as last paper)
+        ('G-SMOTE', OverSamplingAugmentation(
+            GeometricSMOTE(k_neighbors=5, deformation_factor=.5, truncation_factor=.5)
+        ), {}),
+        # Oversampling augmentation
+        ('G-SMOTE-AUGM1', OverSamplingAugmentation(
+            GeometricSMOTE(
+                k_neighbors=5, deformation_factor=.5, truncation_factor=.5
+            ),
+            augmentation_strategy='constant'
+        ), {'value': [400, 800, 1200]}),
+    ],
     'remove_test': [
         ('remove_test', remove_test(TEST_SIZE), {})
     ],
@@ -78,27 +97,20 @@ CONFIG = {
 
 # Experiment setup - AL specific configurations
 CONFIG_AL = {
-    'generator': [
-        ('NONE', None, {}),
-        ('SMOTE', ClusterOverSampler(SMOTE(k_neighbors=5), n_jobs=1), {}),
-        ('G-SMOTE', ClusterOverSampler(GeometricSMOTE(
-            k_neighbors=5, deformation_factor=.5, truncation_factor=.5
-        ), n_jobs=1), {})
-    ],
-    'wrapper': (
-        'AL',
-        ALWrapper(
-            n_initial=15,
-            increment=15,
+    'wrappers': [
+        ('AL', ALWrapper(
+            n_initial=.016,
+            increment=.016,
             max_iter=49,
             test_size=TEST_SIZE,
             random_state=42
         ), {
             'evaluation_metric': ['accuracy', 'f1_macro',
                                   'geometric_mean_score_macro'],
-            'selection_strategy': ['random', 'entropy', 'breaking_ties']
-        }
-    ),
+            'selection_strategy': ['random', 'entropy', 'breaking_ties'],
+            'use_sample_weight': [True, False]
+        }),
+    ],
     'scoring': [
         'accuracy',
         'f1_macro',
