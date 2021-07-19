@@ -19,8 +19,7 @@ def summarize_multiclass_datasets(datasets):
     summarized = summarize_datasets(datasets)\
         .rename(columns={
             'Dataset name': 'Dataset', 'Imbalance Ratio': 'IR',
-        }).drop(columns=['Minority instances', 'Majority instances'])\
-        .set_index('Dataset')\
+        }).set_index('Dataset')\
         .join(pd.Series(dict(
             [(name, dat[-1].unique().size) for name, dat in datasets]
         ), name='Classes'))\
