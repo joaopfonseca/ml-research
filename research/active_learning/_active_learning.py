@@ -54,14 +54,18 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         be added or changed in the ``UNCERTAINTY_FUNCTIONS`` dictionary.
 
     max_iter : int, default=None
-        Maximum number of iterations allowed.
+        Maximum number of iterations allowed. If None, the experiment will run until 100%
+        of the dataset is added to the training set.
 
-    n_initial : int, default=100
-        Number of observations to include in the initial training dataset.
+    n_initial : int, default=.02
+        Number of observations to include in the initial training dataset. If
+        ``n_initial`` < 1, then the corresponding percentage of the original dataset
+        will be used as the initial training set.
 
-    increment : int, default=50
+    increment : int, default=.02
         Number of observations to be added to the training dataset at each
-        iteration.
+        iteration. If ``n_initial`` < 1, then the corresponding percentage of the
+        original dataset will be used as the initial training set.
 
     save_classifiers : bool, default=False
         Save classifiers fit at each iteration. These classifiers are stored
@@ -113,8 +117,8 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         init_strategy='random',
         selection_strategy='entropy',
         max_iter=None,
-        n_initial=100,
-        increment=50,
+        n_initial=.02,
+        increment=.02,
         save_classifiers=False,
         save_test_scores=True,
         auto_load=True,
@@ -195,7 +199,16 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         else:
             X_test, y_test = (None, None)
 
-        self.increment_ = self.increment
+        if self.n_initial < 1:
+            self.n_initial_ = np.round(self.n_initial*X.shape[0])
+        else:
+            self.n_initial_ = self.n_initial
+
+        if self.increment < 1:
+            self.increment_ = np.round(self.increment*X.shape[0])
+        else:
+            self.increment_ = self.increment
+
         return X, X_test, y, y_test
 
     def _get_performance_scores(self):
@@ -262,7 +275,7 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         # Supervisor - Get data according to passed initialization method
         self.init_clusterer_, ids = init_strategy(
             X=X,
-            n_initial=self.n_initial,
+            n_initial=self.n_initial_,
             clusterer=self.init_clusterer,
             selection_method=self.init_strategy,
             random_state=self.random_state
