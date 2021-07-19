@@ -285,7 +285,8 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
 
             # Generate artificial data and train classifier
             if self.use_sample_weight:
-                classifier.fit(X[selection], y[selection], sample_weight)
+                classifier.fit(X[selection], y[selection],
+                               generator__sample_weight=sample_weight)
 
                 # Compute the class probabilities of labeled observations
                 labeled_ids = np.argwhere(selection).squeeze()
