@@ -168,9 +168,9 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         else:
             self.selection_strategy_ = self.selection_strategy
 
-        if type(self.use_sample_weights) != bool:
-            raise TypeError("``use_sample_weights`` must be of type ``bool``. Got"
-                            f" {self.use_sample_weights} instead.")
+        if type(self.use_sample_weight) != bool:
+            raise TypeError("``use_sample_weight`` must be of type ``bool``. Got"
+                            f" {self.use_sample_weight} instead.")
 
         self.max_iter_ = self.max_iter \
             if self.max_iter is not None \
