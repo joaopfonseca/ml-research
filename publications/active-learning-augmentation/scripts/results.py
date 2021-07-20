@@ -68,16 +68,13 @@ class remove_test(SamplerMixin):
 # Experiment setup - Non-AL specific configurations
 CONFIG = {
     'generator': [
-        ('NONE', None, {}),
         # Pure oversampling (same as last paper)
         ('G-SMOTE', OverSamplingAugmentation(
             GeometricSMOTE(k_neighbors=5, deformation_factor=.5, truncation_factor=.5)
         ), {}),
         # Oversampling augmentation
         ('G-SMOTE-AUGM1', OverSamplingAugmentation(
-            GeometricSMOTE(
-                k_neighbors=5, deformation_factor=.5, truncation_factor=.5
-            ),
+            GeometricSMOTE(k_neighbors=5, deformation_factor=.5, truncation_factor=.5),
             augmentation_strategy='constant'
         ), {'value': [400, 800, 1200]}),
     ],
@@ -98,7 +95,7 @@ CONFIG = {
 # Experiment setup - AL specific configurations
 CONFIG_AL = {
     'wrappers': [
-        ('AL', ALWrapper(
+        ('AL-GEN', ALWrapper(
             n_initial=.016,
             increment=.016,
             max_iter=49,
@@ -110,6 +107,17 @@ CONFIG_AL = {
             'selection_strategy': ['random', 'entropy', 'breaking_ties'],
             'use_sample_weight': [True, False]
         }),
+        ('AL-BASE', ALWrapper(
+            n_initial=.016,
+            increment=.016,
+            max_iter=49,
+            test_size=TEST_SIZE,
+            random_state=42
+        ), {
+            'evaluation_metric': ['accuracy', 'f1_macro',
+                                  'geometric_mean_score_macro'],
+            'selection_strategy': ['random', 'entropy', 'breaking_ties'],
+        })
     ],
     'scoring': [
         'accuracy',
