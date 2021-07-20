@@ -286,15 +286,16 @@ class ALWrapper(ClassifierMixin, BaseEstimator):
         while iter_n < self.max_iter_:
 
             # Generator + Chooser (in this case chooser==Predictor)
-            generator = (
-                None if self.generator is None else clone(self.generator)
-            )
-            chooser = clone(self._classifier)
+            if self.generator is not None:
+                generator = clone(self.generator)
+                chooser = clone(self._classifier)
 
-            classifier = Pipeline([
-                ('generator', generator),
-                ('chooser', chooser)
-            ])
+                classifier = Pipeline([
+                    ('generator', generator),
+                    ('chooser', chooser)
+                ])
+            else:
+                classifier = clone(self._classifier)
 
             # Generate artificial data and train classifier
             if self.use_sample_weight:
