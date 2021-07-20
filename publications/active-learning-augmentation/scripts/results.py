@@ -7,10 +7,15 @@ Generate the main experimental results.
 
 import os
 from os.path import join
+from itertools import product
 from zipfile import ZipFile
-from imblearn.base import SamplerMixin
+from rich.progress import track
+import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import StratifiedKFold
+from imblearn.base import SamplerMixin
+from rlearn.model_selection import ModelSearchCV
 from research.active_learning import ALSimulation
 from research.utils import (
     generate_paths,
@@ -80,7 +85,7 @@ CONFIG = {
         ), {}),
 
         # Oversampling augmentation
-        ('G-SMOTE-AUGM1', OverSamplingAugmentation(
+        ('G-SMOTE-AUGM', OverSamplingAugmentation(
             GeometricSMOTE(k_neighbors=5, deformation_factor=.5, truncation_factor=.5),
             augmentation_strategy='constant'
         ), {'value': [400, 800, 1200]}),
@@ -143,24 +148,53 @@ if __name__ == '__main__':
     os.remove(join(DATA_PATH, 'active_learning_augmentation.db'))
 
     # Extract pipelines and parameter grids
-    estimators_base, param_grids_base = check_pipelines(
-        [CONFIG['remove_test'], CONFIG['classifiers']],
-        CONFIG['rnd_seed'],
-        CONFIG['n_runs']
-    )
+    parameter_grids = {
+        'ceiling': check_pipelines(
+            [CONFIG['remove_test'], CONFIG['classifiers']],
+            CONFIG['rnd_seed'],
+            CONFIG['n_runs']
+        ),
+        'al_base': check_pipelines_wrapper(
+            [CONFIG['generator'][:2], CONFIG['classifiers']],
+            CONFIG['simulations'][0],
+            CONFIG['rnd_seed'],
+            CONFIG['n_runs'],
+            wrapped_only=True
+        ),
+        'al_proposed': check_pipelines_wrapper(
+            [CONFIG['generator'][1:], CONFIG['classifiers']],
+            CONFIG['simulations'][1],
+            CONFIG['rnd_seed'],
+            CONFIG['n_runs'],
+            wrapped_only=True
+        )
+    }
 
-    estimators_al_base, param_grids_al_base = check_pipelines_wrapper(
-        [CONFIG['generator'][:2], CONFIG['classifiers']],
-        CONFIG['simulations'][0],
-        CONFIG['rnd_seed'],
-        CONFIG['n_runs'],
-        wrapped_only=True
-    )
+    iterable = list(product(parameter_grids.items(), datasets))
+    for (exp_name, (estimators, param_grids)), (name, (X, y)) in track(
+            iterable, description='Running experiments across datasets'):
+        if exp_name.startswith('al'):
+            scoring = CONFIG['scoring_al']
+        else:
+            scoring = CONFIG['scoring']
 
-    estimators_al_proposed, param_grids_al_proposed = check_pipelines_wrapper(
-        [CONFIG['generator'][1:], CONFIG['classifiers']],
-        CONFIG['simulations'][1],
-        CONFIG['rnd_seed'],
-        CONFIG['n_runs'],
-        wrapped_only=True
-    )
+        # Define and fit AL experiment
+        experiment = ModelSearchCV(
+            estimators,
+            param_grids,
+            scoring=scoring,
+            n_jobs=CONFIG['n_jobs'],
+            cv=StratifiedKFold(
+                n_splits=CONFIG['n_splits'],
+                shuffle=True,
+                random_state=CONFIG['rnd_seed']
+            ),
+            verbose=CONFIG['verbose'],
+            return_train_score=True,
+            refit=False
+        ).fit(X, y)
+
+        # Save results
+        file_name = f'{name.replace(" ", "_").lower()}_{exp_name}.pkl'
+        pd.DataFrame(experiment.cv_results_)\
+            .to_pickle(join(RESULTS_PATH, file_name))
