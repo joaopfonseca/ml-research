@@ -200,12 +200,12 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
             X_test, y_test = (None, None)
 
         if self.n_initial < 1:
-            self.n_initial_ = np.round(self.n_initial*X.shape[0])
+            self.n_initial_ = int(np.round(self.n_initial*X.shape[0]))
         else:
             self.n_initial_ = self.n_initial
 
         if self.increment < 1:
-            self.increment_ = np.round(self.increment*X.shape[0])
+            self.increment_ = int(np.round(self.increment*X.shape[0]))
         else:
             self.increment_ = self.increment
 
@@ -326,10 +326,10 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
 
             # Get data according to passed selection criterion
             if self.selection_strategy != 'random':
-                ids = unlabeled_ids[np.argsort(uncertainty)[::-1][:self.increment]]
+                ids = unlabeled_ids[np.argsort(uncertainty)[::-1][:self.increment_]]
             else:
                 rng = np.random.RandomState(self.random_state)
-                ids = rng.choice(unlabeled_ids, self.increment, replace=False)
+                ids = rng.choice(unlabeled_ids, self.increment_, replace=False)
 
             selection[ids] = True
 
