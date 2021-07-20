@@ -17,9 +17,9 @@ from ._selection_methods import UNCERTAINTY_FUNCTIONS
 from ._init_methods import init_strategy
 
 
-class ALWrapper(ClassifierMixin, BaseEstimator):
+class ALSimulation(ClassifierMixin, BaseEstimator):
     """
-    Class to perform Active Learning experiments.
+    Class to simulate Active Learning experiments.
 
     This algorithm is an implementation of an Active Learning framework as
     presented in [1]_. The initialization strategy is WIP.

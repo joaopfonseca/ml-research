@@ -3,12 +3,12 @@ This submodule contains the code developed for experiments related to Active
 Learning.
 """
 
-from ._active_learning import ALWrapper
+from ._active_learning import ALSimulation
 from ._selection_methods import (
     UNCERTAINTY_FUNCTIONS
 )
 
 __all__ = [
-    'ALWrapper',
+    'ALSimulation',
     'UNCERTAINTY_FUNCTIONS'
 ]

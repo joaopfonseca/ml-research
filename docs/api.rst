@@ -19,7 +19,7 @@ This is the full API documentation of the `research` package.
     :toctree: _generated/
     :template: class.rst
     
-    active_learning.ALWrapper
+    active_learning.ALSimulation
 
 :mod:`research.data_augmentation`
 ---------------------------------
