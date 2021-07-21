@@ -9,6 +9,7 @@ experimental environment.
 import numpy as np
 from sklearn.base import clone
 from sklearn.base import ClassifierMixin, BaseEstimator
+from sklearn.utils import check_X_y
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from imblearn.pipeline import Pipeline
@@ -146,6 +147,9 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         self.random_state = random_state
 
     def _check(self, X, y):
+        """Set ups simple initialization parameters to run an AL simulation."""
+
+        X, y = check_X_y(X, y)
 
         if self.evaluation_metric is None:
             self.evaluation_metric_ = SCORERS['accuracy']
@@ -276,6 +280,7 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         # Supervisor - Get data according to passed initialization method
         self.init_clusterer_, ids = init_strategy(
             X=X,
+            y=y,
             n_initial=self.n_initial_,
             clusterer=self.init_clusterer,
             selection_method=self.init_strategy,

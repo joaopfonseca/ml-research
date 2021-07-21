@@ -8,6 +8,7 @@ from ._selection_methods import UNCERTAINTY_FUNCTIONS
 
 def init_strategy(
     X,
+    y,
     n_initial,
     clusterer=None,
     selection_method=None,
@@ -20,7 +21,7 @@ def init_strategy(
     Possible selection methods:
     - None (default): random selection
     - centroid: Gets observations close to the centroids of
-        the clusters.
+      the clusters.
     -
     """
 
@@ -30,6 +31,10 @@ def init_strategy(
     if clusterer is None or selection_method in ['random', None]:
         rng = np.random.RandomState(random_state)
         ids = rng.choice(unlabeled_ids, n_initial, replace=False)
+        # There must be at least 2 different initial classes
+        if len(np.unique(y[ids])) == 1:
+            ids[-1] = rng.choice(unlabeled_ids[y != y[ids][0]], 1, replace=False)
+
         return None, ids
 
     # Cluster-based selection
