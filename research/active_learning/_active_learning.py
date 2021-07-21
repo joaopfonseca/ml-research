@@ -200,7 +200,8 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
             X_test, y_test = (None, None)
 
         if self.n_initial < 1:
-            self.n_initial_ = int(np.round(self.n_initial*X.shape[0]))
+            n_initial = int(np.round(self.n_initial*X.shape[0]))
+            self.n_initial_ = n_initial if n_initial >= 2 else 2
         else:
             self.n_initial_ = self.n_initial
 
