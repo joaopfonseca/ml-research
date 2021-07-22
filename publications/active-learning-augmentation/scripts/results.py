@@ -12,6 +12,10 @@ from zipfile import ZipFile
 from rich.progress import track
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.neighbors.classification import KNeighborsClassifier
+from sklearn.dummy import DummyClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedKFold
 from imblearn.base import SamplerMixin
@@ -87,14 +91,18 @@ CONFIG = {
         # Oversampling augmentation
         ('G-SMOTE-AUGM', OverSamplingAugmentation(
             GeometricSMOTE(k_neighbors=5, deformation_factor=.5, truncation_factor=.5),
-            augmentation_strategy='constant'
-        ), {'value': [400, 800, 1200]}),
+            augmentation_strategy='constant', value=1200
+        ), {}),
     ],
     'remove_test': [
         ('remove_test', remove_test(TEST_SIZE), {})
     ],
     'classifiers': [
-        ('RF', RandomForestClassifier(), {})  # INCOMPLETE
+        ('CONSTANT CLASSIFIER', DummyClassifier(strategy='constant', constant=0), {}),
+        ('LR', LogisticRegression(solver='liblinear', multi_class='auto'), {}),
+        ('KNN', KNeighborsClassifier(), {}),
+        ('DT', DecisionTreeClassifier(), {}),
+        ('RF', RandomForestClassifier(), {})
     ],
     'simulations': [
         ('AL-BASE', ALSimulation(
