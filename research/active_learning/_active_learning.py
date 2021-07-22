@@ -28,7 +28,8 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
     Parameters
     ----------
     classifier : classifier object, default=None
-        Classifier to be used as Chooser and Predictor.
+        Classifier to be used as Chooser and Predictor, or a pipeline
+        containing both the generator and the classifier.
 
     generator : generator estimator, default=None
         Generator to be used for artificial data generation within Active
@@ -302,6 +303,10 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
                 ])
             else:
                 classifier = clone(self._classifier)
+
+            if isinstance(classifier, Pipeline) and self.use_sample_weight:
+                generator = classifier.steps[-2][-1]
+                classifier.steps[-2] = ('generator', generator)
 
             # Generate artificial data and train classifier
             if self.use_sample_weight:
