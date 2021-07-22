@@ -9,6 +9,7 @@ from sklearn.base import clone
 from sklearn.neighbors import NearestNeighbors
 from imblearn.over_sampling.base import BaseOverSampler
 from imblearn.over_sampling import RandomOverSampler
+from ._gsmote import GeometricSMOTE
 
 AUGMENTATION_STRATEGIES = [
     'oversampling',
@@ -226,7 +227,10 @@ class OverSamplingAugmentation(BaseOverSampler):
                     random_state=self.random_state,
                     sampling_strategy=self.sampling_strategy_
                 )
-            return self.oversampler_.fit_resample(X, y, **fit_params)
+            if isinstance(self.oversampler_, GeometricSMOTE):
+                return self.oversampler_.fit_resample(X, y, **fit_params)
+            else:
+                return self.oversampler_.fit_resample(X, y)
         else:
             return X, y
 
