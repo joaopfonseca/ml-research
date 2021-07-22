@@ -15,7 +15,6 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.dummy import DummyClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import StratifiedKFold
 from imblearn.base import SamplerMixin
@@ -98,7 +97,6 @@ CONFIG = {
         ('remove_test', remove_test(TEST_SIZE), {})
     ],
     'classifiers': [
-        ('CONSTANT CLASSIFIER', DummyClassifier(strategy='constant', constant=0), {}),
         ('LR', LogisticRegression(solver='liblinear', multi_class='auto'), {}),
         ('KNN', KNeighborsClassifier(), {}),
         ('DT', DecisionTreeClassifier(), {}),
