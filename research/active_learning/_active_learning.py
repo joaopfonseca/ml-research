@@ -348,7 +348,7 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
             if self.use_sample_weight:
                 sample_weight = np.zeros(selection.shape)
                 sample_weight[labeled_ids] = uncertainty_labeled
-                sample_weight[ids] = uncertainty
+                sample_weight[unlabeled_ids] = uncertainty
                 sample_weight = sample_weight[selection]
 
             # keep track of iter_n
