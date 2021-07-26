@@ -99,7 +99,6 @@ CONFIG = {
     'classifiers': [
         ('LR', LogisticRegression(solver='liblinear', multi_class='auto'), {}),
         ('KNN', KNeighborsClassifier(), {}),
-        ('DT', DecisionTreeClassifier(), {}),
         ('RF', RandomForestClassifier(), {})
     ],
     'simulations': [
