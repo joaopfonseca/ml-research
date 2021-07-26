@@ -1,0 +1,118 @@
+\documentclass[parskip=full]{scrartcl}
+
+\pdfoutput=1
+
+\usepackage{breakcites}
+\usepackage[square,numbers]{natbib}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{%
+	a4paper,
+	left=18mm,
+	right=18mm,
+	top=18mm,
+}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage[ruled,vlined]{algorithm2e}
+\usepackage{booktabs}
+\usepackage{pgfplotstable}
+\pgfplotsset{compat=1.14}
+\usepackage{longtable}
+\usepackage{tabu}
+\usepackage{hyperref}
+\date{}
+
+\definecolor{hypecol}{HTML}{0875b7}
+\hypersetup{%
+    colorlinks,
+    linkcolor={hypecol},
+    citecolor={hypecol},
+    urlcolor={hypecol}
+}
+
+\title{%
+    Active Learning Augmentation
+}
+
+\author{%
+	Joao Fonseca\(^{1*}\), Fernando Bacao\(^{1}\)
+	\\
+	\small{\(^{1}\)NOVA Information Management School, Universidade Nova de Lisboa}
+	\\
+	\small{*Corresponding Author}
+	\\
+	\\
+	\small{Postal Address: NOVA Information Management School, Campus de
+    Campolide, 1070--312 Lisboa, Portugal}
+	\\
+	\small{Telephone: +351 21 382 8610}
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    Abstract goes here.
+\end{abstract}
+
+\section{Introduction}
+
+Introduction goes here.
+
+\section{Data Augmentation Methods}
+
+Review on Data Augmentation Methods go here.
+
+\section{Methodology}~\label{sec:methodology}
+
+Methodology goes here.
+
+\subsection{Datasets}~\label{sec:datasets}
+
+Dataset description.
+
+\subsection{Machine Learning Algorithms}~\label{sec:machine_learning_algorithms}
+
+Classifiers and generators used.
+
+\subsection{Evaluation Metrics}~\label{sec:evaluation_metrics}
+
+Performance metrics.
+
+\subsection{Experimental Procedure}~\label{sec:experimental_procedure}
+
+Experimental procedure.
+
+\subsection{Software Implementation}
+
+The experiment was implemented using the Python programming language, along
+with the Python libraries
+\href{https://scikit-learn.org/stable/}{Scikit-Learn}~\cite{Pedregosa2011},
+\href{https://imbalanced-learn.org/en/stable/}{Imbalanced-Learn}~\cite{JMLR:v18:16-365},
+\href{https://geometric-smote.readthedocs.io/en/latest/?badge=latest}{Geometric-SMOTE},
+\href{https://cluster-over-sampling.readthedocs.io/en/latest/?badge=latest}{Cluster-Over-Sampling},
+\href{https://research-learn.readthedocs.io/en/latest/?badge=latest}{Research-Learn}
+and
+\href{https://mlresearch.readthedocs.io/en/latest/?badge=latest}{ML-Research}
+libraries. All functions, algorithms, experiments and results are provided in
+the \href{https://github.com/joaopfonseca/ml-research/}{GitHub repository of
+the project}.
+
+\section{Results \& Discussion}~\label{sec:results_discussion}
+
+\subsection{Results}~\label{sec:sub_results}
+
+\subsection{Statistical Analysis}~\label{sec:statistical-analysis}
+
+\subsection{Discussion}~\label{sec:sub_discussion}
+
+\section{Conclusion}~\label{sec:conclusion}
+
+
+\bibliography{references}
+\bibliographystyle{ieeetr}
+
+\end{document}
