@@ -351,6 +351,10 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
                 sample_weight[unlabeled_ids] = uncertainty
                 sample_weight = sample_weight[selection]
 
+                # Corner case: when there is no uncertainty
+                if np.isnan(sample_weight).all():
+                    sample_weight = np.ones(sample_weight.shape)
+
             # keep track of iter_n
             iter_n += 1
 
