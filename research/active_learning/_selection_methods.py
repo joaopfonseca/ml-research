@@ -12,7 +12,7 @@ def breaking_ties(probabilities):
     # The extra minus is redundant but I kept as a highlight of the change in the
     # original formula.
     bt = -(probs_sorted[:, 0] - probs_sorted[:, 1])
-    return (bt - bt.min(0)) / (bt.max(0) - bt.min(0))
+    return bt
 
 
 UNCERTAINTY_FUNCTIONS = {

@@ -11,6 +11,7 @@ from sklearn.base import clone
 from sklearn.base import ClassifierMixin, BaseEstimator
 from sklearn.utils import check_X_y
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import MinMaxScaler
 from sklearn.ensemble import RandomForestClassifier
 from imblearn.pipeline import Pipeline
 from ..metrics import SCORERS
@@ -333,7 +334,12 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
             # Calculate uncertainty
             uncertainty = self.selection_strategy_(probabs)
             if self.use_sample_weight:
-                uncertainty_labeled = self.selection_strategy_(probabs_labeled)
+                uncertainty = MinMaxScaler().fit_transform(
+                    uncertainty.reshape(-1, 1)
+                ).squeeze()
+                uncertainty_labeled = MinMaxScaler().fit_transform(
+                    self.selection_strategy_(probabs_labeled).reshape(-1, 1)
+                ).squeeze()
 
             # Get data according to passed selection criterion
             if self.selection_strategy != 'random':
