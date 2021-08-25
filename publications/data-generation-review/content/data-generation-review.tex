@@ -24,6 +24,10 @@
 \usepackage{hyperref}
 \date{}
 
+% Used during the revision process to highlight text (\hl{}), delete afterwards
+\usepackage{xcolor}
+\usepackage{soul}
+
 \definecolor{hypecol}{HTML}{0875b7}
 \hypersetup{%
     colorlinks,
@@ -55,99 +59,129 @@
 \maketitle
 
 \begin{abstract}
-    Over past years, researchers have developed complex deep learning
+    Over the past years, researchers have developed complex deep learning
     classifiers, which typically require a tremendous amount of data and
     computational power to train. Although, these resources are not always
-    accessible to most organizations and/or practitioners.  Concurrently,
-    current and past research have shown that even simple classification
+    accessible to organizations, practitioners and researchers. Concurrently,
+    current and past research have shown that simpler classification
     algorithms can reach state-of-the-art performance on computer vision tasks
     given a robust method to artificially augment the training dataset.
-    Because of this, data augmentation became a popular topic in the past few
-    years, particularly among computer vision researchers. In this paper we
-    identify the main areas of application of data augmentation algorithms,
-    the main types of algorithms used, significant research trends and their
-    progression over time and research gaps in data augmentation literature.
-    This was done through using a network-based, text mining-based and
-    exploratory analysis of literature collected through the Scopus database.
-    We expect readers to understand the potential of data augmentation as well
-    as identify future research directions and open questions within data
-    augmentation research.
+    Because of this, data augmentation techniques became a popular research
+    topic in recent years, particularly among computer vision researchers. In
+    this paper we identify the main areas of application of data augmentation
+    algorithms, the main types of algorithms used, significant research
+    trends, their progression over time and research gaps in data augmentation
+    literature. This was done through using a network-based, text mining-based
+    and exploratory analysis of literature collected through the Scopus
+    database. We expect readers to understand the potential of data
+    augmentation as well as identify future research directions and open
+    questions within data augmentation research.
 \end{abstract}
 
-\section{Introduction}
+\section{Introduction}~\label{sec:introduction}
 
 The performance of Machine Learning models is highly dependent on the quality
-of the training dataset used~\cite{Fenza2021}. The presence of imbalanced
-and/or small datasets, target labels incorrectly assigned, outliers and high
-dimensional input spaces may significantly reduce the prospects of a
-successful machine learning model implementation. Although the quality of all
-classifiers are affected by a small training dataset, Deep Learning
-classifiers are particularly sensitive to it. Depending on the complexity of
-the model, deep learning models show a high degree of performance variability
-even with large amounts of training data, particularly when the model is
-tested over a fully independent validation/test set~\cite{Hu2020}. Various
-problems contribute towards this performance variability, \textit{e.g.,}
-biased training dataset, varying conditions of data collection across
-test/train set and small training data.
+of the training dataset used~\cite{Fenza2021}. Specifically, the presence of
+imbalanced and/or small datasets, target labels incorrectly assigned, outliers
+and high dimensional input spaces reduce the prospects of a successful machine
+learning model implementation. Even though the performance of any classifier
+is affected by the size of its training dataset, deep learning models have a
+particularly inconsistent performance over unseen datasets even when trained
+with large datasets~\cite{Hu2020}. Conversely, deep learning models are
+capable of quickly adapting (and overfitting) to the training dataset,
+including when it contains label and/or complete pixel noise~\cite{Zhang2021}.
+Although the performance of these models can be improved through
+regularization methods, they are still incapable of correcting label noise in
+the training dataset~\cite{Zhang2021}.
 
-% Expand on the overfitting problem here and sources of problems in data
+Regardless of the machine learning model used, when the training set contains
+significant limitations (regarding overall quality and size), the model's
+performance on unseen data is generally going to be affected. Specifically,
+when the training data is not representative of the true population, or the
+model is over-parametrized, it becomes particularly prone to overfitting.
+There are different strategies to reduce overfitting, known as regularization
+methods~\cite{Shorten2019}. Identifying the appropriate regularization methods
+varies according to the use case \textbf{[REF]}. While some methods can only
+be applied on specific classifiers or domains, others may be applied at the
+data level, independently from the classification problem
+\textbf{[REF]}. For example, methods such as dropout/dilution, batch
+normalization and transfer learning/domain adaptation are mostly applied on
+neural network architectures. Pruning is applied on decision trees. Early
+stopping can be used on learners trained iteratively, making it a broader
+method. 
 
-When the training set contains significant limitations, the trained model
-model runs into the problem of overfitting. There are different strategies to
-reduce overfitting, known as regularization methods, such as pruning, early
-stopping, dropout, batch normalization, transfer learning, pretraining,
-one-shot and zero-shot learning, and data augmentation~\cite{Shorten2019}. The
-later, data augmentation, are techniques used to increase the diversity of data
-in a training dataset through the production of artificial observations.
+Data augmentation techniques, on the other hand, are used to increase the
+diversity of data in a training dataset through the production of artificial
+observations \textbf{[REF]}. They are most frequently used as regularization
+techniques for various types of problems and classifiers, since it is applied
+at the data level \textbf{[REF]}. Figure~\ref{fig:data_augmentation_example}
+shows an example of data augmentation, where the decision boundaries become
+clearer after the original dataset is augmented. Data Augmentation methods can
+be divided into heuristic and Deep Learning approaches~\cite{Shorten2019,
+Ratner2017}. Within these approaches, they may be either domain specific or
+contextually independent. For example, although both Synthetic Minority
+Oversampling Technique (SMOTE)~\cite{Chawla2002} and Kernel Filters are
+heuristic approaches, SMOTE may be used regardless of the context, while
+Kernel Filters are specific to image data augmentation. The different types of
+Data Augmentation methods are defined at a higher detail in
+Section~\ref{sec:data-augmentation}.
 
-% Define each regularization method carefully
-% 
-% \begin{enumerate}
-%     \item Dropout
-%     \item Batch normalization
-%     \item Transfer Learning
-%     \item Pretraining
-%     \item One-shot and Zero-shot learning
-%     \item Data Augmentation
-% \end{enumerate}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.75\linewidth]{../analysis/data_augmentation_example}
+    \caption{Example of data augmentation in a 2-dimensional binary
+        classification setting. The left pane contains the original dataset,
+        where the amount data is scarce and the gap among the two classes are
+        wide, allowing for greater classification variability. The right pane
+        contains the augmented dataset, where the gap among the two classes is
+        narrower and the decision boundaries become easier to define.
+    }~\label{fig:data_augmentation_example}
+\end{figure}
 
-% What is it used for?
+In 2011, Jürgen Schmidhuber's group showed that a MLP ensemble architecture
+can achieve state-of-the-art performance on computer vision benchmarks given
+strong enough data augmentation~\cite{Meier2011, Ciresan2011}. Although the
+state-of-the-art improved since then, two recent papers developed by Google
+Brain and Facebook research teams support Schmidhuber's group's findings.
+Specifically, in~\cite{Tolstikhin2021, Touvron2021} the authors discuss two
+similar MLP ensemble architectures, showing that the proposed model attains a
+comparable performance to convolutional neural networks and attention-based
+networks.  Another recent study also discusses a related MLP architecture with
+similar findings, while suggesting that the strong performance of computer
+vision models may be attributable mainly to the inducive bias produced by the
+patch embedding and the carefully-curated set of training
+augmentations~\cite{Melaskyriazi2021}.
 
-Depending on the generative model used, data augmentation may be used to
-various types of problems and data. In 2011, Jürgen Schmidhuber's group showed
-that a MLP ensemble architecture can achieve state-of-the-art performance on
-computer vision benchmarks given strong enough data
-augmentation~\cite{Meier2011, Ciresan2011}. Although state-of-the-art research
-has progressed significantly since then, two recent papers developed by Google
-Brain and Facebook research teams show that Schmidhuber's group's findings
-still hold true. Specifically, in~\cite{Tolstikhin2021, Touvron2021} the
-authors discuss two similar MLP ensemble architectures, showing that the
-proposed model attains a comparable performance to convolutional neural
-networks and attention-based networks. Another recent study also discusses a
-related MLP architecture with similar findings, while suggesting that the
-strong performance of computer vision models may be attributable mainly to the
-inducive bias produced by the patch embedding and the carefully-curated
-set of training augmentations~\cite{Melaskyriazi2021}.
+\hl{However, Data Augmentation methods may be used on its own for different
+purposes other than regularization. For example, Vector Quantised Generative
+Adversarial Networks (VQGAN)}~\cite{Esser2020} \hl{is a Deep Learning approach that
+became popular for the synthesis of art based on artificial intelligence
+particularly when used along with Contrastive Language-Image Pre-Training
+(CLIP)}~\cite{Radford2021}.
+
+% Add example image?
 
 Research on data augmentation methods has gained significant popularity in
 recent years. As such, there were some efforts in the past to establish a
 taxonomy and distinction of the different types of data augmentations
-methods~\cite{Shorten2019}, although outdated/incomplete. The most cited
-literature review on data augmentation was focused on image data augmentation
-for deep learning in 2019~\cite{Shorten2019}. Since then, research on data
-augmentation methods have progressed significantly. In this paper we focus on
-current and past research trends of data augmentation methods, its different
-applications and use cases. This was done with an extensive analysis of the
-title, keywords and abstract of a large set of literature related to data
-augmentation, collected through the \href{https://www.scopus.com/}{Scopus}
-database. The analysis was done in three phases. We started by performing an
-exploratory data analysis to identify the most significant literature,
-journals and conferences within the field of data augmentation. Then, we
-analyse the articles' author keywords by constructing a network and extracting
-and identifying communities of keywords. Finally we used a text mining
-approach to extract additional applications and methods using the articles'
-abstracts, as well as validate the findings discussed with the keyword
-analysis.
+methods~\cite{Shorten2019}. The most cited literature review on data
+augmentation was focused on image data augmentation for deep learning,
+published in 2019~\cite{Shorten2019}. Since then, research on data
+augmentation methods have progressed significantly. To the best of our
+knowledge, there is no analysis on data augmentation research as a whole, as
+well as domains of application and future directions. In this paper we focus
+on current and past research trends of data augmentation methods, its
+different applications and use cases. This was done with an extensive analysis
+of the title, keywords and abstract of a large set of literature related to
+data augmentation, collected through the
+\href{https://www.scopus.com/}{Scopus} database. The analysis was done in 3
+phases. We started by performing an exploratory data analysis to identify the
+most significant publications, journals and conferences within the field of
+data augmentation. Then, we analyse the articles' author keywords by
+constructing a network and extracting and identifying communities of keywords.
+Finally we used a text mining approach to extract additional applications and
+methods using the articles' abstracts, as well as validate the findings
+discussed with the keyword analysis.
 
 This paper is structured as follows: Section~\ref{sec:methodology} describes
 the procedures defined throughout the different analyses.
@@ -156,23 +190,71 @@ from the analyses, as well as research gaps and open questions in data
 augmentation research. Section~\ref{sec:conclusion} summarizes the main
 findings discussed throughout the study.
 
-% Develop Theory section later
+\section{Data Augmentation Methods}~\label{sec:data-augmentation}
+ 
+Data Augmentation methods can be divided into Heuristic and Deep Learning
+approaches \textbf{[REF]}. Heuristic methods use the information found in the
+input space to generate new, relevant, non-duplicated observations by applying
+a predefined set of rules, while incorporating a degree of randomness in the
+generation process. Since data augmentation occurs in the input space, these
+are cost-effective approaches to data augmentation. For this reason, heuristic
+methods are simpler to implement and are particularly appealing for low
+dimensional classification problems, especially when the computational power
+available is limited. 
 
-% \section{Theory}~\label{sec:theory}
-% 
+Deep Learning methods, on the other hand, attempt to map the original input
+space into a lower-dimensional representation, known as feature space
+\textbf{[REF]}. The generation of artificial observations occurs at the
+feature space level, before being reconstructed to the original input space.
+This is commonly done with Convolutional Neural Networks (CNN) and
+auto-encoder architectures~\cite{Shorten2019}.  Since data augmentation is
+performed in the feature space, this type of approach is particularly useful
+for high-dimensional data types and results in more plausible synthetic
+observations~\cite{DeVries2017}. However, deep learning approaches require
+more computational power than heuristic approaches and the resulting feature
+space is difficult to interpret.
+
+The difference in classification performance of the two perspectives is still
+unclear. Wen et al.~\cite{Wen2020} evaluate the impact of data augmentation on
+time series for various classification and forecasting tasks. Although they
+found that both heuristic and deep learning approaches improved the results
+over the various experiments, there was no direct comparison among the
+different methods. Wong et al.~\cite{Wong2016} compared both input and feature
+space data augmentation methods for image data classification performance over
+the MNIST dataset. They found that input space augmentation can lead to better
+classification performance if plausible transforms on the data are known.
+However, in~\cite{DeVries2017} the authors discuss that the effectiveness of
+each data augmentation method generally depends on the domain. The lack of
+research on effective, domain-agnostic data augmentation methods appears to be
+a current research gap.
+
+% Define the different types of data augmentation methods
 % Add Taxonomy of generative models here
-%
 % Discuss top papers found in the results section.
-% 
+ 
+\subsection{Heuristic Approaches}
+
 % Heuristic data augmentation algorithms
 % - Oversampling techniques
 % - Image classification techniques
-% 
+
+\subsection{Deep Learning Approaches}
+
+% augmentation at the feature space is discussed in 
+% Terrance V, Graham WT. Dataset augmentation in feature space. In: Proceedings 
+% of the international conference on machine learning (ICML), workshop track, 2017
+
 % Neural Network-based algorithms
 % 
-% Other types of algorithms, like bayesian-based approaches?
+% Other types of algorithms, like Bayesian-based approaches?
 % 
 % Random erasing~\cite{Zhong2017}
+%
+% In~\cite{Zhang2021}, the authors argue that the augmentation methods used in
+% their study (all heuristic), as well as other regularization methods such as
+% weight decay did not affect how the model adapted to randomly labelled
+% training sets. This is an existing limitation of the current regularization
+% methods available.
 
 \section{Methodology}~\label{sec:methodology}
 
@@ -191,8 +273,8 @@ done to understand which manuscripts, journals and conferences are most
 significant within the field of Data Augmentation. The manuscripts' keywords
 were used to construct a network of keywords (described in
 Subsection~\ref{sec:keyword_analysis}) and study the different communities of
-keywords found in the network. The topic modelling and parameter tunning is described in
-Subsection~\ref{sec:topic_modelling}. 
+keywords found in the network. The topic modelling and parameter tuning is
+described in Subsection~\ref{sec:topic_modelling}. 
 
 \begin{figure}[H]
 	\centering
