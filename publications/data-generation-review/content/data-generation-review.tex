@@ -71,8 +71,8 @@
     this paper we identify the main areas of application of data augmentation
     algorithms, the main types of algorithms used, significant research
     trends, their progression over time and research gaps in data augmentation
-    literature. This was done through using a network-based, text mining-based
-    and exploratory analysis of literature collected through the Scopus
+    literature. This was done using a network-based, text mining-based and
+    exploratory analysis of the literature collected through the Scopus
     database. We expect readers to understand the potential of data
     augmentation as well as identify future research directions and open
     questions within data augmentation research.
@@ -146,7 +146,7 @@ Brain and Facebook research teams support Schmidhuber's group's findings.
 Specifically, in~\cite{Tolstikhin2021, Touvron2021} the authors discuss two
 similar MLP ensemble architectures, showing that the proposed model attains a
 comparable performance to convolutional neural networks and attention-based
-networks.  Another recent study also discusses a related MLP architecture with
+networks. Another recent study also discusses a related MLP architecture with
 similar findings, while suggesting that the strong performance of computer
 vision models may be attributable mainly to the inducive bias produced by the
 patch embedding and the carefully-curated set of training
@@ -207,7 +207,7 @@ space into a lower-dimensional representation, known as feature space
 \textbf{[REF]}. The generation of artificial observations occurs at the
 feature space level, before being reconstructed to the original input space.
 This is commonly done with Convolutional Neural Networks (CNN) and
-auto-encoder architectures~\cite{Shorten2019}.  Since data augmentation is
+auto-encoder architectures~\cite{Shorten2019}. Since data augmentation is
 performed in the feature space, this type of approach is particularly useful
 for high-dimensional data types and results in more plausible synthetic
 observations~\cite{DeVries2017}. However, deep learning approaches require
@@ -234,21 +234,34 @@ a current research gap.
  
 \subsection{Heuristic Approaches}
 
+Although domain-agnostic solutions have been proposed, various heuristic
+approaches depend on the data type. For example, image data augmentation may
+be done via translation, cropping or random erasing~\cite{Zhong2017}, among
+others~\cite{Shorten2019}. However, these techniques depend on the context and
+may not be applicable to other data types such as time-series
+data~\cite{Wen2020, Iwana2021} or tabular data. In this subsection we will
+focus on domain-agnostic data augmentation methods.
+
 % Heuristic data augmentation algorithms
 % - Oversampling techniques
 % - Image classification techniques
 
 \subsection{Deep Learning Approaches}
 
-% augmentation at the feature space is discussed in 
-% Terrance V, Graham WT. Dataset augmentation in feature space. In: Proceedings 
-% of the international conference on machine learning (ICML), workshop track, 2017
+Different deep learning approaches and architectures have been developed for
+various domains. Deep learning data augmentation methods may be developed via
+augmentation at the feature space (which involves learning a feature
+space)~\cite{DeVries2017} or via a combination of a set number of observations
+into a neural network in order to output a non-linear, non-geometric
+combination of input observations~\cite{Wang2017}. Other deep learning-based
+domain-specific methods have also been developed, such as the application of
+style transferring techniques (specific to image data)~\cite{Wang2017, Zhu2017}.
 
 % Neural Network-based algorithms
 % 
 % Other types of algorithms, like Bayesian-based approaches?
-% 
-% Random erasing~\cite{Zhong2017}
+%
+% Random erasing
 %
 % In~\cite{Zhang2021}, the authors argue that the augmentation methods used in
 % their study (all heuristic), as well as other regularization methods such as
