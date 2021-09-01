@@ -110,14 +110,14 @@ neural network architectures. Pruning is applied on decision trees. Early
 stopping can be used on learners trained iteratively, making it a broader
 method. 
 
-Data augmentation techniques, on the other hand, are used to increase the
-diversity of data in a training dataset through the production of artificial
-observations \textbf{[REF]}. They are most frequently used as regularization
-techniques for various types of problems and classifiers, since it is applied
-at the data level \textbf{[REF]}. Figure~\ref{fig:data_augmentation_example}
-shows an example of data augmentation, where the decision boundaries become
-clearer after the original dataset is augmented. Data Augmentation methods can
-be divided into heuristic and Deep Learning approaches~\cite{Shorten2019,
+Data augmentation techniques are used to increase the diversity of data in a
+training dataset through the production of artificial observations
+\textbf{[REF]}. They are most frequently used as regularization techniques for
+various types of problems and classifiers, since it is applied at the data
+level \textbf{[REF]}. Figure~\ref{fig:data_augmentation_example} shows an
+example of data augmentation, where the decision boundaries become clearer
+after the original dataset is augmented. Data Augmentation methods can be
+divided into heuristic and Deep Learning approaches~\cite{Shorten2019,
 Ratner2017}. Within these approaches, they may be either domain specific or
 contextually independent. For example, although both Synthetic Minority
 Oversampling Technique (SMOTE)~\cite{Chawla2002} and Kernel Filters are
@@ -152,14 +152,26 @@ vision models may be attributable mainly to the inducive bias produced by the
 patch embedding and the carefully-curated set of training
 augmentations~\cite{Melaskyriazi2021}.
 
-\hl{However, Data Augmentation methods may be used on its own for different
+However, Data Augmentation methods may be used for different
 purposes other than regularization. For example, Vector Quantised Generative
-Adversarial Networks (VQGAN)}~\cite{Esser2020} \hl{is a Deep Learning approach that
+Adversarial Networks (VQGAN)~\cite{Esser2020} is a Deep Learning approach that
 became popular for the synthesis of art based on artificial intelligence
 particularly when used along with Contrastive Language-Image Pre-Training
-(CLIP)}~\cite{Radford2021}.
+(CLIP)~\cite{Radford2021}. Figure~\ref{fig:super_miles_dali} shows an example of an image
+generated using the VQGAN+CLIP model. Style transferring techniques have also been
+used to augment image datasets and successfully improved classification
+performance~\cite{Wang2017}.
 
-% Add example image?
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.4\linewidth]{../analysis/super_miles_dali}
+    \caption{%
+        Example of a figure generated using VQGAN+CLIP\@. The image was
+        generated using the pretrained model ``wikiart\_16384'' with the text
+        prompt ``Miles Davis in the style of Salvador Dali'' and a picture of
+        Miles Davis as the initial image to model.
+    }~\label{fig:super_miles_dali}
+\end{figure}
 
 Research on data augmentation methods has gained significant popularity in
 recent years. As such, there were some efforts in the past to establish a
@@ -234,17 +246,56 @@ a current research gap.
  
 \subsection{Heuristic Approaches}
 
-Although domain-agnostic solutions have been proposed, various heuristic
-approaches depend on the data type. For example, image data augmentation may
-be done via translation, cropping or random erasing~\cite{Zhong2017}, among
-others~\cite{Shorten2019}. However, these techniques depend on the context and
-may not be applicable to other data types such as time-series
-data~\cite{Wen2020, Iwana2021} or tabular data. In this subsection we will
-focus on domain-agnostic data augmentation methods.
+Various heuristic approaches depend on the data type. For example, image data
+augmentation may be done via translation, cropping or random
+erasing~\cite{Zhong2017}, among others~\cite{Shorten2019}. However, these
+techniques depend on the context and may not be applicable to other data types
+such as time-series~\cite{Wen2020, Iwana2021} or tabular data. In this
+subsection we will focus on domain-agnostic data augmentation methods.
 
-% Heuristic data augmentation algorithms
-% - Oversampling techniques
-% - Image classification techniques
+Heuristic approaches may be applied at the input or feature space. The
+appropriate method to be applied also depends on the machine learning goal.
+Specifically, heuristic methods are commonly used to address classification
+problems where the frequency of the different target classes vary
+significantly, a problem known as Imbalanced Learning~\cite{Chawla2004}. In
+this context, the dataset contains one or multiple rare classes, which become
+more difficult to predict. This happens because during the learning phase,
+classifiers are trained in order to maximize one or few performance metrics.
+Although, a poor choice of performance metrics (\textit{i.e.}, a metric
+insensitive to class imbalance, such as overall accuracy) might lead to a poor
+estimation of the model's actual performance, since minority classes
+contribute less to the learning phase and to the estimation of the performance
+metric~\cite{Fonseca2021}. 
+
+The problem of Imbalanced Learning is frequently addressed with oversampling
+algorithms~\cite{Kaur2019}. Oversampling methods generate artificial
+observations in order to balance class distributions using contextual
+information based on the original dataset. These methods apply linear or
+geometric interpolations between a random observation and one of its neighbors
+to generate a new observation.
+
+SMOTE~\cite{Chawla2002} is one of the most popular oversampling methods. It
+generates an artificial observation along a line segment between a randomly
+selected minority class observation and one of its nearest-neighbors. Since it
+was first proposed, modifications at the neighbors parent observations
+selection and data generation mechanisms of the original algorithm were
+proposed. Borderline-SMOTE~\cite{Han2005} is an example of a modification of
+SMOTE's data selection mechanism. Instead of selecting any random minority
+class observation and one of its neighbors, the algorithm focuses in the
+observations closest to the decision boundary.
+Geometric-SMOTE~\cite{Douzas2019} proposes a modification of the data
+generation mechanism. Instead of generating data within a line segment, it
+generates data within a hyper-spheroid between two parent observations.
+
+Benefits of heuristic methods in contexts of limited data availability.
+
+Small data augmentation.
+
+In~\cite{Fonseca2021active} the authors apply data augmentation 
+
+Risk of overfitting in small data augmentation.
+
+Other heuristic augmentation strategies.
 
 \subsection{Deep Learning Approaches}
 
@@ -253,9 +304,15 @@ various domains. Deep learning data augmentation methods may be developed via
 augmentation at the feature space (which involves learning a feature
 space)~\cite{DeVries2017} or via a combination of a set number of observations
 into a neural network in order to output a non-linear, non-geometric
-combination of input observations~\cite{Wang2017}. Other deep learning-based
-domain-specific methods have also been developed, such as the application of
-style transferring techniques (specific to image data)~\cite{Wang2017, Zhu2017}.
+combination of input observations~\cite{Wang2017}. Other domain-specific deep
+learning methods also exist, such as style transferring techniques (specific
+to image data)~\cite{Wang2017, Zhu2017}.
+
+Learning a feature space
+
+Application of heuristic methods in the feature space
+
+Non-linear combination of input observations
 
 % Neural Network-based algorithms
 % 
@@ -835,7 +892,7 @@ augmentation methods based on neural networks and deep learning classifiers
 have increased its popularity.
 
 Data augmentation is most commonly applied/studied in the realm of computer
-vision for tasks like image classification, segmentation, object detection
+vision for tasks like image classification, segmentation, object detection,
 inpainting and background subtraction tasks, even though it may be applied to
 many other data structures. It is frequently used in studies within the
 domains of biomedicine, agriculture, speech recognition, acoustic modelling,
