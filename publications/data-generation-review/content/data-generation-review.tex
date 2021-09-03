@@ -152,15 +152,18 @@ vision models may be attributable mainly to the inducive bias produced by the
 patch embedding and the carefully-curated set of training
 augmentations~\cite{Melaskyriazi2021}.
 
-However, Data Augmentation methods may be used for different
-purposes other than regularization. For example, Vector Quantised Generative
-Adversarial Networks (VQGAN)~\cite{Esser2020} is a Deep Learning approach that
-became popular for the synthesis of art based on artificial intelligence
-particularly when used along with Contrastive Language-Image Pre-Training
-(CLIP)~\cite{Radford2021}. Figure~\ref{fig:super_miles_dali} shows an example of an image
-generated using the VQGAN+CLIP model. Style transferring techniques have also been
-used to augment image datasets and successfully improved classification
-performance~\cite{Wang2017}.
+% TODO: Discuss generative algorithms and the difference between that and data
+% augmentation
+
+However, Data Augmentation methods may be used for different purposes other
+than regularization. For example, Vector Quantised Generative Adversarial
+Networks (VQGAN)~\cite{Esser2020} is a Deep Learning approach that became
+popular for the synthesis of art based on artificial intelligence particularly
+when used along with Contrastive Language-Image Pre-Training
+(CLIP)~\cite{Radford2021}. Figure~\ref{fig:super_miles_dali} shows an example
+of an image generated using the VQGAN+CLIP model. Style transferring
+techniques have also been used to augment image datasets and successfully
+improved classification performance~\cite{Wang2017}.
 
 \begin{figure}[H]
 	\centering
@@ -282,20 +285,24 @@ selection and data generation mechanisms of the original algorithm were
 proposed. Borderline-SMOTE~\cite{Han2005} is an example of a modification of
 SMOTE's data selection mechanism. Instead of selecting any random minority
 class observation and one of its neighbors, the algorithm focuses in the
-observations closest to the decision boundary.
+minority class observations closest to the decision boundary.
 Geometric-SMOTE~\cite{Douzas2019} proposes a modification of the data
 generation mechanism. Instead of generating data within a line segment, it
 generates data within a hyper-spheroid between two parent observations.
 
-Benefits of heuristic methods in contexts of limited data availability.
-
-Small data augmentation.
-
-In~\cite{Fonseca2021active} the authors apply data augmentation 
-
-Risk of overfitting in small data augmentation.
-
-Other heuristic augmentation strategies.
+Contrary to Deep Learning approaches, heuristic approaches can be applied at
+the input space without the need of learning a feature space. This allows the
+implementation of heuristic data augmentation with less computational power
+and technical complexity. In addition, in contexts of limited data
+availability (\textit{i.e.}, small datasets), deep learning approaches are not
+appropriate since the amount of parameters to be tuned during the learning
+phase often exceeds the number of observations in the dataset, making it
+over-parametrized. The augmentation of small datasets using heuristic
+approaches is explored in an Active Learning context
+in~\cite{Fonseca2021active}. The authors found that significantly smaller
+amounts of curated data using Active Learning, along with heuristic data
+augmentation methods, achieved a classification performance comparable to
+classifiers trained over the full dataset.
 
 \subsection{Deep Learning Approaches}
 
@@ -308,11 +315,43 @@ combination of input observations~\cite{Wang2017}. Other domain-specific deep
 learning methods also exist, such as style transferring techniques (specific
 to image data)~\cite{Wang2017, Zhu2017}.
 
-Learning a feature space
+Data augmentation at the feature space is especially useful when dealing with
+high-dimensional datasets with complex and/or discontinuous distributions.
+For example, many heuristic data augmentation techniques cannot be applied in
+handwritten digits classification problems since they may change the true
+label of the generated image and generate noisy data. In this situation,
+performing data augmentation at the input space may introduce
+noise~\cite{Chu2020}, since the data is also subjected to the curse of
+dimensionality (see Figure~\ref{fig:input_vs_feature_space}a). This allows
+transformations of known observations in a lower dimensional space to generate
+new, non-noisy artificial observations projected in the input space, as show
+in Figures~\ref{fig:input_vs_feature_space}b
+and~\ref{fig:input_vs_feature_space}c. 
+
+\begin{figure}[htb]
+	\centering
+	\includegraphics[width=.75\linewidth]{../analysis/input_vs_feature_space}
+    \caption{%
+        Example of a sparse input space and its corresponding feature space.
+        Learning a manifold feature space facilitates the generation of
+        non-noisy artificial data. In the original input space (a) the
+        unseen/artificial observation marked with ``?'' is closer to a green
+        observation and to the learnt red manifold space, which may generate
+        noisy data. When projected or generated in the feature space (b), the
+        observation will better match the nearest manifold measure and avoid
+        noisy data in the input space (c).
+        Adapted from~\cite{Antoniou2017}.
+    }~\label{fig:input_vs_feature_space}
+\end{figure}
+
+Generative Adversarial Networks (GAN)~\cite{Goodfellow2014} 
 
 Application of heuristic methods in the feature space
 
-Non-linear combination of input observations
+Non-linear combination of input observations (manifold latent space)
+
+Small data problem can be solved via transfer learning, when possible.
+
 
 % Neural Network-based algorithms
 % 
