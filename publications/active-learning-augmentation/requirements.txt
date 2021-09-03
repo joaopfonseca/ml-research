@@ -1,1 +1,1 @@
-ml-research==0.3.1
+ml-research==0.3.2
