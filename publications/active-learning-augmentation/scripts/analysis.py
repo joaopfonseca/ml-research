@@ -341,9 +341,9 @@ if __name__ == '__main__':
         file_path = join(RESULTS_PATH, name)
         df_results = pd.read_pickle(file_path)
         df_results['Dataset'] = name\
-            .replace('_base.pkl', '')\
+            .replace('_al_base.pkl', '')\
             .replace('_ceiling.pkl', '')\
-            .replace('_proposed.pkl', '')
+            .replace('_al_proposed.pkl', '')
         results.append(df_results)
 
     # Combine and select results
