@@ -84,13 +84,13 @@ CONFIG = {
 
         # Pure oversampling (same as last paper)
         ('G-SMOTE', OverSamplingAugmentation(
-            GeometricSMOTE(k_neighbors=5, deformation_factor=.5, truncation_factor=.5)
+            GeometricSMOTE(k_neighbors=4, deformation_factor=.5, truncation_factor=.5)
         ), {}),
 
         # Oversampling augmentation
         ('G-SMOTE-AUGM', OverSamplingAugmentation(
-            GeometricSMOTE(k_neighbors=5, deformation_factor=.5, truncation_factor=.5),
-            augmentation_strategy='constant', value=1200
+            GeometricSMOTE(k_neighbors=4, deformation_factor=.5, truncation_factor=.5),
+            augmentation_strategy='oversampling', value=2
         ), {}),
     ],
     'remove_test': [
