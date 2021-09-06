@@ -54,7 +54,7 @@ def make_dur(threshold):
     return dur
 
 
-for i in range(60, 100, 5):
+for i in range(10, 100, 2):
     SCORERS[f'dur_{i}'] = ALScorer(make_dur(i/100))
 
 
@@ -132,7 +132,7 @@ CONFIG = {
         'f1_macro',
         'geometric_mean_score_macro',
         'area_under_learning_curve',
-    ] + [f'dur_{i}' for i in range(60, 100, 5)],
+    ] + [f'dur_{i}' for i in range(10, 100, 2)],
     'n_splits': 5,
     'n_runs': 3,
     'rnd_seed': 42,
