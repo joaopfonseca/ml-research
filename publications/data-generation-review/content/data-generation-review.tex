@@ -101,29 +101,28 @@ when the training data is not representative of the true population, or the
 model is over-parametrized, it becomes particularly prone to overfitting.
 There are different strategies to reduce overfitting, known as regularization
 methods~\cite{Shorten2019}. Identifying the appropriate regularization methods
-varies according to the use case \textbf{[REF]}. While some methods can only
-be applied on specific classifiers or domains, others may be applied at the
-data level, independently from the classification problem
-\textbf{[REF]}. For example, methods such as dropout/dilution, batch
-normalization and transfer learning/domain adaptation are mostly applied on
-neural network architectures. Pruning is applied on decision trees. Early
-stopping can be used on learners trained iteratively, making it a broader
-method. 
+varies according to the use case~\cite{Chun2020}. While some methods can only
+be applied on specific classifiers, data types or domains, others may be
+applied at the data level, independently from the classification problem. For
+example, methods such as dropout/dilution, batch normalization and transfer
+learning/domain adaptation are mostly applied on neural network architectures.
+Pruning is applied on decision trees. Early stopping can be used on learners
+trained iteratively, making it a broader method. 
 
 Data augmentation techniques are used to increase the diversity of data in a
-training dataset through the production of artificial observations
-\textbf{[REF]}. They are most frequently used as regularization techniques for
-various types of problems and classifiers, since it is applied at the data
-level \textbf{[REF]}. Figure~\ref{fig:data_augmentation_example} shows an
-example of data augmentation, where the decision boundaries become clearer
-after the original dataset is augmented. Data Augmentation methods can be
-divided into heuristic and Deep Learning approaches~\cite{Shorten2019,
-Ratner2017}. Within these approaches, they may be either domain specific or
-contextually independent. For example, although both Synthetic Minority
-Oversampling Technique (SMOTE)~\cite{Chawla2002} and Kernel Filters are
-heuristic approaches, SMOTE may be used regardless of the context, while
-Kernel Filters are specific to image data augmentation. The different types of
-Data Augmentation methods are defined at a higher detail in
+training dataset through the production of artificial
+observations~\cite{Wong2016}. They are most frequently used as regularization
+techniques for various types of problems and classifiers, since it is applied
+at the data level. Figure~\ref{fig:data_augmentation_example} shows an example
+of data augmentation, where the decision boundaries become clearer after the
+original dataset is augmented. Data Augmentation methods can be divided into
+heuristic and Deep Learning approaches~\cite{Shorten2019, Ratner2017}. Within
+these approaches, they may be either domain specific or contextually
+independent. For example, although both Synthetic Minority Oversampling
+Technique (SMOTE)~\cite{Chawla2002} and Kernel Filters are heuristic
+approaches, SMOTE may be used regardless of the context, while Kernel Filters
+are specific to image data augmentation. The different types of Data
+Augmentation methods are defined at a higher detail in
 Section~\ref{sec:data-augmentation}.
 
 \begin{figure}[H]
@@ -176,52 +175,50 @@ improved classification performance~\cite{Wang2017}.
     }~\label{fig:super_miles_dali}
 \end{figure}
 
-Research on data augmentation methods has gained significant popularity in
-recent years. As such, there were some efforts in the past to establish a
-taxonomy and distinction of the different types of data augmentations
-methods~\cite{Shorten2019}. The most cited literature review on data
-augmentation was focused on image data augmentation for deep learning,
-published in 2019~\cite{Shorten2019}. Since then, research on data
-augmentation methods have progressed significantly. To the best of our
-knowledge, there is no analysis on data augmentation research as a whole, as
-well as domains of application and future directions. In this paper we focus
-on current and past research trends of data augmentation methods, its
-different applications and use cases. This was done with an extensive analysis
-of the title, keywords and abstract of a large set of literature related to
-data augmentation, collected through the
-\href{https://www.scopus.com/}{Scopus} database. The analysis was done in 3
-phases. We started by performing an exploratory data analysis to identify the
-most significant publications, journals and conferences within the field of
-data augmentation. Then, we analyse the articles' author keywords by
-constructing a network and extracting and identifying communities of keywords.
-Finally we used a text mining approach to extract additional applications and
-methods using the articles' abstracts, as well as validate the findings
-discussed with the keyword analysis.
+Research on data augmentation methods gained significant popularity in recent
+years. As such, there were some efforts in the past to establish a taxonomy
+and distinction of the different types of data augmentations
+methods~\cite{Shorten2019}. To the best of our knowledge, there is no analysis
+on data augmentation research as a whole, as well as domains of application
+and future directions. In this paper we focus on current and past research
+trends of data augmentation methods, its different applications and use cases.
+This is done with an extensive analysis of the title, keywords and abstract of
+a large set of literature related to data augmentation, collected through the
+\href{https://www.scopus.com/}{Scopus} database using Natural Language
+Processing and Network Science techniques. The analysis contains 3 phases. We
+started by performing an exploratory data analysis to identify the most
+significant publications, journals and conferences within the field of data
+augmentation. Then, we analysed the articles' author keywords by constructing
+a network and extracting and identifying communities of keywords.  Finally we
+used a text mining approach to extract additional applications and methods
+using the articles' abstracts, as well as validate the findings discussed with
+the keyword analysis.
 
-This paper is structured as follows: Section~\ref{sec:methodology} describes
-the procedures defined throughout the different analyses.
-Section~\ref{sec:results_discussion} presents and discusses the findings drawn
-from the analyses, as well as research gaps and open questions in data
-augmentation research. Section~\ref{sec:conclusion} summarizes the main
-findings discussed throughout the study.
+This paper is structured as follows: Section~\ref{sec:data-augmentation}
+describes the main methods and approaches used in data augmentation,
+Section~\ref{sec:methodology} describes the procedures defined throughout the
+different analyses. Section~\ref{sec:results_discussion} presents and
+discusses the findings drawn from the analyses, as well as research gaps and
+open questions in data augmentation research. Section~\ref{sec:conclusion}
+summarizes the main findings discussed throughout the study.
 
 \section{Data Augmentation Methods}~\label{sec:data-augmentation}
  
 Data Augmentation methods can be divided into Heuristic and Deep Learning
-approaches \textbf{[REF]}. Heuristic methods use the information found in the
-input space to generate new, relevant, non-duplicated observations by applying
-a predefined set of rules, while incorporating a degree of randomness in the
-generation process. Since data augmentation occurs in the input space, these
-are cost-effective approaches to data augmentation. For this reason, heuristic
+approaches. Heuristic methods use the information found in the input space to
+generate new, relevant, non-duplicated observations by applying a predefined
+set of rules, while incorporating a degree of randomness in the generation
+process. Since data augmentation occurs in the input space, these are
+cost-effective approaches to data augmentation. For this reason, heuristic
 methods are simpler to implement and are particularly appealing for low
 dimensional classification problems, especially when the computational power
 available is limited. 
 
-Deep Learning methods, on the other hand, attempt to map the original input
-space into a lower-dimensional representation, known as feature space
-\textbf{[REF]}. The generation of artificial observations occurs at the
-feature space level, before being reconstructed to the original input space.
-This is commonly done with Convolutional Neural Networks (CNN) and
+Some Deep Learning methods, on the other hand, attempt to map the original
+input space into a lower-dimensional representation, known as feature
+space~\cite{DeVries2017}. The generation of artificial observations occurs at
+the feature space level, before being reconstructed to the original input
+space. This is commonly done with Convolutional Neural Networks (CNN) and
 auto-encoder architectures~\cite{Shorten2019}. Since data augmentation is
 performed in the feature space, this type of approach is particularly useful
 for high-dimensional data types and results in more plausible synthetic
@@ -243,10 +240,6 @@ each data augmentation method generally depends on the domain. The lack of
 research on effective, domain-agnostic data augmentation methods appears to be
 a current research gap.
 
-% Define the different types of data augmentation methods
-% Add Taxonomy of generative models here
-% Discuss top papers found in the results section.
- 
 \subsection{Heuristic Approaches}
 
 Various heuristic approaches depend on the data type. For example, image data
@@ -336,22 +329,40 @@ and~\ref{fig:input_vs_feature_space}c.
         Learning a manifold feature space facilitates the generation of
         non-noisy artificial data. In the original input space (a) the
         unseen/artificial observation marked with ``?'' is closer to a green
-        observation and to the learnt red manifold space, which may generate
-        noisy data. When projected or generated in the feature space (b), the
-        observation will better match the nearest manifold measure and avoid
-        noisy data in the input space (c).
-        Adapted from~\cite{Antoniou2017}.
+        observation and to the learnt red manifold space, which may lead to a
+        noisy observation. When projected or generated in the feature space
+        (b), the observation will better match the nearest manifold measure
+        and avoid noisy data in the input space (c). Adapted
+        from~\cite{Antoniou2017}.
     }~\label{fig:input_vs_feature_space}
 \end{figure}
 
-Generative Adversarial Networks (GAN)~\cite{Goodfellow2014} 
+The utilization of autoencoders~\cite{Kramer1991} is particularly useful to
+perform feature space data augmentation~\cite{Shorten2019}. Autoencoders are
+composed by an encoder and a decoder, which map the input space to and from
+the feature space, respectively. The autoencoder is trained by minimizing the
+difference between the original observation and the reconstructed observation
+(see Figure~\ref{fig:input_vs_feature_space}c). Once the training phase is
+completed, heuristic methods are applied in the feature
+space~\cite{DeVries2017}.
 
-Application of heuristic methods in the feature space
+Generative Adversarial Network (GAN)~\cite{Goodfellow2014} architectures is a
+deep learning approach frequently used as a data augmentation method. It
+involves a generator and a discriminator. Although many different
+architectures have been proposed, the generator in the vanilla GAN algorithm
+may be seen as a decoder, which is trained based on the gradients calculated
+via the discriminator. The discriminator attempts to distinguish true and
+generated (fake) observations in order to assess the quality of the data
+produced by the generator. The problem is better formulated as a minimax
+decision rule, where the generator attempts to fool the discriminator by
+producing observations that are difficult to classify as generated.
 
-Non-linear combination of input observations (manifold latent space)
-
-Small data problem can be solved via transfer learning, when possible.
-
+When the size of the training dataset is not sufficiently large to employ deep
+learning approaches and other related datasets or unlabeled datasets are
+available, one technique that may also be used is transfer learning. In this
+context, the data augmentation model is trained on a secondary model and is
+later adjusted to the training dataset. This allows the usage of deep learning
+models in few-shot learning environments~\cite{Antoniou2017}.
 
 % Neural Network-based algorithms
 % 
