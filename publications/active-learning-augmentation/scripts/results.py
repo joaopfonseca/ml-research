@@ -90,8 +90,8 @@ CONFIG = {
         # Oversampling augmentation
         ('G-SMOTE-AUGM', OverSamplingAugmentation(
             GeometricSMOTE(k_neighbors=4, deformation_factor=.5, truncation_factor=.5),
-            augmentation_strategy='oversampling', value=2
-        ), {}),
+            augmentation_strategy='oversampling'
+        ), {'value': [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]}),
     ],
     'remove_test': [
         ('remove_test', remove_test(TEST_SIZE), {})
