@@ -39,7 +39,7 @@ from research.utils import (
 )
 
 DATA_PATH, RESULTS_PATH, ANALYSIS_PATH = generate_paths(__file__)
-TEST_SIZE = 0.2
+TEST_SIZE = 0.5
 RANDOM_SEED = 42
 
 
@@ -91,7 +91,7 @@ CONFIG = {
         ('G-SMOTE-AUGM', OverSamplingAugmentation(
             GeometricSMOTE(k_neighbors=4, deformation_factor=.5, truncation_factor=.5),
             augmentation_strategy='oversampling'
-        ), {'value': [1]}),#[1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]}),
+        ), {'value': [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]}),
     ],
     'remove_test': [
         ('remove_test', remove_test(TEST_SIZE), {})
@@ -99,6 +99,7 @@ CONFIG = {
     'classifiers': [
         ('LR', LogisticRegression(solver='liblinear', multi_class='auto'), {}),
         ('KNN', KNeighborsClassifier(), {}),
+        ('DT', DecisionTreeClassifier(), {}),
         ('RF', RandomForestClassifier(), {})
     ],
     'simulations': [
