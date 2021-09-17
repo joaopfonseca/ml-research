@@ -11,7 +11,11 @@ from zipfile import ZipFile
 import numpy as np
 import pandas as pd
 from rlearn.tools import summarize_datasets
-from research.utils import generate_paths, load_datasets
+from research.utils import (
+    generate_paths,
+    load_datasets,
+    generate_mean_std_tbl_bold
+)
 from research.datasets import MulticlassDatasets
 
 DATA_PATH, RESULTS_PATH, ANALYSIS_PATH = generate_paths(__file__)
@@ -162,7 +166,7 @@ def calculate_wide_optimal(results):
         ).reset_index(drop=True)
 
     (
-        _,
+        wide_optimal['AL'],
         wide_optimal['Generator'],
         wide_optimal['Classifier']
     ) = np.array(
@@ -177,13 +181,13 @@ def calculate_wide_optimal(results):
         .drop(columns='Estimator')\
         .pivot(
             ['Dataset', 'Classifier', 'variable'],
-            'Generator',
+            ['AL', 'Generator'],
             ['mean', 'std']
         )
 
     return (
-        wide_optimal['mean'].drop(columns='SMOTE'),
-        wide_optimal['std'].drop(columns='SMOTE')
+        wide_optimal['mean'],
+        wide_optimal['std']
     )
 
 
@@ -239,9 +243,67 @@ def calculate_wide_optimal_al(results):
         )
 
     return (
-        wide_optimal['mean'].drop(columns='SMOTE'),
-        wide_optimal['std'].drop(columns='SMOTE')
+        wide_optimal['mean'],
+        wide_optimal['std']
     )
+
+
+def calculate_mean_std_table(wide_optimal):
+    df = wide_optimal[0].copy()
+    df_grouped = df.reset_index()\
+        .rename(columns={'variable': 'Evaluation Metric'})\
+        .groupby(['Classifier', 'Evaluation Metric'])
+
+    return df_grouped.mean(), df_grouped.std(ddof=0)
+
+
+def mean_std_ranks_al(
+    wide_optimal, al_metric='area_under_learning_curve'
+):
+    asc = False if not al_metric.startswith('dur') else True
+
+    ranks = wide_optimal.loc[
+            wide_optimal.index.get_level_values(3) == al_metric
+        ].rank(axis=1, ascending=asc)\
+        .reset_index()\
+        .groupby(['Classifier', 'Evaluation Metric'])
+
+    return ranks.mean(), ranks.std(ddof=0)
+
+
+def calculate_mean_std_table_al(
+    wide_optimal_al, al_metric='area_under_learning_curve'
+):
+    df = wide_optimal_al[0].copy()
+    df_grouped = df.loc[df.index.get_level_values(3) == al_metric]\
+        .reset_index().groupby(['Classifier', 'Evaluation Metric'])
+
+    return df_grouped.mean(), df_grouped.std(ddof=0)
+
+
+def deficiency_scores(wide_optimal, wide_optimal_al):
+    wo_mp = wide_optimal[0]['nan'].to_frame()
+
+    wo_al = wide_optimal_al[0].loc[
+        wide_optimal_al[0]
+        .index
+        .get_level_values('variable') == 'area_under_learning_curve'
+    ].droplevel('variable', axis=0)
+
+    wo_a = wo_al.drop(columns='NONE')
+    wo_b = wo_al['NONE'].to_frame()
+
+    deficiency = (wo_mp.values - wo_a.values)\
+        / (2*wo_mp.values - wo_a.values - wo_b.values)
+
+    deficiency = pd.DataFrame(
+            deficiency,
+            columns=wo_a.columns,
+            index=wo_a.index
+        ).reset_index()\
+        .groupby(['Classifier', 'Evaluation Metric'])
+
+    return deficiency.mean(), deficiency.std(ddof=0)
 
 
 def generate_main_results(results):
@@ -249,6 +311,12 @@ def generate_main_results(results):
 
     wide_optimal_al = calculate_wide_optimal_al(results)
     wide_optimal = calculate_wide_optimal(results)
+
+    # NOTE: this might have to be reviewed later
+    wide_optimal_al = [
+        df.drop(('AL-GEN', 'G-SMOTE'), axis=1).droplevel(0, axis=1)
+        for df in wide_optimal_al
+    ]
 
     # Wide optimal AULC
     wide_optimal_aulc = generate_mean_std_tbl_bold(
@@ -314,6 +382,41 @@ def generate_main_results(results):
         )
     )
 
+
+def generate_statistical_results(
+    wide_optimal_al, alpha=.1, control_method='NONE'
+):
+    """Generate the statistical results of the experiment."""
+
+    # Get results
+    results = wide_optimal_al[0]\
+        .reset_index()[
+            wide_optimal_al[0].reset_index().variable.str.startswith('dur_')
+        ].drop(columns=['variable'])\
+        .rename(columns={'Evaluation Metric': 'Metric'})
+    results = results[results['Metric'] == 'geometric_mean_score_macro']
+
+    # Wilcoxon signed rank test
+    # Optimal proposed framework vs baseline framework
+    wilcoxon_test = []
+    for dataset in results.Dataset.unique():
+        wilcoxon_results = apply_wilcoxon_test(
+            results[results['Dataset'] == dataset],
+            'G-SMOTE',
+            ['NONE'],
+            alpha
+        ).drop(columns='Oversampler')
+        wilcoxon_results['Dataset'] = dataset.replace('_', ' ').title()
+        wilcoxon_test.append(wilcoxon_results[
+            ['Dataset', 'p-value', 'Significance']
+        ])
+
+    wilcoxon_test = pd.concat(wilcoxon_test, axis=0)
+    wilcoxon_test['p-value'] = wilcoxon_test['p-value'].apply(
+        lambda x: '{:.1e}'.format(x)
+    )
+
+    return 'wilcoxon_test', wilcoxon_test
 
 if __name__ == '__main__':
 
