@@ -69,7 +69,10 @@ class remove_test(SamplerMixin):
 
     def _fit_resample(self, X, y):
         X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=self.test_size, random_state=RANDOM_SEED
+            X, y,
+            test_size=self.test_size,
+            random_state=RANDOM_SEED,
+            stratify=y
         )
         return X_train, y_train
 
