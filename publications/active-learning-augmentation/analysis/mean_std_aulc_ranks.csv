@@ -1,0 +1,13 @@
+Classifier,Evaluation Metric,Standard,G-SMOTE,Proposed
+DT,Accuracy,2.36 $\pm$ 0.88,2.18 $\pm$ 0.57,\textbf{1.45 $\pm$ 0.66}
+DT,F-score,2.73 $\pm$ 0.62,2.00 $\pm$ 0.43,\textbf{1.27 $\pm$ 0.62}
+DT,G-mean,2.91 $\pm$ 0.29,1.82 $\pm$ 0.39,\textbf{1.27 $\pm$ 0.62}
+KNN,Accuracy,2.18 $\pm$ 0.94,2.00 $\pm$ 0.6,\textbf{1.82 $\pm$ 0.83}
+KNN,F-score,2.73 $\pm$ 0.62,\textbf{1.64 $\pm$ 0.48},\textbf{1.64 $\pm$ 0.77}
+KNN,G-mean,2.73 $\pm$ 0.62,1.73 $\pm$ 0.62,\textbf{1.55 $\pm$ 0.66}
+LR,Accuracy,2.27 $\pm$ 0.86,2.00 $\pm$ 0.6,\textbf{1.73 $\pm$ 0.86}
+LR,F-score,2.73 $\pm$ 0.62,1.91 $\pm$ 0.51,\textbf{1.36 $\pm$ 0.64}
+LR,G-mean,2.82 $\pm$ 0.39,1.82 $\pm$ 0.57,\textbf{1.36 $\pm$ 0.64}
+RF,Accuracy,2.36 $\pm$ 0.88,1.91 $\pm$ 0.67,\textbf{1.73 $\pm$ 0.75}
+RF,F-score,2.82 $\pm$ 0.57,1.64 $\pm$ 0.48,\textbf{1.55 $\pm$ 0.66}
+RF,G-mean,3.00 $\pm$ 0.0,\textbf{1.45 $\pm$ 0.5},1.55 $\pm$ 0.5
