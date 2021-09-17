@@ -8,22 +8,40 @@ Analyze the experimental results.
 import os
 from os.path import join
 from zipfile import ZipFile
+from itertools import product
 import numpy as np
+from scipy.stats import wilcoxon
 import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FormatStrFormatter
 from rlearn.tools import summarize_datasets
 from research.utils import (
     generate_paths,
     load_datasets,
-    generate_mean_std_tbl_bold
+    generate_mean_std_tbl_bold,
+    load_plt_sns_configs
 )
 from research.datasets import MulticlassDatasets
 
 DATA_PATH, RESULTS_PATH, ANALYSIS_PATH = generate_paths(__file__)
 
+# DATASETS_NAMES = [
+#     d.replace('fetch_', '')
+#     for d in dir(MulticlassDatasets())
+#     if d.startswith('fetch_')
+# ]
 DATASETS_NAMES = [
-    d.replace('fetch_', '')
-    for d in dir(MulticlassDatasets())
-    if d.startswith('fetch_')
+    'baseball',
+    'gas_drift',
+    'gesture_segmentation',
+    'japanese_vowels',
+    'mfeat_zernike',
+    'mice_protein',
+    'pendigits',
+    'texture',
+    'usps',
+    'waveform',
+    'wine_quality'
 ]
 
 DATASETS_MAPPING = dict([
@@ -39,6 +57,8 @@ METRICS_MAPPING = dict([
     ('f1_macro', 'F-score'),
     ('geometric_mean_score_macro', 'G-mean')
 ])
+
+GENERATOR_NAMES = ['NONE', 'G-SMOTE', 'G-SMOTE-AUGM']
 
 GROUP_KEYS = [
     'Dataset',
@@ -185,10 +205,10 @@ def calculate_wide_optimal(results):
             ['mean', 'std']
         )
 
-    return (
-        wide_optimal['mean'],
-        wide_optimal['std']
-    )
+    return [
+        df.drop(('AL-GEN', 'G-SMOTE'), axis=1).droplevel(0, axis=1)
+        for df in [wide_optimal['mean'], wide_optimal['std']]
+    ]
 
 
 def calculate_wide_optimal_al(results):
@@ -242,10 +262,10 @@ def calculate_wide_optimal_al(results):
             ['mean', 'std']
         )
 
-    return (
-        wide_optimal['mean'],
-        wide_optimal['std']
-    )
+    return [
+        df.drop(('AL-GEN', 'G-SMOTE'), axis=1).droplevel(0, axis=1)
+        for df in [wide_optimal['mean'], wide_optimal['std']]
+    ]
 
 
 def calculate_mean_std_table(wide_optimal):
@@ -312,12 +332,6 @@ def generate_main_results(results):
     wide_optimal_al = calculate_wide_optimal_al(results)
     wide_optimal = calculate_wide_optimal(results)
 
-    # NOTE: this might have to be reviewed later
-    wide_optimal_al = [
-        df.drop(('AL-GEN', 'G-SMOTE'), axis=1).droplevel(0, axis=1)
-        for df in wide_optimal_al
-    ]
-
     # Wide optimal AULC
     wide_optimal_aulc = generate_mean_std_tbl_bold(
         *(
@@ -383,6 +397,132 @@ def generate_main_results(results):
     )
 
 
+def data_utilization_rate(*wide_optimal):
+
+    df = wide_optimal[0]
+    df = df.div(df['NONE'], axis=0)
+
+    dur_grouped = df.loc[
+            df.index.get_level_values(3).str.startswith('dur')
+        ].reset_index()\
+        .melt(id_vars=df.index.names)\
+        .pivot(
+            ['Dataset', 'Classifier', 'Evaluation Metric', 'Generator'],
+            'variable',
+            'value'
+        ).reset_index()\
+        .groupby(['Classifier', 'Evaluation Metric', 'Generator'])
+
+    return dur_grouped.mean(), dur_grouped.std(ddof=0)
+
+
+def generate_dur_visualization(wide_optimal_al):
+    """Visualize data utilization rates"""
+    dur = data_utilization_rate(*wide_optimal_al)
+    dur_mean, dur_std = (
+        df.loc[
+            df.index.get_level_values('Evaluation Metric').isin(
+                ['geometric_mean_score_macro', 'f1_macro']
+            )
+        ].rename(
+            columns={
+                col: int(col.replace('dur_', ''))
+                for col in df.columns
+            }
+        ).rename(
+            index={
+                'NONE': 'Standard',
+                'G-SMOTE-AUGM': 'Proposed'
+            }
+        )
+        for df in dur
+    )
+
+    load_plt_sns_configs(10)
+
+    col_values = dur_mean.index.get_level_values('Evaluation Metric').unique()
+    row_values = dur_mean.index.get_level_values('Classifier').unique()
+
+    # Set and format main content of the visualization
+    fig, axes = plt.subplots(
+        row_values.shape[0],
+        col_values.shape[0],
+        figsize=(7, 7),
+        sharex='col',
+        sharey='row',
+        constrained_layout=True
+    )
+    for (row, clf), (col, metric) in product(
+            enumerate(row_values),
+            enumerate(col_values)
+    ):
+        ax = axes[row, col]
+        dur_mean.loc[(clf, metric)].T.plot.line(
+            ax=ax,
+            xlabel='',
+            color={
+                'Standard': 'indianred',
+                'G-SMOTE': 'purple',
+                'Proposed': 'steelblue'
+            }
+        )
+
+        ax.set_ylabel(clf)
+        ax.set_ylim(
+            bottom=(
+                dur_mean.loc[clf].values.min()-.05
+            ),
+            top=(
+                dur_mean.loc[clf].values.max()
+                if dur_mean.loc[clf].values.max() >= 1.05
+                else 1.05
+
+            )
+        )
+        ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+        ax.set_xticks(dur_mean.columns, minor=True)
+
+        # Set legend
+        if (row == 1) and (col == 1):
+            ax.legend(
+                loc='center left',
+                bbox_to_anchor=(1, .5),
+                ncol=1,
+                borderaxespad=0,
+                frameon=False,
+                fontsize=10
+            )
+        else:
+            ax.get_legend().remove()
+
+    fig.text(0.45, -0.025, 'Performance Thresholds', ha='center', va='bottom')
+
+    for ax, metric in zip(axes[0, :], col_values):
+        ax.set_title(METRICS_MAPPING[metric])
+
+    fig.savefig(join(ANALYSIS_PATH, 'data_utilization_rate.pdf'),
+                format='pdf', bbox_inches='tight')
+    plt.close()
+
+
+def apply_wilcoxon_test(wide_optimal, dep_var, OVRS_NAMES, alpha):
+    """Performs a Wilcoxon signed-rank test"""
+    pvalues = []
+    for ovr in OVRS_NAMES:
+        mask = np.repeat(True, len(wide_optimal))
+
+        pvalues.append(wilcoxon(
+            wide_optimal.loc[mask, ovr],
+            wide_optimal.loc[mask, dep_var]).pvalue
+        )
+    wilcoxon_results = pd.DataFrame({
+        'Oversampler': OVRS_NAMES,
+        'p-value': pvalues,
+        'Significance': np.array(pvalues) < alpha
+    })
+    return wilcoxon_results
+
+
 def generate_statistical_results(
     wide_optimal_al, alpha=.1, control_method='NONE'
 ):
@@ -402,8 +542,8 @@ def generate_statistical_results(
     for dataset in results.Dataset.unique():
         wilcoxon_results = apply_wilcoxon_test(
             results[results['Dataset'] == dataset],
-            'G-SMOTE',
-            ['NONE'],
+            'G-SMOTE-AUGM',
+            [control_method],
             alpha
         ).drop(columns='Oversampler')
         wilcoxon_results['Dataset'] = dataset.replace('_', ' ').title()
@@ -417,6 +557,7 @@ def generate_statistical_results(
     )
 
     return 'wilcoxon_test', wilcoxon_test
+
 
 if __name__ == '__main__':
 
@@ -437,7 +578,7 @@ if __name__ == '__main__':
     # load results
     res_names = [
         r for r in os.listdir(RESULTS_PATH)
-        if r.endswith('.pkl')
+        if r.endswith('.pkl') and any(x in r for x in DATASETS_NAMES)
     ]
     results = []
     for name in res_names:
@@ -450,7 +591,51 @@ if __name__ == '__main__':
         results.append(df_results)
 
     # Combine and select results
-    results = select_results(pd.concat(results))
+    results = select_results(pd.concat(results).copy())
 
     # Main results - dataframes
     main_results = generate_main_results(results)
+
+    for name, result in main_results:
+        # Format results
+        result = result\
+            .rename(index={
+                **METRICS_MAPPING, **DATASETS_MAPPING
+            })\
+            .rename(columns={'nan': 'MP'})
+        result = (
+            result[[
+                col
+                for col in ['MP']+GENERATOR_NAMES
+                if col in result.columns
+            ]]
+        )
+
+        result.reset_index(inplace=True)
+        # Keep only G-mean and F-score
+        # if ('Evaluation Metric' in result.columns or
+        #         'Metric' in result.columns):
+
+        #     query_col = 'Evaluation Metric'\
+        #         if 'Evaluation Metric' in result.columns\
+        #         else 'Metric'
+
+        #     result = result[
+        #         result[query_col].isin(['G-mean', 'F-score'])
+        #     ]
+
+        # Export LaTeX-ready dataframe
+        result.rename(columns={
+            'NONE': 'Standard',
+            'G-SMOTE-AUGM': 'Proposed'
+        }).to_csv(join(ANALYSIS_PATH, f'{name}.csv'), index=False)
+
+    # Main results - visualizations
+    wide_optimal_al = calculate_wide_optimal_al(results)
+    generate_dur_visualization(wide_optimal_al)
+
+    # Statistical results
+    name, result = generate_statistical_results(
+        wide_optimal_al, alpha=.05, control_method='G-SMOTE'
+    )
+    result.to_csv(join(ANALYSIS_PATH, f'{name}.csv'), index=False)
