@@ -39,7 +39,7 @@ from research.utils import (
 )
 
 DATA_PATH, RESULTS_PATH, ANALYSIS_PATH = generate_paths(__file__)
-TEST_SIZE = 0.5
+TEST_SIZE = 0.3
 RANDOM_SEED = 42
 
 
@@ -94,7 +94,8 @@ CONFIG = {
         ('G-SMOTE-AUGM', OverSamplingAugmentation(
             GeometricSMOTE(k_neighbors=4, deformation_factor=.5, truncation_factor=.5),
             augmentation_strategy='oversampling'
-        ), {'value': [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]}),
+        ), {'k_neighbors': [3, 4, 5],
+            'value': [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]}),
     ],
     'remove_test': [
         ('remove_test', remove_test(TEST_SIZE), {})
@@ -186,6 +187,16 @@ if __name__ == '__main__':
             scoring = CONFIG['scoring_al']
         else:
             scoring = CONFIG['scoring']
+
+        # Configure AL experiments with proposed modifications
+        al_param_grid = dict()
+
+        al_param_grid = {
+            '__'.join(k.split('__')[2:]): v
+            for pg in param_grids
+            for k, v in pg.items()
+            if len(k.split('__')) >= 4 and not k.endswith('random_state')
+        }
 
         # Define and fit AL experiment
         experiment = ModelSearchCV(
