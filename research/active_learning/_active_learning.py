@@ -10,7 +10,10 @@ import numpy as np
 from sklearn.base import clone
 from sklearn.base import ClassifierMixin, BaseEstimator
 from sklearn.utils import check_X_y
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import (
+    train_test_split,
+    GridSearchCV
+)
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.ensemble import RandomForestClassifier
 from imblearn.pipeline import Pipeline
@@ -55,6 +58,26 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         selection) and vice-versa. The uncertainty estimate is used to select the
         instances to be added to the labeled/training dataset. Selection strategies may
         be added or changed in the ``UNCERTAINTY_FUNCTIONS`` dictionary.
+
+    param_grid : dict or list of dictionaries
+        Dictionary with parameters names (``str``) as keys and lists of
+        parameter settings to try as values, or a list of such
+        dictionaries, in which case the grids spanned by each dictionary
+        in the list are explored. This enables searching over any sequence
+        of parameter settings.
+
+    cv : int, cross-validation generator or an iterable, default=None
+        Determines the cross-validation splitting strategy.
+        Possible inputs for cv are:
+
+        - None, to use the default 5-fold cross validation,
+        - integer, to specify the number of folds in a `(Stratified)KFold`,
+        - :term:`CV splitter`.
+
+        For integer/None inputs, if the estimator is a classifier and ``y`` is
+        either binary or multiclass, :class:`StratifiedKFold` is used. In all
+        other cases, :class:`KFold` is used. These splitters are instantiated
+        with `shuffle=False` so the splits will be the same across calls.
 
     max_iter : int, default=None
         Maximum number of iterations allowed. If None, the experiment will run until 100%
@@ -119,6 +142,8 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         init_clusterer=None,
         init_strategy='random',
         selection_strategy='entropy',
+        param_grid=None,
+        cv=None,
         max_iter=None,
         n_initial=.02,
         increment=.02,
@@ -134,6 +159,8 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         self.use_sample_weight = use_sample_weight
         self.init_clusterer = init_clusterer
         self.init_strategy = init_strategy
+        self.param_grid = param_grid
+        self.cv = cv
         self.selection_strategy = selection_strategy
         self.max_iter = max_iter
         self.n_initial = n_initial
@@ -149,7 +176,7 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         self.random_state = random_state
 
     def _check(self, X, y):
-        """Set ups simple initialization parameters to run an AL simulation."""
+        """Set up simple initialization parameters to run an AL simulation."""
 
         X, y = check_X_y(X, y)
 
@@ -308,6 +335,16 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
             if isinstance(classifier, Pipeline) and self.use_sample_weight:
                 generator = classifier.steps[-2][-1]
                 classifier.steps[-2] = ('generator', generator)
+
+            # Set up parameter tuning within iterations
+            if self.param_grid is not None:
+                classifier = GridSearchCV(
+                    estimator=classifier,
+                    param_grid=self.param_grid,
+                    scoring=self.evaluation_metric,
+                    cv=self.cv,
+                    refit=True
+                )
 
             # Generate artificial data and train classifier
             if self.use_sample_weight:
