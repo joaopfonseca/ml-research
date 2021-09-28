@@ -94,7 +94,7 @@ CONFIG = {
         ('G-SMOTE-AUGM', OverSamplingAugmentation(
             GeometricSMOTE(k_neighbors=4, deformation_factor=.5, truncation_factor=.5),
             augmentation_strategy='oversampling'
-        ), {'k_neighbors': [3, 4, 5],
+        ), {'oversampler__k_neighbors': [3, 4, 5],
             'value': [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0]}),
     ],
     'remove_test': [
@@ -183,25 +183,55 @@ if __name__ == '__main__':
     iterable = list(product(parameter_grids.items(), datasets))
     for (exp_name, (estimators, param_grids)), (name, (X, y)) in track(
             iterable, description='Running experiments across datasets'):
-        if exp_name.startswith('al'):
+        if exp_name.startswith('al_proposed'):
+            scoring = CONFIG['scoring_al']
+
+            # Configure AL experiments with proposed modifications:
+            # (grid search within iterations)
+            al_param_grid = {
+                '__'.join(k.split('__')[2:]): v
+                for pg in param_grids
+                for k, v in pg.items()
+                if len(k.split('__')) >= 4 and not k.endswith('random_state')
+            }
+
+            param_grids = [
+                {
+                    k: v for k, v in pg.items()
+                    if len(k.split('__')) < 4 or k.endswith('random_state')
+                }
+                for pg in param_grids
+            ]
+
+            cv = StratifiedKFold(
+                n_splits=CONFIG['n_splits'],
+                shuffle=True,
+                random_state=CONFIG['rnd_seed']
+            )
+
+            estimators = [
+                (
+                    est_name,
+                    estimator.set_params(
+                        param_grid={
+                            k: g
+                            for k, g in al_param_grid.items()
+                            if k in estimator.classifier.get_params().keys()
+                        }
+                    ).set_params(cv=cv)
+                )
+                for est_name, estimator in estimators
+            ]
+
+        elif exp_name.startswith('al_base'):
             scoring = CONFIG['scoring_al']
         else:
             scoring = CONFIG['scoring']
 
-        # Configure AL experiments with proposed modifications
-        al_param_grid = dict()
-
-        al_param_grid = {
-            '__'.join(k.split('__')[2:]): v
-            for pg in param_grids
-            for k, v in pg.items()
-            if len(k.split('__')) >= 4 and not k.endswith('random_state')
-        }
-
         # Define and fit AL experiment
         experiment = ModelSearchCV(
             estimators,
-            param_grids,
+            param_grids=param_grids,
             scoring=scoring,
             n_jobs=CONFIG['n_jobs'],
             cv=StratifiedKFold(
