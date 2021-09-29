@@ -7,6 +7,7 @@ experimental environment.
 # License: MIT
 
 import numpy as np
+from copy import deepcopy
 from sklearn.base import clone
 from sklearn.base import ClassifierMixin, BaseEstimator
 from sklearn.utils import check_X_y
@@ -245,6 +246,16 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
 
         return X, X_test, y, y_test
 
+    def _check_cross_validation(self, y):
+        min_frequency = np.unique(y, return_counts=True)[-1].min()
+        cv = deepcopy(self.cv)
+
+        print(min_frequency, self.cv.n_splits)
+        if hasattr(self.cv, 'n_splits'):
+            cv.n_splits = min(min_frequency, self.cv.n_splits)
+
+        return cv
+
     def _get_performance_scores(self):
         data_utilization = [
             i[1] for i in self.data_utilization_
@@ -338,11 +349,12 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
 
             # Set up parameter tuning within iterations
             if self.param_grid is not None:
+                cv = self._check_cross_validation(y[selection])
                 classifier = GridSearchCV(
                     estimator=classifier,
                     param_grid=self.param_grid,
                     scoring=self.evaluation_metric,
-                    cv=self.cv,
+                    cv=cv,
                     refit=True
                 )
 
