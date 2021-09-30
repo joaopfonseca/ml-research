@@ -252,6 +252,8 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
 
         if hasattr(self.cv, 'n_splits'):
             cv.n_splits = min(min_frequency, self.cv.n_splits)
+        elif type(self.cv) == int:
+            cv = min(min_frequency, self.cv)
 
         return cv
 
@@ -311,7 +313,6 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         """
 
         # Original "unlabeled" dataset
-        iter_n = 0
         X, X_test, y, y_test = self._check(X, y)
         selection = np.zeros(shape=(X.shape[0])).astype(bool)
         sample_weight = None
@@ -328,7 +329,7 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
 
         selection[ids] = True
 
-        while iter_n < self.max_iter_:
+        for iter_n in range(self.max_iter_):
 
             # Generator + Chooser (in this case chooser==Predictor)
             if self.generator is not None:
@@ -408,9 +409,6 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
                 # Corner case: when there is no uncertainty
                 if np.isnan(sample_weight).all():
                     sample_weight = np.ones(sample_weight.shape)
-
-            # keep track of iter_n
-            iter_n += 1
 
             # stop if all examples have been included
             if selection.all():
