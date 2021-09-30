@@ -343,10 +343,6 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
             else:
                 classifier = clone(self._classifier)
 
-            if isinstance(classifier, Pipeline) and self.use_sample_weight:
-                generator = classifier.steps[-2][-1]
-                classifier.steps[-2] = ('generator', generator)
-
             # Set up parameter tuning within iterations
             if self.param_grid is not None:
                 cv = self._check_cross_validation(y[selection])
@@ -360,8 +356,10 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
 
             # Generate artificial data and train classifier
             if self.use_sample_weight:
-                classifier.fit(X[selection], y[selection],
-                               generator__sample_weight=sample_weight)
+                classifier.fit(
+                    X[selection], y[selection],
+                    **{f'{classifier.steps[-2][0]}__sample_weight': sample_weight}
+                )
 
                 # Compute the class probabilities of labeled observations
                 labeled_ids = np.argwhere(selection).squeeze()
