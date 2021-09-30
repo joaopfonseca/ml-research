@@ -250,7 +250,6 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         min_frequency = np.unique(y, return_counts=True)[-1].min()
         cv = deepcopy(self.cv)
 
-        print(min_frequency, self.cv.n_splits)
         if hasattr(self.cv, 'n_splits'):
             cv.n_splits = min(min_frequency, self.cv.n_splits)
 
