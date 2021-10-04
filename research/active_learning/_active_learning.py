@@ -356,9 +356,17 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
 
             # Generate artificial data and train classifier
             if self.use_sample_weight:
+
+                # Save oversampler name to pass sample weight
+                ovr_name = (
+                    classifier.steps[-2][0]
+                    if self.param_grid is None
+                    else classifier.estimator.steps[-2][0]
+                )
+
                 classifier.fit(
                     X[selection], y[selection],
-                    **{f'{classifier.steps[-2][0]}__sample_weight': sample_weight}
+                    **{f'{ovr_name}__sample_weight': sample_weight}
                 )
 
                 # Compute the class probabilities of labeled observations
