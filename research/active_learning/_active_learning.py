@@ -7,10 +7,14 @@ experimental environment.
 # License: MIT
 
 import numpy as np
+from copy import deepcopy
 from sklearn.base import clone
 from sklearn.base import ClassifierMixin, BaseEstimator
 from sklearn.utils import check_X_y
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import (
+    train_test_split,
+    GridSearchCV
+)
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.ensemble import RandomForestClassifier
 from imblearn.pipeline import Pipeline
@@ -55,6 +59,26 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         selection) and vice-versa. The uncertainty estimate is used to select the
         instances to be added to the labeled/training dataset. Selection strategies may
         be added or changed in the ``UNCERTAINTY_FUNCTIONS`` dictionary.
+
+    param_grid : dict or list of dictionaries
+        Dictionary with parameters names (``str``) as keys and lists of
+        parameter settings to try as values, or a list of such
+        dictionaries, in which case the grids spanned by each dictionary
+        in the list are explored. This enables searching over any sequence
+        of parameter settings.
+
+    cv : int, cross-validation generator or an iterable, default=None
+        Determines the cross-validation splitting strategy.
+        Possible inputs for cv are:
+
+        - None, to use the default 5-fold cross validation,
+        - integer, to specify the number of folds in a `(Stratified)KFold`,
+        - :term:`CV splitter`.
+
+        For integer/None inputs, if the estimator is a classifier and ``y`` is
+        either binary or multiclass, :class:`StratifiedKFold` is used. In all
+        other cases, :class:`KFold` is used. These splitters are instantiated
+        with `shuffle=False` so the splits will be the same across calls.
 
     max_iter : int, default=None
         Maximum number of iterations allowed. If None, the experiment will run until 100%
@@ -119,6 +143,8 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         init_clusterer=None,
         init_strategy='random',
         selection_strategy='entropy',
+        param_grid=None,
+        cv=None,
         max_iter=None,
         n_initial=.02,
         increment=.02,
@@ -134,6 +160,8 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         self.use_sample_weight = use_sample_weight
         self.init_clusterer = init_clusterer
         self.init_strategy = init_strategy
+        self.param_grid = param_grid
+        self.cv = cv
         self.selection_strategy = selection_strategy
         self.max_iter = max_iter
         self.n_initial = n_initial
@@ -149,7 +177,7 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         self.random_state = random_state
 
     def _check(self, X, y):
-        """Set ups simple initialization parameters to run an AL simulation."""
+        """Set up simple initialization parameters to run an AL simulation."""
 
         X, y = check_X_y(X, y)
 
@@ -218,6 +246,17 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
 
         return X, X_test, y, y_test
 
+    def _check_cross_validation(self, y):
+        min_frequency = np.unique(y, return_counts=True)[-1].min()
+        cv = deepcopy(self.cv)
+
+        if hasattr(self.cv, 'n_splits'):
+            cv.n_splits = min(min_frequency, self.cv.n_splits)
+        elif type(self.cv) == int:
+            cv = min(min_frequency, self.cv)
+
+        return cv
+
     def _get_performance_scores(self):
         data_utilization = [
             i[1] for i in self.data_utilization_
@@ -274,7 +313,6 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         """
 
         # Original "unlabeled" dataset
-        iter_n = 0
         X, X_test, y, y_test = self._check(X, y)
         selection = np.zeros(shape=(X.shape[0])).astype(bool)
         sample_weight = None
@@ -291,7 +329,7 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
 
         selection[ids] = True
 
-        while iter_n < self.max_iter_:
+        for iter_n in range(self.max_iter_):
 
             # Generator + Chooser (in this case chooser==Predictor)
             if self.generator is not None:
@@ -305,14 +343,31 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
             else:
                 classifier = clone(self._classifier)
 
-            if isinstance(classifier, Pipeline) and self.use_sample_weight:
-                generator = classifier.steps[-2][-1]
-                classifier.steps[-2] = ('generator', generator)
+            # Set up parameter tuning within iterations
+            if self.param_grid is not None:
+                cv = self._check_cross_validation(y[selection])
+                classifier = GridSearchCV(
+                    estimator=classifier,
+                    param_grid=self.param_grid,
+                    scoring=self.evaluation_metric,
+                    cv=cv,
+                    refit=True
+                )
 
             # Generate artificial data and train classifier
             if self.use_sample_weight:
-                classifier.fit(X[selection], y[selection],
-                               generator__sample_weight=sample_weight)
+
+                # Save oversampler name to pass sample weight
+                ovr_name = (
+                    classifier.steps[-2][0]
+                    if self.param_grid is None
+                    else classifier.estimator.steps[-2][0]
+                )
+
+                classifier.fit(
+                    X[selection], y[selection],
+                    **{f'{ovr_name}__sample_weight': sample_weight}
+                )
 
                 # Compute the class probabilities of labeled observations
                 labeled_ids = np.argwhere(selection).squeeze()
@@ -360,9 +415,6 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
                 # Corner case: when there is no uncertainty
                 if np.isnan(sample_weight).all():
                     sample_weight = np.ones(sample_weight.shape)
-
-            # keep track of iter_n
-            iter_n += 1
 
             # stop if all examples have been included
             if selection.all():

@@ -3,6 +3,7 @@ from itertools import product
 from imblearn.pipeline import Pipeline
 from sklearn.base import clone
 
+
 def check_pipelines(objects_list, random_state, n_runs):
     """Extract estimators and parameters grids."""
 
@@ -11,21 +12,25 @@ def check_pipelines(objects_list, random_state, n_runs):
 
     pipelines = []
     param_grid = []
-    for comb in product(*objects_list):
+    for comb, rs in product(product(*objects_list), random_states):
         name = '|'.join([i[0] for i in comb])
 
-        # name, object, grid
-        comb = [(nm, ob, grd) for nm, ob, grd in comb if ob is not None]
+        # name, object, sub grid
+        comb = [(nm, ob, sg) for nm, ob, sg in comb if ob is not None]
 
-        pipelines.append((name, Pipeline([(nm, ob) for nm, ob, _ in comb])))
+        if name not in [n[0] for n in pipelines]:
+            pipelines.append((name, Pipeline([(nm, ob) for nm, ob, _ in comb])))
 
-        grids = {'est_name': [name]}
+        grid = {'est_name': [name]}
         for obj_name, obj, sub_grid in comb:
             if 'random_state' in obj.get_params().keys():
-                grids[f'{name}__{obj_name}__random_state'] = random_states
+                grid[f'{name}__{obj_name}__random_state'] = [rs]
             for param, values in sub_grid.items():
-                grids[f'{name}__{obj_name}__{param}'] = values
-        param_grid.append(grids)
+                grid[f'{name}__{obj_name}__{param}'] = values
+
+        # Avoid multiple runs over pipelines without random state
+        if grid not in param_grid:
+            param_grid.append(grid)
 
     return pipelines, param_grid
 

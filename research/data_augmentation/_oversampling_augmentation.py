@@ -79,7 +79,9 @@ class OverSamplingAugmentation(BaseOverSampler):
           according to the specified ratio.
 
         - When ``oversampling``, the data augmentation is done according to the
-          sampling strategy passed in the ``oversampler`` object.
+          sampling strategy passed in the ``oversampler`` object. If ``value`` is not
+          `None`, then the number of samples generated for each class equals the number
+          of samples in the majority class multiplied by ``value``.
 
         - When ``constant``, each class frequency is augmented to match
           the value passed in the parameter ``value``.
@@ -90,7 +92,8 @@ class OverSamplingAugmentation(BaseOverSampler):
 
     value : int, float, default=None
         Value to be used as the new absolute frequency of each class. It is
-        ignored unless the augmentation strategy is set to 'constant'.
+        ignored unless the augmentation strategy is set to ``constant`` or
+        ``oversampling``.
 
     random_state : int, RandomState instance, default=None
         Control the randomization of the algorithm.
@@ -182,8 +185,18 @@ class OverSamplingAugmentation(BaseOverSampler):
                     f" original dataset. Originally, there are {y.shape[0]} samples"
                     f" and {self.value} samples are asked."
                 )
-        elif self.augmentation_strategy == 'oversampling':
+        elif self.augmentation_strategy == 'oversampling' and self.value is None:
             self.sampling_strategy_ = self.oversampler.sampling_strategy
+
+        elif self.augmentation_strategy == 'oversampling':
+            counts = OrderedDict(Counter(y))
+            max_freq = max(counts.values())
+            self.sampling_strategy_ = {
+                k: int(np.round(max_freq*self.value))
+                if max_freq*self.value > freq
+                else freq
+                for k, freq in counts.items()
+            }
 
         elif type(self.augmentation_strategy) in [int, float]:
             counts = OrderedDict(Counter(y))

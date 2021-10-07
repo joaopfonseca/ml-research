@@ -1,7 +1,7 @@
-|Python Versions| |Documentation Status| |Pypi Version|
+|Python Versions| |Documentation Status| |Pypi Version| |DOI|
 
-Research
-========
+ML-Research
+===========
 
 This repository contains the code developed for all the publications I
 was involved in. The LaTeX and Python code for generating the paper,
@@ -41,11 +41,22 @@ Installation and Setup
 A Python distribution of version 3.7 or higher is required to run this
 project.
 
-Basic Installation
-~~~~~~~~~~~~~~~~~~
+User Installation
+~~~~~~~~~~~~~~~~~
 
-The following commands should allow you to setup this project with
-minimal effort:
+If you already have a working installation of numpy and scipy, the easiest way
+to install scikit-learn is using ``pip`` ::
+
+    pip install -U ml-research
+
+The documentation includes more detailed `installation instructions
+<https://mlresearch.readthedocs.io/en/latest/getting-started.html>`_.
+
+Installing from source
+~~~~~~~~~~~~~~~~~~~~~~
+
+The following commands should allow you to setup the development version of the
+project with minimal effort:
 
 ::
 
@@ -60,6 +71,27 @@ minimal effort:
     # Install project requirements and the research package
     make requirements
 
+Citing ML-Research
+------------------
+
+If you use ML-Research in a scientific publication, we would appreciate
+citations to the following paper::
+
+
+    @article{Fonseca2021,
+      doi = {10.3390/RS13132619},
+      url = {https://doi.org/10.3390/RS13132619},
+      keywords = {SMOTE,active learning,artificial data generation,land use/land cover classification,oversampling},
+      year = {2021},
+      month = {jul},
+      publisher = {Multidisciplinary Digital Publishing Institute},
+      volume = {13},
+      pages = {2619},
+      author = {Fonseca, Joao and Douzas, Georgios and Bacao, Fernando},
+      title = {{Increasing the Effectiveness of Active Learning: Introducing Artificial Data Generation in Active Learning for Land Use/Land Cover Classification}},
+      journal = {Remote Sensing}
+    }
+
 
 .. |Python Versions| image:: https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9-blue
 
@@ -68,3 +100,6 @@ minimal effort:
 
 .. |Pypi Version| image:: https://badge.fury.io/py/ml-research.svg
    :target: https://badge.fury.io/py/ml-research
+
+.. |DOI| image:: https://zenodo.org/badge/DOI/10.3390/RS13132619.svg
+   :target: https://doi.org/10.3390/RS13132619
