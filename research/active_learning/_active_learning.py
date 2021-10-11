@@ -323,7 +323,8 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
             y=y,
             n_initial=self.n_initial_,
             clusterer=self.init_clusterer,
-            selection_method=self.init_strategy,
+            init_strategy=self.init_strategy,
+            selection_strategy=self.selection_strategy_,
             random_state=self.random_state
         )
 

@@ -11,14 +11,15 @@ def init_strategy(
     y,
     n_initial,
     clusterer=None,
-    selection_method=None,
+    init_strategy=None,
+    selection_strategy=None,
     random_state=None
 ):
     """
     Defaults to random.
 
     Selection method is only relevant if a clusterer object is passed.
-    Possible selection methods:
+    Possible initialization strategies:
     - None (default): defaults to edge selection
     - centroid: Gets observations close to the centroids of
       the clusters.
@@ -30,7 +31,7 @@ def init_strategy(
     rng = np.random.RandomState(random_state)
 
     # Random selection
-    if clusterer is None or selection_method in ['random', None]:
+    if clusterer is None or init_strategy in ['random', None]:
         ids = rng.choice(unlabeled_ids, n_initial, replace=False)
         # There must be at least 2 different initial classes
         if len(np.unique(y[ids])) == 1:
@@ -56,15 +57,15 @@ def init_strategy(
 
     # Some strategies don't deal well with zero values
     probs = np.where(probs == 0., 1e-10, probs)
-    uncertainty = UNCERTAINTY_FUNCTIONS[selection_method](probs)
+    uncertainty = selection_strategy(probs)
 
-    if selection_method == 'edge' or selection_method is None:
+    if init_strategy == 'edge' or init_strategy is None:
         ids = unlabeled_ids[np.argsort(uncertainty)[::-1][:n_initial]]
 
-    elif selection_method == 'centroid':  # This will have to be refactored later
+    elif init_strategy == 'centroid':  # This will have to be refactored later
         ids = unlabeled_ids[np.argsort(-uncertainty)[::-1][:n_initial]]
 
-    elif selection_method == 'hybrid':
+    elif init_strategy == 'hybrid':
         ids_edge = unlabeled_ids[np.argsort(uncertainty)[::-1][:n_initial]]
         ids_centroid = unlabeled_ids[np.argsort(-uncertainty)[::-1][:n_initial]]
         ids = rng.choice(np.concatenate([ids_edge, ids_centroid]), n_initial)
