@@ -64,10 +64,7 @@ def check_pipelines_wrapper(
         {
             'est_name': [f'{wrapper_label}|{d["est_name"][0]}'],
             **{
-                k.replace(
-                    d["est_name"][0],
-                    f'{wrapper_label}|{d["est_name"][0]}__classifier'
-                ):v
+                f'{wrapper_label}|{d["est_name"][0]}__classifier__{k}': v
                 for k, v in d.items() if k != 'est_name'},
             **{f'{wrapper_label}|{d["est_name"][0]}__{k}': v
                 for k, v in wrapper_grid.items()}
