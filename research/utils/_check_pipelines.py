@@ -23,10 +23,12 @@ def check_pipelines(objects_list, random_state, n_runs):
 
         grid = {'est_name': [name]}
         for obj_name, obj, sub_grid in comb:
+            param_prefix = f'{obj_name}' if len(comb) == 1 else '{name}__{obj_name}'
+
             if 'random_state' in obj.get_params().keys():
-                grid[f'{name}__{obj_name}__random_state'] = [rs]
+                grid[f'{param_prefix}__random_state'] = [rs]
             for param, values in sub_grid.items():
-                grid[f'{name}__{obj_name}__{param}'] = values
+                grid[f'{param_prefix}__{param}'] = values
 
         # Avoid multiple runs over pipelines without random state
         if grid not in param_grid:
