@@ -23,7 +23,7 @@ def check_pipelines(objects_list, random_state, n_runs):
 
         grid = {'est_name': [name]}
         for obj_name, obj, sub_grid in comb:
-            param_prefix = f'{obj_name}' if len(comb) == 1 else '{name}__{obj_name}'
+            param_prefix = f'{obj_name}' if len(comb) == 1 else f'{name}__{obj_name}'
 
             if 'random_state' in obj.get_params().keys():
                 grid[f'{param_prefix}__random_state'] = [rs]
