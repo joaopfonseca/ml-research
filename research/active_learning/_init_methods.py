@@ -70,4 +70,8 @@ def init_strategy(
         ids_centroid = unlabeled_ids[np.argsort(-uncertainty)[::-1][:n_initial]]
         ids = rng.choice(np.concatenate([ids_edge, ids_centroid]), n_initial)
 
+    # There must be at least 2 different initial classes
+    if len(np.unique(y[ids])) == 1:
+        ids[-1] = rng.choice(unlabeled_ids[y != y[ids][0]], 1, replace=False)
+
     return clusterer, ids
