@@ -32,7 +32,7 @@ def init_strategy(
     rng = np.random.RandomState(random_state)
 
     # Random selection
-    if clusterer is None or init_strategy in ['random', None]:
+    if clusterer is None and init_strategy in ['random', None]:
         ids = rng.choice(unlabeled_ids, n_initial, replace=False)
         # There must be at least 2 different initial classes
         if len(np.unique(y[ids])) == 1:
@@ -65,7 +65,6 @@ def init_strategy(
             new_ids = rng.choice(unlabeled_ids[~np.array(ids)], amount)
             ids = np.append(ids, new_ids)
         if len(ids) > n_initial:
-            amount = len(ids) - n_initial
             ids = rng.choice(ids, n_initial)
         return clusterer, ids
 
