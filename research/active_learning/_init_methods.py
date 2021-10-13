@@ -2,8 +2,9 @@
 Wrapper for cluster-based initialization methods and random initialization.
 """
 import numpy as np
-# from scipy.special import softmax
-from ._selection_methods import UNCERTAINTY_FUNCTIONS
+from somlearn import SOM
+from imblearn.pipeline import Pipeline as imblearn_pipeline
+from sklearn.pipeline import Pipeline as sklearn_pipeline
 
 
 def init_strategy(
@@ -42,6 +43,33 @@ def init_strategy(
     # Cluster-based selection
     clusterer.fit(X)
 
+    # SOM-based selection
+    if type(clusterer) == SOM or (
+        type(clusterer) in [imblearn_pipeline, sklearn_pipeline]
+        and type(clusterer.steps[-2][-1]) == SOM
+    ):
+        if type(clusterer) == SOM:
+            labels = clusterer.labels_
+        else:
+            labels = clusterer.steps[-1][-1].labels_
+
+        ids = []
+        for clust_id in np.unique(labels):
+            ids_ = np.where(labels == clust_id)[0]
+            ids.append(rng.choice(ids_))
+
+        ids = np.array(ids)
+
+        if len(ids) < n_initial:
+            amount = n_initial - len(ids)
+            new_ids = rng.choice(unlabeled_ids[~np.array(ids)], amount)
+            ids = np.append(ids, new_ids)
+        if len(ids) > n_initial:
+            amount = len(ids) - n_initial
+            ids = rng.choice(ids, n_initial)
+        return clusterer, ids
+
+    # Remaining clustering methods
     if hasattr(clusterer, 'predict_proba'):
         # Use probabilities to compute uncertainty
         probs = clusterer.predict_proba(X)
