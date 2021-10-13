@@ -46,7 +46,7 @@ def init_strategy(
     # SOM-based selection
     if type(clusterer) == SOM or (
         type(clusterer) in [imblearn_pipeline, sklearn_pipeline]
-        and type(clusterer.steps[-2][-1]) == SOM
+        and SOM in [type(clusterer.steps[-i][-1]) for i in range(1, 3)]
     ):
         if type(clusterer) == SOM:
             labels = clusterer.labels_
