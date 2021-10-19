@@ -1,12 +1,11 @@
 Dataset,p-value,Significance
-Baseball,9.6e-09,True
-Gas Drift,1.4e-12,True
-Gesture Segmentation,2.8e-03,True
-Japanese Vowels,2.5e-06,True
-Mfeat Zernike,5.8e-05,True
-Mice Protein,1.2e-10,True
-Pendigits,7.9e-07,True
-Texture,5.5e-09,True
-Usps,2.2e-05,True
-Waveform,1.3e-03,True
-Wine Quality,3.6e-02,True
+Baseball,2.6e-02,True
+Gas Drift,2.0e-06,True
+Image Segmentation,3.8e-05,True
+Japanese Vowels,2.1e-02,True
+Mfeat Zernike,9.5e-04,True
+Mice Protein,1.5e-08,True
+Pendigits,5.3e-05,True
+Texture,5.4e-06,True
+Vehicle,9.2e-03,True
+Waveform,4.3e-03,True

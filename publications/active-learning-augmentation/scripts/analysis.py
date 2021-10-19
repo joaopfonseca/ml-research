@@ -21,27 +21,20 @@ from research.utils import (
     generate_mean_std_tbl_bold,
     load_plt_sns_configs
 )
-from research.datasets import MulticlassDatasets
 
 DATA_PATH, RESULTS_PATH, ANALYSIS_PATH = generate_paths(__file__)
 
-# DATASETS_NAMES = [
-#     d.replace('fetch_', '')
-#     for d in dir(MulticlassDatasets())
-#     if d.startswith('fetch_')
-# ]
 DATASETS_NAMES = [
     'baseball',
     'gas_drift',
-    'gesture_segmentation',
+    'image_segmentation',
     'japanese_vowels',
     'mfeat_zernike',
     'mice_protein',
     'pendigits',
     'texture',
-    'usps',
+    'vehicle',
     'waveform',
-    'wine_quality'
 ]
 
 DATASETS_MAPPING = dict([

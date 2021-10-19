@@ -1,13 +1,13 @@
 Classifier,Evaluation Metric,Standard,G-SMOTE,Proposed
-DT,Accuracy,2.36 $\pm$ 0.88,2.18 $\pm$ 0.57,\textbf{1.45 $\pm$ 0.66}
-DT,F-score,2.73 $\pm$ 0.62,2.00 $\pm$ 0.43,\textbf{1.27 $\pm$ 0.62}
-DT,G-mean,2.91 $\pm$ 0.29,1.82 $\pm$ 0.39,\textbf{1.27 $\pm$ 0.62}
-KNN,Accuracy,2.18 $\pm$ 0.94,2.00 $\pm$ 0.6,\textbf{1.82 $\pm$ 0.83}
-KNN,F-score,2.73 $\pm$ 0.62,\textbf{1.64 $\pm$ 0.48},\textbf{1.64 $\pm$ 0.77}
-KNN,G-mean,2.73 $\pm$ 0.62,1.73 $\pm$ 0.62,\textbf{1.55 $\pm$ 0.66}
-LR,Accuracy,2.27 $\pm$ 0.86,2.00 $\pm$ 0.6,\textbf{1.73 $\pm$ 0.86}
-LR,F-score,2.73 $\pm$ 0.62,1.91 $\pm$ 0.51,\textbf{1.36 $\pm$ 0.64}
-LR,G-mean,2.82 $\pm$ 0.39,1.82 $\pm$ 0.57,\textbf{1.36 $\pm$ 0.64}
-RF,Accuracy,2.36 $\pm$ 0.88,1.91 $\pm$ 0.67,\textbf{1.73 $\pm$ 0.75}
-RF,F-score,2.82 $\pm$ 0.57,1.64 $\pm$ 0.48,\textbf{1.55 $\pm$ 0.66}
-RF,G-mean,3.00 $\pm$ 0.0,\textbf{1.45 $\pm$ 0.5},1.55 $\pm$ 0.5
+DT,Accuracy,2.50 $\pm$ 0.81,2.20 $\pm$ 0.4,\textbf{1.30 $\pm$ 0.64}
+DT,F-score,2.50 $\pm$ 0.81,2.10 $\pm$ 0.3,\textbf{1.40 $\pm$ 0.8}
+DT,G-mean,2.70 $\pm$ 0.64,2.00 $\pm$ 0.45,\textbf{1.30 $\pm$ 0.64}
+KNN,Accuracy,2.40 $\pm$ 0.8,1.90 $\pm$ 0.54,\textbf{1.70 $\pm$ 0.9}
+KNN,F-score,2.60 $\pm$ 0.66,1.80 $\pm$ 0.4,\textbf{1.60 $\pm$ 0.92}
+KNN,G-mean,2.80 $\pm$ 0.4,1.70 $\pm$ 0.46,\textbf{1.50 $\pm$ 0.81}
+LR,Accuracy,2.60 $\pm$ 0.66,2.10 $\pm$ 0.54,\textbf{1.30 $\pm$ 0.64}
+LR,F-score,2.80 $\pm$ 0.4,2.00 $\pm$ 0.45,\textbf{1.20 $\pm$ 0.6}
+LR,G-mean,2.80 $\pm$ 0.4,2.00 $\pm$ 0.45,\textbf{1.20 $\pm$ 0.6}
+RF,Accuracy,2.60 $\pm$ 0.66,1.90 $\pm$ 0.54,\textbf{1.50 $\pm$ 0.81}
+RF,F-score,2.60 $\pm$ 0.66,2.00 $\pm$ 0.45,\textbf{1.40 $\pm$ 0.8}
+RF,G-mean,2.80 $\pm$ 0.4,\textbf{1.60 $\pm$ 0.49},\textbf{1.60 $\pm$ 0.8}
