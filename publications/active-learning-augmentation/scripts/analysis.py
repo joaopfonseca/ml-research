@@ -294,31 +294,6 @@ def calculate_mean_std_table_al(
     return df_grouped.mean(), df_grouped.std(ddof=0)
 
 
-def deficiency_scores(wide_optimal, wide_optimal_al):
-    wo_mp = wide_optimal[0]['nan'].to_frame()
-
-    wo_al = wide_optimal_al[0].loc[
-        wide_optimal_al[0]
-        .index
-        .get_level_values('variable') == 'area_under_learning_curve'
-    ].droplevel('variable', axis=0)
-
-    wo_a = wo_al.drop(columns='NONE')
-    wo_b = wo_al['NONE'].to_frame()
-
-    deficiency = (wo_mp.values - wo_a.values)\
-        / (2*wo_mp.values - wo_a.values - wo_b.values)
-
-    deficiency = pd.DataFrame(
-            deficiency,
-            columns=wo_a.columns,
-            index=wo_a.index
-        ).reset_index()\
-        .groupby(['Classifier', 'Evaluation Metric'])
-
-    return deficiency.mean(), deficiency.std(ddof=0)
-
-
 def generate_main_results(results):
     """Generate the main results of the experiment."""
 
@@ -361,21 +336,12 @@ def generate_main_results(results):
         decimals=3
     )
 
-    # Deficiency scores analysis
-    mean_std_deficiency = generate_mean_std_tbl_bold(
-        *deficiency_scores(wide_optimal, wide_optimal_al),
-        maximum=False,
-        decimals=3,
-        threshold=.5
-    )
-
     # Return results and names
     main_results_names = (
         'wide_optimal_aulc',
         'mean_std_aulc_ranks',
         'mean_std_aulc_scores',
         'optimal_mean_std_scores',
-        'mean_std_deficiency'
     )
 
     return zip(
@@ -385,7 +351,6 @@ def generate_main_results(results):
             mean_std_aulc_ranks,
             mean_std_aulc_scores,
             optimal_mean_std_scores,
-            mean_std_deficiency
         )
     )
 
