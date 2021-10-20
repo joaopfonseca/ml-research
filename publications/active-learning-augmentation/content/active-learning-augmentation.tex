@@ -74,6 +74,25 @@ Methodology goes here.
 
 Dataset description.
 
+\begin{table}[H]
+    \centering
+    \addtolength{\leftskip} {-2cm}
+    \addtolength{\rightskip}{-2cm}
+    \pgfplotstabletypeset[
+        col sep=comma,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+    ]{../analysis/datasets_description.csv}
+    \caption{\label{tab:datasets_description}
+        Description of the datasets collected from each corresponding scene.
+        The sampling strategy is similar to all scenes.
+    }
+\end{table}
+
 \subsection{Machine Learning Algorithms}~\label{sec:machine_learning_algorithms}
 
 Classifiers and generators used.
@@ -92,9 +111,9 @@ The experiment was implemented using the Python programming language, along
 with the Python libraries
 \href{https://scikit-learn.org/stable/}{Scikit-Learn}~\cite{Pedregosa2011},
 \href{https://imbalanced-learn.org/en/stable/}{Imbalanced-Learn}~\cite{JMLR:v18:16-365},
-\href{https://geometric-smote.readthedocs.io/en/latest/?badge=latest}{Geometric-SMOTE},
-\href{https://cluster-over-sampling.readthedocs.io/en/latest/?badge=latest}{Cluster-Over-Sampling},
-\href{https://research-learn.readthedocs.io/en/latest/?badge=latest}{Research-Learn}
+\href{https://geometric-smote.readthedocs.io/en/latest/?badge=latest}{Geometric-SMOTE}~\cite{Douzas2019},
+\href{https://cluster-over-sampling.readthedocs.io/en/latest/?badge=latest}{Cluster-Over-Sampling}~\cite{Douzas2018},
+\href{https://research-learn.readthedocs.io/en/latest/?badge=latest}{Research - Learn}
 and
 \href{https://mlresearch.readthedocs.io/en/latest/?badge=latest}{ML-Research}
 libraries. All functions, algorithms, experiments and results are provided in
@@ -105,7 +124,123 @@ the project}.
 
 \subsection{Results}~\label{sec:sub_results}
 
+
+% TODO: Captions need to be rewritten
+
+\begin{table}[H]
+    \centering
+    \pgfplotstabletypeset[
+        col sep=comma,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+    ]{../analysis/mean_std_aulc_ranks.csv}
+    \caption{%
+        Mean rankings of the AULC metric over the different datasets (7),
+        folds (5) and runs (3) used in the experiment. This means that the use
+        of G-SMOTE almost always improves the results of the original
+        framework.
+    }\label{tab:aulc_ranks}
+\end{table}
+
+
+\begin{table}[htb]
+    \centering
+    \pgfplotstabletypeset[
+        col sep=comma,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+    ]{../analysis/mean_std_aulc_scores.csv}
+    \caption{\label{tab:aulc_scores}
+        Average AULC of each AL configuration tested. Each AULC score is
+        calculated using the G-mean scores of each iteration in the validation
+        set. By the end of the iterative process, each AL configuration used a
+        total of 750 instances of the 960 instances that compose the training
+        set.
+    }
+\end{table}
+
+
+% \captionsetup{justification=centering}
+% \pgfplotstabletypeset[
+% 	begin table=\begin{longtable},
+% 	end table=\end{longtable},
+% 	col sep=comma,
+% 	header=true,
+%     columns={G-mean Score,Classifier,Standard,Proposed}, 
+%     string type,
+%     every head row/.style={before row=\toprule, after row=\midrule\endhead},
+% 	every last row/.style={
+%         after row={
+%             \bottomrule
+%             \caption{
+%                 Mean data utilization of AL algorithms, as a percentage of the training set.
+%             }\label{tab:optimal_data_utilization}
+%         }
+%     }
+% ]{../analysis/optimal_data_utilization.csv}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{../analysis/data_utilization_rate}
+    \caption{%
+        Mean data utilization rates. The y-axis shows the percentage of data
+        (relative to the baseline AL framework) required to reach the
+        different performance thresholds.
+    }~\label{fig:dur}
+\end{figure}
+
+
+\begin{table}[H]
+    \centering
+    \addtolength{\leftskip} {-2cm}
+    \addtolength{\rightskip}{-2cm}
+    \pgfplotstabletypeset[
+        col sep=comma,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+    ]{../analysis/optimal_mean_std_scores.csv}
+    \caption{\label{tab:optimal_mean_std_scores}
+        Optimal classification scores. The Maximum Performance (MP)
+        classification scores are calculated using classifiers trained using
+        the entire training set.
+    }
+\end{table}
+
 \subsection{Statistical Analysis}~\label{sec:statistical-analysis}
+
+
+\begin{table}[htb]
+	\centering
+    \pgfplotstabletypeset[
+        col sep=comma,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+    ]{../analysis/wilcoxon_test.csv}
+    \caption{%
+    	Adjusted p-values using the Wilcoxon signed-rank method. Bold values
+        are statistically significant at a level of $\alpha = 0.05$. The 
+        null hypothesis is that the performance of the proposed
+        framework is similar to that of the original framework.
+    }\label{tab:wilcoxon_test}
+\end{table}
+
 
 \subsection{Discussion}~\label{sec:sub_discussion}
 
