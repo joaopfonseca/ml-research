@@ -637,7 +637,10 @@ if __name__ == '__main__':
         wide_optimal_al
     )
     optimal_data_utilization[
-        optimal_data_utilization['G-mean Score'].astype(float) >= .6]\
+        (optimal_data_utilization['G-mean Score'].astype(float) >= .6)
+        &
+        (optimal_data_utilization['G-mean Score'].apply(lambda x: x[-1] in '06'))
+    ]\
         .rename(columns={
             'NONE': 'Standard',
             'G-SMOTE': 'G-SMOTE',
