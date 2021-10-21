@@ -19,7 +19,8 @@ from research.utils import (
     generate_paths,
     load_datasets,
     generate_mean_std_tbl_bold,
-    load_plt_sns_configs
+    load_plt_sns_configs,
+    make_bold
 )
 
 DATA_PATH, RESULTS_PATH, ANALYSIS_PATH = generate_paths(__file__)
@@ -374,6 +375,42 @@ def data_utilization_rate(*wide_optimal):
     return dur_grouped.mean(), dur_grouped.std(ddof=0)
 
 
+def generate_data_utilization_tables(wide_optimal_al):
+
+    data_utilization = wide_optimal_al[0].reset_index()
+
+    # Data utilization per dataset and performance threshold
+    optimal_du = data_utilization[
+        (data_utilization['Evaluation Metric'] == 'geometric_mean_score_macro')
+        &
+        (data_utilization.variable.str.startswith('dur_'))
+    ].drop(columns='Evaluation Metric')
+
+    optimal_du = optimal_du.groupby(['Classifier', 'variable']).mean()\
+        .apply(
+            lambda row: make_bold(row*100, maximum=False, num_decimals=1),
+            axis=1
+    ).reset_index()
+
+    optimal_du['G-mean Score'] = optimal_du.variable.str.replace('dur_', '')
+    optimal_du['G-mean Score'] = (
+        optimal_du['G-mean Score'].astype(int) / 100
+    ).apply(lambda x: '{0:.2f}'.format(x))
+
+    for generator in GENERATOR_NAMES:
+        optimal_du[generator] = optimal_du[generator].apply(
+            lambda x: x[:-1]+'\\%}' if x.endswith('}') else x+'\\%'
+        )
+
+    return optimal_du[[
+        'G-mean Score',
+        'Classifier',
+        'NONE',
+        'G-SMOTE',
+        'G-SMOTE-AUGM'
+    ]].sort_values(['G-mean Score', 'Classifier'])
+
+
 def generate_dur_visualization(wide_optimal_al):
     """Visualize data utilization rates"""
     dur = data_utilization_rate(*wide_optimal_al)
@@ -591,6 +628,20 @@ if __name__ == '__main__':
     # Main results - visualizations
     wide_optimal_al = calculate_wide_optimal_al(results)
     generate_dur_visualization(wide_optimal_al)
+
+    # Data utilization - dataframes
+    optimal_data_utilization = generate_data_utilization_tables(
+        wide_optimal_al
+    )
+    optimal_data_utilization[
+        optimal_data_utilization['G-mean Score'].astype(float) >= .6]\
+        .rename(columns={
+            'NONE': 'Standard',
+            'G-SMOTE': 'G-SMOTE',
+            'G-SMOTE-AUGM': 'Proposed'
+        })\
+        .to_csv(join(ANALYSIS_PATH, 'optimal_data_utilization.csv'),
+                index=False)
 
     # Statistical results
     name, result = generate_statistical_results(
