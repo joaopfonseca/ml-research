@@ -566,7 +566,10 @@ if __name__ == '__main__':
     os.remove(join(DATA_PATH, 'active_learning_augmentation.db'))
 
     # datasets_description
-    summarize_multiclass_datasets(datasets).to_csv(
+    summarized_datasets = summarize_multiclass_datasets(datasets)
+    mask = summarized_datasets['Dataset'].str.lower()\
+        .str.replace(' ', '_').isin(DATASETS_NAMES)
+    summarized_datasets[mask].to_csv(
         join(ANALYSIS_PATH, 'datasets_description.csv'), index=False
     )
 
