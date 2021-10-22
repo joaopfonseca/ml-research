@@ -1,5 +1,5 @@
 """
-Extract the dadtabase.
+Extract the database.
 """
 
 # Author: Joao Fonseca <jpfonseca@novaims.unl.pt>
