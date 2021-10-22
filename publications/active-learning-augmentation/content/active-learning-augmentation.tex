@@ -62,17 +62,48 @@
 
 Introduction goes here.
 
+\section{Active Learning Methods}
+
+Review on Data Augmentation Methods go here.
+
 \section{Data Augmentation Methods}
 
 Review on Data Augmentation Methods go here.
 
+\section{Proposed Method}
+
 \section{Methodology}~\label{sec:methodology}
 
-Methodology goes here.
+This section describes the different elements included in the experimental
+procedure. The datasets used were acquired in open data repositories and its
+sources and preprocessing steps are defined in Subsection~\ref{sec:datasets}.
+The choice of classifiers used in the experiment are defined in
+Subsection~\ref{sec:machine_learning_algorithms}. The metrics chosen to
+measure AL performance and overall classification performance are defined in
+Subsection~\ref{sec:evaluation_metrics}. The experimental procedure is
+described in Subsection~\ref{sec:experimental_procedure}. The implementation
+of the experiment and resources used to do so are described in
+Subsection~\ref{sec:software_implementation}.
+
+The methodology developed serves two primary goals: (1) Compare classification
+performance once all the AL procedures are completed (\textit{i.e.,} optimal
+performance of a classifier trained via iterative data selection) and (2)
+Compare the amount of data required to reach specific performance thresholds
+(\textit{i.e.,} number of AL iterations required to reach similar the optimal
+classification performance).
 
 \subsection{Datasets}~\label{sec:datasets}
 
-Dataset description.
+The datasets used to test the proposed method are publicly available in open
+data repositories. Specifically, they were retrieved from
+\href{https://www.openml.org/}{OpenML} and the
+\href{https://archive.ics.uci.edu/}{UCI Machine Learning Repository}. The
+datasets were chosen considering different domains of application, all of them
+focused on classification tasks. The goal is to demonstrate the performance of
+the different AL frameworks in various scenarios and domains. The data
+preprocessing approach was similar across all datasets.
+Table~\ref{tab:datasets_description} describes the key properties of the 10
+preprocessed datasets where the experimental procedure was applied. 
 
 \begin{table}[H]
     \centering
@@ -93,6 +124,9 @@ Dataset description.
     }
 \end{table}
 
+The data preprocessing procedure is depicted as a flowchart in
+Figure~\textbf{??????}.
+
 \subsection{Machine Learning Algorithms}~\label{sec:machine_learning_algorithms}
 
 Classifiers and generators used.
@@ -105,7 +139,7 @@ Performance metrics.
 
 Experimental procedure.
 
-\subsection{Software Implementation}
+\subsection{Software Implementation}~\label{sec:software_implementation}
 
 The experiment was implemented using the Python programming language, along
 with the Python libraries
@@ -167,26 +201,24 @@ the project}.
     }
 \end{table}
 
-
-% \captionsetup{justification=centering}
-% \pgfplotstabletypeset[
-% 	begin table=\begin{longtable},
-% 	end table=\end{longtable},
-% 	col sep=comma,
-% 	header=true,
-%     columns={G-mean Score,Classifier,Standard,Proposed}, 
-%     string type,
-%     every head row/.style={before row=\toprule, after row=\midrule\endhead},
-% 	every last row/.style={
-%         after row={
-%             \bottomrule
-%             \caption{
-%                 Mean data utilization of AL algorithms, as a percentage of the training set.
-%             }\label{tab:optimal_data_utilization}
-%         }
-%     }
-% ]{../analysis/optimal_data_utilization.csv}
-
+\begin{table}[H]
+    \centering
+    \addtolength{\leftskip} {-2cm}
+    \addtolength{\rightskip}{-2cm}
+    \pgfplotstabletypeset[
+        col sep=comma,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+    ]{../analysis/optimal_data_utilization.csv}
+    \caption{\label{tab:optimal_data_utilization}
+        Mean data utilization of AL algorithms, as a percentage of the
+        training set.
+    }
+\end{table}
 
 \begin{figure}[H]
 	\centering
@@ -219,6 +251,28 @@ the project}.
     }
 \end{table}
 
+
+% \begin{table}[H]
+%     \centering
+%     \pgfplotstabletypeset[
+%         col sep=comma,
+%         string type,
+%         every head row/.style={%
+%             before row=\toprule,
+%             after row=\midrule
+%         },
+%         every last row/.style={after row=\bottomrule},
+%     ]{../analysis/wide_optimal_aulc.csv}
+%     \caption{\label{tab:wide_optimal_aulc}
+%         AULC scores of each AL configuration tested over the different
+%         datasets. Each AULC score is calculated using the G-mean scores of
+%         each iteration in the validation set. By the end of the iterative
+%         process, each AL configuration used a total of 750 instances of the
+%         960 instances that compose the training set.
+%     }
+% \end{table}
+
+
 \subsection{Statistical Analysis}~\label{sec:statistical-analysis}
 
 
@@ -240,6 +294,8 @@ the project}.
         framework is similar to that of the original framework.
     }\label{tab:wilcoxon_test}
 \end{table}
+
+% TODO: add analysis of dataset complexity versus AL performance
 
 
 \subsection{Discussion}~\label{sec:sub_discussion}
