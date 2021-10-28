@@ -271,15 +271,34 @@ will be compared using two AL-specific performance metrics:
 
 The evaluation of different active learners in a live setting is generally
 expensive, time-consuming and prone to human error. Instead, a common practice
-is to perform their evaluation in an offline environment using labeled
+is to compare them in an offline environment using labeled
 datasets~\cite{Kagy2019}. In this scenario, since the dataset is already
 labeled, the annotation process is done at zero cost.
 Figure~\ref{fig:experimental_procedure} depicts the experiment designed for
-one dataset over a single run.
+one dataset over a single run. 
 
-...
+% TODO:
+% - Add percentage of observations in each data subset
+% - Mention the maximum percentage of data used by the active learners within
+%   the train set
+A single run starts with the splitting of a preprocessed dataset in 5
+different partitions, stratified according to the class frequencies of the
+target variable using the K-fold Cross Validation method. During this run, an
+active learner or classifier is trained 5 times using a different partition as
+the Test set each time. For each training process, a Validation set is created
+and is used to measure the data selection efficiency (\textit{i.e.,} AULC and
+DUR using the classification performance metrics, specific to AL). The AL
+simulations and the classifiers' training occur within the Train set. Once the
+training phase is completed, the Test set classification scores are calculated
+using the trained classifiers. For the case of AL, the classifier with the
+optimal Validation set score is used to estimate the AL's optimal
+classification performance over unseen data.
 
-This processed is averaged over 3 runs using different random seeds
+The process shown in Figure~\ref{fig:experimental_procedure} is repeated over
+3 runs using different random seeds over the 10 different datasets collected.
+The final scores of each AL configuration and classifier correspond to the
+average of the 3 runs and 5-fold Cross Validation estimations (\textit{i.e.,}
+the mean score of 15 fits, across 10 datasets).
 
 \begin{figure}[H]
 	\centering
@@ -288,6 +307,64 @@ This processed is averaged over 3 runs using different random seeds
         Experimental procedure flowchart.
     }~\label{fig:experimental_procedure}
 \end{figure}
+
+The hyperparameters defined for the AL frameworks, Classifiers and Generators
+are shown in Table~\ref{tab:grid}. In the Generators table, we distinguish the
+G-SMOTE algorithm working as a normal oversampling method from G-SMOTE-AUGM,
+which performs generates additional artificial data on top of the usual
+oversampling mechanism. Since the G-SMOTE-AUGM method is intended to be used
+with varying parameter values (via within-iteration parameter tuning), the
+parameters were defined as a list of various possible values.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{lll}
+		\toprule
+		Active Learners & Hyperparameters                  &                                \\
+		\midrule
+		Standard        & \# initial obs.\                  & 1.6\%                          \\
+                        & \# additional obs.\ per iteration & 1.6\%                          \\
+                        & max.\ iterations + initialization & 50                             \\
+                        & evaluation metrics                & G-mean, F-score, OA            \\
+                        & selection Strategy                & Random, Entropy, Breaking Ties \\
+                        & within-iteration param.\ tuning   & None                           \\
+                        & generator                         & None                           \\
+                        & classifier                        & DT, LR, KNN, RF                \\
+        Oversampling    & generator                         & G-SMOTE                        \\
+        Proposed        & generator                         & G-SMOTE-AUGM                   \\
+                        & within-iteration param.\ tuning   & Grid Search K-fold CV          \\
+		\toprule
+		Classifier      &                                  & Values                         \\
+		\midrule
+        DT              & min.\ samples split              & 2                              \\
+                        & criterion                        & gini                           \\
+		LR              & maximum iterations               & 100                            \\
+                        & multi class                      & One-vs-All                     \\
+		                & solver                           & liblinear                      \\
+                        & penalty                          & L2 (Ridge)                     \\
+		KNN             & \# neighbors                     & 5                              \\
+                        & weights                          & uniform                        \\
+                        & metric                           & euclidean                      \\
+		RF              & min.\ samples split              & 2                              \\
+		                & \# estimators                    & 100                            \\
+                        & criterion                        & gini                           \\
+		\toprule
+		Generator       &                                  &                                \\
+		\midrule
+		G-SMOTE         & \# neighbors                     & 4                              \\
+                        & deformation factor               & 0.5                            \\
+                        & truncation factor                & 0.5                            \\
+		G-SMOTE-AUGM    & \# neighbors                     & 3, 4, 5                        \\
+                        & deformation factor               & 0.5                            \\
+                        & truncation factor                & 0.5                            \\
+                        & augmentation factor              & $[1.1, 2.0]$ at 0.1 step       \\
+		\bottomrule
+	\end{tabular}
+    \caption{\label{tab:grid}
+        Hyper-parameter definition for the active learners, classifiers and
+        generators used in the experiment.
+    }
+\end{table}
 
 \subsection{Software Implementation}~\label{sec:software_implementation}
 
