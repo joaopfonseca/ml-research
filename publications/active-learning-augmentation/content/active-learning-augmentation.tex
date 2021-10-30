@@ -382,11 +382,26 @@ the project}.
 
 \section{Results \& Discussion}~\label{sec:results_discussion}
 
+In a multiple dataset experiment, the analysis of results should not rely
+uniquely on the average performance scores across datasets. The domain of
+application and fluctuations of performance scores between datasets make the
+analysis of these averaged results less accurate. Instead, it is generally
+recommended the use of the mean ranking scores to extend the
+analysis~\cite{Demsar2006}. Since mean performance scores are still intuitive
+to interpret, we will present and discuss both results. The rank values are
+assigned based on the mean scores of 3 different runs of 5-fold Cross
+Validation (15 performance estimations per dataset) for each combination of
+dataset, AL configuration, classifier and performance metric.
+
 \subsection{Results}~\label{sec:sub_results}
 
+The average ranking of the AULC estimations of AL methods are shown in
+Table~\ref{tab:aulc_ranks}. The proposed method almost always improves AL
+performance and ensures higher data selection efficiency.
 
-% TODO: Captions need to be rewritten
-
+% TODO: 
+% - Captions need to be rewritten
+% - Convert this table into a bar plot?
 \begin{table}[H]
     \centering
     \pgfplotstabletypeset[
@@ -399,13 +414,18 @@ the project}.
         every last row/.style={after row=\bottomrule},
     ]{../analysis/mean_std_aulc_ranks.csv}
     \caption{%
-        Mean rankings of the AULC metric over the different datasets (7),
-        folds (5) and runs (3) used in the experiment. This means that the use
-        of G-SMOTE almost always improves the results of the original
-        framework.
+        Mean rankings of the AULC metric over the different datasets (10),
+        folds (5) and runs (3) used in the experiment. The proposed method
+        always improves the results of the original framework and on average
+        almost always improves the results of the oversampling framework.
     }\label{tab:aulc_ranks}
 \end{table}
 
+Table~\ref{tab:aulc_scores} shows the average AULC scores, grouped by
+classifier, Evaluation Metric and AL framework. The variation in performance
+across active learners is consistent with the mean rankings found in
+Table~\ref{tab:aulc_ranks}, while showing significant AULC score differences
+between the proposed AL method and the oversampling AL method.
 
 \begin{table}[htb]
     \centering
@@ -420,12 +440,19 @@ the project}.
     ]{../analysis/mean_std_aulc_scores.csv}
     \caption{\label{tab:aulc_scores}
         Average AULC of each AL configuration tested. Each AULC score is
-        calculated using the G-mean scores of each iteration in the validation
-        set. By the end of the iterative process, each AL configuration used a
-        total of 750 instances of the 960 instances that compose the training
-        set.
+        calculated using the performance scores of each iteration in the
+        validation set. By the end of the iterative process, each AL
+        configuration used a total of XXXX\% instances of the XXXX\% instances
+        that compose the training sets.
     }
 \end{table}
+
+The average DUR scores were calculated for various G-mean thresholds, varying
+between 0.1 and 1.0 at a 0.02 step (45 different thresholds in total).
+Table~\ref{tab:optimal_data_utilization} shows the results obtained for these
+scores starting from a G-mean score of 0.6 and was filtered to show only the
+thresholds ending with 0 or 6. In most cases, the proposed method reduces the
+amount of data annotation required to reach each G-mean score threshold.
 
 \begin{table}[H]
     \centering
@@ -446,6 +473,14 @@ the project}.
     }
 \end{table}
 
+The DUR scores relative to the Standard AL method are shown in
+Figure~\ref{fig:dur}. A DUR below 1 means that the Proposed/Oversampling
+method requires less data than the Standard AL method to reach the same
+performance threshold. For example, running an AL strategy using the KNN
+classifier requires 69.6\% of the amount of data required by the Standard AL
+method using the same classifier to reach an F-Score of 0.62 (\textit{i.e.,}
+requires 30.4\% less data).
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{../analysis/data_utilization_rate}
@@ -456,6 +491,14 @@ the project}.
     }~\label{fig:dur}
 \end{figure}
 
+% TODO: Discuss how this technique can be used to train classifiers over fully
+% labeled datasets with the sole purpose of increasing their quality.
+The mean optimal classification scores of AL methods and Classifiers (fully
+labeled training set, without AL) is shown in
+Table~\ref{tab:optimal_mean_std_scores}. Using a curated The proposed AL
+method produces classifiers that are almost always able to outperform
+classifiers using the full training set (\textit{i.e.,} the ones labeled as
+MP).
 
 \begin{table}[H]
     \centering
@@ -501,8 +544,31 @@ the project}.
 
 \subsection{Statistical Analysis}~\label{sec:statistical-analysis}
 
+When checking for statistical significance in a multiple dataset context it is
+important to account for the multiple comparison problem.
 
-\begin{table}[htb]
+
+\begin{table}[H]
+	\centering
+    \pgfplotstabletypeset[
+        col sep=comma,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+    ]{../analysis/friedman_test.csv}
+    \caption{%
+        Results for Friedman test. Statistical significance is tested at a
+        level of $\alpha = 0.05$. The null hypothesis is that there is no
+        difference in the classification outcome across oversamplers.
+    }\label{tab:friedman_test}
+\end{table}
+
+
+
+\begin{table}[H]
 	\centering
     \pgfplotstabletypeset[
         col sep=comma,
@@ -514,12 +580,33 @@ the project}.
         every last row/.style={after row=\bottomrule},
     ]{../analysis/wilcoxon_test.csv}
     \caption{%
-    	Adjusted p-values using the Wilcoxon signed-rank method. Bold values
+        Adjusted p-values using the Wilcoxon signed-rank method. Bold values
         are statistically significant at a level of $\alpha = 0.05$. The 
         null hypothesis is that the performance of the proposed
         framework is similar to that of the original framework.
     }\label{tab:wilcoxon_test}
 \end{table}
+
+
+\begin{table}[H]
+	\centering
+    \pgfplotstabletypeset[
+        col sep=comma,
+        string type,
+        every head row/.style={%
+            before row=\toprule,
+            after row=\midrule
+        },
+        every last row/.style={after row=\bottomrule},
+    ]{../analysis/holms_test.csv}
+    \caption{%
+		Adjusted p-values using the Holm-Bonferroni method. Bold values
+        are statistically significant at a level of $\alpha = 0.05$. The 
+        null hypothesis is that the tested method does not perform better 
+        than the control method (benchmark AL framework).
+    }\label{tab:holms_test}
+\end{table}
+
 
 % TODO: add analysis of dataset complexity versus AL performance
 

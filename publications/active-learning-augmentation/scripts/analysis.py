@@ -14,6 +14,9 @@ from scipy.stats import wilcoxon
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
+from rlearn.tools.reporting import _extract_pvalue
+from scipy.stats import ttest_rel
+from statsmodels.stats.multitest import multipletests
 from rlearn.tools import summarize_datasets
 from research.utils import (
     generate_paths,
@@ -60,6 +63,27 @@ GROUP_KEYS = [
     'Evaluation Metric',
     'Selection Criterion'
 ]
+
+
+def _make_bold_stat_signif(value, sig_level=.05):
+    """Make bold the lowest or highest value(s)."""
+
+    val = '{%.1e}' % value
+    val = (
+        '\\textbf{%s}' % val
+        if value <= sig_level
+        else val
+    )
+    return val
+
+
+def generate_pvalues_tbl_bold(tbl, sig_level=.05):
+    """Format p-values."""
+    for name in tbl.dtypes[tbl.dtypes == float].index:
+        tbl[name] = tbl[name].apply(
+            lambda pvalue: _make_bold_stat_signif(pvalue, sig_level)
+        )
+    return tbl
 
 
 def summarize_multiclass_datasets(datasets):
@@ -529,7 +553,22 @@ def generate_statistical_results(
             wide_optimal_al[0].reset_index().variable.str.startswith('dur_')
         ].drop(columns=['variable'])\
         .rename(columns={'Evaluation Metric': 'Metric'})
-    results = results[results['Metric'] == 'geometric_mean_score_macro']
+
+    # Calculate rankings
+    ranks = results\
+        .set_index(['Dataset', 'Classifier', 'Metric'])\
+        .rank(axis=1, ascending=0).reset_index()
+
+    # Friedman test
+    friedman_test = ranks.groupby(['Classifier', 'Metric'])\
+        .apply(_extract_pvalue)\
+        .reset_index()\
+        .rename(columns={0: 'p-value'})
+
+    friedman_test['Significance'] = friedman_test['p-value'] < alpha
+    friedman_test['p-value'] = friedman_test['p-value'].apply(
+        lambda x: '{:.1e}'.format(x)
+    )
 
     # Wilcoxon signed rank test
     # Optimal proposed framework vs baseline framework
@@ -538,7 +577,7 @@ def generate_statistical_results(
         wilcoxon_results = apply_wilcoxon_test(
             results[results['Dataset'] == dataset],
             'G-SMOTE-AUGM',
-            [control_method],
+            ['G-SMOTE'],
             alpha
         ).drop(columns='Oversampler')
         wilcoxon_results['Dataset'] = dataset.replace('_', ' ').title()
@@ -551,7 +590,40 @@ def generate_statistical_results(
         lambda x: '{:.1e}'.format(x)
     )
 
-    return 'wilcoxon_test', wilcoxon_test
+    # Holms test
+    # Optimal proposed framework vs baseline framework
+    ovrs_names = list(results.columns[3:])
+    ovrs_names.remove(control_method)
+
+    # Define empty p-values table
+    pvalues = pd.DataFrame()
+
+    # Populate p-values table
+    for name in ovrs_names:
+        pvalues_pair = results.groupby(['Classifier', 'Metric'])[
+            [name, control_method]
+        ].apply(lambda df: ttest_rel(df[name], df[control_method])[1])
+        pvalues_pair = pd.DataFrame(pvalues_pair, columns=[name])
+        pvalues = pd.concat([pvalues, pvalues_pair], axis=1)
+
+    # Corrected p-values
+    holms_test = pd.DataFrame(
+        pvalues.apply(
+            lambda col: multipletests(col, method='holm')[1], axis=1
+        ).values.tolist(),
+        columns=ovrs_names,
+    )
+    holms_test = generate_pvalues_tbl_bold(
+        holms_test.set_index(pvalues.index).reset_index(),
+        sig_level=alpha
+    )
+
+    # Return statistical analyses
+    statistical_results_names = ('friedman_test', 'wilcoxon_test', 'holms_test')
+    statistical_results = zip(
+        statistical_results_names, (friedman_test, wilcoxon_test, holms_test)
+    )
+    return statistical_results
 
 
 if __name__ == '__main__':
@@ -650,7 +722,11 @@ if __name__ == '__main__':
                 index=False)
 
     # Statistical results
-    name, result = generate_statistical_results(
-        wide_optimal_al, alpha=.05, control_method='G-SMOTE'
+    statistical_results = generate_statistical_results(
+        wide_optimal_al, alpha=.05, control_method='NONE'
     )
-    result.to_csv(join(ANALYSIS_PATH, f'{name}.csv'), index=False)
+    for name, result in statistical_results:
+        if 'Metric' in result.columns:
+            result['Metric'] = result['Metric'].map(METRICS_MAPPING)
+            result = result.rename(columns={'Metric': 'Evaluation Metric'})
+        result.to_csv(join(ANALYSIS_PATH, f'{name}.csv'), index=False)
