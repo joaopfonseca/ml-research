@@ -1,4 +1,4 @@
-Classifier,Evaluation Metric,G-SMOTE,G-SMOTE-AUGM
+Classifier,Evaluation Metric,Oversampling,Proposed
 DT,Accuracy,\textbf{{4.5e-05}},\textbf{{1.6e-10}}
 DT,F-score,\textbf{{1.9e-07}},\textbf{{2.7e-10}}
 DT,G-mean,\textbf{{2.5e-06}},\textbf{{3.1e-09}}

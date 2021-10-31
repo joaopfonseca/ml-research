@@ -1,4 +1,4 @@
-Classifier,Evaluation Metric,MP,Standard,G-SMOTE,Proposed
+Classifier,Evaluation Metric,MP,Standard,Oversampling,Proposed
 DT,Accuracy,0.809 $\pm$ 0.086,0.802 $\pm$ 0.089,0.806 $\pm$ 0.089,\textbf{0.812 $\pm$ 0.087}
 DT,F-score,0.774 $\pm$ 0.107,0.772 $\pm$ 0.096,0.775 $\pm$ 0.101,\textbf{0.781 $\pm$ 0.103}
 DT,G-mean,0.853 $\pm$ 0.081,0.854 $\pm$ 0.069,0.860 $\pm$ 0.067,\textbf{0.864 $\pm$ 0.068}

@@ -495,10 +495,9 @@ requires 30.4\% less data).
 % labeled datasets with the sole purpose of increasing their quality.
 The mean optimal classification scores of AL methods and Classifiers (fully
 labeled training set, without AL) is shown in
-Table~\ref{tab:optimal_mean_std_scores}. Using a curated The proposed AL
-method produces classifiers that are almost always able to outperform
-classifiers using the full training set (\textit{i.e.,} the ones labeled as
-MP).
+Table~\ref{tab:optimal_mean_std_scores}. The proposed AL method produces
+classifiers that are almost always able to outperform classifiers using the
+full training set (\textit{i.e.,} the ones labeled as MP).
 
 \begin{table}[H]
     \centering
@@ -545,8 +544,23 @@ MP).
 \subsection{Statistical Analysis}~\label{sec:statistical-analysis}
 
 When checking for statistical significance in a multiple dataset context it is
-important to account for the multiple comparison problem.
+important to account for the multiple comparison problem. Consequently, our
+statistical analysis focuses on the recommendations found
+in~\cite{Demsar2006}. Overall, we perform 3 statistical tests. The Friedman
+test~\cite{Friedman1937} is used to understand whether there is a
+statistically significant difference in performance between the 3 AL
+frameworks. As post hoc analysis, the Wilcoxon signed-rank
+test~\cite{Wilcoxon1945} was used to check for statistical significance
+between the performance of the proposed AL method and the oversampling AL
+method across datasets. As a second post hoc analysis, the
+Holm-Bonferroni~\cite{Holm1979} method was used to check for statistical
+significance between the methods using data generators and the Standard AL
+framework across classifiers and evaluation metrics.
 
+Table~\ref{tab:friedman_test} contains the \textit{p-values} obtained with the
+Friedman test. The difference in performance across AL frameworks is
+statistically significant at a level of $\alpha = 0.05$ regardless of the
+classifier or evaluation metric being considered.
 
 \begin{table}[H]
 	\centering
@@ -566,7 +580,11 @@ important to account for the multiple comparison problem.
     }\label{tab:friedman_test}
 \end{table}
 
-
+Table~\ref{tab:wilcoxon_test} contains the \textit{p-values} obtained with the
+Wilcoxon signed-rank test. The proposed method was able to outperform both the
+standard AL framework, as well as the AL framework using a normal oversampling
+strategy proposed in~\cite{Fonseca2021} with statistical significance in 9 out
+of 10 datasets.
 
 \begin{table}[H]
 	\centering
@@ -581,12 +599,18 @@ important to account for the multiple comparison problem.
     ]{../analysis/wilcoxon_test.csv}
     \caption{%
         Adjusted p-values using the Wilcoxon signed-rank method. Bold values
-        are statistically significant at a level of $\alpha = 0.05$. The 
-        null hypothesis is that the performance of the proposed
-        framework is similar to that of the original framework.
+        are statistically significant at a level of $\alpha = 0.05$. The null
+        hypothesis is that the performance of the proposed framework is
+        similar to that of the oversampling or standard framework.
     }\label{tab:wilcoxon_test}
 \end{table}
 
+The \textit{p-values} shown in Table~\ref{tab:holms_test} refer to the results
+of the Holm-Bonferroni test. The proposed method's superior performance was
+statistically significant for any combination of classifier and evaluation
+metric. Simultaneously, the proposed method established statistical
+significance in the 3 scenarios where the oversampling AL method failed to do
+so.
 
 \begin{table}[H]
 	\centering

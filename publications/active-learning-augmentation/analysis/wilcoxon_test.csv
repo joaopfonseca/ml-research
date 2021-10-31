@@ -1,11 +1,11 @@
-Dataset,p-value,Significance
-Baseball,5.0e-01,False
-Gas Drift,3.7e-26,True
-Image Segmentation,9.6e-18,True
-Japanese Vowels,2.4e-09,True
-Mfeat Zernike,1.2e-12,True
-Mice Protein,6.5e-32,True
-Pendigits,5.0e-18,True
-Texture,1.5e-22,True
-Vehicle,7.4e-11,True
-Waveform,8.9e-08,True
+Dataset,Oversampling,Standard
+Baseball,{5.0e-01},{3.4e-01}
+Gas Drift,\textbf{{3.7e-26}},\textbf{{4.6e-57}}
+Image Segmentation,\textbf{{9.6e-18}},\textbf{{2.1e-44}}
+Japanese Vowels,\textbf{{2.4e-09}},\textbf{{1.6e-32}}
+Mfeat Zernike,\textbf{{1.2e-12}},\textbf{{9.5e-40}}
+Mice Protein,\textbf{{6.5e-32}},\textbf{{1.5e-61}}
+Pendigits,\textbf{{5.0e-18}},\textbf{{2.3e-45}}
+Texture,\textbf{{1.5e-22}},\textbf{{6.7e-57}}
+Vehicle,\textbf{{7.4e-11}},\textbf{{7.9e-13}}
+Waveform,\textbf{{8.9e-08}},\textbf{{2.6e-02}}

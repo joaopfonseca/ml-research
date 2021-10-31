@@ -1,4 +1,4 @@
-Dataset,Classifier,Metric,Standard,G-SMOTE,Proposed
+Dataset,Classifier,Metric,Standard,Oversampling,Proposed
 Baseball,DT,Accuracy,\textbf{0.892 $\pm$ 0.008},0.856 $\pm$ 0.009,0.856 $\pm$ 0.009
 Baseball,DT,F-score,\textbf{0.557 $\pm$ 0.029},0.552 $\pm$ 0.018,0.551 $\pm$ 0.02
 Baseball,DT,G-mean,0.696 $\pm$ 0.014,\textbf{0.744 $\pm$ 0.024},0.743 $\pm$ 0.024

@@ -451,6 +451,7 @@ def generate_dur_visualization(wide_optimal_al):
         ).rename(
             index={
                 'NONE': 'Standard',
+                'G-SMOTE': 'Oversampling',
                 'G-SMOTE-AUGM': 'Proposed'
             }
         )
@@ -481,7 +482,7 @@ def generate_dur_visualization(wide_optimal_al):
             xlabel='',
             color={
                 'Standard': 'indianred',
-                'G-SMOTE': 'purple',
+                'Oversampling': 'burlywood',
                 'Proposed': 'steelblue'
             }
         )
@@ -503,7 +504,11 @@ def generate_dur_visualization(wide_optimal_al):
 
         # Set legend
         if (row == 1) and (col == 1):
+            handles, labels = ax.get_legend_handles_labels()
+            order = [2, 0, 1]
             ax.legend(
+                [handles[idx] for idx in order],
+                [labels[idx] for idx in order],
                 loc='center left',
                 bbox_to_anchor=(1, .5),
                 ncol=1,
@@ -571,23 +576,24 @@ def generate_statistical_results(
     )
 
     # Wilcoxon signed rank test
-    # Optimal proposed framework vs baseline framework
+    # Optimal proposed framework vs oversampling framework
     wilcoxon_test = []
     for dataset in results.Dataset.unique():
         wilcoxon_results = apply_wilcoxon_test(
             results[results['Dataset'] == dataset],
             'G-SMOTE-AUGM',
-            ['G-SMOTE'],
+            ['NONE', 'G-SMOTE'],
             alpha
-        ).drop(columns='Oversampler')
+        ).drop(columns='Significance')
         wilcoxon_results['Dataset'] = dataset.replace('_', ' ').title()
-        wilcoxon_test.append(wilcoxon_results[
-            ['Dataset', 'p-value', 'Significance']
-        ])
+        wilcoxon_test.append(
+            wilcoxon_results.pivot('Dataset', 'Oversampler', 'p-value')
+        )
 
     wilcoxon_test = pd.concat(wilcoxon_test, axis=0)
-    wilcoxon_test['p-value'] = wilcoxon_test['p-value'].apply(
-        lambda x: '{:.1e}'.format(x)
+    wilcoxon_test = generate_pvalues_tbl_bold(
+        wilcoxon_test.reset_index(),
+        sig_level=alpha
     )
 
     # Holms test
@@ -697,6 +703,7 @@ if __name__ == '__main__':
         # Export LaTeX-ready dataframe
         result.rename(columns={
             'NONE': 'Standard',
+            'G-SMOTE': 'Oversampling',
             'G-SMOTE-AUGM': 'Proposed'
         }).to_csv(join(ANALYSIS_PATH, f'{name}.csv'), index=False)
 
@@ -715,7 +722,7 @@ if __name__ == '__main__':
     ]\
         .rename(columns={
             'NONE': 'Standard',
-            'G-SMOTE': 'G-SMOTE',
+            'G-SMOTE': 'Oversampling',
             'G-SMOTE-AUGM': 'Proposed'
         })\
         .to_csv(join(ANALYSIS_PATH, 'optimal_data_utilization.csv'),
@@ -728,5 +735,10 @@ if __name__ == '__main__':
     for name, result in statistical_results:
         if 'Metric' in result.columns:
             result['Metric'] = result['Metric'].map(METRICS_MAPPING)
-            result = result.rename(columns={'Metric': 'Evaluation Metric'})
+        result = result.rename(columns={
+            'Metric': 'Evaluation Metric',
+            'NONE': 'Standard',
+            'G-SMOTE': 'Oversampling',
+            'G-SMOTE-AUGM': 'Proposed'
+        })
         result.to_csv(join(ANALYSIS_PATH, f'{name}.csv'), index=False)
