@@ -56,24 +56,32 @@
 \maketitle
 
 \begin{abstract}
-    Abstract goes here.
+    Work in progress (Abstract).
+    % - Proposed method outperforms the remaining frameworks
+    % - Proposed method is more robust to the choice of domain, classifiers
+    %   and performance metrics being chosen
 \end{abstract}
 
 \section{Introduction}
 
-Introduction goes here.
+Work in Progress (Introduction).
 
 \section{Active Learning Methods}
 
-Review on Data Augmentation Methods go here.
+Work in progress (Active Learning Methods --- Lit. Review).
+
+Reminders:
+\begin{itemize}
+    \item Discuss maximum performance thresholds.
+\end{itemize}
 
 \section{Data Augmentation Methods}
 
-Review on Data Augmentation Methods go here.
-
-% discuss G-SMOTE
+Work in progress (Data Augmentation Methods --- Lit. Review).
 
 \section{Proposed Method}~\label{sec:proposed_method}
+
+Work in progress (Proposed Method)
 
 \section{Methodology}~\label{sec:methodology}
 
@@ -393,7 +401,7 @@ assigned based on the mean scores of 3 different runs of 5-fold Cross
 Validation (15 performance estimations per dataset) for each combination of
 dataset, AL configuration, classifier and performance metric.
 
-\subsection{Results}~\label{sec:sub_results}
+\subsection{Results}~\label{sec:results}
 
 The average ranking of the AULC estimations of AL methods are shown in
 Table~\ref{tab:aulc_ranks}. The proposed method almost always improves AL
@@ -637,8 +645,110 @@ so.
 
 \subsection{Discussion}~\label{sec:sub_discussion}
 
+In this paper we study the application of data augmentation methods through
+the modification of the standard AL framework. This is done to further reduce
+the amount of labeled data required to produce a reliable classifier, at the
+expense of artificial data generation.
+
+% a different data generation strategy
+% - Superiority of AL proposed vs standard (AULC + statistical analysis)
+In Table~\ref{tab:aulc_ranks} we found that the proposed method was able to
+outperform the Standard AL framework in all scenarios. The mean rankings are
+consistent with the mean AULC scores found in Table~\ref{tab:aulc_scores},
+while showing significant performance differences between the proposed method
+and both the standard and oversampling methods. The Friedman test in
+Table~\ref{tab:friedman_test} showed that the difference in the performance of
+these AL frameworks is statistically significant, regardless of the
+classifier or performance metric being used.
+
+% parameter optimization within the iterative process of an AL procedure
+% - Discuss consistency of results as compared with other methods (DUR metric)
+The proposed method showed more consistent data utilization requirements to
+most of the assessed G-mean score thresholds when compared to the remaining AL
+methods, as seen in Table~\ref{tab:optimal_data_utilization}. For example, to
+reach a G-mean Score of 0.9 using the KNN and LR classifiers, the average
+amount of data required with the Oversampling AL approach increased when
+compared to the Standard approach. However, the proposed method was able to
+decrease the amount of data required in both situations. The robustness of the
+Proposed method is clearer in Figure~\ref{fig:dur}. In most cases, this method
+was able outperform the Oversampling method. At the same time, the
+proposed method also addresses inconsistencies in situations where the
+Oversampling method was unable to outperform the standard method.
+
+% Data augmentation vs oversampling
+The statistical analyses found in Tables~\ref{tab:wilcoxon_test}
+and~\ref{tab:holms_test} showed that the proposed method's superiority was
+statistically significant in all datasets except one (Baseball) and
+established statistical significance when compared to the Standard AL method
+for all combinations of classifier and performance metric, including when the
+Oversampling AL method failed to do so. These results show that the Proposed
+method increased the reliability of the new AL framework while improving the
+quality of the final classifier while requiring less data.
+
+% Usage of AL as a method to produce better performing classifiers, even in
+% settings with fully labeled data
+To the best of our knowledge, the method proposed in this paper was the first
+AL approach to consistently outperform the maximum performance threshold.
+Specifically, in Table~\ref{tab:optimal_mean_std_scores}, the performance of
+the classifiers originating from the proposed method was able to outperform
+classifiers trained using the full training dataset in all 12 scenarios except
+one. This shows that using a meaningful subset of the training dataset along
+with data augmentation not only matches the classification performance of ML
+algorithms, as it also improves them. Even in a setting with fully labeled
+training data, the proposed method may be used as preprocessing method to
+further optimize classification performance.
+
+% Future work and limitations
+This study introduces data augmentation within the AL framework, along with
+the exploration of optimal augmentation methods within AL iterations. However,
+the conceptual nature of this study implies some limitations. Specifically,
+the large amount of experiments required to test the method's efficacy, along
+with the limited computational power available, led to a limited exploration
+of the grid search's potential. Future work should focus into understanding
+how the usage of a more comprehensive parameter tuning approach improves the
+quality of the AL method. In addition, the proposed method was not able to
+outperform the standard AL method in 100\% of scenarios. The exploration of
+other, more complex, data augmentation techniques might further improve its
+performance through the production of more meaningful training observations.
+Specifically, in this study we assume that all datasets used follow a
+manifold, allowing the usage of G-SMOTE as a data augmentation approach.
+However, this method cannot be used into more complex, non-euclidean spaces.
+In this scenario, the usage of G-SMOTE is not valid and might lead to the
+production of noisy data. Deep Learning-based data augmentation techniques are
+able to address this limitation and improve the overall quality of the
+artificial data being generated. We also found significant standard errors
+throughout our experimental results (see Subsection~\ref{sec:results}), which
+is consistent with the findings in~\cite{Fonseca2021, Kottke2017}. This
+indicates that the production of more robust generators did not decrease the
+standard error of AL performance. Instead, AL's performance variability is
+likely dependent on the quality of its initialization.
+
 \section{Conclusion}~\label{sec:conclusion}
 
+\textbf{WIP:\@ THE TEXT BELOW IS A DRAFT (i.e., just some notes I wrote to
+remind myself of important topics to discuss later)}
+
+In this study, we introduce two modifications of the AL framework: (1) The
+exploration of a different data generation strategy (\textit{i.e.,} data
+augmentation using G-SMOTE beyond the typical oversampling strategy) and (2)
+Add parameter optimization within the iterative process of an AL procedure.
+
+These modifications were developed with the goal of reducing the amount of
+iterations required to produce a classifier with a performance as good as
+classifiers trained with the entire training dataset (\textit{i.e.,} without
+the need of AL). This is done via the collection of a reduced data subset
+containing the most informative observations for the training phase of the
+classifier. With our contribution, data selection in AL iterations target
+observations that optimize the quality of the artificial data produced. The
+substitution of labeled data with artificial data is especially useful in this
+context, since it allows the reduction of user interaction necessary to reach
+a sufficiently informative dataset.
+
+The AL framework discussed in this study was recently proposed within the Remote
+Sensing domain for Land Use/Land Cover classification~\cite{Fonseca2021}. We
+further extend this study by applying the AL framework discussed in a context
+agnostic environment, considering 10 different multiclass datasets from
+different domains.
 
 \bibliography{references}
 \bibliographystyle{ieeetr}
