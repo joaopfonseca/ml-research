@@ -70,6 +70,11 @@
 
 Work in Progress (Introduction).
 
+\textbf{NOTE:} Add figure similar to one found in (but in order to explain the
+advantages of data augmentation): Kumar, P., Gupta, A. (2020). Active Learning
+Query Strategies for Classification, Regression, and Clustering: A Survey.
+Journal of Computer Science and Technology
+
 \section{Active Learning Methods}
 
 Supervised Machine Learning (ML) algorithms typically perform well in contexts
@@ -97,7 +102,7 @@ steps~\cite{Fonseca2021}:
 \begin{enumerate}
 
     \item Collection of an unlabeled dataset. The procedure to carry out
-        this step depend on the context.
+        this step depends on the context.
 
     \item Selection of an initial data subset. Typically, when there is no a
         priori labeled dataset, the initial data subset is randomly picked
@@ -131,7 +136,9 @@ steps~\cite{Su2020, Sverchkov2017}:
         probabilities of the observations found in the unlabeled dataset. The
         class probabilities are passed into an Uncertainty Criterion, which
         will return the classification uncertainty of the classification
-        algorithm for each unlabeled observation.
+        algorithm for each unlabeled observation. The combination of the
+        classifier, along with the uncertainty criterion is sometimes referred
+        to as the Query/Acquisition function~\cite{Rosario2020} \textbf{[CITATION]}.
 
     \item Selecting the top N observations. Since it is not possible to
         determine a priori whether the classifier's prediction is correct or
@@ -173,17 +180,93 @@ while ensuring the production of high-performing classifiers with the least
 possible amount of data. There are various factors that may affect the
 consistency and efficiency of the AL framework \textbf{[CITATION]}: (1) Human
 error during data labeling, (2) Non-informative initial training dataset and
-(3) Lack of an appropriate uncertainty criterion.
+(3) Lack of an appropriate uncertainty criterion. However, AL research
+typically focuses on either domain-specific applications of AL, or in the
+improvement of the AL iterative process \textbf{[CITATION]}. Specifically,
+most of the methodological research found in AL focuses in the improvement of
+the Query function \textbf{[CITATION]}. Query functions can be divided into
+two different categories~\cite{Kumar2020}: 
+
+\begin{enumerate}
+
+    \item Informative-based query strategies. These strategies use the
+        classifier's output to assess the importance of each observation
+        towards the performance of the classifier. These strategies focus on
+        quantifying the class uncertainty of the unlabeled observations.
+        Since these techniques do not account for the relationships between
+        the unlabeled observations and treats each observation
+        independently~\cite{Fu2013}.
+
+    \item Representative-based query strategies. These strategies estimate the
+        optimal set of observations that will optimize the classifier's
+        performance. This strategy contains 3 main approaches: Density-based,
+        Diversity-based and Exploration of graph structures. As pointed out
+        in~\cite{Kumar2020}, although this method addresses the problem of
+        sampling bias and redundant instance selection, these strategies
+        typically require more observations in order to reach the desired
+        classification performance.
+
+\end{enumerate}
+
+
+\subsection{Selection Criteria}
+
+Research on more robust selection criteria has been developed in order to
+address the efficiency problem. This is motivated by the importance of the
+selection criteria in AL's iterative process~\cite{Rosario2020}. Specifically,
+Settles~\cite{Settles2011} observed that informed selection criteria fails to
+outperform the random selection of observations in some datasets. Generally,
+the Random Selection method is used as a baseline method. This method
+disregards the class membership probabilities produced by the classifier and
+returns N random points from the dataset without following any specific
+criteria.
+
+Breaking Ties
+
+Entropy
+
+Margin Sampling
+
+
+\subsection{Modifications to the AL framework}
+
+Modifications to the AL framework have been developed in order to address the
+efficiency problem.
+
+Learning loss in AL~\cite{Yoo2019}
 
 Work in progress (Active Learning Methods --- Lit. Review).
 
 Reminders:
 \begin{itemize}
     \item Discuss maximum performance thresholds.
+    \item There is no uncertainty method that accounts for within-iteration
+        data augmentation.
 \end{itemize}
 
 
 \section{Data Augmentation Methods}
+
+Discuss the importance of domains to determine the appropriate data
+augmentation methods.
+
+\subsection{Heuristic Data Augmentation}
+
+Random Oversampling
+
+SMOTE
+
+SMOTE variants
+
+G-SMOTE
+
+Others (Which? Probabilistic/Bayesian approaches, maybe?)
+
+\subsection{Neural Network-based Data Augmentation}
+
+Autoencoders
+
+GANs
 
 Work in progress (Data Augmentation Methods --- Lit. Review).
 
@@ -193,7 +276,7 @@ Work in progress (Proposed Method)
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.65\linewidth]{../analysis/al_proposed}
+	\includegraphics[width=.75\linewidth]{../analysis/al_proposed}
     \caption{%
         Active Learning --- proposed iteration.
     }~\label{fig:al_proposed}
@@ -217,8 +300,8 @@ The methodology developed serves 2 purposes: (1) Compare classification
 performance once all the AL procedures are completed (\textit{i.e.,} optimal
 performance of a classifier trained via iterative data selection) and (2)
 Compare the amount of data required to reach specific performance thresholds
-(\textit{i.e.,} number of AL iterations required to reach similar the optimal
-classification performance).
+(\textit{i.e.,} number of AL iterations required to reach similar
+classification performances).
 
 \subsection{Datasets}~\label{sec:datasets}
 
@@ -749,10 +832,10 @@ so.
         every last row/.style={after row=\bottomrule},
     ]{../analysis/holms_test.csv}
     \caption{%
-		Adjusted p-values using the Holm-Bonferroni method. Bold values
-        are statistically significant at a level of $\alpha = 0.05$. The 
-        null hypothesis is that the tested method does not perform better 
-        than the control method (benchmark AL framework).
+        Adjusted p-values using the Holm-Bonferroni method. Bold values are
+        statistically significant at a level of $\alpha = 0.05$. The null
+        hypothesis is that the Oversampling or Proposed method does not
+        perform better than the control method (Standard AL framework).
     }\label{tab:holms_test}
 \end{table}
 
@@ -836,7 +919,7 @@ able to address this limitation and improve the overall quality of the
 artificial data being generated. We also found significant standard errors
 throughout our experimental results (see Subsection~\ref{sec:results}), which
 is consistent with the findings in~\cite{Fonseca2021, Kottke2017}. This
-indicates that the production of more robust generators did not decrease the
+suggests that the usage of more robust generators did not decrease the
 standard error of AL performance. Instead, AL's performance variability is
 likely dependent on the quality of its initialization.
 
