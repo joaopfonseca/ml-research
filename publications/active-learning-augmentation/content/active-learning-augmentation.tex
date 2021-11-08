@@ -105,8 +105,8 @@ steps~\cite{Fonseca2021}:
         this step depends on the context.
 
     \item Selection of an initial data subset. Typically, when there is no a
-        priori labeled dataset, the initial data subset is randomly picked
-        from the unlabeled dataset.
+        priori labeled dataset (\textbf{i.e.,} cold start problem), the
+        initial data subset is randomly picked from the unlabeled dataset.
 
     \item Data labeling. The supervisor is presented with the data
         subset, where the supervisor's goal is to label each observation. Some
@@ -164,7 +164,7 @@ steps~\cite{Su2020, Sverchkov2017}:
     \caption{%
         Active Learning iteration. In the first iteration, the training set
         collected during the initialization process becomes the ``Current
-        Dataset''.
+        Training Dataset''.
     }~\label{fig:al_iteration}
 \end{figure}
 
@@ -185,7 +185,7 @@ typically focuses on either domain-specific applications of AL, or in the
 improvement of the AL iterative process \textbf{[CITATION]}. Specifically,
 most of the methodological research found in AL focuses in the improvement of
 the Query function \textbf{[CITATION]}. Query functions can be divided into
-two different categories~\cite{Kumar2020}: 
+two different categories~\cite{Gu2021, Kumar2020}: 
 
 \begin{enumerate}
 
@@ -209,17 +209,37 @@ two different categories~\cite{Kumar2020}:
 \end{enumerate}
 
 
-\subsection{Selection Criteria}
+\subsection{Query Strategies}
 
-Research on more robust selection criteria has been developed in order to
-address the efficiency problem. This is motivated by the importance of the
-selection criteria in AL's iterative process~\cite{Rosario2020}. Specifically,
-Settles~\cite{Settles2011} observed that informed selection criteria fails to
-outperform the random selection of observations in some datasets. Generally,
-the Random Selection method is used as a baseline method. This method
-disregards the class membership probabilities produced by the classifier and
-returns N random points from the dataset without following any specific
-criteria.
+Representative query strategies are less efficient in data selection than
+Informative query strategies~\cite{Kumar2020}. However, many studies attempt
+to improve its efficiency using 3 main approaches. For
+example,~\cite{Huang2014, Li2012, Ienco2013} used a density-based approach
+using clustering algorithms to select the observations closest to the centroid
+of each cluster. The diversity-based approach was developed to avoid the
+selection of redundant observations in batch-mode learning~\cite{Brinker2003}.
+Other representative strategies were also developed for graph-based
+structures~\cite{Jia2019} which attempt to find the most representative nodes
+and edges of a graph network. However, recent research often use
+representative approaches alongside informative approaches~\cite{Gu2021,
+Samat2016}. 
+
+Informative query strategies, unlike representative query strategies, do not
+account for the structure of the unlabeled dataset. As a result, this type of
+strategy may lead to the inefficient selection of observations (\textit{i.e.,}
+redundant observations with similar profiles)~\cite{Kumar2020}. Research on
+more robust selection criteria attempts to address the efficiency problem.
+This is motivated by the importance of the selection criteria in AL's
+iterative process~\cite{Rosario2020}. Specifically, Settles~\cite{Settles2011}
+observed that informative query strategies fail to outperform the random
+selection of observations in some datasets. Generally, the Random Selection
+query method method is used as a baseline method. This method disregards the
+class membership probabilities produced by the classifier and returns N random
+points from the dataset without following any specific criteria.
+
+A frequently used query strategy is Uncertainty Sampling, originally proposed
+in~\cite{Lewis1994}.
+
 
 Breaking Ties
 
@@ -227,8 +247,9 @@ Entropy
 
 Margin Sampling
 
+Query by committee
 
-\subsection{Modifications to the AL framework}
+\subsection{Other modifications to the AL framework}
 
 Modifications to the AL framework have been developed in order to address the
 efficiency problem.
@@ -249,6 +270,8 @@ Reminders:
 
 Discuss the importance of domains to determine the appropriate data
 augmentation methods.
+
+Discuss augmentation strategies
 
 \subsection{Heuristic Data Augmentation}
 
