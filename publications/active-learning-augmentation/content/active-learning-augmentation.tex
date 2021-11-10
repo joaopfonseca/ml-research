@@ -211,6 +211,17 @@ two different categories~\cite{Gu2021, Kumar2020}:
 
 \end{enumerate}
 
+Although there are significant contributions towards the development of more
+robust query functions and classifiers in AL, modifications to AL's basic
+structure is rarely explored. However, a few studies attempted to do so.
+Specifically, in~\cite{Yoo2019} the authors introduce a loss prediction module
+in the AL framework to replace the uncertainty criterion. This model
+implements a second classifier to predict the expected loss of the unlabeled
+observations (using the actual losses collected during the training of the
+original classifier) and return the unlabeled observations with the highest
+expected loss. Although this contribution is specific to neural networks (and
+more specifically, to deep neural networks), they were able to significantly
+improve the efficiency of data selection in AL\@.
 
 \subsection{Query Strategies}
 
@@ -285,15 +296,6 @@ it was improved in various ways. Specifically, in~\cite{Zhou2014} the authors
 extend this strategy by applying the manifold-preserving graph reduction
 algorithm beyond the normal Margin Sampling method.
 
-\subsection{Other modifications to the AL framework}
-
-Modifications to the AL framework have been developed in order to address the
-consistency problem.
-
-Learning loss in AL~\cite{Yoo2019}
-
-Work in progress (Active Learning Methods --- Lit. Review).
-
 Reminders:
 \begin{itemize}
     \item Discuss maximum performance thresholds.
@@ -332,6 +334,11 @@ Work in progress (Data Augmentation Methods --- Lit. Review).
 \section{Proposed Method}~\label{sec:proposed_method}
 
 Work in progress (Proposed Method)
+
+Task-agnostic AL
+
+It's expected to be compatible with other AL modifications, such as the one
+proposed in~\cite{Yoo2019}.
 
 \begin{figure}[H]
 	\centering
