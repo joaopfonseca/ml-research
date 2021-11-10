@@ -75,6 +75,9 @@ advantages of data augmentation): Kumar, P., Gupta, A. (2020). Active Learning
 Query Strategies for Classification, Regression, and Clustering: A Survey.
 Journal of Computer Science and Technology
 
+\textbf{NOTE:} A nice, but short introduction: Bshouty, N. H., Gentile, C.
+(Eds.). (2007). Learning Theory. Lecture Notes in Computer Science\@.
+
 \section{Active Learning Methods}
 
 Supervised Machine Learning (ML) algorithms typically perform well in contexts
@@ -231,28 +234,61 @@ redundant observations with similar profiles)~\cite{Kumar2020}. Research on
 more robust selection criteria attempts to address the efficiency problem.
 This is motivated by the importance of the selection criteria in AL's
 iterative process~\cite{Rosario2020}. Specifically, Settles~\cite{Settles2011}
-observed that informative query strategies fail to outperform the random
-selection of observations in some datasets. Generally, the Random Selection
-query method method is used as a baseline method. This method disregards the
-class membership probabilities produced by the classifier and returns N random
+observed that in some datasets informative query strategies fail to outperform
+the random selection of observations. Generally, the Random Selection query
+method method is used as a baseline method. This method disregards the class
+membership probabilities produced by the classifier and returns N random
 points from the dataset without following any specific criteria.
 
 A frequently used query strategy is Uncertainty Sampling, originally proposed
-in~\cite{Lewis1994}.
+in~\cite{Lewis1994}. Using this method, the estimation of an observation's
+uncertainty is based on the target class with the highest probability ($p_a$,
+according to the classifier) and the uncertainty is calculated as $1-p_a$.
+However, since this method dismissed the classifier's predictions on the
+remaining labels, the Breaking Ties criterion was proposed to address this
+limitation for multiclass problems~\cite{Luo2005}. This method uses the two
+target classes with highest probability ($p_a$ and $p_b$, according to the
+classifier) and the uncertainty is calculated as $p_a - p_b$ (in this case,
+the lower the output, the higher the uncertainty). Recent variants of the
+Breaking Ties criterion, such as the Modified Breaking Ties, attempted to fix
+some limitations of the original method~\cite{Liu2018, Li2012a}.
 
+Another common informative query strategy is the calculation of Shannon's
+Entropy~\cite{Shannon1948}. This metric measures the level of uncertainty
+based on the probabilities of a set of possible events. Its formula is given
+by $H(p)=-\sum_{i=0}^n{p_i\log_2{p_i}}$, having $p$ as the set of
+probabilities of all target classes. The application of the Entropy
+uncertainty criterion is also frequently applied in Deep Active
+Learning~\cite{Aghdam2019}. Other Entropy-based methods were also developed
+for more specific applications. For example, an ensemble querying approach
+known as Entropy Querying-by-Bagging uses the predictions of all estimators to
+find the maximum entropy of each observation~\cite{Abe1998}.
 
-Breaking Ties
+The Query by Committee (QBC) strategy was developed to address ensemble
+classifiers. It is a disagreement based strategy attempts to maximize the
+information gain at each iteration by computing the disagreement of the
+predictions over the estimators that form the ensemble. The Entropy
+Querying-by-Bagging (described previously) and Query-by-Boosting methods are
+also ensemble strategies. Query by boosting and bagging methods were found to
+achieve a good performance over various datasets~\cite{Melville2004}, while
+the performance between the two strategies appears to differ significantly
+across various scenarios~\cite{Bloodgood2018}.
 
-Entropy
-
-Margin Sampling
-
-Query by committee
+Other classifier-specific query strategies were also developed for different
+applications. However, these methods have the disadvantage of depending on the
+classifier being used. For example, Margin Sampling is a well studied
+strategy~\cite{Kumar2020} that uses a Support Vector Machine as its classifier
+in order to select the unlabeled observations closest to its decision
+boundaries~\cite{Campbell2000}. Although, since this method is known to lead
+to the excessive selection of observations in dense regions~\cite{Zhou2014},
+it was improved in various ways. Specifically, in~\cite{Zhou2014} the authors
+extend this strategy by applying the manifold-preserving graph reduction
+algorithm beyond the normal Margin Sampling method.
 
 \subsection{Other modifications to the AL framework}
 
 Modifications to the AL framework have been developed in order to address the
-efficiency problem.
+consistency problem.
 
 Learning loss in AL~\cite{Yoo2019}
 
