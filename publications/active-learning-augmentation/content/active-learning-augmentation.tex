@@ -265,7 +265,7 @@ Breaking Ties criterion, such as the Modified Breaking Ties, attempted to fix
 some limitations of the original method~\cite{Liu2018, Li2012a}.
 
 Another common informative query strategy is the calculation of Shannon's
-Entropy~\cite{Shannon1948}. This metric measures the level of uncertainty
+Entropy. This metric measures the level of uncertainty
 based on the probabilities of a set of possible events. Its formula is given
 by $H(p)=-\sum_{i=0}^n{p_i\log_2{p_i}}$, having $p$ as the set of
 probabilities of all target classes. The application of the Entropy
@@ -288,9 +288,9 @@ across various scenarios~\cite{Bloodgood2018}.
 Other classifier-specific query strategies were also developed for different
 applications. However, these methods have the disadvantage of depending on the
 classifier being used. For example, Margin Sampling is a well studied
-strategy~\cite{Kumar2020} that uses a Support Vector Machine as its classifier
+strategy that uses a Support Vector Machine as its classifier
 in order to select the unlabeled observations closest to its decision
-boundaries~\cite{Campbell2000}. Although, since this method is known to lead
+boundaries~\cite{Kumar2020}. Although, since this method is known to lead
 to the excessive selection of observations in dense regions~\cite{Zhou2014},
 it was improved in various ways. Specifically, in~\cite{Zhou2014} the authors
 extend this strategy by applying the manifold-preserving graph reduction
@@ -306,12 +306,38 @@ Reminders:
 
 \section{Data Augmentation Methods}
 
-Discuss the importance of domains to determine the appropriate data
-augmentation methods.
+Data Augmentation methods introduce new and informative observations in a
+training set, based on the original training dataset~\cite{Behpour2019}. The
+production of new observations may be done via the introduction of
+perturbations on the input~\cite{Zhong2020}, feature~\cite{DeVries2017} or output
+space~\cite{Behpour2019}.
+
+Finding the appropriate Data Augmentation method generally depends on the
+domain~\cite{DeVries2017}.
+
+Data Augmentation methods may be distinguished based on their
+architecture~\cite{Shorten2019}. Specifically, they may be divided into
+Heuristic and Neural Network-based approaches. 
+
+Heuristic approaches attempt to generate new and relevant observations through
+the application a predefined procedure, usually incorporating some degree of
+randomness~\cite{Kashefi2020}. While some techniques may depend on the domain,
+others may be considered domain-agnostic. These techniques are discussed in
+Subsection~\ref{sec:heuristic}.
+
+Neural Network approaches 
 
 Discuss augmentation strategies
 
-\subsection{Heuristic Data Augmentation}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.8\linewidth]{../analysis/data_augmentation_taxonomy}
+    \caption{%
+        Data Augmentation Taxonomy.
+    }~\label{fig:data_augmentation_taxonomy}
+\end{figure}
+
+\subsection{Heuristic Approaches}~\label{sec:heuristic}
 
 Random Oversampling
 
@@ -323,7 +349,7 @@ G-SMOTE
 
 Others (Which? Probabilistic/Bayesian approaches, maybe?)
 
-\subsection{Neural Network-based Data Augmentation}
+\subsection{Neural Network-based Approaches}
 
 Autoencoders
 
