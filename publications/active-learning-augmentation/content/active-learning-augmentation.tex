@@ -83,9 +83,9 @@ Journal of Computer Science and Technology
 Supervised Machine Learning (ML) algorithms typically perform well in contexts
 where labeled data is abundant and easily accessible \textbf{[CITATION]}.
 However, in a practical setting, finding this data is frequently a challenging
-task. Specifically, collecting large volumes of data may not be feasible
-depending on the domain, while the labeling of such data becomes labor and
-time intensive, while involving domain experts throughout the
+task. Specifically, depending on the domain, collecting large volumes of data
+may not be feasible since the labeling of such data becomes labor and time
+intensive and may involve domain experts throughout the
 process~\cite{Cao2020}.
 
 Active Learning (AL) is a method that addresses this problem via the labeling
@@ -306,28 +306,20 @@ Reminders:
 
 \section{Data Augmentation Methods}
 
-Data Augmentation methods introduce new and informative observations in a
-training set, based on the original training dataset~\cite{Behpour2019}. The
-production of new observations may be done via the introduction of
-perturbations on the input~\cite{Zhong2020}, feature~\cite{DeVries2017} or output
-space~\cite{Behpour2019}.
-
-Finding the appropriate Data Augmentation method generally depends on the
-domain~\cite{DeVries2017}.
-
-Data Augmentation methods may be distinguished based on their
-architecture~\cite{Shorten2019}. Specifically, they may be divided into
-Heuristic and Neural Network-based approaches. 
-
-Heuristic approaches attempt to generate new and relevant observations through
-the application a predefined procedure, usually incorporating some degree of
-randomness~\cite{Kashefi2020}. While some techniques may depend on the domain,
-others may be considered domain-agnostic. These techniques are discussed in
-Subsection~\ref{sec:heuristic}.
-
-Neural Network approaches 
-
-Discuss augmentation strategies
+Data Augmentation methods expand the training dataset by introducing new and
+informative observations~\cite{Behpour2019}. The production of artificial data
+may be done via the introduction of perturbations on the
+input~\cite{Zhong2020}, feature~\cite{DeVries2017} or output
+space~\cite{Behpour2019}. Data Augmentation methods may be divided into
+Heuristic and Neural Network-based approaches~\cite{Shorten2019}. In addition,
+they may also be distinguished based on its generation strategy, whether local
+(considers a local/specific subset of the dataset) or global (considers the
+overall distribution of the training dataset) \textbf{[CITATION]}.
+Figure~\ref{fig:data_augmentation_taxonomy} shows the general taxonomy of Data
+Augmentation methods. Finding the appropriate Data Augmentation method
+generally depends on the domain~\cite{DeVries2017}, although some studies
+discuss which methods are more appropriate according to the
+domain~\cite{Shorten2019, Iwana2021, Wong2016}.
 
 \begin{figure}[H]
 	\centering
@@ -336,6 +328,27 @@ Discuss augmentation strategies
         Data Augmentation Taxonomy.
     }~\label{fig:data_augmentation_taxonomy}
 \end{figure}
+
+Heuristic approaches attempt to generate new and relevant observations through
+the application a predefined procedure, usually incorporating some degree of
+randomness~\cite{Kashefi2020}. Since these methods typically occur in the
+input space, they require less data and computational power when compared to
+Neural Network methods. Neural Network approaches, on the other hand, map the
+original input space into a lower-dimensional representation, known as the
+feature space~\cite{DeVries2017}. The generation of artificial data occurs in
+the feature space and is reconstructed into the input space.
+
+In this paper, we will focus on heuristic data
+augmentation. 
+
+While some techniques may depend on the domain,
+others may be considered domain-agnostic. Domain-agnostic techniques are
+discussed in Subsection~\ref{sec:heuristic}.
+
+Neural Network approaches
+
+Discuss augmentation strategies
+
 
 \subsection{Heuristic Approaches}~\label{sec:heuristic}
 
