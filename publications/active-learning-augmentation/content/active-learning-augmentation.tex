@@ -66,7 +66,7 @@
     \end{itemize}
 \end{abstract}
 
-\section{Introduction}
+\section{Introduction}~\label{sec:introduction}
 
 Work in Progress (Introduction).
 
@@ -77,6 +77,12 @@ Journal of Computer Science and Technology
 
 \textbf{NOTE:} A nice, but short introduction: Bshouty, N. H., Gentile, C.
 (Eds.). (2007). Learning Theory. Lecture Notes in Computer Science\@.
+
+The scope of this paper is to propose a generalization and
+improvement of the AL framework proposed in the previous paper. In addition,
+we replace the oversampling strategy used in the previous paper and replace it
+with a varying levels of data augmentation, producing larger amounts of data
+than the method used in the original paper.
 
 \section{Active Learning Methods}
 
@@ -221,7 +227,13 @@ observations (using the actual losses collected during the training of the
 original classifier) and return the unlabeled observations with the highest
 expected loss. Although this contribution is specific to neural networks (and
 more specifically, to deep neural networks), they were able to significantly
-improve the efficiency of data selection in AL\@.
+improve the efficiency of data selection in AL\@. In~\cite{Fonseca2021}, the
+authors introduce the generator element in the AL framework (discussed in
+Section~\ref{sec:proposed_method}) using an oversampling method, showing that
+this method effectively addresses the limitations of imbalanced learning.
+However, this method was implemented specifically in the Remote Sensing domain
+and used an oversampling strategy without consideration for the actual amount
+of artificial data generated, which may limit its performance.
 
 \subsection{Query Strategies}
 
@@ -260,9 +272,9 @@ remaining labels, the Breaking Ties criterion was proposed to address this
 limitation for multiclass problems~\cite{Luo2005}. This method uses the two
 target classes with highest probability ($p_a$ and $p_b$, according to the
 classifier) and the uncertainty is calculated as $p_a - p_b$ (in this case,
-the lower the output, the higher the uncertainty). Recent variants of the
-Breaking Ties criterion, such as the Modified Breaking Ties, attempted to fix
-some limitations of the original method~\cite{Liu2018, Li2012a}.
+the lower the output value, the higher the uncertainty). Recent variants of
+the Breaking Ties criterion, such as the Modified Breaking Ties, attempted to
+fix some limitations of the original method~\cite{Liu2018, Li2012a}.
 
 Another common informative query strategy is the calculation of Shannon's
 Entropy. This metric measures the level of uncertainty
@@ -336,39 +348,81 @@ input space, they require less data and computational power when compared to
 Neural Network methods. Neural Network approaches, on the other hand, map the
 original input space into a lower-dimensional representation, known as the
 feature space~\cite{DeVries2017}. The generation of artificial data occurs in
-the feature space and is reconstructed into the input space.
+the feature space and is reconstructed into the input space. Although these
+methods allow the generation of less noisy data in high-dimensional contexts
+and more plausible artificial data, they are significantly more
+computationally intensive. Considering the scope of this paper (the paper's
+contributions are described in Sections~\ref{sec:introduction}
+and~\ref{sec:proposed_method}), the computational power available for this
+experiment and the breadth of datasets used in our experimental procedure, we
+will focus on domain-agnostic heuristic data augmentation methods.
 
-In this paper, we will focus on heuristic data
-augmentation. 
+While some techniques may depend on the domain, others may be considered
+domain-agnostic. For example, Random Erasing~\cite{Zhong2020}, Translation,
+Cropping and Flipping are image data-specific augmentation methods. Other
+methods, such as most of the variants of the Synthetic Minority Oversampling
+TEchnique (SMOTE)~\cite{Chawla2002}, may be considered domain agnostic.
+However, SMOTE methods were originally developed as oversamplers, whose goal
+is to balance the class frequencies of the target variable in the training
+dataset and address the class imbalance bias~\cite{Fonseca2021ksmote}.
+Therefore, oversampling methods may be considered a subset of Data
+Augmentation. Data Augmentation strategies may follow varying augmentation
+strategies, which does not necessarily depend on the target class
+distribution. An example of the differences among general data augmentation
+and oversampling generation strategies is shown in
+Figure~\ref{fig:augmentation_strategies}.
 
-While some techniques may depend on the domain,
-others may be considered domain-agnostic. Domain-agnostic techniques are
-discussed in Subsection~\ref{sec:heuristic}.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.6\linewidth]{../analysis/augmentation_strategies}
+    \caption{%
+        Examples of data augmentation Strategies. The salmon-colored bars
+        represent artificial data using the normal oversampling (center group) and
+        an example of augmentation (right group) strategies.
+    }~\label{fig:augmentation_strategies}
+\end{figure}
 
-Neural Network approaches
+The simplest approach found in the literature is randomly duplicating existing
+training observations. As a non-informed data generation method, although
+simple to implement, it increases the risk of overfitting and generally
+performs worse than other informed heuristic
+methods~\cite{Douzas2019imbalanced}.
 
-Discuss augmentation strategies
+The SMOTE method generates artificial data via the linear interpolation
+between a random observation and one of its $k$-nearest neighbors (also
+randomly selected)~\cite{Chawla2002}. Although simple and effective, it also
+contains several limitations which motivated the development other variants,
+discussed below. Specifically, its selection mechanism does not consider the
+global structure of the dataset while its generation mechanism introduces
+little variability into the training dataset~\cite{Douzas2019}.
+Borderline-SMOTE (B-SMOTE)~\cite{Han2005} improves the selection mechanism by
+attributing a larger importance to the observations closer to the decision
+boundaries. The selected observations are used to run the SMOTE method in
+order to produce better defined decision boundaries. A more recent improvement
+of the selection mechanism is K-means SMOTE (K-SMOTE)~\cite{Douzas2018}. This
+method uses a clustering-based approach to overcome imbalances between and
+within classes, while considering the densities of each region of the input
+space.
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=.5\linewidth]{../analysis/smote_vs_gsmote}
+    \caption{%
+        Examples of data generation using SMOTE and G-SMOTE\@. In this
+        example, G-SMOTE's deformation and truncation both assume values
+        around $0.5$.
+    }~\label{fig:smote_vs_gsmote}
+\end{figure}
 
-\subsection{Heuristic Approaches}~\label{sec:heuristic}
-
-Random Oversampling
-
-SMOTE
-
-SMOTE variants
-
-G-SMOTE
-
-Others (Which? Probabilistic/Bayesian approaches, maybe?)
-
-\subsection{Neural Network-based Approaches}
-
-Autoencoders
-
-GANs
-
-Work in progress (Data Augmentation Methods --- Lit. Review).
+Geometric-SMOTE (G-SMOTE)~\cite{Douzas2019} modifies SMOTE's generation
+mechanism. Instead of generating an observation as linear combination between
+2 others, it generates observations within an hypersphere defined using the
+selected observation as its center and one of its nearest neighbors as its
+boundary. The hypersphere contains two hyperparameters, the truncation and
+deformation factors, which limit the area of the hypersphere. The difference
+between SMOTE and G-SMOTE is shown in Figure~\ref{fig:smote_vs_gsmote}.
+Reference~\cite{Douzas2019imbalanced} found G-SMOTE that outperforms various
+state-of-the-art oversamplers.
 
 \section{Proposed Method}~\label{sec:proposed_method}
 
@@ -1054,6 +1108,9 @@ Sensing domain for Land Use/Land Cover classification~\cite{Fonseca2021}. We
 further extend this study by applying the AL framework discussed in a context
 agnostic environment, considering 10 different multiclass datasets from
 different domains.
+
+\textbf{FUTURE WORK:} Data augmentation considering the global structure of
+the unlabeled dataset.
 
 \bibliography{references}
 \bibliographystyle{ieeetr}
