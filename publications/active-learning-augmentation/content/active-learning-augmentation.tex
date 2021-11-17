@@ -70,6 +70,28 @@
 
 Work in Progress (Introduction).
 
+In this study, we introduce two modifications of the AL framework: (1) The
+exploration of a different data generation strategy (\textit{i.e.,} data
+augmentation using G-SMOTE beyond the typical oversampling strategy) and (2)
+Add parameter optimization within the iterative process of an AL procedure.
+
+These modifications were developed with the goal of reducing the amount of
+iterations required to produce a classifier with a performance as good as
+classifiers trained with the entire training dataset (\textit{i.e.,} without
+the need of AL). This is done via the collection of a reduced data subset
+containing the most informative observations for the training phase of the
+classifier. With our contribution, data selection in AL iterations target
+observations that optimize the quality of the artificial data produced. The
+substitution of labeled data with artificial data is especially useful in this
+context, since it allows the reduction of user interaction necessary to reach
+a sufficiently informative dataset.
+
+The AL framework discussed in this study was recently proposed within the Remote
+Sensing domain for Land Use/Land Cover classification~\cite{Fonseca2021}. We
+further extend this study by applying the AL framework discussed in a context
+agnostic environment, considering 10 different multiclass datasets from
+different domains.
+
 \textbf{NOTE:} Add figure similar to one found in (but in order to explain the
 advantages of data augmentation): Kumar, P., Gupta, A. (2020). Active Learning
 Query Strategies for Classification, Regression, and Clustering: A Survey.
@@ -406,11 +428,11 @@ space.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.5\linewidth]{../analysis/smote_vs_gsmote}
+	\includegraphics[width=.45\linewidth]{../analysis/smote_vs_gsmote}
     \caption{%
         Examples of data generation using SMOTE and G-SMOTE\@. In this
-        example, G-SMOTE's deformation and truncation both assume values
-        around $0.5$.
+        example, both G-SMOTE's deformation and truncation parameters assume
+        values around $0.5$.
     }~\label{fig:smote_vs_gsmote}
 \end{figure}
 
@@ -421,17 +443,58 @@ selected observation as its center and one of its nearest neighbors as its
 boundary. The hypersphere contains two hyperparameters, the truncation and
 deformation factors, which limit the area of the hypersphere. The difference
 between SMOTE and G-SMOTE is shown in Figure~\ref{fig:smote_vs_gsmote}.
-Reference~\cite{Douzas2019imbalanced} found G-SMOTE that outperforms various
+Reference~\cite{Douzas2019imbalanced} found that G-SMOTE outperforms various
 state-of-the-art oversamplers.
 
 \section{Proposed Method}~\label{sec:proposed_method}
 
-Work in progress (Proposed Method)
+Based on the literature found on AL, most of the contributions and novel
+implementations of AL algorithms focused on the improvement of the
+choice/architecture of the classifier or the improvement of the uncertainty
+criterion. In addition, the resulting classification performance of AL-trained
+classifiers is frequently inconsistent and marginally improve the
+classification performance when compared to classifiers trained over the full
+training set (when that happens). Finally, in~\cite{Fonseca2021} the authors
+also found a significant variability of the data selection efficiency during
+different runs of the AL iterative process. In this study the authors proposed
+a new element within the AL framework, the generator, which was able to
+marginally reduce the variability previously identified. However, this
+modification was applied in a Land Use/Land Cover context which contains
+specific characteristics that are not necessarily found in other supervised
+learning problems. Specifically, high dimensional datasets containing target
+classes with little data variability (\textit{i.e.,} cohesive spectral
+signatures within classes) due to their geographical proximity. Furthermore,
+the implementation of the generator was done using a simple oversampling
+strategy, which limits the possibility of employing other techniques with an
+undefined target amount of data generated at each iteration.
 
-Task-agnostic AL
+Our work builds upon the work developed in~\cite{Fonseca2021}, with the
+following contributions:
 
-It's expected to be compatible with other AL modifications, such as the one
-proposed in~\cite{Yoo2019}.
+\begin{enumerate}
+    \item We improve the AL framework by introducing a parameter
+        tuning stage using only the labeled dataset available at the current
+        iteration (\textit{i.e.,} no hold-out set needed).
+    \item We generalize the usage of the generator from just using
+        oversampling techniques to any other data augmentation mechanism
+        and/or strategy.
+    \item We analyze the performance of the proposed and oversampling
+        frameworks over 10 different datasets of different domains, while
+        comparing them with the standard AL framework.
+\end{enumerate}
+
+The proposed iterative process of the AL framework is depicted in
+Figure~\ref{fig:al_proposed}. The generator element becomes an additional
+source of data and is expected to introduce additional data variability into
+the training dataset. This should allow the classifier to generalize better
+and perform more consistently over unseen observations. However, in this
+scenario, the amount of data to generate per class at each iteration is
+unknown. Consequently, the hyperparameter tuning step was introduced to
+estimate the optimal data augmentation strategy at each iteration. In our
+implementation, this step uses the current training dataset to perform an
+exhaustive search over specified parameters of the generator, tested over a
+5-fold cross validation method. The best augmentation strategy found is used
+to train the iteration's classifier in the following step.
 
 \begin{figure}[H]
 	\centering
@@ -441,6 +504,25 @@ proposed in~\cite{Yoo2019}.
     }~\label{fig:al_proposed}
 \end{figure}
 
+To show the effectiveness of data augmentation in an AL implementation, we
+implemented a simple modification of the G-SMOTE algorithm. This modification
+facilitates the usage of G-SMOTE beyond its original oversampling purposes. In
+this paper, the data augmentation strategies used ensure the all the class
+frequencies are balanced. Furthermore, the amount of artificial data produced
+for each class is defined by the \textit{augmentation factor}, which
+represents a percentage of the majority class $C_{maj}$ (\textit{e.g.,} an
+augmentation factor of $1.2$ will ensure there are $count(C_{maj}) \times 1.2$
+observations in every class). In this paper's experiment, the data generation
+mechanism is similar to the one in~\cite{Fonseca2021}. This allows the direct
+comparison of the two frameworks and establish a causality of the performance
+variations to the data generation mechanism (\textit{i.e.,} augmentation vs
+normal oversampling) and hyperparameter tuning steps.
+
+This framework was designed to be task-agnostic. Specifically, any data
+augmentation method (domain specific or not) may be used, as well as any other
+parameter search method. It is also expected to be compatible with other AL
+modifications, including the ones that do not affect solely the classifier or
+uncertainty criterion, such as the one proposed in~\cite{Yoo2019}.
 
 \section{Methodology}~\label{sec:methodology}
 
@@ -1084,30 +1166,7 @@ likely dependent on the quality of its initialization.
 
 \section{Conclusion}~\label{sec:conclusion}
 
-\textbf{WIP:\@ THE TEXT BELOW IS A DRAFT (i.e., just some notes I wrote to
-remind myself of important topics to discuss later)}
-
-In this study, we introduce two modifications of the AL framework: (1) The
-exploration of a different data generation strategy (\textit{i.e.,} data
-augmentation using G-SMOTE beyond the typical oversampling strategy) and (2)
-Add parameter optimization within the iterative process of an AL procedure.
-
-These modifications were developed with the goal of reducing the amount of
-iterations required to produce a classifier with a performance as good as
-classifiers trained with the entire training dataset (\textit{i.e.,} without
-the need of AL). This is done via the collection of a reduced data subset
-containing the most informative observations for the training phase of the
-classifier. With our contribution, data selection in AL iterations target
-observations that optimize the quality of the artificial data produced. The
-substitution of labeled data with artificial data is especially useful in this
-context, since it allows the reduction of user interaction necessary to reach
-a sufficiently informative dataset.
-
-The AL framework discussed in this study was recently proposed within the Remote
-Sensing domain for Land Use/Land Cover classification~\cite{Fonseca2021}. We
-further extend this study by applying the AL framework discussed in a context
-agnostic environment, considering 10 different multiclass datasets from
-different domains.
+Work in Progress (Conclusion).
 
 \textbf{FUTURE WORK:} Data augmentation considering the global structure of
 the unlabeled dataset.
