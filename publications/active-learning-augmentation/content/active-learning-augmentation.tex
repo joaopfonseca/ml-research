@@ -68,7 +68,30 @@
 
 \section{Introduction}~\label{sec:introduction}
 
-Work in Progress (Introduction).
+The importance of leveraging unlabeled data along with labeled data to improve
+machine learning tasks is substantially growing. The increasing amount of
+valuable data sources and formats being developed and explored is affecting
+various domains~\cite{Li2021}. On the one hand, because this data is often
+originally unlabeled, only a small amount of the data being produced and
+stored can be useful for Machine Learning (ML) tasks. On the other hand,
+labeling data for a specific ML project is often difficult, especially when
+data-intensive ML techniques are involved (\textit{e.g.,} Deep Learning
+classifiers)~\cite{Nath2021}. In this scenario, labeling the full dataset
+becomes impractical, time-consuming and expensive. Two different approaches of
+ML attempt to address this problem: Semi-Supervised Learning (SSL) and Active
+Learning (AL)~\cite{Simeoni2020}. Even though they address the same problem,
+the two follow opposite approaches. SSL focuses on observations with the most
+certain predictions, whereas AL focuses on observations with the least
+certain predictions.
+
+Semi-supervised learning
+
+Active learning
+
+Imbalanced learning within AL~\cite{Yu2019}
+
+
+\textbf{Work in Progress (Introduction).}
 
 In this study, we introduce two modifications of the AL framework: (1) The
 exploration of a different data generation strategy (\textit{i.e.,} data
@@ -249,13 +272,17 @@ observations (using the actual losses collected during the training of the
 original classifier) and return the unlabeled observations with the highest
 expected loss. Although this contribution is specific to neural networks (and
 more specifically, to deep neural networks), they were able to significantly
-improve the efficiency of data selection in AL\@. In~\cite{Fonseca2021}, the
-authors introduce the generator element in the AL framework (discussed in
-Section~\ref{sec:proposed_method}) using an oversampling method, showing that
-this method effectively addresses the limitations of imbalanced learning.
-However, this method was implemented specifically in the Remote Sensing domain
-and used an oversampling strategy without consideration for the actual amount
-of artificial data generated, which may limit its performance.
+improve the efficiency of data selection in AL\@. In~\cite{Simeoni2020} the
+authors propose the usage of semi-supervised learning during both the
+initialization of the AL and the iterative process as well. However, this
+method was proposed specifically for deep learning applications.
+In~\cite{Fonseca2021}, the authors introduce the generator element in the AL
+framework (discussed in Section~\ref{sec:proposed_method}) using an
+oversampling method, showing that this method effectively addresses the
+limitations of imbalanced learning.  However, this method was implemented
+specifically in the Remote Sensing domain and used an oversampling strategy
+without consideration for the actual amount of artificial data generated,
+which may limit its performance.
 
 \subsection{Query Strategies}
 
