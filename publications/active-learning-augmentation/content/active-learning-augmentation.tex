@@ -79,17 +79,71 @@ data-intensive ML techniques are involved (\textit{e.g.,} Deep Learning
 classifiers)~\cite{Nath2021}. In this scenario, labeling the full dataset
 becomes impractical, time-consuming and expensive. Two different approaches of
 ML attempt to address this problem: Semi-Supervised Learning (SSL) and Active
-Learning (AL)~\cite{Simeoni2020}. Even though they address the same problem,
-the two follow opposite approaches. SSL focuses on observations with the most
-certain predictions, whereas AL focuses on observations with the least
-certain predictions.
+Learning (AL). Even though they address the same problem, the two follow
+opposite approaches. SSL focuses on observations with the most certain
+predictions, whereas AL focuses on observations with the least certain
+predictions~\cite{Simeoni2020}.
 
-Semi-supervised learning
+SSL attempts to use both labeled and unlabeled data to produce a classifier
+with superior performance. This method uses the unlabeled observations to help
+define the classifier's decision boundaries~\cite{Van2020}. Simultaneously,
+the amount of labeled data required to reach a given performance threshold is
+also reduced. It is a special case of ML because it falls between the
+supervised and unsupervised learning perspectives. AL, the focus of this
+paper, instead of attempting to optimise the informativeness of a predefined
+labeled training set, aims towards the expansion of said dataset by including
+the most informative and/or representative observations~\cite{Sener2018}. It
+is typically an iterative process where a model is trained at each iteration
+retrieve from the unlabeled dataset and label the observations with the
+highest potential to increase the performance of that classifier.
 
-Active learning
+Several studies have pointed out the limitations of AL within an Imbalanced
+Learning context~\cite{Yu2019}. Imbalanced AL approaches frequently face low
+performance, high time consumption or high data annotation costs.  Studies
+addressing this issue tend to adopt classifier-level modifications, such as
+the Weighted Extreme Learning Machine~\cite{Zong2013, Yu2019}. However,
+classifier or query function-level modifications (See
+Section~\ref{sec:active_learning_methods}) have limited applicability since a
+universally good AL strategy has not been found~\cite{Sener2018}. Another
+approach to deal with imbalanced data and data scarcity in general is Data
+Augmentation. This approach has the advantage of being independent from the
+choice of classifier and potentially reduces the imbalanced learning bias as
+well as working as a regularization method in data scarce environments, such
+as AL implementations~\cite{Kim2021}. In addition, recent studies attempting
+to improve the AL performance mostly focus on the classifier and query
+functions used.
 
-Imbalanced learning within AL~\cite{Yu2019}
+% TODO: Discuss the benefits of Data Augmentation in AL
 
+However, the usage of Data Augmentation in AL is not new. The literature found
+on the topic, discussed in Section~\ref{sec:active_learning_methods}, focuses
+on image classfication and uses Deep Learning-based data augmentation to
+improve the performance of convolutional neural networks in AL\@. The
+implementation of these methods, although showing promising results, represent
+a limited perspective of the potential of Data Augmentation in a real world
+setting. First, the usage of Deep Learning in an iterative setting requires
+the access of significant computational power. Second, the data augmentation
+methods used are particularly sophisticated, whose implementation may not be
+accessible to the non-sophisticated user. Third, the studies found on the
+topic are specific to the domain, classifier and data augmentation method.
+Consequently, the direct effect of Data Augmentation is unclear: these studies
+implement different neural network-based techniques for different
+classification problems, whose performance may be attributed to various
+elements within the AL framework.
+
+In this study, we explore the effect of data augmentation in AL in a
+context-agnostic setting, along with two different data generation policies:
+normal oversampling and non-constant data augmentation policies between
+iterations. We start by conceptualizing and discussing the AL framework and
+each of its elements, as well as the modifications involved to implement Data
+Augmentation in the AL iterative process. We show that simple, non-domain
+specific data augmentation heuristics are sufficient to significantly improve
+the performance of AL implementations, without the need to resort to deep
+learning data augmentation algorithms.
+
+% Explain the experiment, metrics and the core findings
+
+% Add structure of the manuscript
 
 \textbf{Work in Progress (Introduction).}
 
@@ -129,7 +183,7 @@ we replace the oversampling strategy used in the previous paper and replace it
 with a varying levels of data augmentation, producing larger amounts of data
 than the method used in the original paper.
 
-\section{Active Learning Methods}
+\section{Active Learning Methods}~\label{sec:active_learning_methods}
 
 Supervised Machine Learning (ML) algorithms typically perform well in contexts
 where labeled data is abundant and easily accessible \textbf{[CITATION]}.
@@ -159,7 +213,7 @@ steps~\cite{Fonseca2021}:
         this step depends on the context.
 
     \item Selection of an initial data subset. Typically, when there is no a
-        priori labeled dataset (\textbf{i.e.,} cold start problem), the
+        priori labeled dataset (\textit{i.e.,} cold start problem), the
         initial data subset is randomly picked from the unlabeled dataset.
 
     \item Data labeling. The supervisor is presented with the data
