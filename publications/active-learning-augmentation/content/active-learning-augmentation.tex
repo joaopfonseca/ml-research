@@ -141,47 +141,30 @@ specific data augmentation heuristics are sufficient to significantly improve
 the performance of AL implementations, without the need to resort to deep
 learning data augmentation algorithms.
 
-% Explain the experiment, metrics and the core findings
+When compared to the standard AL framework, the proposed framework contains
+two additional components: the Generator and the Hyperparameter Optimizer. We
+implement Geometric SMOTE as a data augmentation method beyond the typical
+oversampling data generation policy (explained in
+Section~\ref{sec:data_augmentation}). The hyperparameter optimization module
+is used to find the best data augmentation policy at each iteration. We test
+the effectiveness of the proposed method through simulations of AL
+environments over 10 datasets of different domains, initialize the
+environments using 3 different random seeds and cross-validation testing with
+5 folds. In addition, we implement 3 AL frameworks (standard, oversampling
+augmentation policy, and varying data augmentation policy) using 4 different
+classifiers, 3 different performance metrics and calculate 2 AL-specific
+performance metrics. We found that the usage of a heuristic data augmentation
+method in an AL implementation almost always improves its performance,
+regardless of the AL implementation's goal.
 
-% Add structure of the manuscript
-
-\textbf{Work in Progress (Introduction).}
-
-In this study, we introduce two modifications of the AL framework: (1) The
-exploration of a different data generation strategy (\textit{i.e.,} data
-augmentation using G-SMOTE beyond the typical oversampling strategy) and (2)
-Add parameter optimization within the iterative process of an AL procedure.
-
-These modifications were developed with the goal of reducing the amount of
-iterations required to produce a classifier with a performance as good as
-classifiers trained with the entire training dataset (\textit{i.e.,} without
-the need of AL). This is done via the collection of a reduced data subset
-containing the most informative observations for the training phase of the
-classifier. With our contribution, data selection in AL iterations target
-observations that optimize the quality of the artificial data produced. The
-substitution of labeled data with artificial data is especially useful in this
-context, since it allows the reduction of user interaction necessary to reach
-a sufficiently informative dataset.
-
-The AL framework discussed in this study was recently proposed within the Remote
-Sensing domain for Land Use/Land Cover classification~\cite{Fonseca2021}. We
-further extend this study by applying the AL framework discussed in a context
-agnostic environment, considering 10 different multiclass datasets from
-different domains.
-
-\textbf{NOTE:} Add figure similar to one found in (but in order to explain the
-advantages of data augmentation): Kumar, P., Gupta, A. (2020). Active Learning
-Query Strategies for Classification, Regression, and Clustering: A Survey.
-Journal of Computer Science and Technology
-
-\textbf{NOTE:} A nice, but short introduction: Bshouty, N. H., Gentile, C.
-(Eds.). (2007). Learning Theory. Lecture Notes in Computer Science\@.
-
-The scope of this paper is to propose a generalization and
-improvement of the AL framework proposed in the previous paper. In addition,
-we replace the oversampling strategy used in the previous paper and replace it
-with a varying levels of data augmentation, producing larger amounts of data
-than the method used in the original paper.
+This rest of this manuscript is structured as follows:
+Section~\ref{sec:active_learning_methods} describes the state-of-the-art in
+AL\@. Section~\ref{sec:data_augmentation} describes the state-of-the-art in Data
+Augmentation. Section~\ref{sec:proposed_method} describes the proposed method.
+Section~\ref{sec:methodology} describes the methodology of the study's
+experiment. Section~\ref{sec:results_discussion} presents the results obtained
+from the experiment, as well as a discussion of these results.
+Section~\ref{sec:conclusion} presents the conclusions drawn from this study.
 
 \section{Active Learning Methods}~\label{sec:active_learning_methods}
 
@@ -419,7 +402,7 @@ Reminders:
 \end{itemize}
 
 
-\section{Data Augmentation Methods}
+\section{Data Augmentation Methods}~\label{sec:data_augmentation}
 
 Data Augmentation methods expand the training dataset by introducing new and
 informative observations~\cite{Behpour2019}. The production of artificial data
@@ -1247,10 +1230,40 @@ likely dependent on the quality of its initialization.
 
 \section{Conclusion}~\label{sec:conclusion}
 
-Work in Progress (Conclusion).
+The ability of training ML classifiers is usually limited to the availability
+of labeled data. However, manually labeling data is often expensive, which
+makes the usage of AL particularly appealing to select the most informative
+observations and reduce the amount of required labeled data. On the other
+hand, the introduction of data variability in the training dataset can also be
+done via data augmentation. However, most, if not all, AL configurations using
+some form data augmentation are domain and/or task specific. These methods
+typically explore deep learning approaches on both classification and data
+augmentation. Consequently, they may not be applicable for other
+classification tasks or when the available computational power is
+insufficient.
 
-\textbf{FUTURE WORK:} Data augmentation considering the global structure of
-the unlabeled dataset.
+In this paper, we proposed a domain-agnostic AL framework that implements Data
+Augmentation and hyperparameter tuning. We found that a simple heuristic Data
+Augmentation algorithm is sufficient to significantly increase the data
+selection efficiency in AL\@. The usage of data augmentation reduced the
+amount of iterations required to train a classifier with a performance as good
+as (or better than) classifiers trained with the entire training dataset
+(\textit{i.e.,} without using AL). The proposed method was capable of reducing
+the training dataset and use the most informative observations for the
+training phase of the classifier, which is expanded with artificial data. 
+
+With this AL configuration, data selection in AL iterations aim towards
+observations that optimize the quality of the artificial data produced. The
+substitution of less informative labeled data with artificial data is
+especially useful in this context, since it allows the reduction of some of
+the user interaction necessary to reach a sufficiently informative dataset.
+The further improvement of the proposed method will require future work to (1)
+focus on the development of methods with varying data augmentation policies
+depending on the different input space regions, (2) develop
+augmentation-sensitive query functions capable of avoiding the unnecessary
+selection of similar observations from the unlabeled dataset and (3)
+better understand the gap between heuristic/input space data augmentation techniques
+and neural network/feature space data augmentation techniques in an AL context.
 
 \bibliography{references}
 \bibliographystyle{ieeetr}
