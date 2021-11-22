@@ -33,7 +33,7 @@
 }
 
 \title{%
-    Data Augmentation Improves the Performance of Active Learning Methods
+    Data Augmentation Improves the Performance of Active Learning
 }
 
 \author{%
@@ -69,7 +69,7 @@
 \section{Introduction}~\label{sec:introduction}
 
 The importance of leveraging unlabeled data along with labeled data to improve
-machine learning tasks is substantially growing. The increasing amount of
+machine learning tasks is substantially increasing. The growing amount of
 valuable data sources and formats being developed and explored is affecting
 various domains~\cite{Li2021}. On the one hand, because this data is often
 originally unlabeled, only a small amount of the data being produced and
@@ -77,29 +77,30 @@ stored can be useful for Machine Learning (ML) tasks. On the other hand,
 labeling data for a specific ML project is often difficult, especially when
 data-intensive ML techniques are involved (\textit{e.g.,} Deep Learning
 classifiers)~\cite{Nath2021}. In this scenario, labeling the full dataset
-becomes impractical, time-consuming and expensive. Two different approaches of
-ML attempt to address this problem: Semi-Supervised Learning (SSL) and Active
-Learning (AL). Even though they address the same problem, the two follow
-opposite approaches. SSL focuses on observations with the most certain
-predictions, whereas AL focuses on observations with the least certain
+becomes impractical, time-consuming and expensive. There are two different ML
+techniques that attempt to address this problem: Semi-Supervised Learning
+(SSL) and Active Learning (AL). Even though they address the same problem, the
+two follow opposite approaches. SSL focuses on observations with the most
+certain predictions, whereas AL focuses on observations with the least certain
 predictions~\cite{Simeoni2020}.
 
-SSL attempts to use both labeled and unlabeled data to produce a classifier
-with superior performance. This method uses the unlabeled observations to help
-define the classifier's decision boundaries~\cite{Van2020}. Simultaneously,
-the amount of labeled data required to reach a given performance threshold is
-also reduced. It is a special case of ML because it falls between the
-supervised and unsupervised learning perspectives. AL, the focus of this
-paper, instead of attempting to optimise the informativeness of a predefined
-labeled training set, aims towards the expansion of said dataset by including
-the most informative and/or representative observations~\cite{Sener2018}. It
-is typically an iterative process where a model is trained at each iteration
-retrieve from the unlabeled dataset and label the observations with the
-highest potential to increase the performance of that classifier.
+SSL attempts to use a small, predefined set of labeled and unlabeled data to
+produce a classifier with superior performance. This method uses the unlabeled
+observations to help define the classifier's decision
+boundaries~\cite{Van2020}. Simultaneously, the amount of labeled data required
+to reach a given performance threshold is also reduced. It is a special case
+of ML because it falls between the supervised and unsupervised learning
+perspectives. AL, the focus of this paper, instead of attempting to optimise
+the informativeness of a predefined labeled training set, aims towards the
+expansion of said dataset by including the most informative and/or
+representative observations~\cite{Sener2018}. It consists of an iterative
+process where a model is trained at each iteration to retrieve and label from
+the unlabeled dataset the observations with the highest potential to increase
+the performance of that classifier.
 
 Several studies have pointed out the limitations of AL within an Imbalanced
 Learning context~\cite{Yu2019}. Imbalanced AL approaches frequently face low
-performance, high time consumption or high data annotation costs.  Studies
+performance, high time consumption or high data annotation costs. Studies
 addressing this issue tend to adopt classifier-level modifications, such as
 the Weighted Extreme Learning Machine~\cite{Zong2013, Yu2019}. However,
 classifier or query function-level modifications (See
@@ -109,41 +110,40 @@ approach to deal with imbalanced data and data scarcity in general is Data
 Augmentation. This approach has the advantage of being independent from the
 choice of classifier and potentially reduces the imbalanced learning bias as
 well as working as a regularization method in data scarce environments, such
-as AL implementations~\cite{Kim2021}. In addition, recent studies attempting
-to improve the AL performance mostly focus on the classifier and query
-functions used.
+as AL implementations~\cite{Kim2021}. However, most recent studies attempting
+to improve the AL performance focus on the classifier and query functions
+used.
 
-% TODO: Discuss the benefits of Data Augmentation in AL
-
-However, the usage of Data Augmentation in AL is not new. The literature found
-on the topic, discussed in Section~\ref{sec:active_learning_methods}, focuses
-on image classfication and uses Deep Learning-based data augmentation to
-improve the performance of convolutional neural networks in AL\@. The
-implementation of these methods, although showing promising results, represent
-a limited perspective of the potential of Data Augmentation in a real world
-setting. First, the usage of Deep Learning in an iterative setting requires
-the access of significant computational power. Second, the data augmentation
-methods used are particularly sophisticated, whose implementation may not be
-accessible to the non-sophisticated user. Third, the studies found on the
-topic are specific to the domain, classifier and data augmentation method.
-Consequently, the direct effect of Data Augmentation is unclear: these studies
-implement different neural network-based techniques for different
-classification problems, whose performance may be attributed to various
-elements within the AL framework.
+The usage of Data Augmentation in AL is not new. The literature found on the
+topic (see Section~\ref{sec:data_augmentation_in_al}) focuses on either image
+classfication or Natural Language Processing and uses Deep Learning-based data
+augmentation to improve the performance of neural network architectures in
+AL\@. These methods, although showing promising results, represent a limited
+perspective of the potential of Data Augmentation in a real world setting.
+First, the usage of Deep Learning in an iterative setting requires the access
+of significant computational power. Second, the data augmentation methods used
+are particularly sophisticated, whose implementation may not be accessible to
+the non-sophisticated user. Third, the studies found on the topic are specific
+to the domain, classifier and data augmentation method. Consequently, the
+direct effect of Data Augmentation is unclear: these studies implement
+different neural network-based techniques for different classification
+problems, whose performance may be attributed to various elements within the
+AL framework.
 
 In this study, we explore the effect of data augmentation in AL in a
 context-agnostic setting, along with two different data generation policies:
 normal oversampling and non-constant data augmentation policies between
-iterations. We start by conceptualizing and discussing the AL framework and
-each of its elements, as well as the modifications involved to implement Data
-Augmentation in the AL iterative process. We show that simple, non-domain
-specific data augmentation heuristics are sufficient to significantly improve
-the performance of AL implementations, without the need to resort to deep
-learning data augmentation algorithms.
+iterations. We start by conceptualizing the AL framework and each of its
+elements, as well as the modifications involved to implement Data Augmentation
+in the AL iterative process. We argue that simple, non-domain specific data
+augmentation heuristics are sufficient to improve the performance of AL
+implementations, without the need to resort to deep learning data augmentation
+algorithms.
 
 When compared to the standard AL framework, the proposed framework contains
 two additional components: the Generator and the Hyperparameter Optimizer. We
-implement Geometric SMOTE as a data augmentation method beyond the typical
+implement Geometric Synthetic Minority Oversampling Technique (Geometric
+SMOTE, or G-SMOTE)~\cite{Douzas2019} as a data augmentation method beyond the typical
 oversampling data generation policy (explained in
 Section~\ref{sec:data_augmentation}). The hyperparameter optimization module
 is used to find the best data augmentation policy at each iteration. We test
@@ -153,9 +153,7 @@ environments using 3 different random seeds and cross-validation testing with
 5 folds. In addition, we implement 3 AL frameworks (standard, oversampling
 augmentation policy, and varying data augmentation policy) using 4 different
 classifiers, 3 different performance metrics and calculate 2 AL-specific
-performance metrics. We found that the usage of a heuristic data augmentation
-method in an AL implementation almost always improves its performance,
-regardless of the AL implementation's goal.
+performance metrics. 
 
 This rest of this manuscript is structured as follows:
 Section~\ref{sec:active_learning_methods} describes the state-of-the-art in
@@ -168,42 +166,32 @@ Section~\ref{sec:conclusion} presents the conclusions drawn from this study.
 
 \section{Active Learning Methods}~\label{sec:active_learning_methods}
 
-Supervised Machine Learning (ML) algorithms typically perform well in contexts
-where labeled data is abundant and easily accessible \textbf{[CITATION]}.
-However, in a practical setting, finding this data is frequently a challenging
-task. Specifically, depending on the domain, collecting large volumes of data
-may not be feasible since the labeling of such data becomes labor and time
-intensive and may involve domain experts throughout the
-process~\cite{Cao2020}.
-
-Active Learning (AL) is a method that addresses this problem via the labeling
-of the most informative observations within an unlabeled input space. The goal
-is to iteratively maximize the classification performance of ML algorithms
-while minimizing the required amount of training data to reach a certain
-performance threshold~\cite{Shrivastava2021}. In a scenario with limited
-budget, time or availability of labeled data, AL allows the implementation of
-near-optimal classifiers with minimal effort \textbf{[CITATION]}.
+Supervised ML algorithms typically perform well in contexts where labeled data
+is abundant and accessible. However, in a practical setting, finding this data
+is frequently a challenging task. Specifically, depending on the domain,
+collecting large volumes of data may not be feasible since the labeling of
+such data becomes labor and time intensive and may involve domain experts
+throughout the process~\cite{Cao2020}. Active Learning (AL) addresses this
+problem via the labeling of the most informative observations found within an
+unlabeled input space. The goal is to iteratively maximize the classification
+performance of ML algorithms while minimizing the required amount of training
+data to reach a certain performance threshold~\cite{Shrivastava2021}. In a
+scenario with a limited budget, time or availability of labeled data, AL
+allows the implementation of ML classifiers with a good performance and
+minimal effort when compared to randomly selecting data of labeling the entire
+unlabeled dataset~\cite{Ren2020}.
 
 AL methods may be divided into 2 different stages, initialization and
 iteration. Figure~\ref{fig:al_initialization} shows a diagram that represents
 the typical AL initialization. Assuming the AL task is initialized without any
-previously labeled data, it is typically composed of the following
-steps~\cite{Fonseca2021}:
-
-\begin{enumerate}
-
-    \item Collection of an unlabeled dataset. The procedure to carry out
-        this step depends on the context.
-
-    \item Selection of an initial data subset. Typically, when there is no a
-        priori labeled dataset (\textit{i.e.,} cold start problem), the
-        initial data subset is randomly picked from the unlabeled dataset.
-
-    \item Data labeling. The supervisor is presented with the data
-        subset, where the supervisor's goal is to label each observation. Some
-        of the research refers to the supervisor as the oracle.
-
-\end{enumerate}
+previously labeled data, it is typically composed of 3
+steps~\cite{Fonseca2021}. It starts with the collection of an unlabeled
+dataset, whose procedure depends on the domain of application. Next, the
+selection of an initial data subset is done. Typically, when there is no a
+priori labeled dataset, the initial data subset is randomly picked from the
+unlabeled dataset. Finally, the supervisor is presented with the data subset,
+where the supervisor's goal is to label each observation. Some of the research
+refers to the supervisor as the oracle.
 
 \begin{figure}[H]
 	\centering
@@ -229,7 +217,7 @@ steps~\cite{Su2020, Sverchkov2017}:
         will return the classification uncertainty of the classification
         algorithm for each unlabeled observation. The combination of the
         classifier, along with the uncertainty criterion is sometimes referred
-        to as the Query/Acquisition function~\cite{Rosario2020} \textbf{[CITATION]}.
+        to as the Query/Acquisition function~\cite{Rosario2020}.
 
     \item Selecting the top N observations. Since it is not possible to
         determine a priori whether the classifier's prediction is correct or
@@ -239,11 +227,10 @@ steps~\cite{Su2020, Sverchkov2017}:
         most meaningful information to train the classifier in the next
         iteration.
 
-    \item Labeling the selected N observations. The selected observations from
-        the unlabeled dataset are presented to the supervisor, which is
-        responsible for manually labeling the observations.
-
-    \item Update the current training dataset with the new training
+    \item Labeling the selected N observations and updating the current
+        training dataset with the new training observations. The selected
+        observations from the unlabeled dataset are presented to the
+        supervisor, which is responsible for manually labeling the
         observations. The new (labeled) training observations are added to the
         training dataset and the iteration is completed.
 
@@ -269,14 +256,13 @@ quality of the collected data over a run. Therefore, a good active learner is
 capable of having a consistent performance over different initializations
 while ensuring the production of high-performing classifiers with the least
 possible amount of data. There are various factors that may affect the
-consistency and efficiency of the AL framework \textbf{[CITATION]}: (1) Human
-error during data labeling, (2) Non-informative initial training dataset and
-(3) Lack of an appropriate uncertainty criterion. However, AL research
-typically focuses on either domain-specific applications of AL, or in the
-improvement of the AL iterative process \textbf{[CITATION]}. Specifically,
-most of the methodological research found in AL focuses in the improvement of
-the Query function \textbf{[CITATION]}. Query functions can be divided into
-two different categories~\cite{Gu2021, Kumar2020}: 
+consistency and efficiency of the AL framework: (1) Human error during data
+labeling~\cite{Li2020}, (2) Non-informative initial training
+dataset~\cite{Nguyen2004} and (3) Lack of an appropriate uncertainty
+criterion~\cite{Rosario2020}. However, AL research typically focuses on either
+domain-specific applications of AL, or in the improvement of the AL iterative
+process. Query functions can be divided into two different
+categories~\cite{Gu2021, Kumar2020}: 
 
 \begin{enumerate}
 
@@ -385,22 +371,14 @@ across various scenarios~\cite{Bloodgood2018}.
 
 Other classifier-specific query strategies were also developed for different
 applications. However, these methods have the disadvantage of depending on the
-classifier being used. For example, Margin Sampling is a well studied
-strategy that uses a Support Vector Machine as its classifier
-in order to select the unlabeled observations closest to its decision
-boundaries~\cite{Kumar2020}. Although, since this method is known to lead
-to the excessive selection of observations in dense regions~\cite{Zhou2014},
-it was improved in various ways. Specifically, in~\cite{Zhou2014} the authors
-extend this strategy by applying the manifold-preserving graph reduction
-algorithm beyond the normal Margin Sampling method.
-
-Reminders:
-\begin{itemize}
-    \item Discuss maximum performance thresholds.
-    \item There is no uncertainty method that accounts for within-iteration
-        data augmentation.
-\end{itemize}
-
+classifier being used. For example, Margin Sampling is a well studied strategy
+that uses a Support Vector Machine as its classifier in order to select the
+unlabeled observations closest to its decision boundaries~\cite{Kumar2020}.
+Although, since this method is known to lead to the excessive selection of
+observations in dense regions~\cite{Zhou2014}, it was improved in various
+ways. In~\cite{Zhou2014} the authors extend this strategy by applying the
+manifold-preserving graph reduction algorithm beyond the normal Margin
+Sampling method.
 
 \section{Data Augmentation Methods}~\label{sec:data_augmentation}
 
@@ -412,7 +390,7 @@ space~\cite{Behpour2019}. Data Augmentation methods may be divided into
 Heuristic and Neural Network-based approaches~\cite{Shorten2019}. In addition,
 they may also be distinguished based on its generation strategy, whether local
 (considers a local/specific subset of the dataset) or global (considers the
-overall distribution of the training dataset) \textbf{[CITATION]}.
+overall distribution of the training dataset).
 Figure~\ref{fig:data_augmentation_taxonomy} shows the general taxonomy of Data
 Augmentation methods. Finding the appropriate Data Augmentation method
 generally depends on the domain~\cite{DeVries2017}, although some studies
@@ -438,25 +416,24 @@ the feature space and is reconstructed into the input space. Although these
 methods allow the generation of less noisy data in high-dimensional contexts
 and more plausible artificial data, they are significantly more
 computationally intensive. Considering the scope of this paper (the paper's
-contributions are described in Sections~\ref{sec:introduction}
+contribution is described in Sections~\ref{sec:introduction}
 and~\ref{sec:proposed_method}), the computational power available for this
 experiment and the breadth of datasets used in our experimental procedure, we
 will focus on domain-agnostic heuristic data augmentation methods.
 
-While some techniques may depend on the domain, others may be considered
-domain-agnostic. For example, Random Erasing~\cite{Zhong2020}, Translation,
-Cropping and Flipping are image data-specific augmentation methods. Other
-methods, such as most of the variants of the Synthetic Minority Oversampling
-TEchnique (SMOTE)~\cite{Chawla2002}, may be considered domain agnostic.
-However, SMOTE methods were originally developed as oversamplers, whose goal
-is to balance the class frequencies of the target variable in the training
-dataset and address the class imbalance bias~\cite{Fonseca2021ksmote}.
-Therefore, oversampling methods may be considered a subset of Data
-Augmentation. Data Augmentation strategies may follow varying augmentation
-strategies, which does not necessarily depend on the target class
-distribution. An example of the differences among general data augmentation
-and oversampling generation strategies is shown in
-Figure~\ref{fig:augmentation_strategies}.
+While some techniques may depend on the domain, others are domain-agnostic.
+For example, Random Erasing~\cite{Zhong2020}, Translation, Cropping and
+Flipping are image data-specific augmentation methods. Other methods, such as
+most of the variants of the Synthetic Minority Oversampling TEchnique
+(SMOTE)~\cite{Chawla2002}, may be considered domain agnostic. However, SMOTE
+methods were originally developed as oversamplers, whose goal is to balance
+the class frequencies of the target variable in the training dataset and
+address the class imbalance bias~\cite{Fonseca2021ksmote}. Therefore,
+oversampling methods may be considered a subset of Data Augmentation. Data
+Augmentation strategies may follow varying augmentation strategies, which does
+not necessarily depend on the target class distribution. An example of the
+differences among general data augmentation and oversampling generation
+strategies is shown in Figure~\ref{fig:augmentation_strategies}.
 
 \begin{figure}[H]
 	\centering
@@ -500,15 +477,34 @@ space.
     }~\label{fig:smote_vs_gsmote}
 \end{figure}
 
-Geometric-SMOTE (G-SMOTE)~\cite{Douzas2019} modifies SMOTE's generation
-mechanism. Instead of generating an observation as linear combination between
-2 others, it generates observations within an hypersphere defined using the
-selected observation as its center and one of its nearest neighbors as its
-boundary. The hypersphere contains two hyperparameters, the truncation and
-deformation factors, which limit the area of the hypersphere. The difference
-between SMOTE and G-SMOTE is shown in Figure~\ref{fig:smote_vs_gsmote}.
+G-SMOTE~\cite{Douzas2019} modifies SMOTE's generation mechanism. Instead of
+generating an observation as a linear combination between 2 others, it
+generates observations within an hypersphere defined using the selected
+observation as its center and one of its nearest neighbors as its boundary.
+The hypersphere contains two hyperparameters, the truncation and deformation
+factors, which limit the area of the hypersphere. The difference between SMOTE
+and G-SMOTE is shown in Figure~\ref{fig:smote_vs_gsmote}.
 Reference~\cite{Douzas2019imbalanced} found that G-SMOTE outperforms various
 state-of-the-art oversamplers.
+
+\subsection{Data Augmentation in Active Learning
+}~\label{sec:data_augmentation_in_al}
+
+As found in Section~\ref{sec:active_learning_methods}, the improvement of the
+AL framework found in the literature are mostly focused on modifications of
+the classifier or query strategy. However, a few recent AL applications
+implementing data augmentation were found. The method proposed
+in~\cite{Kim2021}, Look-Ahead Data Acquisition for Deep Active Learning,
+implement image data specific data augmentation to train a deep learning
+classifier. However, in this study, data augmentation is based on the
+unlabeled observations and occurs before the unlabeled data selection.
+In~\cite{Ma2020} the proposed AL method was designed specifically for image
+data classification, where a deep learning model was implemented as a
+classifier, but its architecture is not described. Other AL frameworks
+implementing data augmentation may also be found for Natural Language
+Processing applications~\cite{Quteineh2020, Li2021framework}. However, these
+methods were designed for specific within that domain and are not necessarily
+transferrable to other domains or tasks.
 
 \section{Proposed Method}~\label{sec:proposed_method}
 
@@ -518,32 +514,34 @@ choice/architecture of the classifier or the improvement of the uncertainty
 criterion. In addition, the resulting classification performance of AL-trained
 classifiers is frequently inconsistent and marginally improve the
 classification performance when compared to classifiers trained over the full
-training set (when that happens). Finally, in~\cite{Fonseca2021} the authors
-also found a significant variability of the data selection efficiency during
-different runs of the AL iterative process. In this study the authors proposed
-a new element within the AL framework, the generator, which was able to
-marginally reduce the variability previously identified. However, this
-modification was applied in a Land Use/Land Cover context which contains
-specific characteristics that are not necessarily found in other supervised
-learning problems. Specifically, high dimensional datasets containing target
-classes with little data variability (\textit{i.e.,} cohesive spectral
-signatures within classes) due to their geographical proximity. Furthermore,
-the implementation of the generator was done using a simple oversampling
-strategy, which limits the possibility of employing other techniques with an
-undefined target amount of data generated at each iteration.
+training set. Finally, in~\cite{Fonseca2021} the authors also found a
+significant variability of the data selection efficiency during different runs
+of the AL iterative process. In that study the authors proposed a new element
+within the AL framework, the generator, which was able to marginally reduce
+the variability previously identified. However, this modification was applied
+in a Land Use/Land Cover context which contains specific characteristics that
+are not necessarily found in other supervised learning problems. Specifically,
+high dimensional datasets containing target classes with little data
+variability (\textit{i.e.,} cohesive spectral signatures within classes) due
+to their geographical proximity. Furthermore, the implementation of the
+generator was done using a simple oversampling strategy, which limits the
+possibility of employing other techniques with an undefined target amount of
+data generated at each iteration.
 
-Our work builds upon the work developed in~\cite{Fonseca2021}, with the
-following contributions:
+This paper provides a context-agnostic AL framework towards the integration of
+Data Augmentation within AL, with the following contributions:
 
 \begin{enumerate}
-    \item We improve the AL framework by introducing a parameter
+    \item Improvement of the AL framework by introducing a parameter
         tuning stage using only the labeled dataset available at the current
-        iteration (\textit{i.e.,} no hold-out set needed).
-    \item We generalize the usage of the generator from just using
-        oversampling techniques to any other data augmentation mechanism
-        and/or strategy.
-    \item We analyze the performance of the proposed and oversampling
-        frameworks over 10 different datasets of different domains, while
+        iteration (\textit{i.e.,} no labeled hold-out set is needed).
+    \item Generalization of the generator module proposed
+        in~\cite{Fonseca2021} from oversampling techniques to any other data
+        augmentation mechanism and/or strategy.
+    \item Implementation of data augmentation outside of the Deep AL realm,
+        which was not previously found in the literature.
+    \item Analysis of the impact of Data Augmentation and Oversampling
+        in AL over 10 different datasets of different domains, while
         comparing them with the standard AL framework.
 \end{enumerate}
 
@@ -1187,8 +1185,8 @@ statistically significant in all datasets except one (Baseball) and
 established statistical significance when compared to the Standard AL method
 for all combinations of classifier and performance metric, including when the
 Oversampling AL method failed to do so. These results show that the Proposed
-method increased the reliability of the new AL framework while improving the
-quality of the final classifier while requiring less data.
+method increased the reliability of the new AL framework and improved the
+quality of the final classifier while using less data.
 
 % Usage of AL as a method to produce better performing classifiers, even in
 % settings with fully labeled data
@@ -1244,26 +1242,29 @@ insufficient.
 
 In this paper, we proposed a domain-agnostic AL framework that implements Data
 Augmentation and hyperparameter tuning. We found that a simple heuristic Data
-Augmentation algorithm is sufficient to significantly increase the data
-selection efficiency in AL\@. The usage of data augmentation reduced the
-amount of iterations required to train a classifier with a performance as good
-as (or better than) classifiers trained with the entire training dataset
-(\textit{i.e.,} without using AL). The proposed method was capable of reducing
-the training dataset and use the most informative observations for the
-training phase of the classifier, which is expanded with artificial data. 
+Augmentation algorithm is sufficient to significantly improve the data
+selection efficiency in AL\@. Specifically, the data augmentation method used
+almost always increased AL performance, regardless of the target goal
+(\textit{i.e.,} optimizing classification or data selection efficiency). The
+usage of data augmentation reduced the amount of iterations required to train
+a classifier with a performance as good as (or better than) classifiers
+trained with the entire training dataset (\textit{i.e.,} without using AL).
+The proposed method was also capable of reducing the size of the training
+dataset and use the most informative observations for the training phase of
+the classifier, which is expanded with artificial data. 
 
 With this AL configuration, data selection in AL iterations aim towards
 observations that optimize the quality of the artificial data produced. The
 substitution of less informative labeled data with artificial data is
 especially useful in this context, since it allows the reduction of some of
 the user interaction necessary to reach a sufficiently informative dataset.
-The further improvement of the proposed method will require future work to (1)
-focus on the development of methods with varying data augmentation policies
-depending on the different input space regions, (2) develop
-augmentation-sensitive query functions capable of avoiding the unnecessary
-selection of similar observations from the unlabeled dataset and (3)
-better understand the gap between heuristic/input space data augmentation techniques
-and neural network/feature space data augmentation techniques in an AL context.
+In order to further improve the proposed method future work will (1) focus on
+the development of methods with varying data augmentation policies depending
+on the different input space regions, (2) develop augmentation-sensitive query
+functions capable of avoiding the unnecessary selection of similar
+observations from the unlabeled dataset and (3) better understand the gap
+between heuristic/input space data augmentation techniques and neural
+network/feature space data augmentation techniques in an AL context.
 
 \bibliography{references}
 \bibliographystyle{ieeetr}
