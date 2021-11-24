@@ -673,6 +673,7 @@ if __name__ == '__main__':
 
     # datasets_description
     summarized_datasets = summarize_multiclass_datasets(datasets)
+    summarized_datasets['Dataset'] = summarized_datasets['Dataset'].str.title()
     mask = summarized_datasets['Dataset'].str.lower()\
         .str.replace(' ', '_').isin(DATASETS_NAMES)
     summarized_datasets[mask].to_csv(
