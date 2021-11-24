@@ -108,7 +108,9 @@ def generate_mean_std_tbl_bold(
         )[1],
         axis=1
     ).values
-    std_bold = np.round(std_vals, decimals).astype(str)
+
+    formatter = '{0:.%sf}' % decimals
+    std_bold = std_vals.applymap(lambda x: formatter.format(x))
     std_bold = np.where(mask, std_bold+'}', std_bold)
     scores = mean_bold + r" $\pm$ " + std_bold
     return scores
