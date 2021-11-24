@@ -197,7 +197,7 @@ refers to the supervisor as the oracle.
 	\centering
 	\includegraphics[width=.4\linewidth]{../analysis/al_initialization}
     \caption{%
-        Active Learning initialization.
+        Diagram depicting an AL initialization.
     }~\label{fig:al_initialization}
 \end{figure}
 
@@ -240,9 +240,9 @@ steps~\cite{Su2020, Sverchkov2017}:
 	\centering
 	\includegraphics[width=.65\linewidth]{../analysis/al_iteration}
     \caption{%
-        Active Learning iteration. In the first iteration, the training set
-        collected during the initialization process becomes the ``Current
-        Training Dataset''.
+        Diagram depicting a typical AL iteration. In the first iteration, the
+        training set collected during the initialization process becomes the
+        ``Current Training Dataset''.
     }~\label{fig:al_iteration}
 \end{figure}
 
@@ -401,7 +401,7 @@ domain~\cite{Shorten2019, Iwana2021, Wong2016}.
 	\centering
 	\includegraphics[width=.8\linewidth]{../analysis/data_augmentation_taxonomy}
     \caption{%
-        Data Augmentation Taxonomy.
+        Schema containing a general Data Augmentation taxonomy.
     }~\label{fig:data_augmentation_taxonomy}
 \end{figure}
 
@@ -562,7 +562,8 @@ to train the iteration's classifier in the following step.
 	\centering
 	\includegraphics[width=.75\linewidth]{../analysis/al_proposed}
     \caption{%
-        Active Learning --- proposed iteration.
+        Diagram depicting the proposed AL iteration. The proposed
+        modifications are marked with a boldface ``C''.
     }~\label{fig:al_proposed}
 \end{figure}
 
@@ -611,9 +612,9 @@ classification performances).
 The datasets used to test the proposed method are publicly available in open
 data repositories. Specifically, they were retrieved from
 \href{https://www.openml.org/}{OpenML} and the
-\href{https://archive.ics.uci.edu/}{UCI Machine Learning Repository}. The
-datasets were chosen considering different domains of application, imbalance
-ratios, dimensionality and number of target classes, all of them focused on
+\href{https://archive.ics.uci.edu/}{UCI Machine Learning Repository}. They
+were chosen considering different domains of application, imbalance ratios,
+dimensionality and number of target classes, all of them focused on
 classification tasks. The goal is to demonstrate the performance of the
 different AL frameworks in various scenarios and domains. The data
 preprocessing approach was similar across all datasets.
@@ -788,21 +789,24 @@ labeled, the annotation process is done at zero cost.
 Figure~\ref{fig:experimental_procedure} depicts the experiment designed for
 one dataset over a single run. 
 
-% TODO:
-% - Add percentage of observations in each data subset
-% - Mention the maximum percentage of data used by the active learners within
-%   the train set
 A single run starts with the splitting of a preprocessed dataset in 5
 different partitions, stratified according to the class frequencies of the
 target variable using the K-fold Cross Validation method. During this run, an
 active learner or classifier is trained 5 times using a different partition as
-the Test set each time. For each training process, a Validation set is created
-and is used to measure the data selection efficiency (\textit{i.e.,} AULC and
-DUR using the classification performance metrics, specific to AL). The AL
-simulations and the classifiers' training occur within the Train set. Once the
-training phase is completed, the Test set classification scores are calculated
-using the trained classifiers. For the case of AL, the classifier with the
-optimal Validation set score is used to estimate the AL's optimal
+the Test set each time. For each training process, a Validation set containing
+25\% of the subset is created and is used to measure the data selection
+efficiency (\textit{i.e.,} AULC and DUR using the classification performance
+metrics, specific to AL). Therefore, for a single training procedure, 20\% of
+the original dataset is used as the Validation set, 20\% is used as the Test
+set and 60\% is used as the Train set. The AL simulations and the classifiers'
+training occur within the Train set. However, the classifiers used to find the
+maximum performance classification scores are trained over the full Train set.
+The AL simulations are run over a maximum of 50 iterations (including the
+initialization step), adding 1.6\% of the training set each time
+(\textit{i.e.,} all AL simulations use less than 80\% of the Train set). Once
+the training phase is completed, the Test set classification scores are
+calculated using the trained classifiers. For the case of AL, the classifier
+with the optimal Validation set score is used to estimate the AL's optimal
 classification performance over unseen data.
 
 The process shown in Figure~\ref{fig:experimental_procedure} is repeated over
@@ -815,7 +819,15 @@ the mean score of 15 fits, across 10 datasets).
 	\centering
 	\includegraphics[width=.6\linewidth]{../analysis/experimental_procedure}
     \caption{%
-        Experimental procedure flowchart.
+        Experimental procedure flowchart. The preprocessed datasets are split
+        into five folds. One of the folds is used to test the best found
+        classifiers using AL and the classifiers trained using the entire
+        training dataset (containing the remaining folds). The training set is
+        used to run both the AL simulations as well as train the normal
+        classifiers. The validation set is used to measure AL-specific
+        performance metrics over each iteration. We use different subsets for
+        overall classification performance and AL-specific performance to
+        avoid data leakage.
     }~\label{fig:experimental_procedure}
 \end{figure}
 
@@ -872,7 +884,7 @@ parameters were defined as a list of various possible values.
 		\bottomrule
 	\end{tabular}
     \caption{\label{tab:grid}
-        Hyper-parameter definition for the active learners, classifiers and
+        Hyperparameter definition for the active learners, classifiers and
         generators used in the experiment.
     }
 \end{table}
@@ -953,8 +965,9 @@ between the proposed AL method and the oversampling AL method.
         Average AULC of each AL configuration tested. Each AULC score is
         calculated using the performance scores of each iteration in the
         validation set. By the end of the iterative process, each AL
-        configuration used a total of XXXX\% instances of the XXXX\% instances
-        that compose the training sets.
+        configuration used a maximum of 80\% instances of the 60\% instances
+        that compose the training sets (\textit{i.e.,} 48\% of the entire
+        preprocessed dataset).
     }
 \end{table}
 
@@ -1029,28 +1042,6 @@ full training set (\textit{i.e.,} the ones labeled as MP).
         the entire training set.
     }
 \end{table}
-
-
-% \begin{table}[H]
-%     \centering
-%     \pgfplotstabletypeset[
-%         col sep=comma,
-%         string type,
-%         every head row/.style={%
-%             before row=\toprule,
-%             after row=\midrule
-%         },
-%         every last row/.style={after row=\bottomrule},
-%     ]{../analysis/wide_optimal_aulc.csv}
-%     \caption{\label{tab:wide_optimal_aulc}
-%         AULC scores of each AL configuration tested over the different
-%         datasets. Each AULC score is calculated using the G-mean scores of
-%         each iteration in the validation set. By the end of the iterative
-%         process, each AL configuration used a total of 750 instances of the
-%         960 instances that compose the training set.
-%     }
-% \end{table}
-
 
 \subsection{Statistical Analysis}~\label{sec:statistical-analysis}
 
@@ -1202,29 +1193,30 @@ training data, the proposed method may be used as preprocessing method to
 further optimize classification performance.
 
 % Future work and limitations
-This study introduces data augmentation within the AL framework, along with
-the exploration of optimal augmentation methods within AL iterations. However,
-the conceptual nature of this study implies some limitations. Specifically,
-the large amount of experiments required to test the method's efficacy, along
-with the limited computational power available, led to a limited exploration
-of the grid search's potential. Future work should focus into understanding
-how the usage of a more comprehensive parameter tuning approach improves the
-quality of the AL method. In addition, the proposed method was not able to
-outperform the standard AL method in 100\% of scenarios. The exploration of
-other, more complex, data augmentation techniques might further improve its
-performance through the production of more meaningful training observations.
-Specifically, in this study we assume that all datasets used follow a
-manifold, allowing the usage of G-SMOTE as a data augmentation approach.
-However, this method cannot be used into more complex, non-euclidean spaces.
-In this scenario, the usage of G-SMOTE is not valid and might lead to the
-production of noisy data. Deep Learning-based data augmentation techniques are
-able to address this limitation and improve the overall quality of the
-artificial data being generated. We also found significant standard errors
-throughout our experimental results (see Subsection~\ref{sec:results}), which
-is consistent with the findings in~\cite{Fonseca2021, Kottke2017}. This
-suggests that the usage of more robust generators did not decrease the
-standard error of AL performance. Instead, AL's performance variability is
-likely dependent on the quality of its initialization.
+This study discussed the effect of data augmentation within the AL framework,
+along with the exploration of optimal augmentation methods within AL
+iterations. However, the conceptual nature of this study implies some
+limitations. Specifically, the large amount of experiments required to test
+the method's efficacy, along with the limited computational power available,
+led to a limited exploration of the grid search's potential. Future work
+should focus into understanding how the usage of a more comprehensive
+parameter tuning approach improves the quality of the AL method. In addition,
+the proposed method was not able to outperform the standard AL method in 100\%
+of scenarios. The exploration of other, more complex, data augmentation
+techniques might further improve its performance through the production of
+more meaningful training observations.  Specifically, in this study we assume
+that all datasets used follow a manifold, allowing the usage of G-SMOTE as a
+data augmentation approach.  However, this method cannot be used into more
+complex, non-euclidean spaces.  In this scenario, the usage of G-SMOTE is not
+valid and might lead to the production of noisy data. Deep Learning-based data
+augmentation techniques are able to address this limitation and improve the
+overall quality of the artificial data being generated. We also found
+significant standard errors throughout our experimental results (see
+Subsection~\ref{sec:results}), which is consistent with the findings
+in~\cite{Fonseca2021, Kottke2017}. This suggests that the usage of more robust
+generators did not decrease the standard error of AL performance. Instead,
+AL's performance variability is likely dependent on the quality of its
+initialization.
 
 \section{Conclusion}~\label{sec:conclusion}
 
