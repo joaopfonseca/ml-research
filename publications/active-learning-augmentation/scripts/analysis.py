@@ -21,7 +21,6 @@ from rlearn.tools import summarize_datasets
 from research.utils import (
     generate_paths,
     load_datasets,
-    generate_mean_std_tbl_bold,
     load_plt_sns_configs,
     make_bold
 )
@@ -63,6 +62,35 @@ GROUP_KEYS = [
     'Evaluation Metric',
     'Selection Criterion'
 ]
+
+
+def generate_mean_std_tbl_bold(
+    mean_vals, std_vals, maximum=True, decimals=2, threshold=None
+):
+    """
+    Generate table that combines mean and sem values. This is the same
+    function of the ml-research library but with the bug of the decimals on
+    the standard deviations fixed (which will be already fixed in version
+    0.3.4).
+    """
+    mean_bold = mean_vals.apply(
+        lambda row: make_bold(
+            row, maximum, decimals, threshold, with_sem=True
+        )[0],
+        axis=1
+    )
+    mask = mean_vals.apply(
+        lambda row: make_bold(
+            row, maximum, decimals, threshold, with_sem=True
+        )[1],
+        axis=1
+    ).values
+
+    formatter = '{0:.%sf}' % decimals
+    std_bold = std_vals.applymap(lambda x: formatter.format(x))
+    std_bold = np.where(mask, std_bold+'}', std_bold)
+    scores = mean_bold + r" $\pm$ " + std_bold
+    return scores
 
 
 def _make_bold_stat_signif(value, sig_level=.05):

@@ -1,7 +1,7 @@
 Classifier,Evaluation Metric,Standard,Oversampling,Proposed
 DT,Accuracy,0.733 $\pm$ 0.092,0.732 $\pm$ 0.087,\textbf{0.740 $\pm$ 0.087}
-DT,F-score,0.695 $\pm$ 0.088,0.698 $\pm$ 0.09,\textbf{0.705 $\pm$ 0.092}
-DT,G-mean,0.804 $\pm$ 0.065,0.811 $\pm$ 0.06,\textbf{0.816 $\pm$ 0.062}
+DT,F-score,0.695 $\pm$ 0.088,0.698 $\pm$ 0.090,\textbf{0.705 $\pm$ 0.092}
+DT,G-mean,0.804 $\pm$ 0.065,0.811 $\pm$ 0.060,\textbf{0.816 $\pm$ 0.062}
 KNN,Accuracy,0.816 $\pm$ 0.091,0.818 $\pm$ 0.088,\textbf{0.822 $\pm$ 0.091}
 KNN,F-score,0.775 $\pm$ 0.102,0.784 $\pm$ 0.108,\textbf{0.788 $\pm$ 0.111}
 KNN,G-mean,0.852 $\pm$ 0.084,0.866 $\pm$ 0.072,\textbf{0.869 $\pm$ 0.074}
