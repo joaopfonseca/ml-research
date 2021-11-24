@@ -55,15 +55,28 @@
 \maketitle
 
 \begin{abstract}
-    Work in progress (Abstract). Highlights below.
-    \begin{itemize}
-        \item Proposed method outperforms the remaining frameworks
-        \item Proposed method is more robust to the choice of domain, classifiers
-            and performance metrics being chosen
-        \item Proposed method outperforms classifiers trained using the full
-            training dataset. To the best of our knowledge, this is the first
-            AL method able to do so reliably.
-    \end{itemize}
+
+    Active Learning (AL) is a technique that is used whenever it is necessary
+    to perform a Supervised Learning task in an environment without labeled
+    data.  Its focus is to find the unlabeled observations that, once labeled,
+    will maximize the informativeness of the training dataset. However, the
+    manual labeling of observations involves human resources with domain
+    expertise, making it an expensive and time-consuming task. The literature
+    describes various methods to improve the effectiveness of this process,
+    but there is little research developed around the usage of artificial data
+    sources in AL\@. In this paper, we propose 2 modifications of the standard
+    AL framework. The proposed method implements Data Augmentation and data
+    generation policy optimization without the need for a secondary labeled
+    dataset. In addition, we generalize and test the concept of Data
+    Augmentation within AL to better understand its impact in a
+    context-agnostic setting. We compare the proposed method to the standard
+    framework and another recent implementation using similar query functions,
+    4 different classifiers, 2 AL-specific performance metrics and 3
+    classification performance metrics over 10 different datasets. We show
+    that Data Augmentation heuristics are sufficient to significantly improve
+    the performance of AL implementations, both in terms of classification
+    performance and data selection efficiency. 
+    
 \end{abstract}
 
 \section{Introduction}~\label{sec:introduction}
@@ -388,9 +401,9 @@ may be done via the introduction of perturbations on the
 input~\cite{Zhong2020}, feature~\cite{DeVries2017} or output
 space~\cite{Behpour2019}. Data Augmentation methods may be divided into
 Heuristic and Neural Network-based approaches~\cite{Shorten2019}. In addition,
-they may also be distinguished based on its generation strategy, whether local
-(considers a local/specific subset of the dataset) or global (considers the
-overall distribution of the training dataset).
+they may also be distinguished based on its data generation policy, whether
+local (considers a local/specific subset of the dataset) or global (considers
+the overall distribution of the training dataset).
 Figure~\ref{fig:data_augmentation_taxonomy} shows the general taxonomy of Data
 Augmentation methods. Finding the appropriate Data Augmentation method
 generally depends on the domain~\cite{DeVries2017}, although some studies
@@ -524,9 +537,9 @@ are not necessarily found in other supervised learning problems. Specifically,
 high dimensional datasets containing target classes with little data
 variability (\textit{i.e.,} cohesive spectral signatures within classes) due
 to their geographical proximity. Furthermore, the implementation of the
-generator was done using a simple oversampling strategy, which limits the
-possibility of employing other techniques with an undefined target amount of
-data generated at each iteration.
+generator was done using a simple oversampling augmentation policy, which
+limits the possibility of employing other techniques with an undefined target
+amount of data generated at each iteration.
 
 This paper provides a context-agnostic AL framework towards the integration of
 Data Augmentation within AL, with the following contributions:
@@ -537,7 +550,7 @@ Data Augmentation within AL, with the following contributions:
         iteration (\textit{i.e.,} no labeled hold-out set is needed).
     \item Generalization of the generator module proposed
         in~\cite{Fonseca2021} from oversampling techniques to any other data
-        augmentation mechanism and/or strategy.
+        augmentation mechanism and/or policy.
     \item Implementation of data augmentation outside of the Deep AL realm,
         which was not previously found in the literature.
     \item Analysis of the impact of Data Augmentation and Oversampling
@@ -552,10 +565,10 @@ the training dataset. This should allow the classifier to generalize better
 and perform more consistently over unseen observations. However, in this
 scenario, the amount of data to generate per class at each iteration is
 unknown. Consequently, the hyperparameter tuning step was introduced to
-estimate the optimal data augmentation strategy at each iteration. In our
+estimate the optimal data augmentation policy at each iteration. In our
 implementation, this step uses the current training dataset to perform an
 exhaustive search over specified parameters of the generator, tested over a
-5-fold cross validation method. The best augmentation strategy found is used
+5-fold cross validation method. The best augmentation policy found is used
 to train the iteration's classifier in the following step.
 
 \begin{figure}[H]
@@ -682,10 +695,10 @@ approach. The predicted class is assigned to the label with the highest
 likelihood.
 
 The oversampler G-SMOTE was used as a data augmentation method. The typical
-sampling strategy of oversampling methods is to generate artificial
+data generation policy of oversampling methods is to generate artificial
 observations on non-majority classes such that the number of majority class
-observations matches those of each non-majority class. We modified this
-sampling strategy to generate observations for all classes, as a percentage of
+observations matches those of each non-majority class. We modified this data
+generation policy to generate observations for all classes, as a percentage of
 the number of observations in the majority class. In addition, the original
 G-SMOTE algorithm was modified to accept data selection probabilities based on
 classification uncertainty. These modifications are discussed in
@@ -754,7 +767,7 @@ as a reference for easier interpretability:
 
 The comparison of the performance of AL frameworks is based on its data
 selection and augmentation efficacy. Specifically, an efficient data
-selection/generation strategy allows the production of classifiers with high
+selection/generation policy allows the production of classifiers with high
 performance on unseen data while using as least non-artificial training data
 as possible. To measure the performance of the different AL setups, we follow
 the recommendations found in~\cite{Kottke2017}. The performance of an AL setup
@@ -849,7 +862,7 @@ parameters were defined as a list of various possible values.
                         & \# additional obs.\ per iteration & 1.6\%                          \\
                         & max.\ iterations + initialization & 50                             \\
                         & evaluation metrics                & G-mean, F-score, OA            \\
-                        & selection Strategy                & Random, Entropy, Breaking Ties \\
+                        & selection strategy                & Random, Entropy, Breaking Ties \\
                         & within-iteration param.\ tuning   & None                           \\
                         & generator                         & None                           \\
                         & classifier                        & DT, LR, KNN, RF                \\
@@ -1000,7 +1013,7 @@ amount of data annotation required to reach each G-mean score threshold.
 The DUR scores relative to the Standard AL method are shown in
 Figure~\ref{fig:dur}. A DUR below 1 means that the Proposed/Oversampling
 method requires less data than the Standard AL method to reach the same
-performance threshold. For example, running an AL strategy using the KNN
+performance threshold. For example, running an AL simulation using the KNN
 classifier requires 69.6\% of the amount of data required by the Standard AL
 method using the same classifier to reach an F-Score of 0.62 (\textit{i.e.,}
 requires 30.4\% less data).
@@ -1085,7 +1098,7 @@ classifier or evaluation metric being considered.
 Table~\ref{tab:wilcoxon_test} contains the \textit{p-values} obtained with the
 Wilcoxon signed-rank test. The proposed method was able to outperform both the
 standard AL framework, as well as the AL framework using a normal oversampling
-strategy proposed in~\cite{Fonseca2021} with statistical significance in 9 out
+policy proposed in~\cite{Fonseca2021} with statistical significance in 9 out
 of 10 datasets.
 
 \begin{table}[H]
@@ -1181,16 +1194,17 @@ quality of the final classifier while using less data.
 
 % Usage of AL as a method to produce better performing classifiers, even in
 % settings with fully labeled data
-To the best of our knowledge, the method proposed in this paper was the first
-AL approach to consistently outperform the maximum performance threshold.
-Specifically, in Table~\ref{tab:optimal_mean_std_scores}, the performance of
-the classifiers originating from the proposed method was able to outperform
-classifiers trained using the full training dataset in all 12 scenarios except
-one. This shows that using a meaningful subset of the training dataset along
-with data augmentation not only matches the classification performance of ML
-algorithms, as it also improves them. Even in a setting with fully labeled
-training data, the proposed method may be used as preprocessing method to
-further optimize classification performance.
+Even though it was not the core purpose of this study, we found that the
+method proposed AL approach consistently outperformed the maximum performance
+threshold. Specifically, in Table~\ref{tab:optimal_mean_std_scores}, the
+performance of the classifiers originating from the proposed method was able
+to outperform classifiers trained using the full training dataset in all 12
+scenarios except one. This suggests that the selection of a meaningful
+training subset training dataset paired with data augmentation not only
+matches the classification performance of ML algorithms, as it also improves
+them. Even in a setting with fully labeled training data, the proposed method
+may be used as preprocessing method to further optimize classification
+performance.
 
 % Future work and limitations
 This study discussed the effect of data augmentation within the AL framework,
