@@ -191,9 +191,14 @@ Deep Learning approaches~\cite{Shorten2019}. Within these, several approaches
 have been developed to produce artificial observations at the
 input~\cite{Zhong2017}, feature~\cite{DeVries2017}, or output
 space~\cite{Behpour2019}. Finally, we also distinguish them based on whether
-their generation mechanism considers local or global information of the
-original dataset. Figure~\ref{fig:concept_map} depicts the concept map with
-the different subdivisions of data augmentation methods.
+their generation mechanism considers local (\textit{i.e.,} considers
+partial/specific information within the dataset) or global (\textit{i.e.,}
+it's based on the overall distribution/structure of the dataset) information
+of the original dataset. Figure~\ref{fig:concept_map} depicts the concept map
+with the different subdivisions of characteristics of data augmentation
+methods. In this section, the analysis of the different types of data
+augmentation will be based on their architectural approach. However, all the
+methods mentioned may be divided using any of the definitions mentioned.
 
 \begin{figure}[htb]
 	\centering
@@ -361,18 +366,6 @@ available, one technique that may also be used is transfer learning. In this
 context, the data augmentation model is trained on a secondary model and is
 later adjusted to the training dataset. This allows the usage of deep learning
 models in few-shot learning environments~\cite{Antoniou2017}.
-
-% Neural Network-based algorithms
-% 
-% Other types of algorithms, like Bayesian-based approaches?
-%
-% Random erasing
-%
-% In~\cite{Zhang2021}, the authors argue that the augmentation methods used in
-% their study (all heuristic), as well as other regularization methods such as
-% weight decay did not affect how the model adapted to randomly labelled
-% training sets. This is an existing limitation of the current regularization
-% methods available.
 
 \section{Methodology}~\label{sec:methodology}
 
