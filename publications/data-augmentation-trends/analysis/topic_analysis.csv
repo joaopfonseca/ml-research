@@ -1,0 +1,9 @@
+Topic;Representative Paper;Papers;Words
+1;GAN-based synthetic medical image augmentation for increased CNN performance in liver lesion classification;440;yolov, pest, style\_transfer, coffe, thermal, biomed, scene\_text, histolog, nodul, visibl
+2;CVAE-GAN: Fine-Grained Image Generation through Asymmetric Training;61;hyperspectr\_imag, licens\_plate, command, inpaint, illumin\_chang, upper, restor, ann, foreign, shadow
+3;A survey on Image Data Augmentation for Deep Learning;401;censor, markov\_chain, node, team, tree, cxr, risk\_factor, mass, largest, sourc\_separ
+4;Return of the devil in the details: Delving deep into convolutional nets;108;smoke, pedestrian, transcrib, crowd, children\_speech, intent, adult, auxiliari\_variabl, speech, angiographi
+5;U-net: Convolutional networks for biomedical image segmentation;632;imag, detect, gener, dataset, classif, sampl, network, cnn, featur, augment
+6;Deep Convolutional Neural Networks and Data Augmentation for Environmental Sound Classification;370;tea, multivari, markov\_chain\_mont\_carlo, bayesian, regress, misclassif, procedur, famili, illustr, mcmc
+7;Weakly Supervised Deep Detection Networks;160;music, fish, marin, gender, vocal, random\_eras, low\_qualiti, crowd, prune, bengali
+8;An Efficient Deep Learning Approach to Pneumonia Classification in Healthcare;85;drone, gait, aircraft, gestur\_recognit, pneumonia, chest\_rai\_imag, covid, walk, onset, hidden\_layer

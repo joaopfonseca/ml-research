@@ -1,0 +1,12 @@
+git+https://github.com/joaopfonseca/ml-research.git@24b29dd712f60b1940028c792427f35a64571cfd#egg=research
+numpy
+pandas==1.2.1
+scikit-learn
+gensim==3.8.3
+matplotlib
+seaborn
+git+https://github.com/joaopfonseca/SOMPY.git
+umap-learn
+plotly
+kaleido
+networkx

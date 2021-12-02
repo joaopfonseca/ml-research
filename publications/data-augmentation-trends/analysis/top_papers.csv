@@ -1,0 +1,11 @@
+Authors;Title;Year;Cited by
+Ronneberger O., Fischer P., Brox T.;U-net: Convolutional networks for biomedical image segmentation;2015;13597
+Chatfield K., Simonyan K., Vedaldi A., Zisserman A.;Return of the devil in the details: Delving deep into convolutional nets;2014;1885
+Snyder D., Garcia-Romero D., Sell G., Povey D., Khudanpur S.;X-Vectors: Robust DNN Embeddings for Speaker Recognition;2018;636
+Shorten C., Khoshgoftaar T.M.;A survey on Image Data Augmentation for Deep Learning;2019;590
+Salamon J., Bello J.P.;Deep Convolutional Neural Networks and Data Augmentation for Environmental Sound Classification;2017;505
+Eitel A., Springenberg J.T., Spinello L., Riedmiller M., Burgard W.;Multimodal deep learning for robust RGB-D object recognition;2015;352
+Ding J., Chen B., Liu H., Huang M.;Convolutional Neural Network with Data Augmentation for SAR Target Recognition;2016;319
+Wong S.C., Gatt A., Stamatescu V., McDonnell M.D.;Understanding Data Augmentation for Classification: When to Warp?;2016;302
+Frid-Adar M., Diamant I., Klang E., Amitai M., Goldberger J., Greenspan H.;GAN-based synthetic medical image augmentation for increased CNN performance in liver lesion classification;2018;296
+Bilen H., Vedaldi A.;Weakly Supervised Deep Detection Networks;2016;287
