@@ -29,12 +29,24 @@ install-update: test_environment
 clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
+	rm -rf *.egg-info
+	rm -rf dist
+	rm -rf build
 	rm -rf docs/_build
 	rm -rf docs/_generated
 
-## Lint using flake8
-lint:
-	flake8 research/
+## Lint using flake8 and pylint
+code-analysis:
+	flake8 $(PROJECT_NAME)
+	pylint -E $(PROJECT_NAME) -d E1103,E0611,E1101
+
+## Format code using Black
+code-format:
+	black $(PROJECT_NAME) publications/*.py
+
+## Upload new package version to pypi
+upload-pypi: clean
+	autopypi -r .
 
 ## Set up python interpreter environment
 environment:
