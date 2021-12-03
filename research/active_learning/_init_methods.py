@@ -17,7 +17,7 @@ def init_strategy(
     random_state=None
 ):
     """
-    Defaults to random.
+    Defaults to random. Initialization using SOM requires the somlearn package.
 
     Selection method is only relevant if a clusterer object is passed.
     Possible initialization strategies:
