@@ -13,6 +13,6 @@ development of experiments. These commands can be used by running ``make
 ``clean``                               Delete all compiled Python files
 ``environment``                         Set up python interpreter environment
 ``lint``                                Lint using flake8
-``requirements``                        Install Python Dependencies
+``install-update``                      Install and Update Python Dependencies + ML-Research
 ``test_environment``                    Test python environment is setup correctly
 ======================================  =========================================================
