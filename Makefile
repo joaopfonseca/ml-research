@@ -29,6 +29,8 @@ install-update: test_environment
 clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
+	rm -rf docs/_build
+	rm -rf docs/_generated
 
 ## Lint using flake8
 lint:
