@@ -10,3 +10,15 @@ nbsphinx
 recommonmark
 sphinx_markdown_tables
 sphinx_copybutton
+
+# package dependencies
+pandas
+numpy
+scikit-learn
+imbalanced-learn
+research-learn
+rich
+matplotlib
+seaborn
+requests
+som-learn
