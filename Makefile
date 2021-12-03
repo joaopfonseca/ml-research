@@ -42,7 +42,7 @@ code-analysis:
 
 ## Format code using Black
 code-format:
-	black $(PROJECT_NAME) publications/
+	black $(PROJECT_NAME) publications
 
 ## Upload new package version to pypi
 upload-pypi: clean
