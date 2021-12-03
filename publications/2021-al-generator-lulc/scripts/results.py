@@ -22,30 +22,23 @@ from research.utils import (
     load_datasets,
     generate_paths,
     check_pipelines,
-    check_pipelines_wrapper
+    check_pipelines_wrapper,
 )
 from research.active_learning import ALWrapper
-from research.metrics import (
-    ALScorer,
-    data_utilization_rate,
-    SCORERS
-)
+from research.metrics import ALScorer, data_utilization_rate, SCORERS
 
-TEST_SIZE = .2
+TEST_SIZE = 0.2
 
 
 def make_dur(threshold):
     def dur(test_scores, data_utilization):
-        return data_utilization_rate(
-            test_scores,
-            data_utilization,
-            threshold=threshold
-        )
+        return data_utilization_rate(test_scores, data_utilization, threshold=threshold)
+
     return dur
 
 
 for i in range(60, 100, 5):
-    SCORERS[f'dur_{i}'] = ALScorer(make_dur(i/100))
+    SCORERS[f"dur_{i}"] = ALScorer(make_dur(i / 100))
 
 
 class remove_test(SamplerMixin):
@@ -53,7 +46,8 @@ class remove_test(SamplerMixin):
     Used to ensure the data used to train classifiers with and without AL
     is the same.
     """
-    def __init__(self, test_size=.2):
+
+    def __init__(self, test_size=0.2):
         self.test_size = test_size
 
     def _fit_resample(self, X, y):
@@ -69,61 +63,66 @@ class remove_test(SamplerMixin):
 CONFIG = {
     # Remove .2 of the dataset from training, to replicate the training data
     # for AL methods
-    'remove_test': [
-        ('remove_test', remove_test(TEST_SIZE), {})
-    ],
-    'classifiers': [
-        ('LR', LogisticRegression(
-                multi_class='multinomial',
-                solver='sag',
-                penalty='none',
-                max_iter=1e4
+    "remove_test": [("remove_test", remove_test(TEST_SIZE), {})],
+    "classifiers": [
+        (
+            "LR",
+            LogisticRegression(
+                multi_class="multinomial", solver="sag", penalty="none", max_iter=1e4
             ),
-            {}
-         ),
-        ('KNN', KNeighborsClassifier(), {}),
-        ('RF', RandomForestClassifier(), {})
+            {},
+        ),
+        ("KNN", KNeighborsClassifier(), {}),
+        ("RF", RandomForestClassifier(), {}),
     ],
-    'scoring': ['accuracy', 'f1_macro', 'geometric_mean_score_macro'],
-    'n_splits': 5,
-    'n_runs': 3,
-    'rnd_seed': 42,
-    'n_jobs': -1,
-    'verbose': 1
+    "scoring": ["accuracy", "f1_macro", "geometric_mean_score_macro"],
+    "n_splits": 5,
+    "n_runs": 3,
+    "rnd_seed": 42,
+    "n_jobs": -1,
+    "verbose": 1,
 }
 
 CONFIG_AL = {
-    'generator': [
-        ('NONE', None, {}),
-        ('SMOTE', ClusterOverSampler(SMOTE(k_neighbors=5), n_jobs=1), {}),
-        ('G-SMOTE', ClusterOverSampler(GeometricSMOTE(
-            k_neighbors=5, deformation_factor=.5, truncation_factor=.5
-        ), n_jobs=1), {})
+    "generator": [
+        ("NONE", None, {}),
+        ("SMOTE", ClusterOverSampler(SMOTE(k_neighbors=5), n_jobs=1), {}),
+        (
+            "G-SMOTE",
+            ClusterOverSampler(
+                GeometricSMOTE(
+                    k_neighbors=5, deformation_factor=0.5, truncation_factor=0.5
+                ),
+                n_jobs=1,
+            ),
+            {},
+        ),
     ],
-    'wrapper': (
-        'AL',
+    "wrapper": (
+        "AL",
         ALWrapper(
             n_initial=15,
             increment=15,
             max_iter=49,
             test_size=TEST_SIZE,
-            random_state=42
-        ), {
-            'evaluation_metric': ['accuracy', 'f1_macro',
-                                  'geometric_mean_score_macro'],
-            'selection_strategy': ['random', 'entropy', 'breaking_ties']
-        }
+            random_state=42,
+        ),
+        {
+            "evaluation_metric": ["accuracy", "f1_macro", "geometric_mean_score_macro"],
+            "selection_strategy": ["random", "entropy", "breaking_ties"],
+        },
     ),
-    'scoring': [
-        'accuracy',
-        'f1_macro',
-        'geometric_mean_score_macro',
-        'area_under_learning_curve',
-    ] + [f'dur_{i}' for i in range(60, 100, 5)]
+    "scoring": [
+        "accuracy",
+        "f1_macro",
+        "geometric_mean_score_macro",
+        "area_under_learning_curve",
+    ]
+    + [f"dur_{i}" for i in range(60, 100, 5)],
 }
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     # Extract paths
     data_dir, results_dir, _ = generate_paths(__file__)
@@ -133,17 +132,17 @@ if __name__ == '__main__':
 
     # Extract pipelines and parameter grids
     estimators_al, param_grids_al = check_pipelines_wrapper(
-        [CONFIG_AL['generator'], CONFIG['classifiers']],
-        CONFIG_AL['wrapper'],
-        CONFIG['rnd_seed'],
-        CONFIG['n_runs'],
-        wrapped_only=True
+        [CONFIG_AL["generator"], CONFIG["classifiers"]],
+        CONFIG_AL["wrapper"],
+        CONFIG["rnd_seed"],
+        CONFIG["n_runs"],
+        wrapped_only=True,
     )
 
     estimators_base, param_grids_base = check_pipelines(
-        [CONFIG['remove_test'], CONFIG['classifiers']],
-        CONFIG['rnd_seed'],
-        CONFIG['n_runs']
+        [CONFIG["remove_test"], CONFIG["classifiers"]],
+        CONFIG["rnd_seed"],
+        CONFIG["n_runs"],
     )
 
     for name, (X, y) in datasets:
@@ -151,40 +150,40 @@ if __name__ == '__main__':
         experiment_al = ModelSearchCV(
             estimators_al,
             param_grids_al,
-            scoring=CONFIG_AL['scoring'],
-            n_jobs=CONFIG['n_jobs'],
+            scoring=CONFIG_AL["scoring"],
+            n_jobs=CONFIG["n_jobs"],
             cv=StratifiedKFold(
-                n_splits=CONFIG['n_splits'],
+                n_splits=CONFIG["n_splits"],
                 shuffle=True,
-                random_state=CONFIG['rnd_seed']
+                random_state=CONFIG["rnd_seed"],
             ),
-            verbose=CONFIG['verbose'],
+            verbose=CONFIG["verbose"],
             return_train_score=True,
-            refit=False
+            refit=False,
         ).fit(X, y)
 
         # Save results
         file_name = f'{name.replace(" ", "_").lower()}_al.pkl'
-        pd.DataFrame(experiment_al.cv_results_)\
-            .to_pickle(join(results_dir, file_name))
+        pd.DataFrame(experiment_al.cv_results_).to_pickle(join(results_dir, file_name))
 
         # Define and fit baseline experiment
         experiment_base = ModelSearchCV(
             estimators_base,
             param_grids_base,
-            scoring=CONFIG['scoring'],
-            n_jobs=CONFIG['n_jobs'],
+            scoring=CONFIG["scoring"],
+            n_jobs=CONFIG["n_jobs"],
             cv=StratifiedKFold(
-                n_splits=CONFIG['n_splits'],
+                n_splits=CONFIG["n_splits"],
                 shuffle=True,
-                random_state=CONFIG['rnd_seed']
+                random_state=CONFIG["rnd_seed"],
             ),
-            verbose=CONFIG['verbose'],
+            verbose=CONFIG["verbose"],
             return_train_score=True,
-            refit=False
+            refit=False,
         ).fit(X, y)
 
         # Save results
         file_name = f'{name.replace(" ", "_").lower()}_base.pkl'
-        pd.DataFrame(experiment_base.cv_results_)\
-            .to_pickle(join(results_dir, file_name))
+        pd.DataFrame(experiment_base.cv_results_).to_pickle(
+            join(results_dir, file_name)
+        )

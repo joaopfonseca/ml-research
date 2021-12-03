@@ -15,30 +15,30 @@ def load_plt_sns_configs(font_size=8):
     Load LaTeX style configurations for Matplotlib/Seaborn
     Visualizations.
     """
-    sns.set_style('whitegrid')
+    sns.set_style("whitegrid")
     tex_fonts = {
         # Use LaTeX to write all text
         "text.usetex": True,
         "font.family": "serif",
         # Use 10pt font in plots, to match 10pt font in document
-        "axes.labelsize": (10/8)*font_size,
-        "font.size": (10/8)*font_size,
+        "axes.labelsize": (10 / 8) * font_size,
+        "font.size": (10 / 8) * font_size,
         # Make the legend/label fonts a little smaller
         "legend.fontsize": font_size,
         "xtick.labelsize": font_size,
         "ytick.labelsize": font_size,
         # Subplots size/shape
-        "figure.subplot.left": .098,
-        "figure.subplot.right": .938,
-        "figure.subplot.bottom": .12,
-        "figure.subplot.top": .944,
-        "figure.subplot.wspace": .071,
-        "figure.subplot.hspace": .2
+        "figure.subplot.left": 0.098,
+        "figure.subplot.right": 0.938,
+        "figure.subplot.bottom": 0.12,
+        "figure.subplot.top": 0.944,
+        "figure.subplot.wspace": 0.071,
+        "figure.subplot.hspace": 0.2,
     }
     plt.rcParams.update(tex_fonts)
 
 
-def val_to_color(col, cmap='RdYlBu_r'):
+def val_to_color(col, cmap="RdYlBu_r"):
     """
     Converts a column of values to hex-type colors.
 

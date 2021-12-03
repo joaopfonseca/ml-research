@@ -11,10 +11,7 @@ from copy import deepcopy
 from sklearn.base import clone
 from sklearn.base import ClassifierMixin, BaseEstimator
 from sklearn.utils import check_X_y
-from sklearn.model_selection import (
-    train_test_split,
-    GridSearchCV
-)
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.ensemble import RandomForestClassifier
 from imblearn.pipeline import Pipeline
@@ -141,19 +138,19 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         generator=None,
         use_sample_weight=False,
         init_clusterer=None,
-        init_strategy='random',
-        selection_strategy='entropy',
+        init_strategy="random",
+        selection_strategy="entropy",
         param_grid=None,
         cv=None,
         max_iter=None,
-        n_initial=.02,
-        increment=.02,
+        n_initial=0.02,
+        increment=0.02,
         save_classifiers=False,
         save_test_scores=True,
         auto_load=True,
         test_size=None,
-        evaluation_metric='accuracy',
-        random_state=None
+        evaluation_metric="accuracy",
+        random_state=None,
     ):
         self.classifier = classifier
         self.generator = generator
@@ -182,33 +179,29 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         X, y = check_X_y(X, y)
 
         if self.evaluation_metric is None:
-            self.evaluation_metric_ = SCORERS['accuracy']
+            self.evaluation_metric_ = SCORERS["accuracy"]
         elif type(self.evaluation_metric) == str:
             self.evaluation_metric_ = SCORERS[self.evaluation_metric]
         else:
             self.evaluation_metric_ = self.evaluation_metric
 
         if self.classifier is None:
-            self._classifier = RandomForestClassifier(
-                random_state=self.random_state
-            )
+            self._classifier = RandomForestClassifier(random_state=self.random_state)
         else:
             self._classifier = clone(self.classifier)
 
         if type(self.selection_strategy) == str:
-            self.selection_strategy_ = UNCERTAINTY_FUNCTIONS[
-                self.selection_strategy
-            ]
+            self.selection_strategy_ = UNCERTAINTY_FUNCTIONS[self.selection_strategy]
         else:
             self.selection_strategy_ = self.selection_strategy
 
         if type(self.use_sample_weight) != bool:
-            raise TypeError("``use_sample_weight`` must be of type ``bool``. Got"
-                            f" {self.use_sample_weight} instead.")
+            raise TypeError(
+                "``use_sample_weight`` must be of type ``bool``. Got"
+                f" {self.use_sample_weight} instead."
+            )
 
-        self.max_iter_ = self.max_iter \
-            if self.max_iter is not None \
-            else np.inf
+        self.max_iter_ = self.max_iter if self.max_iter is not None else np.inf
 
         if self.save_classifiers or self.save_test_scores:
             self.data_utilization_ = []
@@ -225,22 +218,23 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
 
         if self.auto_load or self.save_test_scores:
             X, X_test, y, y_test = train_test_split(
-                X, y,
+                X,
+                y,
                 test_size=self.test_size,
                 random_state=self.random_state,
-                stratify=y
+                stratify=y,
             )
         else:
             X_test, y_test = (None, None)
 
         if self.n_initial < 1:
-            n_initial = int(np.round(self.n_initial*X.shape[0]))
+            n_initial = int(np.round(self.n_initial * X.shape[0]))
             self.n_initial_ = n_initial if n_initial >= 2 else 2
         else:
             self.n_initial_ = self.n_initial
 
         if self.increment < 1:
-            self.increment_ = int(np.round(self.increment*X.shape[0]))
+            self.increment_ = int(np.round(self.increment * X.shape[0]))
         else:
             self.increment_ = self.increment
 
@@ -250,7 +244,7 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         min_frequency = np.unique(y, return_counts=True)[-1].min()
         cv = deepcopy(self.cv)
 
-        if hasattr(self.cv, 'n_splits'):
+        if hasattr(self.cv, "n_splits"):
             cv.n_splits = min(min_frequency, self.cv.n_splits)
         elif type(self.cv) == int:
             cv = min(min_frequency, self.cv)
@@ -258,9 +252,7 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         return cv
 
     def _get_performance_scores(self):
-        data_utilization = [
-            i[1] for i in self.data_utilization_
-        ]
+        data_utilization = [i[1] for i in self.data_utilization_]
         test_scores = self.test_scores_
         return data_utilization, test_scores
 
@@ -269,11 +261,7 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
 
         # Get score for current iteration
         if self.save_test_scores or self.auto_load:
-            score = self.evaluation_metric_(
-                classifier,
-                X_test,
-                y_test
-            )
+            score = self.evaluation_metric_(classifier, X_test, y_test)
 
         # Save classifier
         if self.save_classifiers:
@@ -284,7 +272,7 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
             self.test_scores_.append(score)
 
             self.data_utilization_.append(
-                (selection.sum(), selection.sum()/selection.shape[0])
+                (selection.sum(), selection.sum() / selection.shape[0])
             )
 
         # Replace top classifier
@@ -325,7 +313,7 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
             clusterer=self.init_clusterer,
             init_strategy=self.init_strategy,
             selection_strategy=self.selection_strategy_,
-            random_state=self.random_state
+            random_state=self.random_state,
         )
 
         selection[ids] = True
@@ -337,10 +325,7 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
                 generator = clone(self.generator)
                 chooser = clone(self._classifier)
 
-                classifier = Pipeline([
-                    ('generator', generator),
-                    ('chooser', chooser)
-                ])
+                classifier = Pipeline([("generator", generator), ("chooser", chooser)])
             else:
                 classifier = clone(self._classifier)
 
@@ -352,7 +337,7 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
                     param_grid=self.param_grid,
                     scoring=self.evaluation_metric,
                     cv=cv,
-                    refit=True
+                    refit=True,
                 )
 
             # Generate artificial data and train classifier
@@ -366,40 +351,45 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
                 )
 
                 classifier.fit(
-                    X[selection], y[selection],
-                    **{f'{ovr_name}__sample_weight': sample_weight}
+                    X[selection],
+                    y[selection],
+                    **{f"{ovr_name}__sample_weight": sample_weight},
                 )
 
                 # Compute the class probabilities of labeled observations
                 labeled_ids = np.argwhere(selection).squeeze()
                 probabs_labeled = classifier.predict_proba(X[selection])
-                probabs_labeled = np.where(probabs_labeled == 0., 1e-10, probabs_labeled)
+                probabs_labeled = np.where(
+                    probabs_labeled == 0.0, 1e-10, probabs_labeled
+                )
             else:
                 classifier.fit(X[selection], y[selection])
 
             # Save metadata from current iteration
-            self._save_metadata(
-                iter_n, classifier, X_test, y_test, selection
-            )
+            self._save_metadata(iter_n, classifier, X_test, y_test, selection)
 
             # Compute the class probabilities of unlabeled observations
             unlabeled_ids = np.argwhere(~selection).squeeze()
             probabs = classifier.predict_proba(X[~selection])
-            probabs = np.where(probabs == 0., 1e-10, probabs)
+            probabs = np.where(probabs == 0.0, 1e-10, probabs)
 
             # Calculate uncertainty
             uncertainty = self.selection_strategy_(probabs)
             if self.use_sample_weight:
-                uncertainty = MinMaxScaler().fit_transform(
-                    uncertainty.reshape(-1, 1)
-                ).squeeze()
-                uncertainty_labeled = MinMaxScaler().fit_transform(
-                    self.selection_strategy_(probabs_labeled).reshape(-1, 1)
-                ).squeeze()
+                uncertainty = (
+                    MinMaxScaler().fit_transform(uncertainty.reshape(-1, 1)).squeeze()
+                )
+                uncertainty_labeled = (
+                    MinMaxScaler()
+                    .fit_transform(
+                        self.selection_strategy_(probabs_labeled).reshape(-1, 1)
+                    )
+                    .squeeze()
+                )
 
             # Get data according to passed selection criterion
-            if self.selection_strategy != 'random':
-                ids = unlabeled_ids[np.argsort(uncertainty)[::-1][:self.increment_]]
+            if self.selection_strategy != "random":
+                ids = unlabeled_ids[np.argsort(uncertainty)[::-1][: self.increment_]]
             else:
                 rng = np.random.RandomState(self.random_state)
                 ids = rng.choice(unlabeled_ids, self.increment_, replace=False)
@@ -420,7 +410,7 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
             # stop if all examples have been included
             if selection.all():
                 break
-            elif selection.sum()+self.increment_ > y.shape[0]:
+            elif selection.sum() + self.increment_ > y.shape[0]:
                 self.increment_ = y.shape[0] - selection.sum()
 
         return self
@@ -447,9 +437,7 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         """
         scores = []
         for classifier in self.classifiers_:
-            scores.append(
-                self.evaluation_metric_(classifier, X, y)
-            )
+            scores.append(self.evaluation_metric_(classifier, X, y))
 
         self.classifier_ = self.classifiers_[np.argmax(scores)]
         return self

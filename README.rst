@@ -1,4 +1,4 @@
-|Python Versions| |Documentation Status| |Pypi Version| |DOI|
+|Python Versions| |Documentation Status| |Pypi Version| |DOI| |Black|
 
 ML-Research
 ===========
@@ -103,3 +103,6 @@ citations to the following paper::
 
 .. |DOI| image:: https://zenodo.org/badge/DOI/10.3390/RS13132619.svg
    :target: https://doi.org/10.3390/RS13132619
+
+.. |Black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/psf/black

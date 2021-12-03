@@ -7,4 +7,4 @@ augmentation techniques.
 from ._oversampling_augmentation import OverSamplingAugmentation
 from ._gsmote import GeometricSMOTE
 
-__all__ = ['OverSamplingAugmentation', 'GeometricSMOTE']
+__all__ = ["OverSamplingAugmentation", "GeometricSMOTE"]

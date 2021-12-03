@@ -11,12 +11,10 @@ from zipfile import ZipFile, ZIP_DEFLATED
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
-from research.datasets import (
-    MulticlassDatasets
-)
+from research.datasets import MulticlassDatasets
 
 RANDOM_STATE = 42
-DATA_PATH = join(dirname(__file__), os.pardir, 'data')
+DATA_PATH = join(dirname(__file__), os.pardir, "data")
 
 
 def set_sample_size(n_instances):
@@ -25,15 +23,13 @@ def set_sample_size(n_instances):
 
     Side note: Why not just set the number of observations to a fixed size?
     """
-    thresholds = [
-        (i, i*2000) for i in range(1, 31)
-    ]
+    thresholds = [(i, i * 2000) for i in range(1, 31)]
     for divisor, threshold in thresholds:
         if n_instances <= threshold:
-            return int(n_instances/divisor)
+            return int(n_instances / divisor)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     # Download datasets
     datasets = MulticlassDatasets().download()
@@ -47,15 +43,13 @@ if __name__ == '__main__':
                 data,
                 train_size=set_sample_size(n_instances),
                 stratify=data.target,
-                random_state=RANDOM_STATE
+                random_state=RANDOM_STATE,
             )
 
         data = pd.concat(
             [
-                pd.DataFrame(
-                    MinMaxScaler().fit_transform(data.drop(columns='target'))
-                ),
-                data.reset_index(drop=True).target
+                pd.DataFrame(MinMaxScaler().fit_transform(data.drop(columns="target"))),
+                data.reset_index(drop=True).target,
             ],
             axis=1,
         )
@@ -64,14 +58,12 @@ if __name__ == '__main__':
     datasets.content_ = content
 
     # Save database
-    datasets.save(DATA_PATH, 'active_learning_augmentation')
+    datasets.save(DATA_PATH, "active_learning_augmentation")
 
     # Zip database (it was too large to store directly on GitHub)
-    db_path = join(DATA_PATH, 'active_learning_augmentation.db')
-    ZipFile(db_path + '.zip', 'w').write(
-        db_path,
-        arcname='active_learning_augmentation.db',
-        compress_type=ZIP_DEFLATED
+    db_path = join(DATA_PATH, "active_learning_augmentation.db")
+    ZipFile(db_path + ".zip", "w").write(
+        db_path, arcname="active_learning_augmentation.db", compress_type=ZIP_DEFLATED
     )
 
     # Remove uncompressed database file

@@ -21,4 +21,4 @@ from ._version import __version__
 # 'X.Y.dev0' is the canonical version of 'X.Y.dev'
 #
 
-__all__ = ['__version__']
+__all__ = ["__version__"]

@@ -16,11 +16,11 @@ def breaking_ties(probabilities):
 
 
 UNCERTAINTY_FUNCTIONS = {
-    'entropy': (
+    "entropy": (
         lambda probabilities: (-probabilities * np.log2(probabilities)).sum(axis=1)
     ),
-    'breaking_ties': breaking_ties,
-    'random': (
+    "breaking_ties": breaking_ties,
+    "random": (
         lambda probabilities: np.ones(probabilities.shape[0]) / probabilities.shape[0]
-    )
+    ),
 }

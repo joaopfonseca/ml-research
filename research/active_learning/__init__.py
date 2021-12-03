@@ -4,11 +4,6 @@ Learning.
 """
 
 from ._active_learning import ALSimulation
-from ._selection_methods import (
-    UNCERTAINTY_FUNCTIONS
-)
+from ._selection_methods import UNCERTAINTY_FUNCTIONS
 
-__all__ = [
-    'ALSimulation',
-    'UNCERTAINTY_FUNCTIONS'
-]
+__all__ = ["ALSimulation", "UNCERTAINTY_FUNCTIONS"]

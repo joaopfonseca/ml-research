@@ -32,19 +32,19 @@ class ALScorer(_PredictScorer):
         """
 
         if type(estimator) == MultiClassifier:
-            data_utilization, test_scores = estimator\
-                .estimator_\
-                ._get_performance_scores()
+            (
+                data_utilization,
+                test_scores,
+            ) = estimator.estimator_._get_performance_scores()
         else:
-            data_utilization, test_scores = estimator\
-                ._get_performance_scores()
+            data_utilization, test_scores = estimator._get_performance_scores()
 
         return self._sign * self._score_func(test_scores, data_utilization)
 
 
 def geometric_mean_score_macro(y_true, y_pred):
     """Geometric mean score with macro average."""
-    return geometric_mean_score(y_true, y_pred, average='macro')
+    return geometric_mean_score(y_true, y_pred, average="macro")
 
 
 def area_under_learning_curve(test_scores, *args):
@@ -53,22 +53,14 @@ def area_under_learning_curve(test_scores, *args):
     return auc
 
 
-def data_utilization_rate(test_scores, data_utilization, threshold=.8):
+def data_utilization_rate(test_scores, data_utilization, threshold=0.8):
     """Data Utilization Rate. Used in Active Learning Experiments."""
     indices = np.where(np.array(test_scores) >= threshold)[0]
-    arg = (
-        indices[0]
-        if len(indices) != 0
-        else -1
-    )
-    dur = (
-        data_utilization[arg]
-        if arg != -1
-        else 1
-    )
+    arg = indices[0] if len(indices) != 0 else -1
+    dur = data_utilization[arg] if arg != -1 else 1
     return dur
 
 
-SCORERS['geometric_mean_score_macro'] = make_scorer(geometric_mean_score_macro)
-SCORERS['area_under_learning_curve'] = ALScorer(area_under_learning_curve)
-SCORERS['data_utilization_rate'] = ALScorer(data_utilization_rate)
+SCORERS["geometric_mean_score_macro"] = make_scorer(geometric_mean_score_macro)
+SCORERS["area_under_learning_curve"] = ALScorer(area_under_learning_curve)
+SCORERS["data_utilization_rate"] = ALScorer(data_utilization_rate)

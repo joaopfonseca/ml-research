@@ -11,11 +11,7 @@ from imblearn.over_sampling.base import BaseOverSampler
 from imblearn.over_sampling import RandomOverSampler
 from ._gsmote import GeometricSMOTE
 
-AUGMENTATION_STRATEGIES = [
-    'oversampling',
-    'constant',
-    'proportional'
-]
+AUGMENTATION_STRATEGIES = ["oversampling", "constant", "proportional"]
 
 
 def _modify_nn(n_neighbors, n_samples):
@@ -46,15 +42,13 @@ def _clone_modify(oversampler, y):
     if n_minority_samples == 1:
         oversampler = RandomOverSampler()
     else:
-        if hasattr(oversampler, 'k_neighbors'):
+        if hasattr(oversampler, "k_neighbors"):
             oversampler.k_neighbors = _modify_nn(
                 oversampler.k_neighbors, n_minority_samples
             )
-        if hasattr(oversampler, 'm_neighbors'):
-            oversampler.m_neighbors = _modify_nn(
-                oversampler.m_neighbors, y.size
-            )
-        if hasattr(oversampler, 'n_neighbors'):
+        if hasattr(oversampler, "m_neighbors"):
+            oversampler.m_neighbors = _modify_nn(oversampler.m_neighbors, y.size)
+        if hasattr(oversampler, "n_neighbors"):
             oversampler.n_neighbors = _modify_nn(
                 oversampler.n_neighbors, n_minority_samples
             )
@@ -109,13 +103,11 @@ class OverSamplingAugmentation(BaseOverSampler):
     def __init__(
         self,
         oversampler=None,
-        augmentation_strategy='oversampling',
+        augmentation_strategy="oversampling",
         value=None,
-        random_state=None
+        random_state=None,
     ):
-        super(OverSamplingAugmentation, self).__init__(
-            sampling_strategy='auto'
-        )
+        super(OverSamplingAugmentation, self).__init__(sampling_strategy="auto")
         self.oversampler = oversampler
         self.augmentation_strategy = augmentation_strategy
         self.value = value
@@ -146,16 +138,19 @@ class OverSamplingAugmentation(BaseOverSampler):
 
         X, y, _ = self._check_X_y(X, y)
 
-        if type(self.augmentation_strategy) not in [int, float, dict] \
-                and self.augmentation_strategy not in AUGMENTATION_STRATEGIES:
+        if (
+            type(self.augmentation_strategy) not in [int, float, dict]
+            and self.augmentation_strategy not in AUGMENTATION_STRATEGIES
+        ):
             raise ValueError(
                 f"When 'augmentation_strategy' in neither an int or float,"
                 f" it needs to be one of {AUGMENTATION_STRATEGIES}. Got "
                 f"'{self.augmentation_strategy}' instead."
             )
 
-        if (type(self.value) not in [int, float]) \
-                and (self.augmentation_strategy in ['constant', 'proportional']):
+        if (type(self.value) not in [int, float]) and (
+            self.augmentation_strategy in ["constant", "proportional"]
+        ):
             raise ValueError(
                 f"When 'augmentation_strategy' is 'constant' or 'proportional',"
                 f" 'value' needs to be an int or float. Got "
@@ -163,21 +158,18 @@ class OverSamplingAugmentation(BaseOverSampler):
             )
 
         # Setup the sampling strategy based on the augmentation strategy
-        if self.augmentation_strategy == 'constant':
+        if self.augmentation_strategy == "constant":
             counts = OrderedDict(Counter(y))
             self.sampling_strategy_ = {
-                k: int(np.round(self.value))
-                if self.value > freq
-                else freq
+                k: int(np.round(self.value)) if self.value > freq else freq
                 for k, freq in counts.items()
             }
-        elif self.augmentation_strategy == 'proportional':
+        elif self.augmentation_strategy == "proportional":
             counts = OrderedDict(Counter(y))
             ratio = self.value / y.shape[0]
             if ratio > 1:
                 self.sampling_strategy_ = {
-                    k: int(np.round(freq*ratio))
-                    for k, freq in counts.items()
+                    k: int(np.round(freq * ratio)) for k, freq in counts.items()
                 }
             else:
                 raise ValueError(
@@ -185,15 +177,15 @@ class OverSamplingAugmentation(BaseOverSampler):
                     f" original dataset. Originally, there are {y.shape[0]} samples"
                     f" and {self.value} samples are asked."
                 )
-        elif self.augmentation_strategy == 'oversampling' and self.value is None:
+        elif self.augmentation_strategy == "oversampling" and self.value is None:
             self.sampling_strategy_ = self.oversampler.sampling_strategy
 
-        elif self.augmentation_strategy == 'oversampling':
+        elif self.augmentation_strategy == "oversampling":
             counts = OrderedDict(Counter(y))
             max_freq = max(counts.values())
             self.sampling_strategy_ = {
-                k: int(np.round(max_freq*self.value))
-                if max_freq*self.value > freq
+                k: int(np.round(max_freq * self.value))
+                if max_freq * self.value > freq
                 else freq
                 for k, freq in counts.items()
             }
@@ -201,7 +193,7 @@ class OverSamplingAugmentation(BaseOverSampler):
         elif type(self.augmentation_strategy) in [int, float]:
             counts = OrderedDict(Counter(y))
             self.sampling_strategy_ = {
-                k: int(np.round(v*self.augmentation_strategy))
+                k: int(np.round(v * self.augmentation_strategy))
                 for k, v in counts.items()
             }
         else:
@@ -235,11 +227,10 @@ class OverSamplingAugmentation(BaseOverSampler):
         self.fit(X, y)
 
         if self.oversampler is not None:
-            self.oversampler_ = _clone_modify(self.oversampler, y)\
-                .set_params(
-                    random_state=self.random_state,
-                    sampling_strategy=self.sampling_strategy_
-                )
+            self.oversampler_ = _clone_modify(self.oversampler, y).set_params(
+                random_state=self.random_state,
+                sampling_strategy=self.sampling_strategy_,
+            )
             if isinstance(self.oversampler_, GeometricSMOTE):
                 return self.oversampler_.fit_resample(X, y, **fit_params)
             else:
