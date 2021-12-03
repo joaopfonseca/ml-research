@@ -20,7 +20,7 @@ endif
 #################################################################################
 
 ## Install and Update Python Dependencies + ML-Research
-install-update: test_environment
+install-update: 
 	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel
 	$(PYTHON_INTERPRETER) -m pip install -Ue .
 	$(PYTHON_INTERPRETER) -m pip install -Ur requirements.dev.txt
@@ -61,10 +61,6 @@ else
 	@bash -c "source `which virtualenvwrapper.sh`;mkvirtualenv $(PROJECT_NAME) --python=$(PYTHON_INTERPRETER)"
 	@echo ">>> New virtualenv created. Activate with:\nworkon $(PROJECT_NAME)"
 endif
-
-## Test python environment is setup correctly
-test_environment:
-	$(PYTHON_INTERPRETER) test_environment.py
 
 #################################################################################
 # Self Documenting Commands                                                     #

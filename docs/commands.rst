@@ -15,5 +15,4 @@ development of experiments. These commands can be used by running ``make
 ``code-analysis``                       Lint using flake8
 ``code-format``                         Format code using Black
 ``install-update``                      Install and Update Python Dependencies + ML-Research
-``test_environment``                    Test python environment is setup correctly
 ======================================  =========================================================
