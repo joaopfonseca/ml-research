@@ -32,6 +32,7 @@ clean:
 	rm -rf *.egg-info
 	rm -rf dist
 	rm -rf build
+	rm -rf coverage
 	rm -rf docs/_build
 	rm -rf docs/_generated
 
@@ -43,6 +44,12 @@ code-analysis:
 ## Format code using Black
 code-format:
 	black $(PROJECT_NAME) publications
+
+## Run test suite and coverage
+test:
+	rm -rf coverage .coverage
+	pytest --cov=$(PROJECT_NAME) --cov-report=html:coverage $(PROJECT_NAME) 
+	pytest doc/*.rst
 
 ## Upload new package version to pypi
 upload-pypi: clean
