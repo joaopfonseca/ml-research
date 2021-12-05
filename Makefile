@@ -48,7 +48,7 @@ code-format:
 ## Run test suite and coverage
 test:
 	rm -rf coverage .coverage
-	pytest --cov=$(PROJECT_NAME) --cov-report=html:coverage $(PROJECT_NAME) 
+	pytest --cov=$(PROJECT_NAME) $(PROJECT_NAME) 
 	pytest doc/*.rst
 
 ## Upload new package version to pypi
