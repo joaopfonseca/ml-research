@@ -23,7 +23,7 @@ FORCE_CLASSIC = FORCE_CLASSIC in ("1", "true")
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath(os.path.join(os.pardir, 'research')))
+sys.path.insert(0, os.path.abspath(os.pardir))
 
 # -- General configuration ----------------------------------------------------
 
@@ -82,7 +82,7 @@ copyright = f'{datetime.now().year}, João Fonseca'
 # built documents.
 #
 # The short X.Y version.
-from _version import __version__
+from research import __version__
 version = __version__
 # The full version, including alpha/beta/rc tags.
 release = __version__
