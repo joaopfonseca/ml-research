@@ -16,13 +16,13 @@ sphinx_markdown_tables
 sphinx_copybutton
 
 # package dependencies
-pandas
-numpy
-scikit-learn
+pandas>=1.3.4
+numpy>=1.21
+scikit-learn>=1.0.0
 imbalanced-learn
 research-learn
 rich
 matplotlib
 seaborn
 requests
-som-learn
+som-learn==0.1.1

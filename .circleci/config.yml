@@ -28,6 +28,7 @@ jobs:
             conda update --yes --quiet conda
             conda create -n testenv --yes --quiet python=3
             conda activate testenv
+            pip install numpy
             pip install -Ur requirements.dev.txt
             pip install .
             cd docs
