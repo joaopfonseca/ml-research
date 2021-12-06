@@ -28,9 +28,14 @@ jobs:
             conda update --yes --quiet conda
             conda create -n testenv --yes --quiet python=3
             conda activate testenv
-            pip install numpy
+            pip install numpy codecov
             pip install -Ur requirements.dev.txt
             pip install .
+            make test
+            coverage xml
+            curl -Os https://uploader.codecov.io/latest/linux/codecov
+            chmod +x codecov
+            ./codecov -t ${CODECOV_TOKEN}
             cd docs
             make html
       - store_artifacts:
