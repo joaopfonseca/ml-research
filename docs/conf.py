@@ -82,7 +82,7 @@ copyright = f'{datetime.now().year}, João Fonseca'
 # built documents.
 #
 # The short X.Y version.
-from research import __version__
+from _version import __version__
 version = __version__
 # The full version, including alpha/beta/rc tags.
 release = __version__
