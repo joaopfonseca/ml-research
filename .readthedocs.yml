@@ -2,7 +2,10 @@ build:
   image: latest
 formats:
   - none
-requirements_file: requirements.dev.txt
 python:
   version: 3.8
-  pip_install: true
+  install:
+    - method: pip 
+      path: numpy
+    - method: pip
+      path: requirements.dev.txt
