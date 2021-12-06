@@ -19,18 +19,16 @@ jobs:
       - image: cimg/python:3.9
     steps:
       - checkout
-      - python/install-packages:
-          pkg-manager: pip
-          pip-dependency-file: requirements.dev.txt
       - run:
           command: |
             wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
             chmod +x miniconda.sh && ./miniconda.sh -b -p ~/miniconda
             export PATH="~/miniconda/bin:$PATH"
+            source ~/miniconda/etc/profile.d/conda.sh
             conda update --yes --quiet conda
             conda create -n testenv --yes --quiet python=3
             conda activate testenv
-            pip install -r requirements.dev.txt
+            pip install -Ur requirements.dev.txt
             pip install .
             cd docs
             make html
