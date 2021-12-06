@@ -5,7 +5,5 @@ formats:
 python:
   version: 3.8
   install:
-    - method: pip 
-      path: numpy
     - method: pip
       path: requirements.dev.txt
