@@ -1,5 +1,5 @@
-|Python Versions| |Documentation Status| |Pypi Version| |DOI| |Black|
-|CircleCI|
+|CircleCI| |Codecov| |Documentation Status| |Pypi Version| |Python Versions|
+|Black| |DOI|
 
 ML-Research
 ===========
@@ -110,3 +110,7 @@ citations to the following paper::
 
 .. |CircleCI| image:: https://circleci.com/gh/joaopfonseca/ml-research/tree/master.svg?style=shield
     :target: https://circleci.com/gh/joaopfonseca/ml-research/tree/master
+
+.. |Codecov| image:: https://codecov.io/gh/joaopfonseca/ml-research/branch/master/graph/badge.svg?token=J2EBA4YTMN
+      :target: https://codecov.io/gh/joaopfonseca/ml-research
+    
