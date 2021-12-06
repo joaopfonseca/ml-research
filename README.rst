@@ -1,4 +1,5 @@
 |Python Versions| |Documentation Status| |Pypi Version| |DOI| |Black|
+|CircleCI|
 
 ML-Research
 ===========
@@ -106,3 +107,6 @@ citations to the following paper::
 
 .. |Black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/psf/black
+
+.. |CircleCI| image:: https://circleci.com/gh/joaopfonseca/ml-research/tree/master.svg?style=shield
+    :target: https://circleci.com/gh/joaopfonseca/ml-research/tree/master
