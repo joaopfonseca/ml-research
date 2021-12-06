@@ -4,6 +4,10 @@ formats:
   - none
 python:
   version: 3.8
+  pip_install: true
   install:
     - method: pip
-      path: requirements.dev.txt
+      path: numpy
+  extra_requirements:
+    - dev
+requirements_file: requirements.txt
