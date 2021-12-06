@@ -45,9 +45,6 @@ jobs:
       - attach_workspace:
           at: docs/_build/html
       - run: ls -ltrh docs/_build/html
-    filters:
-      branches:
-        ignore: gh-pages
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
