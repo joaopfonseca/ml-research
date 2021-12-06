@@ -1,5 +1,5 @@
-|CircleCI| |Codecov| |Documentation Status| |Pypi Version| |Python Versions|
-|Black| |DOI|
+|CircleCI| |Codecov| |Documentation Status| |Pypi Version| |Black| |Python
+Versions| |DOI|
 
 ML-Research
 ===========
