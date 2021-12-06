@@ -32,7 +32,9 @@ clean:
 	rm -rf *.egg-info
 	rm -rf dist
 	rm -rf build
-	rm -rf coverage
+	rm -rf coverage.xml
+	rm -rf .coverage
+	rm -rf .pytest_cache
 	rm -rf docs/_build
 	rm -rf docs/_generated
 
@@ -49,7 +51,7 @@ code-format:
 test:
 	rm -rf coverage .coverage
 	pytest --cov=$(PROJECT_NAME) $(PROJECT_NAME) 
-	pytest doc/*.rst
+	# pytest docs/*.rst
 
 ## Upload new package version to pypi
 upload-pypi: clean
