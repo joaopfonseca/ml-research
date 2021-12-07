@@ -7,4 +7,3 @@ rich
 matplotlib
 seaborn
 requests
-som-learn==0.1.1

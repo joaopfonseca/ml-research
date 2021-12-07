@@ -2,7 +2,6 @@
 Wrapper for cluster-based initialization methods and random initialization.
 """
 import numpy as np
-from somlearn import SOM
 from imblearn.pipeline import Pipeline as imblearn_pipeline
 from sklearn.pipeline import Pipeline as sklearn_pipeline
 
@@ -26,6 +25,8 @@ def init_strategy(
       the clusters.
     - edge: Gets observations close to the clusters' decision borders
     - hybrid: Some close to the centroid, others far
+
+    SOM initialization is currently supported using the som-learn library.
     """
 
     unlabeled_ids = np.indices(X.shape[:1]).squeeze()
@@ -44,11 +45,11 @@ def init_strategy(
     clusterer.fit(X)
 
     # SOM-based selection
-    if type(clusterer) == SOM or (
+    if type(clusterer).__name__ == "SOM" or (
         type(clusterer) in [imblearn_pipeline, sklearn_pipeline]
-        and SOM in [type(clusterer.steps[-i][-1]) for i in range(1, 3)]
+        and "SOM" in [type(clusterer.steps[-i][-1]).__name__ for i in range(1, 3)]
     ):
-        if type(clusterer) == SOM:
+        if type(clusterer).__name__ == "SOM":
             labels = clusterer.labels_
         else:
             labels = clusterer.steps[-1][-1].labels_
