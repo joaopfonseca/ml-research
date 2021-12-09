@@ -60,43 +60,44 @@
 
 \begin{abstract}
 
-    In the Machine Learning research community, there is a general consensus
-    regarding the positive relationship between model complexity and the
-    required amount of data and computation power. In real world applications,
-    these computational requirements are not always available, motivating
-    research on regularization methods. In addition, current and past research
-    have shown that simpler classification algorithms can reach
-    state-of-the-art performance on computer vision tasks given a robust
-    method to artificially augment the training dataset. Because of this, data
-    augmentation techniques became a popular research topic in recent years.
-    However, existing data augmentation methods are generally either
-    computationally intensive or less transferable than other regularization
-    methods. In this paper we identify the main areas of application of data
-    augmentation algorithms, the types of algorithms used, significant
-    research trends, their progression over time and research gaps in data
-    augmentation literature. This was done using a network-based, text
-    mining-based and exploratory analysis of the literature collected through
-    the Scopus database. We expect readers to understand the potential of data
-    augmentation as well as identify future research directions and open
-    questions within data augmentation research.
+    In the Machine Learning research community, there is a consensus regarding
+    the relationship between model complexity and the required amount of data
+    and computation power. In real world applications, these computational
+    requirements are not always available, motivating research on
+    regularization methods. In addition, current and past research have shown
+    that simpler classification algorithms can reach state-of-the-art
+    performance on computer vision tasks given a robust method to artificially
+    augment the training dataset. Because of this, data augmentation
+    techniques became a popular research topic in recent years. However,
+    existing data augmentation methods are generally less transferable than
+    other regularization methods. In this paper we identify the main areas of
+    application of data augmentation algorithms, the types of algorithms used,
+    significant research trends, their progression over time and research gaps
+    in data augmentation literature. To do this, the related literature was
+    collected through the Scopus database. Its analysis was done following
+    network science, text mining and exploratory analysis approaches. We
+    expect readers to understand the potential of data augmentation, as well
+    as identify future research directions and open questions within data
+    augmentation research.
 
 \end{abstract}
 
 \section{Introduction}~\label{sec:introduction}
 
 The performance of Machine Learning models is highly dependent on the quality
-of the training dataset used~\cite{Fenza2021}. Specifically, the presence of
-imbalanced and/or small datasets, target labels incorrectly assigned, outliers
-and high dimensional input spaces reduce the prospects of a successful machine
-learning model implementation~\cite{Salman2019}. Even though the performance
-of any classifier is affected by the size of its training dataset, deep
-learning models have a particularly inconsistent performance over unseen
-datasets even when trained with large datasets~\cite{Hu2020, Xie2021}.
-Conversely, deep learning models are capable of quickly adapting (and
-overfitting) to the training dataset, including when it contains label and/or
-complete pixel noise~\cite{Xie2021, Zhang2021}. Although the performance of
-these models can be improved through regularization methods, they are still
-incapable of correcting label noise in the training dataset~\cite{Zhang2021}.
+of the training dataset used~\cite{Fenza2021, Halevy2009}. Specifically, the
+presence of imbalanced and/or small datasets, target labels incorrectly
+assigned, outliers and high dimensional input spaces reduce the prospects of a
+successful machine learning model implementation~\cite{Halevy2009,
+Domingos2012, Salman2019}.  Even though the performance of any classifier is
+affected by the size of its training dataset, deep learning models have a
+particularly inconsistent performance over unseen datasets even when trained
+with large datasets~\cite{Hu2020, Xie2021}.  Conversely, deep learning models
+are capable of quickly adapting (and overfitting) to the training dataset,
+including when it contains label and/or complete pixel noise~\cite{Xie2021,
+Zhang2021}.  Although the performance of these models can be improved through
+regularization methods, they are still incapable of correcting label noise in
+the training dataset~\cite{Zhang2021}.
 
 Regardless of the machine learning model used, when the training set contains
 significant limitations (regarding overall quality and size), the model's
@@ -113,11 +114,11 @@ learning/domain adaptation are mostly applied on neural network architectures.
 Pruning is applied on decision trees. Early stopping can be used on learners
 trained iteratively, making it a broader method. 
 
-Data augmentation techniques are used to increase the diversity of data in a
-training dataset through the production of artificial
-observations~\cite{Wong2016}. They are frequently used as regularization
-techniques for various types of problems and classifiers, since it is applied
-at the data level~\cite{Behpour2019}.
+Data augmentation techniques are used to increase the size (and hopefully the
+diversity) of data in a training dataset through the production of artificial
+observations~\cite{Van2001, Wong2016}. They are frequently used as
+regularization techniques for various types of problems and classifiers, since
+it is applied at the data level~\cite{Behpour2019}.
 Figure~\ref{fig:data_augmentation_example} shows an example of data
 augmentation, where the decision boundaries become clearer after the original
 dataset is augmented. Data Augmentation methods can be divided into heuristic
@@ -901,15 +902,6 @@ decrease, but it would also become possible to work with fully artificial
 data, without the need to store as much data. This would also facilitate the
 sharing of datasets (in the form of an algorithm) without compromising
 sensitive data.
-
-\subsection{Study Limitation Discussion}
-
-The design of the search query was done based on a single keyword. Although
-this reduces possible bias, it may have been too broad and didn't include some
-significant research papers from related techniques such as oversampling. The
-design of the LDA analysis involved a significant amount of time spent on
-parameter tuning.  Although, due to the subjectivity of the subject, the
-results may benefit from a more extensive exploration of hyperparameters. 
 
 \section{Conclusion}~\label{sec:conclusion}
 
