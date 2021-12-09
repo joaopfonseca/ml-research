@@ -3,8 +3,6 @@ Test the check_pipelines module.
 """
 from itertools import product
 
-import pytest
-from sklearn.datasets import make_classification
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.decomposition import PCA
@@ -12,7 +10,7 @@ from imblearn.over_sampling import SMOTE, BorderlineSMOTE
 from imblearn.pipeline import Pipeline
 from rlearn.utils import check_random_states
 
-from research.utils import check_pipelines
+from .._check_pipelines import check_pipelines
 
 
 def test_check_pipelines():
