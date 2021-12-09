@@ -114,15 +114,13 @@ def test_check_oversamplers_classifiers_none():
 
 
 def test_check_oversamplers_classifiers_pipeline():
-    """Test the check of oversampler and classifiers pipelines."""
+    """Test the check of pipelines with higher lengths."""
 
     # Initialization
     n_runs = 2
     rnd_seed = 3
-    scalers = [
-        ("scaler", MinMaxScaler(), {"scaler__feature_range": [(0, 1), (0, 0.5)]})
-    ]
-    oversamplers = [("ovs", SMOTE(), {"smote__k_neighbors": [3, 5]})]
+    scalers = [("scaler", MinMaxScaler(), {"feature_range": [(0, 1), (0, 0.5)]})]
+    oversamplers = [("ovs", SMOTE(), {"k_neighbors": [3, 5]})]
     classifiers = [
         (
             "clf",
@@ -144,9 +142,8 @@ def test_check_oversamplers_classifiers_pipeline():
     exp_name = "scaler|ovs|clf"
     exp_steps = [
         ("scaler", "MinMaxScaler"),
-        ("smote", "SMOTE"),
-        ("pca", "PCA"),
-        ("dtc", "DecisionTreeClassifier"),
+        ("ovs", "SMOTE"),
+        ("clf", "Pipeline"),
     ]
     exp_random_states = check_random_states(rnd_seed, n_runs)
     partial_param_grids = []
@@ -156,9 +153,9 @@ def test_check_oversamplers_classifiers_pipeline():
         partial_param_grids.append(
             {
                 "scaler|ovs|clf__scaler__feature_range": [feature_range],
-                "scaler|ovs|clf__smote__k_neighbors": [k_neighbors],
-                "scaler|ovs|clf__pca__n_components": [n_components],
-                "scaler|ovs|clf__dtc__max_depth": [max_depth],
+                "scaler|ovs|clf__ovs__k_neighbors": [k_neighbors],
+                "scaler|ovs|clf__clf__pca__n_components": [n_components],
+                "scaler|ovs|clf__clf__dtc__max_depth": [max_depth],
             }
         )
     exp_param_grids = []
@@ -167,9 +164,9 @@ def test_check_oversamplers_classifiers_pipeline():
         partial_param_grid.update(
             {
                 "est_name": ["scaler|ovs|clf"],
-                "scaler|ovs|clf__smote__random_state": [rnd_seed],
-                "scaler|ovs|clf__dtc__random_state": [rnd_seed],
-                "scaler|ovs|clf__pca__random_state": [rnd_seed],
+                "scaler|ovs|clf__ovs__random_state": [rnd_seed],
+                "scaler|ovs|clf__clf__dtc__random_state": [rnd_seed],
+                "scaler|ovs|clf__clf__pca__random_state": [rnd_seed],
             }
         )
         exp_param_grids.append(partial_param_grid)
