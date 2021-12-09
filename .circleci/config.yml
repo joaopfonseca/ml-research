@@ -14,7 +14,7 @@ orbs:
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  build-and-test:
+  setup-env:
     docker:
       - image: cimg/python:3.9
     steps:
@@ -25,17 +25,34 @@ jobs:
             chmod +x miniconda.sh && ./miniconda.sh -b -p ~/miniconda
             export PATH="~/miniconda/bin:$PATH"
             source ~/miniconda/etc/profile.d/conda.sh
-            conda update --yes --quiet conda
             conda create -n testenv --yes --quiet python=3
             conda activate testenv
-            pip install numpy codecov
-            pip install -Ur requirements.dev.txt
+          
+  build-and-test:
+    docker:
+      - image: cimg/python:3.9
+    steps:
+      - checkout
+      - run:
+          command: |
             pip install .
+            pip install codecov pytest-cov
+            python -c "import research"
             make test
             coverage xml
             curl -Os https://uploader.codecov.io/latest/linux/codecov
             chmod +x codecov
             ./codecov -t ${CODECOV_TOKEN}
+      - store_artifacts:
+          path: ~/log.txt
+  test-docs:
+    docker:
+      - image: cimg/python:3.9
+    steps:
+      - checkout
+      - run:
+          command: |
+            pip install .[dev]
             cd docs
             make html
       - store_artifacts:
@@ -53,6 +70,11 @@ jobs:
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  build-doc-and-deploy: 
+  build-and-test: 
     jobs:
+      - setup-env
       - build-and-test
+  test-docs: 
+    jobs:
+      - setup-env
+      - test-docs
