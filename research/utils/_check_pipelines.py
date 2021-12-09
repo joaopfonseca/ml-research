@@ -1,7 +1,9 @@
-from rlearn.utils import check_random_states
 from itertools import product
-from imblearn.pipeline import Pipeline
 from sklearn.base import clone
+from sklearn.preprocessing import FunctionTransformer
+from sklearn.model_selection import ParameterGrid
+from imblearn.pipeline import Pipeline
+from rlearn.utils import check_random_states
 
 
 def check_pipelines(objects_list, random_state, n_runs):
@@ -16,23 +18,41 @@ def check_pipelines(objects_list, random_state, n_runs):
         name = "|".join([i[0] for i in comb])
 
         # name, object, sub grid
-        comb = [(nm, ob, sg) for nm, ob, sg in comb if ob is not None]
+        comb = [
+            (nm, ob, ParameterGrid(sg))
+            if ob is not None
+            else (nm, FunctionTransformer(), ParameterGrid(sg))
+            for nm, ob, sg in comb
+        ]
 
+        # Create estimator
         if name not in [n[0] for n in pipelines]:
-            pipelines.append((name, Pipeline([(nm, ob) for nm, ob, _ in comb])))
+            est = Pipeline([(nm, ob) for nm, ob, _ in comb])
+            pipelines.append((name, est))
 
-        grid = {"est_name": [name]}
-        for obj_name, obj, sub_grid in comb:
-            param_prefix = f"{obj_name}" if len(comb) == 1 else f"{name}__{obj_name}"
+        # Create intermediate parameter grids
+        sub_grids = [
+            [{f"{nm}__{k}": v for k, v in param_def.items()} for param_def in sg]
+            for nm, obj, sg in comb
+        ]
 
-            if "random_state" in obj.get_params().keys():
-                grid[f"{param_prefix}__random_state"] = [rs]
-            for param, values in sub_grid.items():
-                grid[f"{param_prefix}__{param}"] = values
+        # Create parameter grids
+        for sub_grid in product(*sub_grids):
+            param_prefix = "" if len(comb) == 1 else f"{name}__"
+            grid = {"est_name": [name]}
+            grid.update(
+                {f"{param_prefix}{k}": [v] for d in sub_grid for k, v in d.items()}
+            )
+            random_states = {
+                f"{param_prefix}{param}": [rs]
+                for param in est.get_params()
+                if "random_state" in param
+            }
+            grid.update(random_states)
 
-        # Avoid multiple runs over pipelines without random state
-        if grid not in param_grid:
-            param_grid.append(grid)
+            # Avoid multiple runs over pipelines without random state
+            if grid not in param_grid:
+                param_grid.append(grid)
 
     return pipelines, param_grid
 
