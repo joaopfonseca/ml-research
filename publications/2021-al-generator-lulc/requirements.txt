@@ -42,7 +42,7 @@ PyYAML==5.3.1
 requests==2.25.1
 research-learn==0.2.1
 rich==9.9.0
-rsa==4.5
+rsa==4.7
 s3transfer==0.3.4
 scikit-learn==0.24.1
 scipy==1.6.0
