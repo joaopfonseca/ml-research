@@ -1,64 +1,37 @@
-\documentclass[parskip=full]{scrartcl}
+\documentclass[pdflatex,sn-mathphys]{sn-jnl}% Math and Physical Sciences Reference Style
 
-\pdfoutput=1
+\usepackage{bookmark}
 
-\usepackage{breakcites}
-\usepackage[square,numbers]{natbib}
-\usepackage{float}
-\usepackage{graphicx}
-\usepackage{geometry}
-\geometry{%
-	a4paper,
-	left=18mm,
-	right=18mm,
-	top=18mm,
-}
-\usepackage{amsmath}
-\usepackage{enumitem}
-\usepackage[ruled,vlined]{algorithm2e}
-\usepackage{booktabs}
-\usepackage{pgfplotstable}
-\pgfplotsset{compat=1.14}
-\usepackage{longtable}
-\usepackage{tabu}
-\usepackage{hyperref}
-\date{}
+\jyear{2021}%
 
-% Used during the revision process to highlight text (\hl{}), delete afterwards
-\usepackage{xcolor}
-\usepackage{soul}
+\theoremstyle{thmstyleone}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
 
-\definecolor{hypecol}{HTML}{0875b7}
-\hypersetup{%
-    colorlinks,
-    linkcolor={hypecol},
-    citecolor={hypecol},
-    urlcolor={hypecol}
-}
+\theoremstyle{thmstyletwo}
+\newtheorem{example}{Example}
+\newtheorem{remark}{Remark}
 
-\title{%
-    Research Trends and Applications of Data Augmentation Algorithms
-}
+\theoremstyle{thmstylethree}
+\newtheorem{definition}{Definition}
 
-\author{%
-	Joao Fonseca\(^{1*}\), Fernando Bacao\(^{1}\)
-	\\
-	\small{\(^{1}\)NOVA Information Management School, Universidade Nova de Lisboa}
-	\\
-	\small{*Corresponding Author}
-	\\
-	\\
-	\small{Postal Address: NOVA Information Management School, Campus de
-    Campolide, 1070--312 Lisboa, Portugal}
-	\\
-	\small{Telephone: +351 21 382 8610}
-}
+\raggedbottom%
 
 \begin{document}
 
-\maketitle
+\title[
+    Research Trends and Applications of Data Augmentation Algorithms
+    ]{Research Trends and Applications of Data Augmentation Algorithms}
 
-\begin{abstract}
+\author*[1]{\fnm{Joao} \sur{Fonseca}}\email{joaopfonseca@novaims.unl.pt}
+
+\author[1]{\fnm{Fernando} \sur{Bacao}}\email{bacao@novaims.unl.pt}
+
+\affil*[1]{\orgdiv{NOVA Information Management School}, \orgname{Universidade
+Nova de Lisboa}, \orgaddress{\street{Campus de Campolide}, 
+\postcode{1070--312} \state{Lisboa}, \country{Portugal}}}
+
+\abstract{%
 
     In the Machine Learning research community, there is a consensus regarding
     the relationship between model complexity and the required amount of data
@@ -80,7 +53,12 @@
     as identify future research directions and open questions within data
     augmentation research.
 
-\end{abstract}
+}
+
+\keywords{Data Augmentation, Generative Adversarial Networks, Regularization
+Methods, Overfitting}
+
+\maketitle
 
 \section{Introduction}~\label{sec:introduction}
 
@@ -103,16 +81,17 @@ Regardless of the machine learning model used, when the training set contains
 significant limitations (regarding overall quality and size), the model's
 performance on unseen data is generally going to be affected. Specifically,
 when the training data is not representative of the true population, or the
-model is over-parametrized, it becomes particularly prone to overfitting.
-There are different strategies to reduce overfitting, known as regularization
-methods~\cite{Shorten2019}. Identifying the appropriate regularization methods
-varies according to the use case~\cite{Chun2020}. While some methods can only
-be applied on specific classifiers, data types or domains, others may be
-applied at the data level, independently from the classification problem. For
-example, methods such as dropout/dilution, batch normalization and transfer
-learning/domain adaptation are mostly applied on neural network architectures.
-Pruning is applied on decision trees. Early stopping can be used on learners
-trained iteratively, making it a broader method. 
+model is over-parametrized, it becomes particularly prone to
+overfitting~\cite{Bartlett2021}. There are different strategies to reduce
+overfitting, known as regularization methods~\cite{Shorten2019}. Identifying
+the appropriate regularization methods varies according to the use
+case~\cite{Chun2020}. While some methods can only be applied on specific
+classifiers, data types or domains, others may be applied at the data level,
+independently from the classification problem. For example, methods such as
+dropout/dilution, batch normalization and transfer learning/domain adaptation
+are mostly applied on neural network architectures.  Pruning is applied on
+decision trees. Early stopping can be used on learners trained iteratively,
+making it a broader method. 
 
 Data augmentation techniques are used to increase the size (and hopefully the
 diversity) of data in a training dataset through the production of artificial
@@ -132,7 +111,7 @@ defined at a higher detail in Section~\ref{sec:data-augmentation}.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.75\linewidth]{../analysis/data_augmentation_example}
+	\includegraphics[width=.9\linewidth]{../analysis/data_augmentation_example}
     \caption{Example of data augmentation in a 2-dimensional binary
         classification setting. The left pane contains the original dataset,
         where the amount data is scarce and the gap among the two classes are
@@ -203,7 +182,7 @@ methods mentioned may be divided using any of the definitions mentioned.
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=.9\linewidth]{../analysis/concept_map}
+	\includegraphics[width=\linewidth]{../analysis/concept_map}
     \caption{%
         Data Augmentation concept map.
     }~\label{fig:concept_map}
@@ -327,7 +306,7 @@ and~\ref{fig:input_vs_feature_space}c.
 
 \begin{figure}[htb]
 	\centering
-	\includegraphics[width=.75\linewidth]{../analysis/input_vs_feature_space}
+	\includegraphics[width=.9\linewidth]{../analysis/input_vs_feature_space}
     \caption{%
         Example of a sparse input space and its corresponding feature space.
         Learning a manifold feature space facilitates the generation of
@@ -390,7 +369,7 @@ described in Subsection~\ref{sec:topic_modelling}.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=.75\linewidth]{../analysis/slr_diagram}
+	\includegraphics[width=.85\linewidth]{../analysis/slr_diagram}
     \caption{Diagram of the proposed literature analysis approach.
     }~\label{fig:slr_diagram}
 \end{figure}
@@ -407,20 +386,22 @@ the \href{https://www.scopus.com/}{Scopus} database was found to be
 sufficient. One of the goals during the search query design was to come up
 with a simple and unbiased query. The resulting query is shown below:
 
+\bigskip
 \begin{verbatim}
-    KEY ( "data augmentation" )  AND  ( LIMIT-TO ( LANGUAGE ,  "English" ) )  
-    AND ( LIMIT-TO ( DOCTYPE ,  "cp" )  OR  LIMIT-TO ( DOCTYPE ,  "ar" ) )  
-    AND (
-            LIMIT-TO ( PUBYEAR ,  2021 )  OR  LIMIT-TO ( PUBYEAR ,  2020 )  
-        OR  LIMIT-TO ( PUBYEAR ,  2019 )  OR  LIMIT-TO ( PUBYEAR ,  2018 )  
-        OR  LIMIT-TO ( PUBYEAR ,  2017 )  OR  LIMIT-TO ( PUBYEAR ,  2016 )  
-        OR  LIMIT-TO ( PUBYEAR ,  2015 )  OR  LIMIT-TO ( PUBYEAR ,  2014 )  
-        OR  LIMIT-TO ( PUBYEAR ,  2013 )  OR  LIMIT-TO ( PUBYEAR ,  2012 )  
-        OR  LIMIT-TO ( PUBYEAR ,  2011 )  OR  LIMIT-TO ( PUBYEAR ,  2010 )  
-        OR  LIMIT-TO ( PUBYEAR ,  2009 )  OR  LIMIT-TO ( PUBYEAR ,  2008 )  
-        OR  LIMIT-TO ( PUBYEAR ,  2007 )  OR  LIMIT-TO ( PUBYEAR ,  2006 ) 
-    )  
+KEY ("data augmentation") AND (LIMIT-TO (LANGUAGE, "English"))  
+AND (LIMIT-TO (DOCTYPE, "cp") OR LIMIT-TO (DOCTYPE, "ar"))  
+AND (
+        LIMIT-TO (PUBYEAR, 2021) OR LIMIT-TO (PUBYEAR, 2020)  
+    OR  LIMIT-TO (PUBYEAR, 2019) OR LIMIT-TO (PUBYEAR, 2018)  
+    OR  LIMIT-TO (PUBYEAR, 2017) OR LIMIT-TO (PUBYEAR, 2016)  
+    OR  LIMIT-TO (PUBYEAR, 2015) OR LIMIT-TO (PUBYEAR, 2014)  
+    OR  LIMIT-TO (PUBYEAR, 2013) OR LIMIT-TO (PUBYEAR, 2012)  
+    OR  LIMIT-TO (PUBYEAR, 2011) OR LIMIT-TO (PUBYEAR, 2010)  
+    OR  LIMIT-TO (PUBYEAR, 2009) OR LIMIT-TO (PUBYEAR, 2008)  
+    OR  LIMIT-TO (PUBYEAR, 2007) OR LIMIT-TO (PUBYEAR, 2006) 
+)  
 \end{verbatim}
+\bigskip
 
 The search query resulted in 4281 documents. The resulting data
 selection/filtering pipeline is shown in
@@ -449,7 +430,7 @@ Scopus' database were used to prepare the network analysis.
 
 \begin{figure}[H]
 	\centering
-    \includegraphics[width=.55\linewidth]{../analysis/data_filtering_pipeline}
+    \includegraphics[width=.6\linewidth]{../analysis/data_filtering_pipeline}
     \caption{Data filtering pipeline.
     }~\label{fig:data_filtering_pipeline}
 \end{figure}
@@ -500,9 +481,10 @@ achieved. Additionally, the coherence score curve was also used as a reference f
 parameter tuning and the choice of parameters, which are described in
 Table~\ref{tab:hyperparameters}. 
 
-\begin{table}[H]
-    \centering
-    \begin{tabular}{lll}
+\begin{table}[ht]
+    \begin{center}
+    \caption{Hyperparameters used.}~\label{tab:hyperparameters}
+    \begin{tabular*}{.5\textwidth}{@{\extracolsep{\fill}}lllllll@{\extracolsep{\fill}}}
         \toprule
         Model   &   Hyperparameter  &   Value \\
         \midrule
@@ -512,8 +494,8 @@ Table~\ref{tab:hyperparameters}.
                 &   Alpha           &   0.1   \\
                 &   ETA             &   auto  \\
         \bottomrule
-    \end{tabular}
-    \caption{Hyperparameters used.}~\label{tab:hyperparameters}
+    \end{tabular*}
+    \end{center}
 \end{table}
 
 \subsection{Software Implementation}~\label{sec:software_implementation}
@@ -526,7 +508,7 @@ language, along with the
 network analysis and visualization was done with
 \href{https://gephi.org/}{Gephi}~\cite{Bastian2009}. All functions,
 algorithms, analyses and results are provided in the
-\href{https://github.com/joaopfonseca/research}{GitHub repository of the
+\href{https://github.com/joaopfonseca/ml-research}{GitHub repository of the
 project}.
 
 \section{Results \& Discussion}~\label{sec:results_discussion}
@@ -538,7 +520,7 @@ the significant amount of uncited publications, out of the ones published in
 research developed before 2016 was used in other works, the amount of cited
 research increased significantly after that period.
 
-\begin{figure}[H]
+\begin{figure}[ht]
 	\centering
     \includegraphics[width=\linewidth]{../analysis/area_chart_cited_documents}
     \caption{Annual number of publications containing the keyword ``data
@@ -546,37 +528,39 @@ research increased significantly after that period.
     }~\label{fig:area_chart_cited_documents}
 \end{figure}
 
-%\subsection{Terms Frequency}
-
 \subsection{Journal and Conference Analysis}
 
 The initial exploration of the bibliometric data allows us to assess which
 journals focused in data augmentation more intensely over the past years, as
-shown in Figure~\ref{tab:top_journals}. Most of the top journals belong to
+shown in Table~\ref{tab:top_journals}. Most of the top journals belong to
 technical fields, predominantly from Statistics, Remote Sensing, Medical
 Imaging and other domains of applications such as agriculture. In addition,
-all these journals have a high impact in their respective fields (based on 
+all these journals have a high impact in their respective fields (based on
 \href{https://www.scimagojr.com/}{Scimago Journal \& Country Rankings}).   
 
-\begin{table}[H]
-    \centering
-    \pgfplotstabletypeset[
-    	begin table=\begin{longtable},
-    	end table=\end{longtable},
-        col sep=semicolon,
-        string type,
-        every head row/.style={%
-            before row=\toprule,
-            after row=\midrule
-        },
-        every last row/.style={after row=\bottomrule},
-        string type,
-    ]{../analysis/top_journals.csv}
-    \vspace{.2cm}
+\begin{table}[ht]
+    \begin{center}
     \caption{\label{tab:top_journals}
         Top journals focusing on data augmentation techniques, sorted by
         citations per document.
     }
+    \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lllllll@{\extracolsep{\fill}}}
+        \toprule
+        Source title & Publications & Citations & Average \\
+        \midrule
+        Journal of the American Statistical Association & 11 & 538 & 48.91 \\
+        IEEE Geoscience and Remote Sensing Letters & 19 & 552 & 29.05 \\
+        Neurocomputing & 35 & 808 & 23.09 \\
+        Expert Systems with Applications & 14 & 283 & 20.21 \\
+        Medical Image Analysis & 15 & 288 & 19.20 \\
+        Neural Networks & 10 & 190 & 19.00 \\
+        Journal of Computational and Graphical Statistics & 23 & 433 & 18.83 \\
+        Computers and Electronics in Agriculture & 15 & 219 & 14.60 \\
+        Biometrics & 13 & 163 & 12.54 \\
+        IEEE Transactions on Medical Imaging & 10 & 123 & 12.30 \\
+        \bottomrule
+    \end{tabular*}
+    \end{center}
 \end{table}
 
 Citation-wise, the publications coming from conference proceedings tend to
@@ -589,62 +573,106 @@ more activity in the form of conference proceedings publications. Conversely,
 the domains most frequent in journal publications are not as active on
 conference proceedings publications.
 
-\begin{table}[H]
-    \centering
-    \pgfplotstabletypeset[
-    	begin table=\begin{longtable},
-    	end table=\end{longtable},
-        col sep=semicolon,
-        string type,
-        every head row/.style={%
-            before row=\toprule,
-            after row=\midrule
-        },
-        every last row/.style={after row=\bottomrule},
-        string type,
-        columns/Source title/.style={column type={p{.4\linewidth}}},
-    ]{../analysis/top_conferences.csv}
-    \vspace{.2cm}
+\begin{table}[ht]
+    \begin{center}
     \caption{\label{tab:top_conferences}
         Top conferences focusing on data augmentation techniques, sorted by
         citations per document.
     }
+    \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lllllll@{\extracolsep{\fill}}}
+        \toprule
+        Source title & \# Pubs. & Cited & Avg \\
+        \midrule
+        Proceedings of the IEEE Computer Society Conference & 49 & 2111 & 43.08 \\
+        \vspace{.2cm}on Computer Vision and Pattern Recognition &&& \\
+        Lecture Notes in Computer Science (including subseries & 372 & 14946 & 40.18 \\
+        Lecture Notes in Artificial Intelligence and Lecture Notes &&& \\ 
+        \vspace{.2cm}in Bioinformatics) &&& \\
+
+        \vspace{.2cm}Procedia Computer Science & 13 & 288 & 22.15 \\
+
+        International Conference on Information and Knowledge & 10 & 180 & 18.00 \\
+        \vspace{.2cm}Management, Proceedings &&& \\
+
+        IEEE Computer Society Conference on Computer Vision & 23 & 314 & 13.65 \\
+        \vspace{.2cm}and Pattern Recognition Workshops &&& \\
+
+        ICASSP, IEEE International Conference on Acoustics, & 95 & 1153 & 12.14 \\
+        \vspace{.2cm}Speech and Signal Processing - Proceedings &&& \\
+
+        Proceedings - International Symposium on Biomedical & 30 & 346 & 11.53 \\
+        \vspace{.2cm}Imaging &&& \\
+
+        Proceedings of the International Conference on Document & 17 & 158 & 9.29 \\
+        \vspace{.2cm}Analysis and Recognition, ICDAR &&& \\
+
+        Proceedings of International Conference on Frontiers & 13 & 113 & 8.69 \\
+        \vspace{.2cm}in Handwriting Recognition, ICFHR &&& \\
+
+        2019 IEEE Automatic Speech Recognition and & 12 & 84 & 7.00 \\
+        Understanding Workshop, ASRU 2019 - Proceedings &&& \\
+        \bottomrule
+    \end{tabular*}
+    \end{center}
 \end{table}
 
 The papers with the highest citation count are listed in
-Table~\ref{tab:top_papers}. 
-% Most of these papers are also discussed in Section~\ref{sec:theory}. 
-We found that much of the research focused on improving deep learning
-classification, segmentation or object detection without a focus on a
-particular domain of application. Other papers centered in the application of
-data augmentation methods for biomedical image classification and
-segmentation, sound and speech recognition and remote sensing. 
+Table~\ref{tab:top_papers}. We found that much of the research focused on
+improving deep learning classification, segmentation or object detection
+without a focus on a particular domain of application. Other papers centered
+in the application of data augmentation methods for biomedical image
+classification and segmentation, sound and speech recognition and remote
+sensing.
 
-\begin{table}[H]
-    \centering
-    \pgfplotstabletypeset[
-    	begin table=\begin{longtable},
-    	end table=\end{longtable},
-        col sep=semicolon,
-        string type,
-        every head row/.style={%
-            before row=\toprule,
-            after row=\midrule
-        },
-        every last row/.style={after row=\bottomrule},
-        string type,
-        columns/Authors/.style={column type={p{.25\linewidth}}},
-        columns/Title/.style={column type={p{.4\linewidth}}},
-        columns/Year/.style={column type={p{.05\linewidth}}},
-        columns/Cited by/.style={column type={p{.09\linewidth}}}
-    ]{../analysis/top_papers.csv}
-    \vspace{.2cm}
+\begin{table}[ht]
+    \begin{center}
     \caption{\label{tab:top_papers}
         Top papers using data augmentation techniques, sorted by citation
         count.
     }
-\end{table}
+    \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lllllll@{\extracolsep{\fill}}}
+        \toprule
+        Authors & Title & Year & Cited \\
+        \midrule
+        Ronneberger O., Fischer P., & U-net: Convolutional networks & 2015 & 13597 \\
+        \vspace{.2cm}Brox T. & for biomedical image segmentation && \\
 
+        Chatfield K., Simonyan K., & Return of the devil in the details: & 2014 & 1885 \\
+        \vspace{.2cm}Vedaldi A., Zisserman A. & Delving deep into convolutional nets && \\
+
+        Snyder D., Garcia-Romero D., & X-Vectors: Robust DNN Embeddings & 2018 & 636 \\
+        \vspace{.2cm}Sell G., Povey D., Khudanpur S. & for Speaker Recognition && \\
+
+        Shorten C., Khoshgoftaar T.M. & A survey on Image Data & 2019 & 590 \\
+        \vspace{.2cm}                 & Augmentation for Deep Learning && \\
+
+        Salamon J., Bello J.P. & Deep Convolutional Neural Networks & 2017 & 505 \\
+                               & and Data Augmentation for \\
+        \vspace{.2cm}          & Environmental Sound Classification \\
+
+        Eitel A., Springenberg J.T., & Multimodal deep learning for robust & 2015 & 352 \\
+        Spinello L., Riedmiller M., & RGB-D object recognition && \\
+        \vspace{.2cm}Burgard W. &&& \\
+
+        Ding J., Chen B., Liu H., & Convolutional Neural Network with & 2016 & 319 \\
+        Huang M.                  & Data Augmentation for SAR Target && \\
+        \vspace{.2cm}             & Recognition \\
+
+        Wong S.C., Gatt A., & Understanding Data Augmentation & 2016 & 302 \\
+        \vspace{.2cm}Stamatescu V., McDonnell M.D. & for Classification: When to Warp? && \\
+
+        Frid-Adar M., Diamant I., & GAN-based synthetic medical image & 2018 & 296 \\
+        Klang E., Amitai M., & augmentation for increased CNN && \\
+        Goldberger J., Greenspan H. & performance in liver lesion && \\
+        \vspace{.2cm}               & classification \\
+
+        Bilen H., Vedaldi A. & Weakly Supervised Deep Detection & 2016 & 287 \\
+        \vspace{.2cm}        & Networks \\
+
+        \bottomrule
+    \end{tabular*}
+    \end{center}
+\end{table}
 
 \subsection{Keyword Analysis}
 
@@ -728,14 +756,12 @@ findings we found from this analysis are:
         processing and text classification.
 \end{enumerate}
 
-\begin{figure}[H]
+\begin{figure}[h]
 	\centering
     \includegraphics[width=\linewidth]{../analysis/keyword_network}
     \caption{Keyword network.
     }~\label{fig:keyword_network}
 \end{figure}
-
-
 
 \subsection{Topic Analysis}
 
@@ -748,7 +774,7 @@ likelihood of each document, excluding the dominant topic. Documents belonging
 to the same group across primary, secondary and/or tertiary topics had a
 likelihood of zero of belonging to any other topic.
 
-\begin{figure}[H]
+\begin{figure}[h]
 	\centering
     \includegraphics[width=\linewidth]{../analysis/lda_topics_sankey}
     \caption{Distribution of documents over the different topics found. The
@@ -770,7 +796,7 @@ identified:
         models~\cite{Redmon2015}, where X refers to the version of the model
         used (the most recent version is 5). Another relevant keyword is
         ``style\_transfer'', which refers to a specific technique of data
-        augmentation. % (see Section~\ref{sec:theory}).
+        augmentation. 
 
         This topic has two primary domains of application. The keywords
         ``pest'' and ``coffe'' refer to data augmentation on agriculture
@@ -826,26 +852,55 @@ identified:
         research topics/image data.
 \end{enumerate}
 
-\begin{table}[H]
-    \centering
-    \pgfplotstabletypeset[
-    	begin table=\begin{longtable},
-    	end table=\end{longtable},
-        col sep=semicolon,
-        string type,
-        every head row/.style={%
-            before row=\toprule,
-            after row=\midrule
-        },
-        every last row/.style={after row=\bottomrule},
-        string type,
-        columns/Representative Paper/.style={column type={p{.4\linewidth}}},
-        columns/Words/.style={column type={p{.35\linewidth}}},
-    ]{../analysis/topic_analysis.csv}
-    \vspace{.2cm}
+
+\begin{table}[ht]
+    \begin{center}
     \caption{\label{tab:topic_analysis}
         Description of the main topics found in the literature.
     }
+    \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lllllll@{\extracolsep{\fill}}}
+        \toprule
+        Topic & Representative Paper & Papers & Words\\
+        \midrule
+        1 & GAN-based synthetic medical image & 440 & yolov, pest, style\_transfer, \\
+          & augmentation for increased CNN && coffe, thermal, biomed, \\
+          & performance in liver lesion && scene\_text, histolog, nodul, \\
+        \vspace{.2cm}& classification && visibl \\
+        
+        2 & CVAE-GAN: Fine-Grained Image & 61 & hyperspectr\_imag, licens\_plate, \\
+          & Generation through Asymmetric && command, inpaint, \\
+          & Training && illumin\_chang, upper, restor, \\
+        \vspace{.2cm}  &&& ann, foreign, shadow \\
+        
+        3 & A survey on Image Data & 401 & censor, markov\_chain, node, \\ 
+          & Augmentation for Deep Learning && team, tree, cxr, risk\_factor, \\
+        \vspace{.2cm}  &&&mass, largest, sourc\_separ\\
+        
+        4 & Return of the devil in the details: & 108 & smoke, pedestrian, transcrib, \\
+          & Delving deep into convolutional nets && crowd, children\_speech, intent, \\
+          &&&adult, auxiliari\_variabl, speech, \\
+        \vspace{.2cm}  &&&angiographi \\
+        
+        5 & U-net: Convolutional networks for & 632 & imag, detect, gener, dataset, \\
+          & biomedical image segmentation && classif, sampl, network, cnn, \\
+        \vspace{.2cm}  &&&featur, augment\\
+        
+        6 & Deep Convolutional Neural Networks & 370 & tea, multivari, \\
+          & and Data Augmentation for && markov\_chain\_mont\_carlo, \\
+          & Environmental Sound Classification && bayesian, regress, misclassif, \\
+        \vspace{.2cm}  &&& procedur, famili, illustr, mcmc \\
+        
+        7 & Weakly Supervised Deep Detection & 160 & music, fish, marin, gender, \\
+          & Networks && vocal, random\_eras, low\_qualiti, \\
+        \vspace{.2cm}  &&& crowd, prune, bengali \\
+        
+        8 & An Efficient Deep Learning Approach & 85 & drone, gait, aircraft, \\      
+          & to Pneumonia Classification in && gestur\_recognit, pneumonia, \\
+          & Healthcare && chest\_rai\_imag, covid, walk, \\
+          &&& onset, hidden\_layer \\
+        \bottomrule
+    \end{tabular*}
+    \end{center}
 \end{table}
 
 The per-year popularity of the different topics is shown in
@@ -951,7 +1006,48 @@ data augmentation algorithms to complement or replace techniques such as
 Active Learning may reduce the cost of data collection, although it is yet to
 be explored.
 
-\bibliography{references}
-\bibliographystyle{ieeetr}
+\backmatter%
 
+\section*{Declarations}
+
+\bmhead{Funding}
+
+This research is supported by two research grants of the Portuguese Foundation
+for Science and Technology (``Fundação para a Ciência e a Tecnologia''),
+references SFRH/BD/151473/2021 and DSAIPA/DS/0116/2019.
+
+\bmhead{Conflict of interest}
+
+The authors that they have no conflict of interest or competing interest in
+this work.
+
+\bmhead{Ethics approval}
+
+Not applicable.
+
+\bmhead{Consent to participate}
+
+Not applicable.
+
+\bmhead{Consent for publication}
+
+Not applicable.
+
+\bmhead{Authors' contributions}
+
+Joao Fonseca collected all the research material and wrote the original text
+of the paper. Fernando Bacao helped with the article preparation phase and
+provided suggestions regarding the text, content and structure of the paper.
+
+\bmhead{Availability of data and materials}
+
+The data and the experiment's documentation is available at
+\href{https://github.com/joaopfonseca/ml-research}{https://github.com/joaopfonseca/ml-research}.
+
+\bmhead{Code availability}
+
+The analyses and source code is available at
+\href{https://github.com/joaopfonseca/ml-research}{https://github.com/joaopfonseca/ml-research}.
+
+\bibliography{references}
 \end{document}
