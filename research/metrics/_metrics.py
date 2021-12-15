@@ -32,6 +32,7 @@ class ALScorer(_PredictScorer):
     scorer : callable
         Callable object that returns a scalar score.
     """
+
     def __init__(self, score_func, sign=1):
         super().__init__(score_func, sign, {})
 
