@@ -70,7 +70,8 @@ class OverSamplingAugmentation(BaseOverSampler):
         Specifies how the data augmentation is done.
 
         - When ``float`` or ``int``, each class' frequency is augmented
-          according to the specified ratio.
+          according to the specified ratio (which is equivalent to the ``proportional``
+          strategy).
 
         - When ``oversampling``, the data augmentation is done according to the
           sampling strategy passed in the ``oversampler`` object. If ``value`` is not
@@ -85,9 +86,8 @@ class OverSamplingAugmentation(BaseOverSampler):
           parameter ``value``.
 
     value : int, float, default=None
-        Value to be used as the new absolute frequency of each class. It is
-        ignored unless the augmentation strategy is set to ``constant`` or
-        ``oversampling``.
+        Value to be used as the new frequency of each class. It is ignored unless the
+        augmentation strategy is set to ``constant`` or ``oversampling``.
 
     random_state : int, RandomState instance, default=None
         Control the randomization of the algorithm.
