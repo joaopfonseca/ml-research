@@ -6,6 +6,32 @@ from rlearn.model_selection.search import MultiClassifier
 
 
 class ALScorer(_PredictScorer):
+    """
+    Make an Active Learning scorer from a AL-specific metric or loss function.
+
+    This factory class wraps scoring functions for use in
+    :class:`~rlearn.model_selection.ModelSearchCV` and
+    :class:`~sklearn.model_selection.GridSearchCV`. It takes a score function, such as
+    :func:`~research.metrics.area_under_learning_curve` or
+    :func:`~research.metrics.data_utilization_rate` and is used to score an AL
+    simulation. The signature of the call is `(estimator, X, y)` where `estimator` is the
+    model to be evaluated, `X` is the data and `y` is the ground truth labeling (or
+    `None` in the case of unsupervised models).
+
+    Parameters
+    ----------
+    score_func : callable
+        Score function (or loss function) with signature
+        ``score_func(y, y_pred, **kwargs)``.
+
+    sign : int, default=1
+        Use 1 to keep the original variable's scale, use -1 to reverse the scale.
+
+    Returns
+    -------
+    scorer : callable
+        Callable object that returns a scalar score.
+    """
     def __init__(self, score_func, sign=1):
         super().__init__(score_func, sign, {})
 
@@ -25,6 +51,7 @@ class ALScorer(_PredictScorer):
             Gold standard target values for X.
         sample_weight : array-like of shape (n_samples,), default=None
             Sample weights.
+
         Returns
         -------
         score : float
