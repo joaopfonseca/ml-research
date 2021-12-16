@@ -12,30 +12,6 @@ available (whenever possible) in the paper's directory.
 Additionally, contributions at the algorithm level are available in the
 package ``research``.
 
-Project Organization
---------------------
-
-::
-
-    ├── LICENSE
-    │
-    ├── Makefile           <- Makefile with basic commands
-    │
-    ├── README.md          <- The top-level README for developers using this project.
-    │
-    ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
-    │
-    ├── publications       <- Research papers published, submitted, or under development.
-    │
-    ├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-    │                         generated with `pip freeze > requirements.txt`
-    │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-    │
-    ├── research           <- Source code used in publications.
-    │
-    └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
-
 Installation and Setup
 ----------------------
 
