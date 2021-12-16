@@ -16,5 +16,6 @@ exclude_lines =
     if self.verbose:
 ignore_errors = True
 omit =
-    tests/*
+    */tests/*
+    */datasets/_base.py
 show_missing = True
