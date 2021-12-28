@@ -21,6 +21,19 @@ utils
     contains a variety of general utility functions and tools used to format and prepare
     tables to incorporate into LaTeX code.
 """
+from . import active_learning
+from . import data_augmentation
+from . import datasets
+from . import metrics
+from . import utils
+
 from ._version import __version__
 
-__all__ = ["__version__"]
+__all__ = [
+    "active_learning",
+    "data_augmentation",
+    "datasets",
+    "metrics",
+    "utils",
+    "__version__",
+]
