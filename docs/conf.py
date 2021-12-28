@@ -50,39 +50,41 @@ extensions = [
 
 autosummary_generate = True
 autoclass_content = "class"
-autodoc_default_flags = ['members', 'inherited-members']
+autodoc_default_flags = ["members", "inherited-members"]
 
 # this is needed for some reason...
 # see https://github.com/numpy/numpydoc/issues/69
 # numpydoc_show_class_members = False
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+templates_path = ["_templates"]
 
 # The suffix of source filenames.
-source_suffix = '.rst'
+source_suffix = ".rst"
 
 # The encoding of source files.
 # source_encoding = 'utf-8-sig'
 
 # Generate the plots for the gallery
-plot_gallery = 'True'
+plot_gallery = "True"
 
 # The master toctree document.
-master_doc = 'index'
+master_doc = "index"
 
 # General information about the project.
-project = u'research'
+project = "mlresearch"
 
 from datetime import datetime
-copyright = f'{datetime.now().year}, João Fonseca'
+
+copyright = f"{datetime.now().year}, João Fonseca"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
 # The short X.Y version.
-from research import __version__
+from mlresearch import __version__
+
 version = __version__
 # The full version, including alpha/beta/rc tags.
 release = __version__
@@ -99,7 +101,7 @@ release = __version__
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build', '_templates']
+exclude_patterns = ["_build", "_templates"]
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
@@ -117,7 +119,7 @@ exclude_patterns = ['_build', '_templates']
 # show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = "sphinx"
 
 # A list of ignored prefixes for module index sorting.
 # modindex_common_prefix = []
@@ -127,40 +129,34 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'sphinx_material'
+html_theme = "sphinx_material"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
     # Set the name of the project to appear in the navigation.
-    'nav_title': 'Research',
-
-    'nav_links': [
-    ],
-    'heroes': {
-        'index': 'Implementation of Machine Learning algorithms, experiments and utilities.',
+    "nav_title": "ML-Research",
+    "nav_links": [],
+    "heroes": {
+        "index": "Implementation of Machine Learning algorithms, experiments and utilities.",
     },
     # Specify a base_url used to generate sitemap.xml.
     # 'base_url': 'https://project.github.io/project',
-
     # Set the color and the accent color
-    'color_primary': 'blue',
-    'color_accent': 'light-blue',
-
+    "color_primary": "blue",
+    "color_accent": "light-blue",
     # Set the repo location to get a badge with stats
-    'repo_url': 'https://github.com/joaopfonseca/research/',
-    'repo_name': 'research',
-
+    "repo_url": "https://github.com/joaopfonseca/ml-research/",
+    "repo_name": "ml-research",
     # Icon codes: https://codepen.io/btn-ninja/pen/YrXmax
-    'logo_icon': '&#xe85c',
-
+    "logo_icon": "&#xe85c",
     # Visible levels of the global TOC; -1 means unlimited
-    'globaltoc_depth': 2,
+    "globaltoc_depth": 2,
     # If False, expand all TOC entries
-    'globaltoc_collapse': True,
+    "globaltoc_collapse": True,
     # If True, show hidden TOC entries
-    'globaltoc_includehidden': False,
+    "globaltoc_includehidden": False,
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
@@ -168,7 +164,7 @@ html_theme_options = {
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = 'research'
+html_title = "ml-research"
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 # html_short_title = None
@@ -180,7 +176,7 @@ html_title = 'research'
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-html_favicon = '_templates/logo.png'
+html_favicon = "_templates/logo.png"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -197,12 +193,7 @@ html_favicon = '_templates/logo.png'
 
 # Custom sidebar templates, maps document names to template names.
 html_sidebars = {
-    '**': [
-        'logo-text.html',
-        'globaltoc.html',
-        'localtoc.html',
-        'searchbox.html'
-    ]
+    "**": ["logo-text.html", "globaltoc.html", "localtoc.html", "searchbox.html"]
 }
 
 # Additional templates that should be rendered to pages, maps page names to
@@ -236,7 +227,7 @@ html_sidebars = {
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'researchdoc'
+htmlhelp_basename = "researchdoc"
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -244,10 +235,8 @@ htmlhelp_basename = 'researchdoc'
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
     # 'papersize': 'letterpaper',
-
     # The font size ('10pt', '11pt' or '12pt').
     # 'pointsize': '10pt',
-
     # Additional stuff for the LaTeX preamble.
     # 'preamble': '',
 }
@@ -255,10 +244,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-    ('index',
-     'research.tex',
-     u'research Documentation',
-     u"joaopfonseca", 'manual'),
+    ("index", "research.tex", "ml-research Documentation", "joaopfonseca", "manual"),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -286,10 +272,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [
-    ('index', 'research', u'research Documentation',
-     [u"joaopfonseca"], 1)
-]
+man_pages = [("index", "ml-research", "ml-research Documentation", ["joaopfonseca"], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -301,9 +284,15 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    ('index', 'research', u'research Documentation',
-     u"joaopfonseca", 'research',
-     'A short description of the project.', 'Miscellaneous'),
+    (
+        "index",
+        "ml-research",
+        "ml-research Documentation",
+        "joaopfonseca",
+        "ml-research",
+        "A short description of the project.",
+        "Miscellaneous",
+    ),
 ]
 
 # Documents to append as an appendix to all manuals.

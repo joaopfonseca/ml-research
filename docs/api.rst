@@ -4,16 +4,16 @@
 API
 ===
 
-This is the full API documentation of the `research` package.
+This is the full API documentation of the `mlresearch` package.
 
-:mod:`research.active_learning`
--------------------------------
+:mod:`mlresearch.active_learning`
+---------------------------------
 
-.. automodule:: research.active_learning
+.. automodule:: mlresearch.active_learning
     :no-members:
     :no-inherited-members:
 
-.. currentmodule:: research
+.. currentmodule:: mlresearch
 
 .. autosummary::
     :toctree: _generated/
@@ -21,14 +21,14 @@ This is the full API documentation of the `research` package.
     
     active_learning.ALSimulation
 
-:mod:`research.data_augmentation`
----------------------------------
+:mod:`mlresearch.data_augmentation`
+-----------------------------------
 
-.. automodule:: research.data_augmentation
+.. automodule:: mlresearch.data_augmentation
     :no-members:
     :no-inherited-members:
 
-.. currentmodule:: research
+.. currentmodule:: mlresearch
 
 .. autosummary::
     :toctree: _generated/
@@ -37,14 +37,14 @@ This is the full API documentation of the `research` package.
     data_augmentation.GeometricSMOTE
     data_augmentation.OverSamplingAugmentation
 
-:mod:`research.datasets`
-------------------------
+:mod:`mlresearch.datasets`
+--------------------------
 
-.. automodule:: research.datasets
+.. automodule:: mlresearch.datasets
     :no-members:
     :no-inherited-members:
 
-.. currentmodule:: research
+.. currentmodule:: mlresearch
 
 .. autosummary::
     :toctree: _generated/
@@ -57,14 +57,14 @@ This is the full API documentation of the `research` package.
     datasets.MulticlassDatasets
     datasets.RemoteSensingDatasets
 
-:mod:`research.metrics`
--------------------------------
+:mod:`mlresearch.metrics`
+-------------------------
 
-.. automodule:: research.metrics
+.. automodule:: mlresearch.metrics
     :no-members:
     :no-inherited-members:
 
-.. currentmodule:: research
+.. currentmodule:: mlresearch
 
 .. autosummary::
     :toctree: _generated/
@@ -80,14 +80,14 @@ This is the full API documentation of the `research` package.
     
     metrics.ALScorer
 
-:mod:`research.utils`
--------------------------------
+:mod:`mlresearch.utils`
+-----------------------
 
-.. automodule:: research.utils
+.. automodule:: mlresearch.utils
     :no-members:
     :no-inherited-members:
 
-.. currentmodule:: research
+.. currentmodule:: mlresearch
 
 .. autosummary::
     :toctree: _generated/
