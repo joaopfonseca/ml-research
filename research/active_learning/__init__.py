@@ -1,6 +1,5 @@
 """
-This submodule contains the code developed for experiments related to Active
-Learning.
+Module which contains the code developed for experiments related to Active Learning.
 """
 
 from ._active_learning import ALSimulation
