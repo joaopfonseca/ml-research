@@ -178,7 +178,11 @@ class OverSamplingAugmentation(BaseOverSampler):
                     f" and {self.value} samples are asked."
                 )
         elif self.augmentation_strategy == "oversampling" and self.value is None:
-            self.sampling_strategy_ = self.oversampler.sampling_strategy
+            self.sampling_strategy_ = (
+                self.oversampler.sampling_strategy
+                if self.oversampler is not None
+                else None
+            )
 
         elif self.augmentation_strategy == "oversampling":
             counts = OrderedDict(Counter(y))
