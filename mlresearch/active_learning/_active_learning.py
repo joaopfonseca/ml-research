@@ -201,7 +201,17 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
                 f" {self.use_sample_weight} instead."
             )
 
-        self.max_iter_ = self.max_iter if self.max_iter is not None else np.inf
+        if self.increment < 1:
+            inc_ = int(np.round(self.increment * X.shape[0]))
+            self.increment_ = inc_ if inc_ >= 1 else 1
+        else:
+            self.increment_ = self.increment
+
+        self.max_iter_ = (
+            self.max_iter
+            if self.max_iter is not None
+            else int(np.round(X.shape[0] / self.increment_) + 1)
+        )
 
         if self.save_classifiers or self.save_test_scores:
             self.data_utilization_ = []
@@ -232,11 +242,6 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
             self.n_initial_ = n_initial if n_initial >= 2 else 2
         else:
             self.n_initial_ = self.n_initial
-
-        if self.increment < 1:
-            self.increment_ = int(np.round(self.increment * X.shape[0]))
-        else:
-            self.increment_ = self.increment
 
         return X, X_test, y, y_test
 
@@ -389,7 +394,11 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
 
             # Get data according to passed selection criterion
             if self.selection_strategy != "random":
-                ids = unlabeled_ids[np.argsort(uncertainty)[::-1][: self.increment_]]
+                ids = (
+                    unlabeled_ids[np.argsort(uncertainty)[::-1][: self.increment_]]
+                    if unlabeled_ids.ndim >= 1
+                    else unlabeled_ids.flatten()[0]
+                )
             else:
                 rng = np.random.RandomState(self.random_state)
                 ids = rng.choice(unlabeled_ids, self.increment_, replace=False)
