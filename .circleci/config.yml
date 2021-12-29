@@ -12,7 +12,7 @@ jobs:
       - run:
           command: |
             pip install .
-            pip install codecov pytest-cov
+            pip install codecov pytest-cov numpydoc
             python -c "import mlresearch"
             pytest --cov=mlresearch mlresearch
 
@@ -24,7 +24,7 @@ jobs:
       - run:
           command: |
             pip install .
-            pip install codecov pytest-cov
+            pip install codecov pytest-cov numpydoc
             python -c "import mlresearch"
             make test
             coverage xml
