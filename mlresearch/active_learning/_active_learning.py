@@ -58,14 +58,15 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         be added or changed in the ``UNCERTAINTY_FUNCTIONS`` dictionary.
 
     param_grid : dict or list of dictionaries
-        Dictionary with parameters names (``str``) as keys and lists of
-        parameter settings to try as values, or a list of such
-        dictionaries, in which case the grids spanned by each dictionary
-        in the list are explored. This enables searching over any sequence
-        of parameter settings.
+        Used to optimize the classifier and generator hyperparameters at each iteration.
+        Dictionary with parameters names (``str``) as keys and lists of parameter
+        settings to try as values, or a list of such dictionaries, in which case the
+        grids spanned by each dictionary in the list are explored. This enables searching
+        over any sequence of parameter settings.
 
     cv : int, cross-validation generator or an iterable, default=None
-        Determines the cross-validation splitting strategy.
+        Determines the cross-validation splitting strategy. Used to optimize the
+        classifier and generator hyperparameters at each iteration.
         Possible inputs for cv are:
 
         - None, to use the default 5-fold cross validation,
@@ -123,6 +124,30 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
           generator;
         - If ``None``, the random number generator is the ``RandomState``
           instance used by ``np.random``.
+
+    Attributes
+    ----------
+    init_clusterer_ : clusterer estimator
+        Clustering object used to determined the initial training dataset.
+    n_initial_ : int
+        Number of observations included in the initial training dataset.
+    selection_strategy_ : function
+        Method used to calculate the classification uncertainty per iteration.
+    evaluation_metric_ : scorer
+        Metric used to estimate the performance of the AL classifier per iteration.
+    top_score_iter_ : int
+        Iteration that returns the best found performance over the test dataset.
+    classifier_ : estimator object
+        The classifier used in the iterative process.
+    data_utilization_ : list
+        Amount of data used at each iteration, in absolute and relative values.
+    max_iter_ : int
+        Maximum number of iterations allowed.
+    increment_ : int
+        Number of observations to be added to the training set per iteration. Also known
+        as budget.
+    test_scores_ : list
+        Classification performance per iteration over the test set.
 
     References
     ----------

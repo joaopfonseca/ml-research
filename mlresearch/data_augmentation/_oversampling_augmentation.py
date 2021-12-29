@@ -98,6 +98,15 @@ class OverSamplingAugmentation(BaseOverSampler):
           generator;
         - If ``None``, the random number generator is the ``RandomState``
           instance used by ``np.random``.
+
+    Attributes
+    ----------
+    sampling_strategy_ : dict
+        Dictionary containing the information to sample the dataset. The keys
+        corresponds to the class labels from which to sample and the values
+        are the number of samples to sample.
+    n_features_in_ : int
+        Number of features in the input dataset.
     """
 
     def __init__(
