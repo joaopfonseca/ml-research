@@ -25,7 +25,7 @@ import pandas as pd
 from sklearn.utils import check_X_y
 from imblearn.datasets import make_imbalance
 
-from research.utils import img_array_to_pandas
+from ..utils import img_array_to_pandas
 
 UCI_URL = "https://archive.ics.uci.edu/ml/machine-learning-databases/"
 KEEL_URL = "http://sci2s.ugr.es/keel/keel-dataset/datasets/imbalanced/"
