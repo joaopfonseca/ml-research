@@ -21,19 +21,35 @@ utils
     contains a variety of general utility functions and tools used to format and prepare
     tables to incorporate into LaTeX code.
 """
-from . import active_learning
-from . import data_augmentation
-from . import datasets
-from . import metrics
-from . import utils
+import sys
 
-from ._version import __version__
+try:
+    # This variable is injected in the __builtins__ by the build
+    # process. It is used to enable importing subpackages of sklearn when
+    # the binaries are not built
+    # mypy error: Cannot determine type of '__SKLEARN_SETUP__'
+    __MLRESEARCH_SETUP__  # type: ignore
+except NameError:
+    __MLRESEARCH_SETUP__ = False
 
-__all__ = [
-    "active_learning",
-    "data_augmentation",
-    "datasets",
-    "metrics",
-    "utils",
-    "__version__",
-]
+if __MLRESEARCH_SETUP__:
+    sys.stderr.write("Partial import of imblearn during the build process.\n")
+    # We are not importing the rest of scikit-learn during the build
+    # process, as it may not be compiled yet
+else:
+    from . import active_learning
+    from . import data_augmentation
+    from . import datasets
+    from . import metrics
+    from . import utils
+
+    from ._version import __version__
+
+    __all__ = [
+        "active_learning",
+        "data_augmentation",
+        "datasets",
+        "metrics",
+        "utils",
+        "__version__",
+    ]

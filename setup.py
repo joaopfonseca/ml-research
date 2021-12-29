@@ -2,15 +2,25 @@ import os
 import codecs
 from setuptools import find_packages, setup
 
+try:
+    import builtins
+except ImportError:
+    # Python 2 compat: just to be able to declare that Python >=3.7 is needed.
+    import __builtin__ as builtins
+
+# This is a bit (!) hackish: we are setting a global variable so that the
+# main mlresearch __init__ can detect if it is being loaded by the setup
+# routine, to avoid attempting to load components that aren't built yet:
+# the numpy distutils extensions that are used by imbalanced-learn to
+# recursively build the compiled extensions in sub-packages is based on the
+# Python import machinery.
+builtins.__MLRESEARCH_SETUP__ = True
+
+import mlresearch._min_dependencies as min_deps
+
 ver_file = os.path.join("mlresearch", "_version.py")
 with open(ver_file) as f:
     exec(f.read())
-
-with open("requirements.txt") as reqs:
-    REQUIREMENTS = [reqs.readlines()]
-
-with open("requirements.dev.txt") as dev_reqs:
-    REQUIREMENTS_DEV = [dev_reqs.readlines()]
 
 MAINTAINER = "J. Fonseca"
 MAINTAINER_EMAIL = "jpfonseca@novaims.unl.pt"
@@ -37,6 +47,10 @@ CLASSIFIERS = [
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
 ]
+INSTALL_REQUIRES = (min_deps.tag_to_packages["install"],)
+EXTRAS_REQUIRE = {
+    key: value for key, value in min_deps.tag_to_packages.items() if key != "install"
+}
 
 setup(
     name="ml-research",
@@ -50,6 +64,6 @@ setup(
     license=LICENSE,
     classifiers=CLASSIFIERS,
     packages=find_packages(),
-    install_requires=REQUIREMENTS,
-    extras_require={"dev": REQUIREMENTS_DEV},
+    install_requires=INSTALL_REQUIRES,
+    extras_require=EXTRAS_REQUIRE,
 )
