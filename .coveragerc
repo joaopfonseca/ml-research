@@ -17,5 +17,5 @@ exclude_lines =
 ignore_errors = True
 omit =
     */tests/*
-    */datasets/_base.py
+    */datasets/*
 show_missing = True
