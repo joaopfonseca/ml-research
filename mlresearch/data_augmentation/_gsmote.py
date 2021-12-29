@@ -187,6 +187,28 @@ class GeometricSMOTE(BaseOverSampler):
     n_jobs : int, optional (default=1)
         The number of threads to open if possible.
 
+    Attributes
+    ----------
+    sampling_strategy_ : dict
+        Dictionary containing the information to sample the dataset. The keys
+        corresponds to the class labels from which to sample and the values
+        are the number of samples to sample.
+    n_features_in_ : int
+        Number of features in the input dataset.
+    nns_pos_ : estimator object
+        Validated k-nearest neighbours created from the `k_neighbors` parameter. It is
+        used to find the nearest neighbors of the same class of a selected
+        observation.
+    nn_neg_ : estimator object
+        Validated k-nearest neighbours created from the `k_neighbors` parameter. It is
+        used to find the nearest neighbor of the remaining classes (k=1) of a selected
+        observation.
+    random_state_ : instance of RandomState
+        If the `random_state` parameter is None, it is a RandomState singleton used by
+        np.random. If `random_state` is an int, it is a RandomState instance seeded with
+        seed. If `random_state` is already a RandomState instance, it is the same
+        object.
+
     Notes
     -----
     See the original paper: [1]_ for more details.
@@ -283,15 +305,18 @@ class GeometricSMOTE(BaseOverSampler):
             self.categorical_features_ = np.flatnonzero(categorical_features)
         else:
             if any(
-                [cat not in np.arange(self.n_features_) for cat in categorical_features]
+                [
+                    cat not in np.arange(self.n_features_in_)
+                    for cat in categorical_features
+                ]
             ):
                 raise ValueError(
                     "Some of the categorical indices are out of range. Indices"
-                    " should be between 0 and {}".format(self.n_features_)
+                    " should be between 0 and {}".format(self.n_features_in_)
                 )
             self.categorical_features_ = categorical_features
         self.continuous_features_ = np.setdiff1d(
-            np.arange(self.n_features_), self.categorical_features_
+            np.arange(self.n_features_in_), self.categorical_features_
         )
 
         if self.categorical_features_.size == self.n_features_in_:
@@ -573,7 +598,6 @@ class GeometricSMOTE(BaseOverSampler):
     def _fit_resample(self, X, y, sample_weight=None):
 
         # Save basic data
-        self.n_features_ = X.shape[1]
         self._issparse = sparse.issparse(X)
         X_dtype = X.dtype
 
