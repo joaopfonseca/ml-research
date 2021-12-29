@@ -13,8 +13,8 @@ jobs:
           command: |
             pip install .
             pip install codecov pytest-cov
-            python -c "import research"
-            pytest --cov=research research
+            python -c "import mlresearch"
+            pytest --cov=mlresearch mlresearch
 
   linux-build:
     docker:
@@ -25,7 +25,7 @@ jobs:
           command: |
             pip install .
             pip install codecov pytest-cov
-            python -c "import research"
+            python -c "import mlresearch"
             make test
             coverage xml
             curl -Os https://uploader.codecov.io/latest/linux/codecov
