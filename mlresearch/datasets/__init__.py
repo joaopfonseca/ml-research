@@ -1,20 +1,20 @@
 """
 Download, transform and simulate various datasets.
 """
-from ._base import (
-    Datasets,
+from ._binary import (
     ImbalancedBinaryDatasets,
     BinaryDatasets,
-    ContinuousCategoricalDatasets,
-    MulticlassDatasets,
-    RemoteSensingDatasets,
 )
+from ._multiclass import (
+    ContinuousCategoricalDatasets,
+    MultiClassDatasets,
+)
+from ._remote_sensing import RemoteSensingDatasets
 
 __all__ = [
-    "Datasets",
     "ImbalancedBinaryDatasets",
     "BinaryDatasets",
     "ContinuousCategoricalDatasets",
-    "MulticlassDatasets",
+    "MultiClassDatasets",
     "RemoteSensingDatasets",
 ]

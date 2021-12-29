@@ -3,7 +3,7 @@ import multiprocessing.dummy as mp
 from multiprocessing import cpu_count
 import ssl
 
-from .._base import FETCH_URLS
+from ..base import FETCH_URLS
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
