@@ -9,5 +9,4 @@ python:
     - method: pip
       path: numpy
   extra_requirements:
-    - dev
-requirements_file: requirements.txt
+    - docs
