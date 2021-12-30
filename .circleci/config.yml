@@ -41,7 +41,7 @@ jobs:
       - checkout
       - run:
           command: |
-            pip install .[dev]
+            pip install .[docs]
             cd docs
             make html
       - store_artifacts:
