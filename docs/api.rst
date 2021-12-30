@@ -50,11 +50,10 @@ This is the full API documentation of the `mlresearch` package.
     :toctree: _generated/
     :template: class.rst
 
-    datasets.Datasets
     datasets.BinaryDatasets
     datasets.ImbalancedBinaryDatasets
     datasets.ContinuousCategoricalDatasets
-    datasets.MulticlassDatasets
+    datasets.MultiClassDatasets
     datasets.RemoteSensingDatasets
 
 :mod:`mlresearch.metrics`
