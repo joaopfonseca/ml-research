@@ -22,6 +22,7 @@ dependent_packages = {
     "matplotlib": (MATPLOTLIB_MIN_VERSION, "install"),
     "seaborn": (SEABORN_MIN_VERSION, "install"),
     "research-learn": (RLEARN_MIN_VERSION, "install"),
+    "requests": ("2.26.0", "install"),
     "torch": (PYTORCH_MIN_VERSION, "optional"),
     "torchvision": (TORCHVISION_MIN_VERSION, "optional"),
     "pytest": ("6.2.5", "tests"),
