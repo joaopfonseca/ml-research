@@ -1,6 +1,10 @@
 import os
 from os.path import expanduser, join, exists
-from torchvision import datasets
+# Torchvision is an optional dependency
+try:
+    from torchvision import datasets
+except ModuleNotFoundError:
+    pass
 
 
 def get_data_home(data_home=None) -> str:
