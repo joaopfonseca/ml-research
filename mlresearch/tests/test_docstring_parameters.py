@@ -21,7 +21,7 @@ from sklearn.utils.estimator_checks import _construct_instance
 from sklearn.utils.deprecation import _is_deprecated
 
 import mlresearch
-from mlresearch.utils.testing import all_estimators
+from mlresearch.utils._testing import all_estimators
 
 
 def is_sampler(estimator):
