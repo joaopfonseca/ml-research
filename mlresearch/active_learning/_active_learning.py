@@ -3,7 +3,7 @@ A wrapper to allow an automated Active Learning procedure for an
 experimental environment.
 """
 
-# Author: Joao Fonseca <jpmrfonseca@gmail.com>
+# Author: Joao Fonseca <jpfonseca@novaims.unl.pt>
 # License: MIT
 
 import numpy as np
