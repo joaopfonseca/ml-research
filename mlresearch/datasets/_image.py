@@ -1,5 +1,6 @@
 import os
 from os.path import expanduser, join, exists
+
 # Torchvision is an optional dependency
 try:
     from torchvision import datasets
