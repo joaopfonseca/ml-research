@@ -6,11 +6,62 @@ from itertools import product
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.decomposition import PCA
+from sklearn.datasets import load_iris
 from imblearn.over_sampling import SMOTE, BorderlineSMOTE
 from imblearn.pipeline import Pipeline
 from rlearn.utils import check_random_states
+from rlearn.model_selection import ModelSearchCV
 
-from .._check_pipelines import check_pipelines
+from .._check_pipelines import check_pipelines, check_pipelines_wrapper
+from ...active_learning import ALSimulation
+from ...data_augmentation import OverSamplingAugmentation
+
+
+def test_check_pipeline_single():
+    """Test the check of pipelines with a single element."""
+
+    # Initialization
+    n_runs = 5
+    rnd_seed = 0
+    classifiers = [("clf", DecisionTreeClassifier(), {"max_depth": [3, 5]})]
+
+    # Estimators and parameters grids
+    estimators, param_grids = check_pipelines(
+        [classifiers], rnd_seed, n_runs
+    )
+    names, pips = zip(*estimators)
+    steps = [
+        [(step[0], step[1].__class__.__name__) for step in pip.steps] for pip in pips
+    ]
+
+    # Expected estimators and parameters grids
+    exp_name = "clf"
+    exp_steps = [("clf", "DecisionTreeClassifier")]
+    exp_random_states = check_random_states(rnd_seed, n_runs)
+    partial_param_grids = []
+    for max_depth in [3, 5]:
+        partial_param_grids.append(
+            {
+                "clf__clf__max_depth": [max_depth],
+            }
+        )
+
+    exp_param_grids = []
+    for rnd_seed, partial_param_grid in product(exp_random_states, partial_param_grids):
+        partial_param_grid = partial_param_grid.copy()
+        partial_param_grid.update(
+            {
+                "est_name": ["clf"],
+                "clf__clf__random_state": [rnd_seed],
+            }
+        )
+        exp_param_grids.append(partial_param_grid)
+
+    # Assertions
+    assert names[0] == exp_name
+    assert steps[0] == exp_steps
+    assert len(param_grids) == len(exp_param_grids)
+    assert all([param_grid in exp_param_grids for param_grid in param_grids])
 
 
 def test_check_pipelines():
@@ -174,3 +225,41 @@ def test_check_oversamplers_classifiers_pipeline():
     assert steps[0] == exp_steps
     assert len(param_grids) == len(exp_param_grids)
     assert all([param_grid in exp_param_grids for param_grid in param_grids])
+
+
+def test_check_pipelines_wrapper():
+    """Based on the parameter keys error found in the experiment of a working paper."""
+
+    # Initialization
+    X, y = load_iris(return_X_y=True)
+    n_runs = 1
+    rnd_seed = 0
+    oversamplers = [
+        ("ovs", OverSamplingAugmentation(BorderlineSMOTE()), [{"oversampler__k_neighbors": [2, 4]}, {"oversampler__m_neighbors": [6, 8]}])
+    ]
+    classifiers = [("clf", DecisionTreeClassifier(), {"max_depth": [3, 5]})]
+    al_model = (
+        "AL-TEST",
+        ALSimulation(max_iter=2),
+        {'selection_strategy': ['random', 'entropy', 'breaking_ties']}
+    )
+
+    we_wpg = check_pipelines_wrapper(
+            [classifiers],
+            al_model,
+            random_state=rnd_seed,
+            n_runs=n_runs,
+            wrapped_only=True
+    )
+
+    we_wpg2 = check_pipelines_wrapper(
+            [oversamplers, classifiers],
+            al_model,
+            random_state=rnd_seed,
+            n_runs=n_runs,
+            wrapped_only=True
+    )
+    for we, wpg in [we_wpg, we_wpg2]:
+        ModelSearchCV(
+            estimators=we, cv=2, param_grids=wpg, n_jobs=-1
+        ).fit(X, y)
