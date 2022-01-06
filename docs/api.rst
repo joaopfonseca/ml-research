@@ -20,6 +20,8 @@ This is the full API documentation of the `mlresearch` package.
     :template: class.rst
     
     active_learning.ALSimulation
+    active_learning.StandardAL
+    active_learning.AugmentationAL
 
 :mod:`mlresearch.data_augmentation`
 -----------------------------------
