@@ -38,7 +38,7 @@ def check_pipelines(objects_list, random_state, n_runs):
 
         # Create parameter grids
         for sub_grid in product(*sub_grids):
-            param_prefix = "" if len(comb) == 1 else f"{name}__"
+            param_prefix = f"{name}__"
             grid = {"est_name": [name]}
             grid.update(
                 {f"{param_prefix}{k}": [v] for d in sub_grid for k, v in d.items()}
@@ -74,11 +74,14 @@ def check_pipelines_wrapper(
         for name, pipeline in estimators
     ]
 
+    def _format_param(param):
+        return '__'.join(param.split('__')[1:])
+
     wrapped_param_grids = [
         {
             "est_name": [f'{wrapper_label}|{d["est_name"][0]}'],
             **{
-                f'{wrapper_label}|{d["est_name"][0]}__classifier__{k}': v
+                f'{wrapper_label}|{d["est_name"][0]}__classifier__{_format_param(k)}': v
                 for k, v in d.items()
                 if k != "est_name"
             },
