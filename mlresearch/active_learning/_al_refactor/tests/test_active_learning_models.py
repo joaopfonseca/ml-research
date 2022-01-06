@@ -5,9 +5,7 @@ from sklearn import datasets
 from sklearn.utils.validation import check_random_state
 from sklearn.utils._testing import assert_array_equal
 from sklearn.ensemble import RandomForestClassifier
-from rlearn.model_selection import ModelSearchCV
 
-from ....utils import check_pipelines
 from ....data_augmentation import OverSamplingAugmentation, GeometricSMOTE
 from .._acquisition_functions import ACQUISITION_FUNCTIONS
 from .._active_learning import StandardAL, AugmentationAL
@@ -111,14 +109,3 @@ def test_classifier_random_state(name):
 
     assert al_model.random_state == RANDOM_STATE
     assert al_model.classifier_.random_state == RANDOM_STATE
-
-
-def test_rlearn_integration():
-    """Check if AL models can be integrated into research-learn's ModelSearchCV"""
-    al_models = [(name, model(), {}) for name, model in ACTIVE_LEARNERS.items()]
-    estimators, param_grids = check_pipelines(
-        [al_models], 0, 2
-    )
-    ModelSearchCV(
-        estimators=estimators, cv=2, param_grids=param_grids, n_jobs=-1
-    ).fit(iris.data, iris.target)
