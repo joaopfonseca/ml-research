@@ -2,7 +2,6 @@ import numpy as np
 from sklearn.metrics import SCORERS, make_scorer
 from sklearn.metrics._scorer import _PredictScorer
 from imblearn.metrics import geometric_mean_score
-from rlearn.model_selection.search import MultiClassifier
 
 
 class ALScorer(_PredictScorer):
@@ -33,8 +32,8 @@ class ALScorer(_PredictScorer):
         Callable object that returns a scalar score.
     """
 
-    def __init__(self, score_func, sign=1):
-        super().__init__(score_func, sign, {})
+    def __init__(self, score_func):
+        super().__init__(score_func=score_func, sign=1, kwargs={})
 
     def _score(self, method_caller, estimator, X, y_true, sample_weight=None):
         """Evaluate predicted target values for X relative to y_true.
@@ -59,15 +58,9 @@ class ALScorer(_PredictScorer):
             Score function applied to prediction of estimator on X.
         """
 
-        if type(estimator) == MultiClassifier:
-            (
-                data_utilization,
-                test_scores,
-            ) = estimator.estimator_._get_performance_scores()
-        else:
-            data_utilization, test_scores = estimator._get_performance_scores()
+        metadata = estimator.metadata_
 
-        return self._sign * self._score_func(test_scores, data_utilization)
+        return self._sign * self._score_func(metadata)
 
 
 def geometric_mean_score_macro(y_true, y_pred):
@@ -75,17 +68,24 @@ def geometric_mean_score_macro(y_true, y_pred):
     return geometric_mean_score(y_true, y_pred, average="macro")
 
 
-def area_under_learning_curve(test_scores, *args):
+def area_under_learning_curve(metadata, *args):
     """Area under the learning curve. Used in Active Learning experiments."""
+    iterations = np.sort([i for i in metadata.keys() if type(i) == int])[1:]
+    test_scores = [metadata[i]['test_score'] for i in iterations]
     auc = np.sum(test_scores) / len(test_scores)
     return auc
 
 
-def data_utilization_rate(test_scores, data_utilization, threshold=0.8):
+def data_utilization_rate(metadata, threshold=0.8):
     """Data Utilization Rate. Used in Active Learning Experiments."""
+    iterations = np.sort([i for i in metadata.keys() if type(i) == int])[1:]
+    test_scores = [metadata[i]['test_score'] for i in iterations]
+    n_obs = metadata['data'][0].shape[0]
+    data_utilization = [metadata[i-1]['labeled_pool'].sum() / n_obs for i in iterations]
+
     indices = np.where(np.array(test_scores) >= threshold)[0]
     arg = indices[0] if len(indices) != 0 else -1
-    dur = data_utilization[arg] if arg != -1 else 1
+    dur = data_utilization[arg] if arg != -1 else np.nan
     return dur
 
 
