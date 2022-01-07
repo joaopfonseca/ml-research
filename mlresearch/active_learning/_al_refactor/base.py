@@ -83,7 +83,8 @@ class BaseActiveLearner(BaseEstimator, ClassifierMixin):
         last iteration.
     metadata_ : dict
         Contains the performance estimations, classifiers, labeled pool mask and original
-        dataset.
+        dataset. Note: the labeled pool stored at iteration ``i`` is used as the training
+        set at iteration ``i+1``.
     n_init_ : int
         Number of observations included in the initial training dataset.
     budget_ : int
@@ -208,13 +209,13 @@ class BaseActiveLearner(BaseEstimator, ClassifierMixin):
             # Raise error, model is already fitted
             raise StopIteration(f"Active Learning model {self} is already initialized.")
 
-    def _save_metadata(self, X, y, **kwargs):
+    def _save_metadata(self, X, y, X_test=None, y_test=None):
         self.metadata_[self._current_iter] = {"labeled_pool": self.labeled_pool_.copy()}
 
         # Save performance in the training set
         if hasattr(self, "classifier_"):
             self.metadata_[self._current_iter][
-                "train_performance"
+                "train_score"
             ] = self.evaluation_metric_(
                 self.classifier_, X[self.labeled_pool_], y[self.labeled_pool_]
             )
@@ -222,9 +223,9 @@ class BaseActiveLearner(BaseEstimator, ClassifierMixin):
         # Save performance in the test set
         if hasattr(self, "classifier_") and self._has_test:
             self.metadata_[self._current_iter][
-                "test_performance"
+                "test_score"
             ] = self.evaluation_metric_(
-                self.classifier_, X[self.labeled_pool_], y[self.labeled_pool_]
+                self.classifier_, X_test, y_test
             )
 
         # Save classifier
@@ -282,7 +283,7 @@ class BaseActiveLearner(BaseEstimator, ClassifierMixin):
         """
 
         # Check if parameters are properly set up
-        X, y = check_X_y(X, y, **kwargs)
+        X, y = check_X_y(X, y)
 
         # Check if there is a Test set
         self._has_test = True if "X_test" in kwargs else False
@@ -325,7 +326,7 @@ class BaseActiveLearner(BaseEstimator, ClassifierMixin):
         if not self._continue_training and self._has_test:
             iter_perf = np.array(
                 [
-                    [i, self.metadata_[i]["test_performance"]]
+                    [i, self.metadata_[i]["test_score"]]
                     for i in self.metadata_.keys()
                 ]
             )

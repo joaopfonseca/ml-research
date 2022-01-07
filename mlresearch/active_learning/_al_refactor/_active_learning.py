@@ -107,7 +107,7 @@ class StandardAL(BaseActiveLearner):
         labeled_pool = _random_initialization(self, X, y, initial_selection)
         return labeled_pool
 
-    def _iteration(self, X, y):
+    def _iteration(self, X, y, **kwargs):
         self.classifier_.fit(X[self.labeled_pool_], y[self.labeled_pool_])
         return self.classifier_.predict_proba(X[~self.labeled_pool_])
 
@@ -324,7 +324,7 @@ class AugmentationAL(BaseActiveLearner):
         labeled_pool = _random_initialization(self, X, y, initial_selection)
         return labeled_pool
 
-    def _iteration(self, X, y):
+    def _iteration(self, X, y, **kwargs):
 
         # Set up parameter tuning within iterations
         cv = self._check_cross_validation(y[self.labeled_pool_])
