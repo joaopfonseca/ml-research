@@ -49,11 +49,11 @@ DATASETS = [(X, y), (iris.data, iris.target), (hastie_X, hastie_y)]
 @pytest.mark.parametrize("name", ACTIVE_LEARNERS.keys())
 def test_classification_toy(name):
     """Test classification on a toy dataset."""
-    al_model = ACTIVE_LEARNERS[name]
-
-    clf = al_model(random_state=RANDOM_STATE)
-    clf.fit(X, y)
-    assert_array_equal(clf.predict(T), true_result)
+    al_model = ACTIVE_LEARNERS[name](random_state=RANDOM_STATE)
+    al_model.fit(X, y)
+    assert_array_equal(al_model.predict(T), true_result)
+    assert al_model.random_state == RANDOM_STATE
+    assert al_model.classifier_.random_state == RANDOM_STATE
 
 
 @pytest.mark.parametrize("name", ACTIVE_LEARNERS.keys())
@@ -103,9 +103,12 @@ def test_augmentation_active_learning():
 
 
 @pytest.mark.parametrize("name", ACTIVE_LEARNERS.keys())
-def test_classifier_random_state(name):
+def test_classifier_metadata(name):
     al_model = ACTIVE_LEARNERS[name](random_state=RANDOM_STATE)
-    al_model.fit(X, y)
+    al_model.fit(X, y, X_test=T, y_test=true_result)
 
-    assert al_model.random_state == RANDOM_STATE
-    assert al_model.classifier_.random_state == RANDOM_STATE
+    metadata = al_model.metadata_
+    exp_metadata_keys = ['data', 'performance_metric', *range(5)]
+
+    assert al_model._has_test
+    assert list(metadata.keys()) == exp_metadata_keys
