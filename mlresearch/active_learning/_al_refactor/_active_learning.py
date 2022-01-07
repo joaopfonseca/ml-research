@@ -351,19 +351,3 @@ class AugmentationAL(BaseActiveLearner):
 
         self.labeled_pool_[ids] = True
         return self
-
-
-class SelfSupervisedAL(BaseActiveLearner):
-    """Active Learning with self supervision."""
-
-
-class LADA(BaseActiveLearner):
-    """Look-Ahead Data Augmentation for Active Learning implementation."""
-
-
-class LearningLoss(BaseActiveLearner):
-    """Learning Loss implementation."""
-
-
-class CoreSet(BaseActiveLearner):
-    """Coreset Active Learning implementation."""
