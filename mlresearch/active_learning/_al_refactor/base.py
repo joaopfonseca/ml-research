@@ -214,17 +214,13 @@ class BaseActiveLearner(BaseEstimator, ClassifierMixin):
 
         # Save performance in the training set
         if hasattr(self, "classifier_"):
-            self.metadata_[self._current_iter][
-                "train_score"
-            ] = self.evaluation_metric_(
+            self.metadata_[self._current_iter]["train_score"] = self.evaluation_metric_(
                 self.classifier_, X[self.labeled_pool_], y[self.labeled_pool_]
             )
 
         # Save performance in the test set
         if hasattr(self, "classifier_") and self._has_test:
-            self.metadata_[self._current_iter][
-                "test_score"
-            ] = self.evaluation_metric_(
+            self.metadata_[self._current_iter]["test_score"] = self.evaluation_metric_(
                 self.classifier_, X_test, y_test
             )
 
@@ -325,10 +321,7 @@ class BaseActiveLearner(BaseEstimator, ClassifierMixin):
         """
         if not self._continue_training and self._has_test:
             iter_perf = np.array(
-                [
-                    [i, self.metadata_[i]["test_score"]]
-                    for i in self.metadata_.keys()
-                ]
+                [[i, self.metadata_[i]["test_score"]] for i in self.metadata_.keys()]
             )
             index = iter_perf[np.argmax(iter_perf, axis=0)[1]][0]
             return self.metadata_[index]["classifier"].predict(X)

@@ -11,7 +11,7 @@ from .._metrics import (
     ALScorer,
     geometric_mean_score_macro,
     area_under_learning_curve,
-    data_utilization_rate
+    data_utilization_rate,
 )
 
 RANDOM_STATE = 42
@@ -57,5 +57,5 @@ def test_al_metrics():
     al_model = StandardAL(random_state=RANDOM_STATE)
     al_model.fit(X, y, X_test=T, y_test=true_result)
 
-    assert ALScorer(data_utilization_rate)(al_model, None, None) == 1/3
+    assert ALScorer(data_utilization_rate)(al_model, None, None) == 1 / 3
     assert ALScorer(area_under_learning_curve)(al_model, None, None) == 1

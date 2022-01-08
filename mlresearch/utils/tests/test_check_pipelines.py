@@ -26,9 +26,7 @@ def test_check_pipeline_single():
     classifiers = [("clf", DecisionTreeClassifier(), {"max_depth": [3, 5]})]
 
     # Estimators and parameters grids
-    estimators, param_grids = check_pipelines(
-        [classifiers], rnd_seed, n_runs
-    )
+    estimators, param_grids = check_pipelines([classifiers], rnd_seed, n_runs)
     names, pips = zip(*estimators)
     steps = [
         [(step[0], step[1].__class__.__name__) for step in pip.steps] for pip in pips
@@ -235,31 +233,32 @@ def test_check_pipelines_wrapper():
     n_runs = 1
     rnd_seed = 0
     oversamplers = [
-        ("ovs", OverSamplingAugmentation(BorderlineSMOTE()), [{"oversampler__k_neighbors": [2, 4]}, {"oversampler__m_neighbors": [6, 8]}])
+        (
+            "ovs",
+            OverSamplingAugmentation(BorderlineSMOTE()),
+            [
+                {"oversampler__k_neighbors": [2, 4]},
+                {"oversampler__m_neighbors": [6, 8]},
+            ],
+        )
     ]
     classifiers = [("clf", DecisionTreeClassifier(), {"max_depth": [3, 5]})]
     al_model = (
         "AL-TEST",
         ALSimulation(max_iter=2),
-        {'selection_strategy': ['random', 'entropy', 'breaking_ties']}
+        {"selection_strategy": ["random", "entropy", "breaking_ties"]},
     )
 
     we_wpg = check_pipelines_wrapper(
-            [classifiers],
-            al_model,
-            random_state=rnd_seed,
-            n_runs=n_runs,
-            wrapped_only=True
+        [classifiers], al_model, random_state=rnd_seed, n_runs=n_runs, wrapped_only=True
     )
 
     we_wpg2 = check_pipelines_wrapper(
-            [oversamplers, classifiers],
-            al_model,
-            random_state=rnd_seed,
-            n_runs=n_runs,
-            wrapped_only=True
+        [oversamplers, classifiers],
+        al_model,
+        random_state=rnd_seed,
+        n_runs=n_runs,
+        wrapped_only=True,
     )
     for we, wpg in [we_wpg, we_wpg2]:
-        ModelSearchCV(
-            estimators=we, cv=2, param_grids=wpg, n_jobs=-1
-        ).fit(X, y)
+        ModelSearchCV(estimators=we, cv=2, param_grids=wpg, n_jobs=-1).fit(X, y)

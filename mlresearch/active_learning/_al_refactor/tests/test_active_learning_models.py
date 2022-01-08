@@ -87,19 +87,18 @@ def test_augmentation_active_learning():
     al_model = AugmentationAL(
         classifier=classifier,
         generator=generator,
-        param_grid={
-            "generator__value": [1, 1.5, 2]
-        },
+        param_grid={"generator__value": [1, 1.5, 2]},
         max_iter=2,
-        random_state=RANDOM_STATE
+        random_state=RANDOM_STATE,
     )
     al_model.fit(iris.data, iris.target)
 
     assert al_model.max_iter_ == 2
     assert al_model.random_state == RANDOM_STATE
-    assert dict(
-        al_model.classifier_.best_estimator_.steps
-    )["generator"].random_state == RANDOM_STATE
+    assert (
+        dict(al_model.classifier_.best_estimator_.steps)["generator"].random_state
+        == RANDOM_STATE
+    )
 
 
 @pytest.mark.parametrize("name", ACTIVE_LEARNERS.keys())
@@ -108,7 +107,7 @@ def test_classifier_metadata(name):
     al_model.fit(X, y, X_test=T, y_test=true_result)
 
     metadata = al_model.metadata_
-    exp_metadata_keys = ['data', 'performance_metric', *range(5)]
+    exp_metadata_keys = ["data", "performance_metric", *range(5)]
 
     assert al_model._has_test
     assert list(metadata.keys()) == exp_metadata_keys

@@ -75,7 +75,7 @@ def check_pipelines_wrapper(
     ]
 
     def _format_param(param):
-        return '__'.join(param.split('__')[1:])
+        return "__".join(param.split("__")[1:])
 
     wrapped_param_grids = [
         {

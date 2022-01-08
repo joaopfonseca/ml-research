@@ -297,7 +297,8 @@ class AugmentationAL(BaseActiveLearner):
         super()._save_metadata(X, y, **kwargs)
         if hasattr(self, "classifier_") and type(self.classifier_) == GridSearchCV:
             self.metadata_[self._current_iter]["parameters"] = {
-                k: v for k, v in self.classifier_.best_estimator_.get_params().items()
+                k: v
+                for k, v in self.classifier_.best_estimator_.get_params().items()
                 if k in self.param_grid.keys()
             }
 
