@@ -11,6 +11,7 @@ SEABORN_MIN_VERSION = "0.9.0"
 RLEARN_MIN_VERSION = "0.2.1"
 PYTORCH_MIN_VERSION = "1.10.1"
 TORCHVISION_MIN_VERSION = "0.11.2"
+PYTORCH_LIGHTNING_VERSION = "1.5.8"
 
 # The values are (version_spec, comma separated tags)
 dependent_packages = {
@@ -25,6 +26,7 @@ dependent_packages = {
     "requests": ("2.26.0", "install"),
     "torch": (PYTORCH_MIN_VERSION, "optional"),
     "torchvision": (TORCHVISION_MIN_VERSION, "optional"),
+    "pytorch-lightning": (PYTORCH_LIGHTNING_VERSION, "optional"),
     "pytest-cov": ("3.0.0", "tests"),
     "flake8": ("3.8.2", "tests"),
     "black": ("21.6b0", "tests"),
