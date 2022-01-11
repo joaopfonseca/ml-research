@@ -215,45 +215,37 @@ class ImbalancedBinaryDatasets(Datasets):
         return data
 
     def fetch_new_thyroid_1(self):
-        """Download and transform the Thyroid 1 Disease Data Set.
+        """Download and transform the Thyroid Disease Data Set.
         The minority class is identified as the `positive`
         label and the majority class as the `negative` label.
 
-        http://sci2s.ugr.es/keel/dataset.php?cod=145
+        .. note:: The positive class was originally label 2.
+
+        https://archive.ics.uci.edu/ml/datasets/Thyroid+Disease
         """
-        zipped_data = requests.get(FETCH_URLS["new_thyroid_1"]).content
-        unzipped_data = (
-            ZipFile(BytesIO(zipped_data)).read("new-thyroid1.dat").decode("utf-8")
-        )
         data = pd.read_csv(
-            StringIO(sub(r"@.+\n+", "", unzipped_data)),
+            FETCH_URLS['new_thyroid'],
             header=None,
-            sep=", ",
-            engine="python",
         )
-        data.rename(columns={5: "target"}, inplace=True)
-        data["target"] = data["target"].isin(["positive"]).astype(int)
+        data.rename(columns={0: "target"}, inplace=True)
+        data["target"] = (data["target"] == 2).astype(int)
         return data
 
     def fetch_new_thyroid_2(self):
-        """Download and transform the Thyroid 2 Disease Data Set.
+        """Download and transform the Thyroid Disease Data Set.
         The minority class is identified as the `positive`
         label and the majority class as the `negative` label.
 
-        http://sci2s.ugr.es/keel/dataset.php?cod=146
+        .. note:: The positive class was originally label 3.
+
+        https://archive.ics.uci.edu/ml/datasets/Thyroid+Disease
         """
-        zipped_data = requests.get(FETCH_URLS["new_thyroid_2"]).content
-        unzipped_data = (
-            ZipFile(BytesIO(zipped_data)).read("newthyroid2.dat").decode("utf-8")
-        )
         data = pd.read_csv(
-            StringIO(sub(r"@.+\n+", "", unzipped_data)),
+            FETCH_URLS['new_thyroid'],
             header=None,
-            sep=", ",
-            engine="python",
         )
-        data.rename(columns={5: "target"}, inplace=True)
-        data["target"] = data["target"].isin(["positive"]).astype(int)
+        data.rename(columns={0: "target"}, inplace=True)
+        data["target"] = (data["target"] == 3).astype(int)
         return data
 
     def fetch_cleveland(self):
@@ -261,15 +253,11 @@ class ImbalancedBinaryDatasets(Datasets):
         The minority class is identified as the `positive` label and
         the majority class as the `negative` label.
 
-        http://sci2s.ugr.es/keel/dataset.php?cod=980
+        https://archive.ics.uci.edu/ml/datasets/heart+disease
         """
-        zipped_data = requests.get(FETCH_URLS["cleveland"]).content
-        unzipped_data = (
-            ZipFile(BytesIO(zipped_data)).read("cleveland-0_vs_4.dat").decode("utf-8")
-        )
-        data = pd.read_csv(StringIO(sub(r"@.+\n+", "", unzipped_data)), header=None)
+        data = pd.read_csv(FETCH_URLS["cleveland"], header=None)
         data.rename(columns={13: "target"}, inplace=True)
-        data["target"] = data["target"].isin(["positive"]).astype(int)
+        data["target"] = (data["target"] == 1).astype(int)
         return data
 
     def fetch_dermatology(self):
@@ -277,12 +265,12 @@ class ImbalancedBinaryDatasets(Datasets):
         The minority class is identified as the `positive` label and
         the majority class as the `negative` label.
 
-        http://sci2s.ugr.es/keel/dataset.php?cod=1330
+        https://archive.ics.uci.edu/ml/datasets/Dermatology
         """
         data = pd.read_csv(FETCH_URLS["dermatology"], header=None)
         data.rename(columns={34: "target"}, inplace=True)
         data.drop(columns=33, inplace=True)
-        data["target"] = data["target"].isin(["positive"]).astype(int)
+        data["target"] = (data.target == 6).astype(int)
         return data
 
     def fetch_led(self):
@@ -290,35 +278,24 @@ class ImbalancedBinaryDatasets(Datasets):
         The minority class is identified as the `positive` label and
         the majority class as the `negative` label.
 
-        http://sci2s.ugr.es/keel/dataset.php?cod=998
+        https://www.openml.org/d/40496
         """
-        zipped_data = requests.get(FETCH_URLS["led"]).content
-        unzipped_data = (
-            ZipFile(BytesIO(zipped_data))
-            .read("led7digit-0-2-4-5-6-7-8-9_vs_1.dat")
-            .decode("utf-8")
-        )
-        data = pd.read_csv(StringIO(sub(r"@.+\n+", "", unzipped_data)), header=None)
-        data.rename(columns={7: "target"}, inplace=True)
-        data["target"] = data["target"].isin(["positive"]).astype(int)
+        data = pd.read_csv(FETCH_URLS['led'])
+        data.rename(columns={"Class": "target"}, inplace=True)
+        data["target"] = (data.target == 1).astype(int)
         return data
 
-    def fetch_page_blocks_1_3(self):
-        """Download and transform the Page Blocks 1-3 Data Set.
+    def fetch_page_blocks(self):
+        """Download and transform the Page Blocks Data Set.
         The minority class is identified as the `positive` label and
         the majority class as the `negative` label.
 
-        http://sci2s.ugr.es/keel/dataset.php?cod=124
+        https://www.openml.org/d/1021
         """
-        zipped_data = requests.get(FETCH_URLS["page_blocks_1_3"]).content
-        unzipped_data = (
-            ZipFile(BytesIO(zipped_data))
-            .read("page-blocks-1-3_vs_4.dat")
-            .decode("utf-8")
-        )
-        data = pd.read_csv(StringIO(sub(r"@.+\n+", "", unzipped_data)), header=None)
-        data.rename(columns={10: "target"}, inplace=True)
-        data["target"] = data["target"].isin(["positive"]).astype(int)
+        data = pd.read_csv(FETCH_URLS["page_blocks"]
+                           )
+        data.rename(columns={"class": "target"}, inplace=True)
+        data["target"] = (data.target != 1).astype(int)
         return data
 
     def fetch_vowel(self):
@@ -326,27 +303,27 @@ class ImbalancedBinaryDatasets(Datasets):
         The minority class is identified as the `positive` label and
         the majority class as the `negative` label.
 
-        http://sci2s.ugr.es/keel/dataset.php?cod=127
+        https://www.openml.org/d/375
         """
-        zipped_data = requests.get(FETCH_URLS["vowel"]).content
-        unzipped_data = ZipFile(BytesIO(zipped_data)).read("vowel0.dat").decode("utf-8")
-        data = pd.read_csv(StringIO(sub(r"@.+\n+", "", unzipped_data)), header=None)
-        data.rename(columns={13: "target"}, inplace=True)
-        data["target"] = data["target"].isin([" positive"]).astype(int)
+
+        data = pd.read_csv(FETCH_URLS["vowels"])
+        data.rename(columns={"speaker": "target"}, inplace=True)
+        data.drop(columns=["utterance", "frame"], inplace=True)
+        data["target"] = (data["target"] == 1).astype(int)
         return data
 
-    def fetch_yeast_1(self):
-        """Download and transform the Yeast 1 Data Set.
+    def fetch_yeast(self):
+        """Download and transform the Yeast Data Set.
         The minority class is identified as the `positive` label and
         the majority class as the `negative` label.
 
-        http://sci2s.ugr.es/keel/dataset.php?cod=153
+        https://archive.ics.uci.edu/ml/datasets/Yeast
         """
-        zipped_data = requests.get(FETCH_URLS["yeast_1"]).content
-        unzipped_data = ZipFile(BytesIO(zipped_data)).read("yeast1.dat").decode("utf-8")
-        data = pd.read_csv(StringIO(sub(r"@.+\n+", "", unzipped_data)), header=None)
-        data.rename(columns={8: "target"}, inplace=True)
-        data["target"] = data["target"].isin([" positive"]).astype(int)
+        data = pd.read_csv(FETCH_URLS["yeast"], header=None)
+        data = pd.DataFrame([[val for val in row.split(" ") if len(val)!=0] for row in data[0].tolist()])
+        data.drop(columns=0, inplace=True)
+        data.rename(columns={9: "target"}, inplace=True)
+        data["target"] = (data["target"] == "MIT").astype(int)
         return data
 
 

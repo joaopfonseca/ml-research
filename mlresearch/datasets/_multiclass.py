@@ -551,12 +551,12 @@ class MultiClassDatasets(Datasets):
         data.rename(columns={"int0": "target"}, inplace=True)
         return data
 
-    def fetch_japanese_vowels(self):
-        """Download and transform the Japanese Vowels Data Set.
+    def fetch_vowels(self):
+        """Download and transform the Vowels Data Set.
 
         https://www.openml.org/d/375
         """
-        data = pd.read_csv(FETCH_URLS["japanese_vowels"])
+        data = pd.read_csv(FETCH_URLS["vowels"])
         data.rename(columns={"speaker": "target"}, inplace=True)
         data.drop(columns=["utterance", "frame"], inplace=True)
         return data

@@ -13,7 +13,6 @@ from rich.progress import track
 import pandas as pd
 
 UCI_URL = "https://archive.ics.uci.edu/ml/machine-learning-databases/"
-KEEL_URL = "http://sci2s.ugr.es/keel/keel-dataset/datasets/imbalanced/"
 GIC_URL = "http://www.ehu.eus/ccwintco/uploads/"
 OPENML_URL = "https://www.openml.org/data/get_csv/"
 FETCH_URLS = {
@@ -30,23 +29,21 @@ FETCH_URLS = {
     "/raw/819b69b5736821ccee93d05b51de0510bea00294/pima-indians-diabetes.csv",
     "vehicle": urljoin(UCI_URL, "statlog/vehicle/"),
     "wine": urljoin(UCI_URL, "wine/wine.data"),
-    "new_thyroid_1": urljoin(
-        urljoin(KEEL_URL, "imb_IRlowerThan9/"), "new-thyroid1.zip"
-    ),
-    "new_thyroid_2": urljoin(
-        urljoin(KEEL_URL, "imb_IRlowerThan9/"), "new-thyroid2.zip"
+    "new_thyroid": urljoin(
+        UCI_URL, "thyroid-disease/new-thyroid.data"
     ),
     "cleveland": urljoin(
-        urljoin(KEEL_URL, "imb_IRhigherThan9p2/"), "cleveland-0_vs_4.zip"
+        UCI_URL, "heart-disease/processed.cleveland.data"
     ),
     "led": urljoin(
-        urljoin(KEEL_URL, "imb_IRhigherThan9p2/"), "led7digit-0-2-4-5-6-7-8-9_vs_1.zip"
+        OPENML_URL, "4535757/phpSj3fWL"
     ),
-    "page_blocks_1_3": urljoin(
-        urljoin(KEEL_URL, "imb_IRhigherThan9p1/"), "page-blocks-1-3_vs_4.zip"
+    "page_blocks": urljoin(
+        OPENML_URL, "30/dataset_30_page-blocks.arff"
     ),
-    "vowel": urljoin(urljoin(KEEL_URL, "imb_IRhigherThan9p1/"), "vowel0.zip"),
-    "yeast_1": urljoin(urljoin(KEEL_URL, "imb_IRlowerThan9/"), "yeast1.zip"),
+    "yeast": urljoin(
+        UCI_URL, "yeast/yeast.data"
+    ),
     "banknote_authentication": urljoin(
         UCI_URL, "00267/data_banknote_authentication.txt"
     ),
@@ -91,7 +88,7 @@ FETCH_URLS = {
     "gesture_segmentation": urljoin(OPENML_URL, "1798765/phpYLeydd"),
     "texture": urljoin(OPENML_URL, "4535764/phpBDgUyY"),
     "usps": urljoin(OPENML_URL, "19329737/usps.arff"),
-    "japanese_vowels": urljoin(OPENML_URL, "52415/JapaneseVowels.arff"),
+    "vowels": urljoin(OPENML_URL, "52415/JapaneseVowels.arff"),
     "pendigits": urljoin(OPENML_URL, "32/dataset_32_pendigits.arff"),
     "image_segmentation": urljoin(OPENML_URL, "18151937/phpyM5ND4"),
     "baseball": urljoin(OPENML_URL, "3622/dataset_189_baseball.arff"),
