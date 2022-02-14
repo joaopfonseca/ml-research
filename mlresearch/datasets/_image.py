@@ -1,30 +1,8 @@
 import os
-from os.path import expanduser, join, exists
+from os.path import join, exists
 
 from torchvision import datasets
-
-
-def get_data_home(data_home=None) -> str:
-    """Return the path of the ml-research data dir.
-    This folder is used by some large dataset loaders to avoid downloading the
-    data several times.
-    By default the data dir is set to a folder named 'ml_research_data' in the
-    user home folder.
-    Alternatively, it can be set programmatically by giving an explicit folder
-    path. The '~' symbol is expanded to the user home folder.
-    If the folder does not already exist, it is automatically created.
-
-    Parameters
-    ----------
-    data_home : str, default=None
-        The path to the data directory. If `None`, the default path
-        is `~/ml_research_data`.
-    """
-    if data_home is None:
-        data_home = join("~", "ml_research_data")
-    data_home = expanduser(data_home)
-    os.makedirs(data_home, exist_ok=True)
-    return data_home
+from .base import get_data_home
 
 
 class PytorchDatasets:

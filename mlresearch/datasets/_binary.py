@@ -224,7 +224,7 @@ class ImbalancedBinaryDatasets(Datasets):
         https://archive.ics.uci.edu/ml/datasets/Thyroid+Disease
         """
         data = pd.read_csv(
-            FETCH_URLS['new_thyroid'],
+            FETCH_URLS["new_thyroid"],
             header=None,
         )
         data.rename(columns={0: "target"}, inplace=True)
@@ -241,7 +241,7 @@ class ImbalancedBinaryDatasets(Datasets):
         https://archive.ics.uci.edu/ml/datasets/Thyroid+Disease
         """
         data = pd.read_csv(
-            FETCH_URLS['new_thyroid'],
+            FETCH_URLS["new_thyroid"],
             header=None,
         )
         data.rename(columns={0: "target"}, inplace=True)
@@ -255,7 +255,8 @@ class ImbalancedBinaryDatasets(Datasets):
 
         https://archive.ics.uci.edu/ml/datasets/heart+disease
         """
-        data = pd.read_csv(FETCH_URLS["cleveland"], header=None)
+        data = pd.read_csv(FETCH_URLS["cleveland"], header=None, na_values="?")
+        data.dropna(inplace=True)
         data.rename(columns={13: "target"}, inplace=True)
         data["target"] = (data["target"] == 1).astype(int)
         return data
@@ -280,7 +281,7 @@ class ImbalancedBinaryDatasets(Datasets):
 
         https://www.openml.org/d/40496
         """
-        data = pd.read_csv(FETCH_URLS['led'])
+        data = pd.read_csv(FETCH_URLS["led"])
         data.rename(columns={"Class": "target"}, inplace=True)
         data["target"] = (data.target == 1).astype(int)
         return data
@@ -292,8 +293,7 @@ class ImbalancedBinaryDatasets(Datasets):
 
         https://www.openml.org/d/1021
         """
-        data = pd.read_csv(FETCH_URLS["page_blocks"]
-                           )
+        data = pd.read_csv(FETCH_URLS["page_blocks"])
         data.rename(columns={"class": "target"}, inplace=True)
         data["target"] = (data.target != 1).astype(int)
         return data
@@ -320,7 +320,12 @@ class ImbalancedBinaryDatasets(Datasets):
         https://archive.ics.uci.edu/ml/datasets/Yeast
         """
         data = pd.read_csv(FETCH_URLS["yeast"], header=None)
-        data = pd.DataFrame([[val for val in row.split(" ") if len(val)!=0] for row in data[0].tolist()])
+        data = pd.DataFrame(
+            [
+                [val for val in row.split(" ") if len(val) != 0]
+                for row in data[0].tolist()
+            ]
+        )
         data.drop(columns=0, inplace=True)
         data.rename(columns={9: "target"}, inplace=True)
         data["target"] = (data["target"] == "MIT").astype(int)

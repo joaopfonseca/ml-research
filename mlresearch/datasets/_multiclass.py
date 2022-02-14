@@ -5,7 +5,9 @@ Download, transform and simulate various datasets.
 # Author: Joao Fonseca <jpfonseca@novaims.unl.pt>
 # License: MIT
 
+import os
 from os.path import join
+import pickle
 from urllib.parse import urljoin
 from string import ascii_lowercase
 from sqlite3 import connect
@@ -14,7 +16,7 @@ from rich.progress import track
 import numpy as np
 import pandas as pd
 
-from .base import Datasets, FETCH_URLS
+from .base import Datasets, get_data_home, FETCH_URLS
 
 
 class ContinuousCategoricalDatasets(Datasets):
@@ -30,6 +32,9 @@ class ContinuousCategoricalDatasets(Datasets):
 
     def download(self):
         """Download the datasets."""
+        self.data_home_ = get_data_home(data_home=self.data_home)
+        dataset_prefix = self.__class__.__name__.lower().replace("datasets", "")
+
         if self.names == "all":
             func_names = [func_name for func_name in dir(self) if "fetch_" in func_name]
         else:
@@ -38,9 +43,26 @@ class ContinuousCategoricalDatasets(Datasets):
             ]
         self.content_ = []
         for func_name in track(func_names, description="Datasets"):
-            name = func_name.replace("fetch_", "").upper().replace("_", " ")
-            fetch_data = getattr(self, func_name)
-            data, categorical_features = self._modify_columns(*fetch_data())
+            dat_name = func_name.replace("fetch_", "")
+            name = dat_name.upper().replace("_", " ")
+            file_name = f"{dataset_prefix}_{dat_name}.csv"
+            cat_name = f"{dataset_prefix}_{dat_name}_categorical_features.pkl"
+
+            if (
+                file_name not in os.listdir(self.data_home_)
+                and self.download_if_missing
+            ):
+                df, cat_feats = getattr(self, func_name)()
+                df.to_csv(join(self.data_home_, file_name), index=False)
+                pickle.dump(cat_feats, open(join(self.data_home_, cat_name), "wb"))
+
+            categorical_features = pickle.load(
+                open(join(self.data_home_, cat_name), "rb")
+            )
+            data = pd.read_csv(join(self.data_home_, file_name))
+            data, categorical_features = self._modify_columns(
+                data, categorical_features
+            )
             self.content_.append((name, data, categorical_features))
         return self
 

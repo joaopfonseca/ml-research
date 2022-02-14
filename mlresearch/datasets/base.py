@@ -6,7 +6,9 @@ Download, transform and simulate various datasets.
 #         Joao Fonseca <jpfonseca@novaims.unl.pt>
 # License: MIT
 
-from os.path import join
+from typing import Optional
+import os
+from os.path import expanduser, join
 from urllib.parse import urljoin
 from sqlite3 import connect
 from rich.progress import track
@@ -29,21 +31,11 @@ FETCH_URLS = {
     "/raw/819b69b5736821ccee93d05b51de0510bea00294/pima-indians-diabetes.csv",
     "vehicle": urljoin(UCI_URL, "statlog/vehicle/"),
     "wine": urljoin(UCI_URL, "wine/wine.data"),
-    "new_thyroid": urljoin(
-        UCI_URL, "thyroid-disease/new-thyroid.data"
-    ),
-    "cleveland": urljoin(
-        UCI_URL, "heart-disease/processed.cleveland.data"
-    ),
-    "led": urljoin(
-        OPENML_URL, "4535757/phpSj3fWL"
-    ),
-    "page_blocks": urljoin(
-        OPENML_URL, "30/dataset_30_page-blocks.arff"
-    ),
-    "yeast": urljoin(
-        UCI_URL, "yeast/yeast.data"
-    ),
+    "new_thyroid": urljoin(UCI_URL, "thyroid-disease/new-thyroid.data"),
+    "cleveland": urljoin(UCI_URL, "heart-disease/processed.cleveland.data"),
+    "led": urljoin(OPENML_URL, "4535757/phpSj3fWL"),
+    "page_blocks": urljoin(OPENML_URL, "30/dataset_30_page-blocks.arff"),
+    "yeast": urljoin(UCI_URL, "yeast/yeast.data"),
     "banknote_authentication": urljoin(
         UCI_URL, "00267/data_banknote_authentication.txt"
     ),
@@ -124,11 +116,41 @@ FETCH_URLS = {
 RANDOM_STATE = 0
 
 
+def get_data_home(data_home: Optional[str] = None) -> str:
+    """Return the path of the ml-research data dir.
+    This folder is used by some large dataset loaders to avoid downloading the
+    data several times.
+    By default the data dir is set to a folder named 'ml_research_data' in the
+    user home folder.
+    Alternatively, it can be set programmatically by giving an explicit folder
+    path. The '~' symbol is expanded to the user home folder.
+    If the folder does not already exist, it is automatically created.
+
+    Parameters
+    ----------
+    data_home : str, default=None
+        The path to the data directory. If `None`, the default path
+        is `~/ml_research_data`.
+    """
+    if data_home is None:
+        data_home = join("~", "mlresearch_data")
+    data_home = expanduser(data_home)
+    os.makedirs(data_home, exist_ok=True)
+    return data_home
+
+
 class Datasets:
     """Base class to download and save datasets."""
 
-    def __init__(self, names="all"):
+    def __init__(
+        self,
+        names: str = "all",
+        data_home: str = None,
+        download_if_missing: bool = True,
+    ):
         self.names = names
+        self.data_home = data_home
+        self.download_if_missing = download_if_missing
 
     @staticmethod
     def _modify_columns(data):
@@ -139,6 +161,9 @@ class Datasets:
 
     def download(self):
         """Download the datasets."""
+        self.data_home_ = get_data_home(data_home=self.data_home)
+        dataset_prefix = self.__class__.__name__.lower().replace("datasets", "")
+
         if self.names == "all":
             func_names = [func_name for func_name in dir(self) if "fetch_" in func_name]
         else:
@@ -147,9 +172,19 @@ class Datasets:
             ]
         self.content_ = []
         for func_name in track(func_names, description="Datasets"):
-            name = func_name.replace("fetch_", "").upper().replace("_", " ")
-            fetch_data = getattr(self, func_name)
-            data = self._modify_columns(fetch_data())
+            dat_name = func_name.replace("fetch_", "")
+            name = dat_name.upper().replace("_", " ")
+            file_name = f"{dataset_prefix}_{dat_name}.csv"
+
+            if (
+                file_name not in os.listdir(self.data_home_)
+                and self.download_if_missing
+            ):
+                df = getattr(self, func_name)()
+                df.to_csv(join(self.data_home_, file_name), index=False)
+
+            data = pd.read_csv(join(self.data_home_, file_name))
+            data = self._modify_columns(data)
             self.content_.append((name, data))
         return self
 

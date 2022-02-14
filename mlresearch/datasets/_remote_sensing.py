@@ -17,9 +17,34 @@ from ..utils import img_array_to_pandas
 class RemoteSensingDatasets(Datasets):
     """Class to download, transform and save remote sensing datasets."""
 
-    def __init__(self, names="all", return_coords=False):
+    def __init__(
+        self,
+        names: str = "all",
+        return_coords: bool = False,
+        data_home: str = None,
+        download_if_missing: bool = True,
+    ):
         self.names = names
         self.return_coords = return_coords
+        self.data_home = data_home
+        self.download_if_missing = download_if_missing
+
+    def download(self):
+        """Download the datasets and append undersampled versions of them."""
+        super(RemoteSensingDatasets, self).download()
+        content_ = []
+        for (name, data) in self.content_:
+            if not self.return_coords:
+                data = data.iloc[:, 2:]
+                new_cols = list(range(len(data.columns) - 1)) + ["target"]
+            else:
+                new_cols = ["x", "y"] + list(range(len(data.columns) - 3)) + ["target"]
+
+            data.columns = new_cols
+            content_.append((name, data))
+        self.content_ = content_
+
+        return self
 
     def _load_gic_dataset(self, dataset_name):
         for url in FETCH_URLS[dataset_name]:
@@ -27,7 +52,7 @@ class RemoteSensingDatasets(Datasets):
             content = loadmat(io.BytesIO(r.content))
             arr = np.array(list(content.values())[-1])
             arr = np.expand_dims(arr, -1) if arr.ndim == 2 else arr
-            if self.return_coords and arr.shape[-1] != 1:
+            if arr.shape[-1] != 1:
                 indices = np.moveaxis(np.indices(arr.shape[:-1]), 0, -1)
                 arr = np.insert(arr, [0, 0], indices, -1)
             yield arr
