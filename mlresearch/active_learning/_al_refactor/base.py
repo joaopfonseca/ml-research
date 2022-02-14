@@ -6,7 +6,7 @@ Base class for Active Learning models
 # License: MIT
 
 from abc import abstractmethod
-
+from typing import Union
 import numpy as np
 from sklearn.base import ClassifierMixin, BaseEstimator, clone
 from sklearn.utils import check_X_y
@@ -98,10 +98,10 @@ class BaseActiveLearner(BaseEstimator, ClassifierMixin):
 
     def __init__(
         self,
-        classifier: (BaseEstimator, ClassifierMixin) = None,
+        classifier: Union[BaseEstimator, ClassifierMixin] = None,
         acquisition_func=None,
-        n_init: (int, float) = None,
-        budget: (int, float) = None,
+        n_init: Union[int, float] = None,
+        budget: Union[int, float] = None,
         max_iter: int = None,
         evaluation_metric=None,
         continue_training: bool = False,

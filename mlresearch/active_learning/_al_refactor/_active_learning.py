@@ -1,3 +1,4 @@
+from typing import Union
 from copy import deepcopy
 import numpy as np
 from sklearn.base import ClassifierMixin, BaseEstimator, clone
@@ -232,13 +233,13 @@ class AugmentationAL(BaseActiveLearner):
 
     def __init__(
         self,
-        classifier: (BaseEstimator, ClassifierMixin) = None,
+        classifier: Union[BaseEstimator, ClassifierMixin] = None,
         generator: BaseOverSampler = None,
         param_grid: dict = None,
         cv=None,
         acquisition_func=None,
-        n_init: (int, float) = None,
-        budget: (int, float) = None,
+        n_init: Union[int, float] = None,
+        budget: Union[int, float] = None,
         max_iter: int = None,
         evaluation_metric=None,
         continue_training: bool = False,
