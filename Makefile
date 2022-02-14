@@ -35,6 +35,7 @@ clean:
 	rm -rf coverage.xml
 	rm -rf .coverage
 	rm -rf .pytest_cache
+	rm -rf .mypy_cache
 	rm -rf docs/_build
 	rm -rf docs/_generated
 
