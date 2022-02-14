@@ -6,5 +6,6 @@ techniques.
 
 from ._oversampling_augmentation import OverSamplingAugmentation
 from ._gsmote import GeometricSMOTE
+from ._image_transforms import ImageTransform
 
-__all__ = ["OverSamplingAugmentation", "GeometricSMOTE"]
+__all__ = ["OverSamplingAugmentation", "GeometricSMOTE", "ImageTransform"]
