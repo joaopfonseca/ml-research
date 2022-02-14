@@ -1,8 +1,0 @@
-Dataset;Sensor;Location;Dimension;Bands;Res. (m);Classes
-Botswana;Hyperion;Okavango Delta;1476 x 256;145;30;14
-Salinas A;AVIRIS;California, USA;86 x 83;224;3.7;6
-Kennedy Space Center;AVIRIS;Florida, USA;512 x 614;176;18;16
-Indian Pines;AVIRIS;NW Indiana, USA;145 x 145;220;20;16
-Salinas;AVIRIS;California, USA;512 x 217;224;3.7;16
-Pavia University;ROSIS;Pavia, Italy;610 x 610;103;1.3;9
-Pavia Centre;ROSIS;Pavia, Italy;1096 x 1096;102;1.3;9

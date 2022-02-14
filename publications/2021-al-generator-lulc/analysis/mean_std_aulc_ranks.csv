@@ -1,7 +1,0 @@
-Classifier,Evaluation Metric,Standard,Proposed
-KNN,F-score,2.00 $\pm$ 0.0,\textbf{1.00 $\pm$ 0.0}
-KNN,G-mean,2.00 $\pm$ 0.0,\textbf{1.00 $\pm$ 0.0}
-LR,F-score,1.71 $\pm$ 0.45,\textbf{1.29 $\pm$ 0.45}
-LR,G-mean,2.00 $\pm$ 0.0,\textbf{1.00 $\pm$ 0.0}
-RF,F-score,1.86 $\pm$ 0.35,\textbf{1.14 $\pm$ 0.35}
-RF,G-mean,2.00 $\pm$ 0.0,\textbf{1.00 $\pm$ 0.0}
