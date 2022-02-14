@@ -29,7 +29,7 @@ VERSION = __version__
 SHORT_DESCRIPTION = (
     "Implementation of Machine Learning algorithms, experiments and utilities."
 )
-with codecs.open("README.rst", encoding="utf-8-sig") as f:
+with codecs.open("README.md", encoding="utf-8-sig") as f:
     LONG_DESCRIPTION = f.read()
 LICENSE = "MIT"
 CLASSIFIERS = [
