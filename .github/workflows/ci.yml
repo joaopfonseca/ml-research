@@ -1,0 +1,66 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+
+jobs:
+  linting:
+    name: Linting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+          architecture: x64
+
+      - name: Install linters
+        run: |
+          BLACK=$(python mlresearch/_min_dependencies.py black)
+          pip install pytest mypy==0.782 black==$BLACK
+      - name: Run black
+        run: |
+          black --check --diff .
+      # - name: Run mypy
+      #   run: |
+      #     mypy --ignore-missing-imports --no-strict-optional mlresearch/
+    
+
+  build:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: [3.8, 3.9]
+    name: ${{ matrix.os }} Python ${{ matrix.python }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+          architecture: x64
+
+      - name: Install
+        run: |
+          pip install .[tests,docs]
+
+      - name: Test library
+        run: |
+          make test
+
+      - name: Test Docs
+        run: |
+          cd docs
+          make html

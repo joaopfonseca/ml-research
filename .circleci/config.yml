@@ -2,20 +2,9 @@ version: 2.1
 
 orbs:
   python: circleci/python@1.2
-  win: circleci/windows@2.2.0
 
 jobs:
-  Windows-build:
-    executor: win/default
-    steps:
-      - checkout
-      - run:
-          command: |
-            pip install .[tests]
-            python -c "import mlresearch"
-            pytest --cov=mlresearch mlresearch
-
-  Linux-build:
+  Coverage:
     docker:
       - image: cimg/python:3.9
     steps:
@@ -23,7 +12,6 @@ jobs:
       - run:
           command: |
             pip install .[tests]
-            python -c "import mlresearch"
             make test
             coverage xml
             curl -Os https://uploader.codecov.io/latest/linux/codecov
@@ -32,7 +20,7 @@ jobs:
       - store_artifacts:
           path: ~/log.txt
 
-  Docs-test:
+  Docs:
     docker:
       - image: cimg/python:3.9
     steps:
@@ -56,12 +44,9 @@ jobs:
 
 # Invoke jobs via workflows
 workflows:
-  Linux-build: 
+  Coverage: 
     jobs:
-      - Linux-build
-  Windows-build:
+      - Coverage
+  Docs: 
     jobs:
-      - Windows-build
-  test-docs: 
-    jobs:
-      - Docs-test
+      - Docs
