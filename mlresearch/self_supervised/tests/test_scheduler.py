@@ -26,7 +26,7 @@ def test_lr_decay():
         epoch_lr.append(scheduler2.get_last_lr())
 
     is_decreasing = [
-        default_lr[i] < default_lr[i-1] for i in range(1, len(default_lr))
+        default_lr[i] < default_lr[i - 1] for i in range(1, len(default_lr))
     ]
 
     torch.testing.assert_allclose(default_lr, epoch_lr)
