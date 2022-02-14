@@ -28,6 +28,7 @@ class MLP(nn.Module):
         self.output_dim = output_dim
         self.input_dim = input_dim
         self.model = nn.Sequential(
+            nn.Flatten(),
             nn.Linear(input_dim, hidden_size, bias=False),
             nn.BatchNorm1d(hidden_size),
             nn.ReLU(inplace=True),
@@ -55,18 +56,24 @@ class BYOLArm(nn.Module):
 
         if type(encoder) == str:
             encoder = getattr(models, encoder)(pretrained=True, progress=True)
-            encoder.fc = nn.Identity()
+            encoder.fc = (
+                nn.Identity()
+                if encoder_out_dim == 2048
+                else nn.Sequential(
+                    nn.Linear(2048, encoder_out_dim, bias=False),
+                    nn.BatchNorm1d(encoder_out_dim),
+                    nn.ReLU(inplace=True),
+                )
+            )
 
         self.encoder = encoder
-
         self.projector = MLP(encoder_out_dim, projector_hidden_size, projector_out_dim)
-
         self.predictor = MLP(
             projector_out_dim, projector_hidden_size, projector_out_dim
         )
 
     def forward(self, x):
-        y = self.encoder(x)[0]
+        y = self.encoder(x)
         z = self.projector(y)
         h = self.predictor(z)
         return y, z, h
@@ -135,6 +142,7 @@ class LinearWarmupCosineAnnealingLR(_LRScheduler):
         self.max_epochs = max_epochs
         self.warmup_start_lr = warmup_start_lr
         self.eta_min = eta_min
+        self.last_epoch = last_epoch
 
         super().__init__(optimizer, last_epoch)
 
@@ -311,7 +319,6 @@ class BYOL(LightningModule):
         encoder_out_dim: int = 2048,
         projector_hidden_size: int = 4096,
         projector_out_dim: int = 256,
-        **kwargs
     ):
         """
         Args:
@@ -333,7 +340,12 @@ class BYOL(LightningModule):
 
         # TODO: Check where data augmentation is being done (and how).
 
-        self.online_network = BYOLArm()
+        self.online_network = BYOLArm(
+            encoder=base_encoder,
+            encoder_out_dim=encoder_out_dim,
+            projector_hidden_size=projector_hidden_size,
+            projector_out_dim=projector_out_dim,
+        )
         self.target_network = deepcopy(self.online_network)
         self.weight_callback = BYOLMAWeightUpdate()
 

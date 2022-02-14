@@ -5,10 +5,10 @@ References:
     - https://github.com/pytorch/pytorch/blob/1.6/torch/optim/sgd.py
 """
 import torch
-from torch.optim.optimizer import Optimizer, required
+from torch.optim import optimizer
 
 
-class LARS(Optimizer):
+class LARS(optimizer.Optimizer):
     """Extends SGD in PyTorch with LARS scaling from the paper
     `Large batch training of Convolutional Networks
     <https://arxiv.org/pdf/1708.03888.pdf>`_.
@@ -63,16 +63,16 @@ class LARS(Optimizer):
     def __init__(
         self,
         params,
-        lr=required,
+        lr=optimizer.required,
         momentum=0.9,
         dampening=0,
         weight_decay=1.5e-6,
         nesterov=False,
         trust_coefficient=1e-3,
         eps=1e-5,
-        exclude_bias_from_adaption=True
+        exclude_bias_from_adaption=True,
     ):
-        if lr is not required and lr < 0.0:
+        if lr is not optimizer.required and lr < 0.0:
             raise ValueError(f"Invalid learning rate: {lr}")
         if momentum < 0.0:
             raise ValueError(f"Invalid momentum value: {momentum}")
