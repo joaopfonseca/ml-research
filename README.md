@@ -18,9 +18,10 @@ ______________________________________________________________________
 This repository contains the software implementation of most algorithms used
 or developed in my research. The LaTeX and Python code for generating the
 paper, experiments' results and visualizations reported in each paper is
-available (whenever possible) in the paper's directory.
+available (whenever possible) in the [publications
+repo](github.com/joaopfonseca/publications).
 
-Additionally, contributions at the algorithm level are available in the
+Contributions at the algorithm level are available in the
 package ``mlresearch``.
 
 ## Installation
