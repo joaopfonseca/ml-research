@@ -24,11 +24,8 @@ class ContinuousCategoricalDatasets(Datasets):
     and categorical features."""
 
     @staticmethod
-    def _modify_columns(data):
+    def _modify_columns(data, categorical_features):
         """Rename and reorder columns of dataframe."""
-        categorical_features = data.columns[
-            data.columns.str.startswith("cat_")
-        ].tolist()
         X_metric, X_cat, y = (
             data.drop(columns=categorical_features + ["target"]),
             data[categorical_features],
@@ -59,12 +56,12 @@ class ContinuousCategoricalDatasets(Datasets):
                 file_name not in os.listdir(self.data_home_)
                 and self.download_if_missing
             ):
-                df, cat_feats = getattr(self, func_name)()
-                df.rename(columns={i: f"cat_{i}" for i in cat_feats}, inplace=True)
+                df, categorical_features = getattr(self, func_name)()
+                df = self._modify_columns(df, list(categorical_features))
                 df.to_csv(join(self.data_home_, file_name), index=False)
 
             data = pd.read_csv(join(self.data_home_, file_name))
-            data = self._modify_columns(data)
+
             self.content_.append((name, data))
         return self
 
@@ -225,8 +222,7 @@ class ContinuousCategoricalDatasets(Datasets):
         data = pd.read_csv(
             FETCH_URLS["echocardiogram"],
             header=None,
-            error_bad_lines=False,
-            warn_bad_lines=False,
+            on_bad_lines="skip",
             na_values="?",
         )
         data.drop(columns=[10, 11], inplace=True)
