@@ -24,11 +24,19 @@ class ContinuousCategoricalDatasets(Datasets):
     and categorical features."""
 
     @staticmethod
-    def _modify_columns(data, categorical_features):
+    def _modify_columns(data):
         """Rename and reorder columns of dataframe."""
-        X, y = data.drop(columns="target"), data.target
-        X.columns = range(len(X.columns))
-        return pd.concat([X, y], axis=1), categorical_features
+        categorical_features = data.columns[
+            data.columns.str.startswith("cat_")
+        ].tolist()
+        X_metric, X_cat, y = (
+            data.drop(columns=categorical_features + ["target"]),
+            data[categorical_features],
+            data.target,
+        )
+        X_metric.columns = range(len(X_metric.columns))
+        X_cat.columns = [f"cat_{i}" for i in range(len(X_cat.columns))]
+        return pd.concat([X_metric, X_cat, y], axis=1)
 
     def download(self):
         """Download the datasets."""
@@ -46,31 +54,29 @@ class ContinuousCategoricalDatasets(Datasets):
             dat_name = func_name.replace("fetch_", "")
             name = dat_name.upper().replace("_", " ")
             file_name = f"{dataset_prefix}_{dat_name}.csv"
-            cat_name = f"{dataset_prefix}_{dat_name}_categorical_features.pkl"
 
             if (
                 file_name not in os.listdir(self.data_home_)
                 and self.download_if_missing
             ):
                 df, cat_feats = getattr(self, func_name)()
+                df.rename(columns={i: f"cat_{i}" for i in cat_feats}, inplace=True)
                 df.to_csv(join(self.data_home_, file_name), index=False)
-                pickle.dump(cat_feats, open(join(self.data_home_, cat_name), "wb"))
 
-            categorical_features = pickle.load(
-                open(join(self.data_home_, cat_name), "rb")
-            )
             data = pd.read_csv(join(self.data_home_, file_name))
-            data, categorical_features = self._modify_columns(
-                data, categorical_features
-            )
-            self.content_.append((name, data, categorical_features))
+            data = self._modify_columns(data)
+            self.content_.append((name, data))
         return self
 
     def save(self, path, db_name):
         """Save datasets."""
-        with connect(join(path, f"{db_name}.db")) as connection:
-            for name, data in self.content_:
-                data.to_sql(name, connection, index=False, if_exists="replace")
+        connection = connect(join(path, f"{db_name}.db"))
+        cat_feats_datasets = {}
+        for name, data, cat_feats in self.content_:
+            data.to_sql(name, connection, index=False, if_exists="replace")
+            cat_feats_datasets[name] = cat_feats
+
+        pickle.dump(cat_feats_datasets, open(join(path, f"{db_name}.pkl"), "wb"))
 
     def fetch_adult(self):
         """Download and transform the Adult Data Set.
