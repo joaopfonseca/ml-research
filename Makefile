@@ -46,7 +46,7 @@ code-analysis:
 
 ## Format code using Black
 code-format:
-	black $(PROJECT_NAME) publications
+	black $(PROJECT_NAME)
 
 ## Run test suite and coverage
 test:
