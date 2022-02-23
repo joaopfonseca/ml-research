@@ -5,7 +5,7 @@ Base class for Active Learning models
 # Author: Joao Fonseca <jpfonseca@novaims.unl.pt>
 # License: MIT
 
-from abc import abstractmethod
+from abc import ABCMeta, abstractmethod
 from typing import Union
 import numpy as np
 from sklearn.base import ClassifierMixin, BaseEstimator, clone
@@ -13,10 +13,10 @@ from sklearn.utils import check_X_y
 from sklearn.ensemble import RandomForestClassifier
 
 from ._acquisition_functions import ACQUISITION_FUNCTIONS
-from ...metrics import SCORERS
+from ..metrics import SCORERS
 
 
-class BaseActiveLearner(BaseEstimator, ClassifierMixin):
+class BaseActiveLearner(BaseEstimator, metaclass=ABCMeta):
     """
     Base class to implement Active Learning models.
 

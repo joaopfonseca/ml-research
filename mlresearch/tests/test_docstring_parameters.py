@@ -54,10 +54,7 @@ with warnings.catch_warnings():
     )
 
 # functions to ignore args / docstring of
-_DOCSTRING_IGNORES = [
-    "RUSBoostClassifier",  # TODO remove after releasing scikit-learn 1.0.1
-    "ValueDifferenceMetric",
-]
+_DOCSTRING_IGNORES = []
 
 # Methods where y param should be ignored if y=None by default
 _METHODS_IGNORE_NONE_Y = [
@@ -70,8 +67,6 @@ _METHODS_IGNORE_NONE_Y = [
 ]
 
 
-# numpydoc 0.8.0's docscrape tool raises because of collections.abc under
-# Python 3.7
 @pytest.mark.filterwarnings("ignore::FutureWarning")
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")
 @pytest.mark.skipif(IS_PYPY, reason="test segfaults on PyPy")
@@ -83,7 +78,6 @@ def test_docstring_parameters():
         "numpydoc", reason="numpydoc is required to test the docstrings"
     )
 
-    # XXX unreached code as of v0.22
     from numpydoc import docscrape
 
     incorrect = []

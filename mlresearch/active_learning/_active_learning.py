@@ -1,64 +1,150 @@
-"""
-A wrapper to allow an automated Active Learning procedure for an
-experimental environment.
-"""
-
-# Author: Joao Fonseca <jpfonseca@novaims.unl.pt>
-# License: MIT
-
-import numpy as np
+from typing import Union
 from copy import deepcopy
-from sklearn.base import clone
-from sklearn.base import ClassifierMixin, BaseEstimator
-from sklearn.utils import check_X_y
-from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.preprocessing import MinMaxScaler
-from sklearn.ensemble import RandomForestClassifier
+import numpy as np
+from sklearn.base import ClassifierMixin, BaseEstimator, clone
+from sklearn.model_selection import GridSearchCV
 from imblearn.pipeline import Pipeline
-from ..metrics import SCORERS
-from ._selection_methods import UNCERTAINTY_FUNCTIONS
-from ._init_methods import init_strategy
+from imblearn.over_sampling.base import BaseOverSampler
+
+from .base import BaseActiveLearner
 
 
-class ALSimulation(ClassifierMixin, BaseEstimator):
+def _random_initialization(self, X=None, y=None, initial_selection=None):
+    """Randomly select an initial training dataset."""
+    if initial_selection is not None:
+        labeled_pool = initial_selection
+    else:
+        rng = np.random.RandomState(self.random_state)
+        labeled_pool = np.zeros(shape=(X.shape[0])).astype(bool)
+        ids = rng.choice(np.arange(X.shape[0]), self.n_init_, replace=False)
+        if np.unique(y[ids]).shape[0] == 1:
+            ids[-1] = rng.choice(
+                np.arange(X.shape[0])[y != y[ids][0]], 1, replace=False
+            )
+        labeled_pool[ids] = True
+    return labeled_pool
+
+
+class StandardAL(BaseActiveLearner, ClassifierMixin):
     """
-    Class to simulate Active Learning experiments.
-
-    This algorithm is an implementation of an Active Learning framework as
-    presented in [1]_. The initialization strategy is WIP.
+    Standard Active Learning model with a random initial data selection
 
     Parameters
     ----------
     classifier : classifier object, default=None
-        Classifier to be used as Chooser and Predictor, or a pipeline
-        containing both the generator and the classifier.
+        Classifier or pipeline to be trained in the iterative process. If None, defaults
+        to sklearn's RandomForestClassifier with default parameters and uses the
+        ``random_state`` passed in the Active Learning model.
+
+    acquisition_func : function or {'entropy', 'breaking_ties',\
+        'random'}, default=None
+        Method used to quantify the prediction's uncertainty level. All predefined
+        functions are set up so that a higher value means higher uncertainty (higher
+        likelihood of selection) and vice-versa. The uncertainty estimate is used to
+        select the instances to be added to the labeled/training dataset. Acquisition
+        functions may be added or changed in the ``UNCERTAINTY_FUNCTIONS`` dictionary.
+        If None, defaults to "random".
+
+    n_init : int or float, default=None
+        Number of observations to include in the initial training dataset. If
+        ``n_init`` < 1, then the corresponding percentage of the original dataset
+        will be used as the initial training set. If None, defaults to 2% of the size of
+        the original dataset.
+
+    budget : int or float, default=None
+        Number of observations to be added to the training dataset at each iteration. If
+        ``budget`` < 1, then the corresponding percentage of the original dataset will be
+        used as the initial training set. If None, defaults to 2% of the size of the
+        original dataset.
+
+    max_iter : int, default=None
+        Maximum number of iterations allowed. If None, the experiment will run until 100%
+        of the dataset is added to the training set.
+
+    evaluation_metric : string, default='accuracy'
+        Metric used to calculate the test scores. See
+        ``research.metrics`` for info on available
+        performance metrics.
+
+    continue_training : bool, default=False
+        If ``False``, fit a new classifier at each iteration. If ``True``, the
+        classifier fitted in the previous iteration is used for further training in
+        subsequent iterations.
+
+    random_state : int, RandomState instance, default=None
+        Control the randomization of the algorithm.
+
+        - If int, ``random_state`` is the seed used by the random number
+          generator;
+        - If ``RandomState`` instance, random_state is the random number
+          generator;
+        - If ``None``, the random number generator is the ``RandomState``
+          instance used by ``np.random``.
+
+    Attributes
+    ----------
+    acquisition_func_ : function
+        Method used to calculate the classification uncertainty at each iteration.
+    evaluation_metric_ : scorer
+        Metric used to estimate the performance of the AL classifier at each iteration.
+    classifier_ : estimator object
+        The classifier used in the iterative process. It is the classifier fitted in the
+        last iteration.
+    metadata_ : dict
+        Contains the performance estimations, classifiers, labeled pool mask and original
+        dataset.
+    n_init_ : int
+        Number of observations included in the initial training dataset.
+    budget_ : int
+        Number of observations to be added to the training set per iteration. Also known
+        as budget.
+    max_iter_ : int
+        Maximum number of iterations allowed.
+    labeled_pool_ : array-like of shape (n_samples,)
+        Mask that filters the labeled observations from the original dataset.
+    """
+
+    def _initialization(self, X=None, y=None, initial_selection=None):
+        labeled_pool = _random_initialization(self, X, y, initial_selection)
+        return labeled_pool
+
+    def _iteration(self, X, y, **kwargs):
+        self.classifier_.fit(X[self.labeled_pool_], y[self.labeled_pool_])
+        return self.classifier_.predict_proba(X[~self.labeled_pool_])
+
+    def _oracle(self, probabilities):
+        uncertainties = self.acquisition_func_(probabilities)
+        unlabeled_ids = np.argwhere(~self.labeled_pool_).squeeze()
+
+        ids = (
+            unlabeled_ids[np.argsort(uncertainties)[::-1][: self.budget_]]
+            if unlabeled_ids.ndim >= 1
+            else unlabeled_ids.flatten()[0]
+        )
+
+        self.labeled_pool_[ids] = True
+        return self
+
+
+class AugmentationAL(BaseActiveLearner, ClassifierMixin):
+    """
+    Active Learning with pipelined Data Augmentation. This method is implemented and
+    analysed in a working paper.
+
+    Parameters
+    ----------
+    classifier : classifier object, default=None
+        Classifier or pipeline to be trained in the iterative process. If None, defaults
+        to sklearn's RandomForestClassifier with default parameters and uses the
+        ``random_state`` passed in the Active Learning model.
 
     generator : generator estimator, default=None
         Generator to be used for artificial data generation within Active
         Learning iterations.
 
-    use_sample_weight : bool, default=False
-        Pass ``sample_weights`` as a fit parameter to the generator object. Used to
-        generate artificial data around samples with high uncertainty. ``sample_weights``
-        is an array-like of shape (n_samples,) containing the probabilities (based on
-        uncertainty) for selecting a sample as a center point.
-
-    init_clusterer : clusterer estimator, default=None
-        WIP
-
-    init_strategy : WIP, default='random'
-        WIP
-
-    selection_strategy : function or {'entropy', 'breaking_ties',\
-        'random'}, default='entropy'
-        Method used to quantify the chooser's uncertainty level. All predefined functions
-        are set up so that a higher value means higher uncertainty (higher likelihood of
-        selection) and vice-versa. The uncertainty estimate is used to select the
-        instances to be added to the labeled/training dataset. Selection strategies may
-        be added or changed in the ``UNCERTAINTY_FUNCTIONS`` dictionary.
-
     param_grid : dict or list of dictionaries
-        Used to optimize the classifier and generator hyperparameters at each iteration.
+        Used to optimize the classifier and generator hyperparameters at each iteration
+        via cross-validated grid-search. If None, parameter tuning is skipped.
         Dictionary with parameters names (``str``) as keys and lists of parameter
         settings to try as values, or a list of such dictionaries, in which case the
         grids spanned by each dictionary in the list are explored. This enables searching
@@ -78,42 +164,40 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
         other cases, :class:`KFold` is used. These splitters are instantiated
         with `shuffle=False` so the splits will be the same across calls.
 
+    acquisition_func : function or {'entropy', 'breaking_ties',\
+        'random'}, default=None
+        Method used to quantify the prediction's uncertainty level. All predefined
+        functions are set up so that a higher value means higher uncertainty (higher
+        likelihood of selection) and vice-versa. The uncertainty estimate is used to
+        select the instances to be added to the labeled/training dataset. Acquisition
+        functions may be added or changed in the ``UNCERTAINTY_FUNCTIONS`` dictionary.
+        If None, defaults to "random".
+
+    n_init : int or float, default=None
+        Number of observations to include in the initial training dataset. If
+        ``n_init`` < 1, then the corresponding percentage of the original dataset
+        will be used as the initial training set. If None, defaults to 2% of the size of
+        the original dataset.
+
+    budget : int or float, default=None
+        Number of observations to be added to the training dataset at each iteration. If
+        ``budget`` < 1, then the corresponding percentage of the original dataset will be
+        used as the initial training set. If None, defaults to 2% of the size of the
+        original dataset.
+
     max_iter : int, default=None
         Maximum number of iterations allowed. If None, the experiment will run until 100%
         of the dataset is added to the training set.
-
-    n_initial : int, default=.02
-        Number of observations to include in the initial training dataset. If
-        ``n_initial`` < 1, then the corresponding percentage of the original dataset
-        will be used as the initial training set.
-
-    increment : int, default=.02
-        Number of observations to be added to the training dataset at each
-        iteration. If ``n_initial`` < 1, then the corresponding percentage of the
-        original dataset will be used as the initial training set.
-
-    save_classifiers : bool, default=False
-        Save classifiers fit at each iteration. These classifiers are stored
-        in a list ``self.classifiers_``.
-
-    save_test_scores : bool, default=True
-        If ``True``, test scores are saved in the list ``self.test_scores_``.
-        Size of the test set is defined with the ``test_size`` parameter.
-
-    auto_load : bool, default=True
-        If `True`, the classifier with the best training score is saved in the
-        method ``self.classifier_``. It's the classifier object used in the
-        ``predict`` method.
-
-    test_size : float or int, default=None
-        If float, should be between 0.0 and 1.0 and represent the proportion of
-        the dataset to include in the test split. If int, represents the
-        absolute number of test samples. If None, the value is set to 0.25.
 
     evaluation_metric : string, default='accuracy'
         Metric used to calculate the test scores. See
         ``research.metrics`` for info on available
         performance metrics.
+
+    continue_training : bool, default=False
+        If ``False``, fit a new classifier at each iteration. If ``True``, the
+        classifier fitted in the previous iteration is used for further training in
+        subsequent iterations.
 
     random_state : int, RandomState instance, default=None
         Control the randomization of the algorithm.
@@ -127,371 +211,145 @@ class ALSimulation(ClassifierMixin, BaseEstimator):
 
     Attributes
     ----------
-    init_clusterer_ : clusterer estimator
-        Clustering object used to determined the initial training dataset.
-    n_initial_ : int
-        Number of observations included in the initial training dataset.
-    selection_strategy_ : function
-        Method used to calculate the classification uncertainty per iteration.
+    acquisition_func_ : function
+        Method used to calculate the classification uncertainty at each iteration.
     evaluation_metric_ : scorer
-        Metric used to estimate the performance of the AL classifier per iteration.
-    top_score_iter_ : int
-        Iteration that returns the best found performance over the test dataset.
+        Metric used to estimate the performance of the AL classifier at each iteration.
     classifier_ : estimator object
-        The classifier used in the iterative process.
-    data_utilization_ : list
-        Amount of data used at each iteration, in absolute and relative values.
+        The classifier used in the iterative process. It is the classifier fitted in the
+        last iteration.
+    metadata_ : dict
+        Contains the performance estimations, classifiers, labeled pool mask and original
+        dataset.
+    n_init_ : int
+        Number of observations included in the initial training dataset.
+    budget_ : int
+        Number of observations to be added to the training set per iteration.
     max_iter_ : int
         Maximum number of iterations allowed.
-    increment_ : int
-        Number of observations to be added to the training set per iteration. Also known
-        as budget.
-    test_scores_ : list
-        Classification performance per iteration over the test set.
-
-    References
-    ----------
-    .. [1] Fonseca, J., Douzas, G., Bacao, F. (2021). Increasing the
-       Effectiveness of Active Learning: Introducing Artificial Data Generation
-       in Active Learning for Land Use/Land Cover Classification. Remote
-       Sensing, 13(13), 2619. https://doi.org/10.3390/rs13132619
+    labeled_pool_ : array-like of shape (n_samples,)
+        Mask that filters the labeled observations from the original dataset.
     """
 
     def __init__(
         self,
-        classifier=None,
-        generator=None,
-        use_sample_weight=False,
-        init_clusterer=None,
-        init_strategy="random",
-        selection_strategy="entropy",
-        param_grid=None,
+        classifier: Union[BaseEstimator, ClassifierMixin] = None,
+        generator: BaseOverSampler = None,
+        param_grid: dict = None,
         cv=None,
-        max_iter=None,
-        n_initial=0.02,
-        increment=0.02,
-        save_classifiers=False,
-        save_test_scores=True,
-        auto_load=True,
-        test_size=None,
-        evaluation_metric="accuracy",
-        random_state=None,
+        acquisition_func=None,
+        n_init: Union[int, float] = None,
+        budget: Union[int, float] = None,
+        max_iter: int = None,
+        evaluation_metric=None,
+        continue_training: bool = False,
+        random_state: int = None,
     ):
-        self.classifier = classifier
+        super().__init__(
+            classifier=classifier,
+            acquisition_func=acquisition_func,
+            n_init=n_init,
+            budget=budget,
+            max_iter=max_iter,
+            evaluation_metric=evaluation_metric,
+            continue_training=continue_training,
+            random_state=random_state,
+        )
         self.generator = generator
-        self.use_sample_weight = use_sample_weight
-        self.init_clusterer = init_clusterer
-        self.init_strategy = init_strategy
         self.param_grid = param_grid
         self.cv = cv
-        self.selection_strategy = selection_strategy
-        self.max_iter = max_iter
-        self.n_initial = n_initial
-        self.increment = increment
-
-        # Used to find the optimal classifier
-        self.auto_load = auto_load
-        self.test_size = test_size
-        self.save_classifiers = save_classifiers
-        self.save_test_scores = save_test_scores
-        self.evaluation_metric = evaluation_metric
-
-        self.random_state = random_state
 
     def _check(self, X, y):
-        """Set up simple initialization parameters to run an AL simulation."""
+        super()._check(X, y)
 
-        X, y = check_X_y(X, y)
+        # Generator
+        if (
+            self.generator is not None
+            and hasattr(self.generator, "random_state")
+            and self.generator.random_state is None
+            and self.random_state is not None
+        ):
+            # Check random state
+            self._generator = clone(self.generator)
+            self._generator.set_params(random_state=self.random_state)
 
-        if self.evaluation_metric is None:
-            self.evaluation_metric_ = SCORERS["accuracy"]
-        elif type(self.evaluation_metric) == str:
-            self.evaluation_metric_ = SCORERS[self.evaluation_metric]
-        else:
-            self.evaluation_metric_ = self.evaluation_metric
+            # Add generator to classifier as a pipeline
+            generator = clone(self._generator)
+            classifier = clone(self._classifier)
+            self._classifier = Pipeline(
+                [("generator", generator), ("classifier", classifier)]
+            )
 
-        if self.classifier is None:
-            self._classifier = RandomForestClassifier(random_state=self.random_state)
-        else:
-            self._classifier = clone(self.classifier)
-
-        if type(self.selection_strategy) == str:
-            self.selection_strategy_ = UNCERTAINTY_FUNCTIONS[self.selection_strategy]
-        else:
-            self.selection_strategy_ = self.selection_strategy
-
-        if type(self.use_sample_weight) != bool:
+        # Check if parameters in param_grid are valid
+        if type(self.param_grid) == dict:
+            for key in self.param_grid.keys():
+                if key not in self._classifier.get_params():
+                    raise ValueError(
+                        f"Invalid parameter {key} for generator or classifier in {self} "
+                        "check the list of available parameters with "
+                        "`almodel._classifier.get_params().keys()`."
+                    )
+        elif self.param_grid is not None:
             raise TypeError(
-                "``use_sample_weight`` must be of type ``bool``. Got"
-                f" {self.use_sample_weight} instead."
+                f"``param_grid`` must be a dict or None. Got {self.param_grid} instead."
             )
 
-        if self.increment < 1:
-            inc_ = int(np.round(self.increment * X.shape[0]))
-            self.increment_ = inc_ if inc_ >= 1 else 1
-        else:
-            self.increment_ = self.increment
-
-        self.max_iter_ = (
-            self.max_iter
-            if self.max_iter is not None
-            else int(np.round(X.shape[0] / self.increment_) + 1)
-        )
-
-        if self.save_classifiers or self.save_test_scores:
-            self.data_utilization_ = []
-
-        if self.save_classifiers:
-            self.classifiers_ = []
-
-        if self.save_test_scores:
-            self.test_scores_ = []
-
-        if self.auto_load:
-            self.classifier_ = None
-            self._top_score = 0
-
-        if self.auto_load or self.save_test_scores:
-            X, X_test, y, y_test = train_test_split(
-                X,
-                y,
-                test_size=self.test_size,
-                random_state=self.random_state,
-                stratify=y,
-            )
-        else:
-            X_test, y_test = (None, None)
-
-        if self.n_initial < 1:
-            n_initial = int(np.round(self.n_initial * X.shape[0]))
-            self.n_initial_ = n_initial if n_initial >= 2 else 2
-        else:
-            self.n_initial_ = self.n_initial
-
-        return X, X_test, y, y_test
+    def _save_metadata(self, X, y, **kwargs):
+        super()._save_metadata(X, y, **kwargs)
+        if hasattr(self, "classifier_") and type(self.classifier_) == GridSearchCV:
+            self.metadata_[self._current_iter]["parameters"] = {
+                k: v
+                for k, v in self.classifier_.best_estimator_.get_params().items()
+                if k in self.param_grid.keys()
+            }
 
     def _check_cross_validation(self, y):
+        """Define cross-validation object"""
+
         min_frequency = np.unique(y, return_counts=True)[-1].min()
         cv = deepcopy(self.cv)
 
         if hasattr(self.cv, "n_splits"):
-            cv.n_splits = min(min_frequency, self.cv.n_splits)
+            cv.n_splits = min(min_frequency, cv.n_splits)
         elif type(self.cv) == int:
-            cv = min(min_frequency, self.cv)
-
+            cv = min(min_frequency, cv)
+        elif cv is None:
+            cv = min(min_frequency, 5)
+        else:
+            raise TypeError(
+                "``cv`` object must be of type int or cross-validation generator. Got "
+                f"{self.cv} instead"
+            )
         return cv
 
-    def _get_performance_scores(self):
-        data_utilization = [i[1] for i in self.data_utilization_]
-        test_scores = self.test_scores_
-        return data_utilization, test_scores
+    def _initialization(self, X=None, y=None, initial_selection=None):
+        labeled_pool = _random_initialization(self, X, y, initial_selection)
+        return labeled_pool
 
-    def _save_metadata(self, iter_n, classifier, X_test, y_test, selection):
-        """Save metadata from a completed iteration."""
+    def _iteration(self, X, y, **kwargs):
 
-        # Get score for current iteration
-        if self.save_test_scores or self.auto_load:
-            score = self.evaluation_metric_(classifier, X_test, y_test)
-
-        # Save classifier
-        if self.save_classifiers:
-            self.classifiers_.append(classifier)
-
-        # Save test scores
-        if self.save_test_scores:
-            self.test_scores_.append(score)
-
-            self.data_utilization_.append(
-                (selection.sum(), selection.sum() / selection.shape[0])
+        # Set up parameter tuning within iterations
+        cv = self._check_cross_validation(y[self.labeled_pool_])
+        if self.param_grid is not None and cv != 1:
+            self.classifier_ = GridSearchCV(
+                estimator=self.classifier_,
+                param_grid=self.param_grid,
+                scoring=self.evaluation_metric_,
+                cv=cv,
+                refit=True,
             )
+        self.classifier_.fit(X[self.labeled_pool_], y[self.labeled_pool_])
+        return self.classifier_.predict_proba(X[~self.labeled_pool_])
 
-        # Replace top classifier
-        if self.auto_load:
-            if score > self._top_score:
-                self._top_score = score
-                self.classifier_ = classifier
-                self.top_score_iter_ = iter_n
+    def _oracle(self, probabilities):
+        uncertainties = self.acquisition_func_(probabilities)
+        unlabeled_ids = np.argwhere(~self.labeled_pool_).squeeze()
 
-    def fit(self, X, y):
-        """
-        Run an Active Learning procedure from training set (X, y).
-
-        Parameters
-        ----------
-        X : {array-like, sparse matrix} of shape (n_samples, n_features)
-            The training input samples.
-
-        y : array-like of shape (n_samples,) or (n_samples, n_outputs)
-            The target values (class labels) as integers or strings.
-
-        Returns
-        -------
-        self : ALWrapper
-            Completed Active Learning procedure
-        """
-
-        # Original "unlabeled" dataset
-        X, X_test, y, y_test = self._check(X, y)
-        selection = np.zeros(shape=(X.shape[0])).astype(bool)
-        sample_weight = None
-
-        # Supervisor - Get data according to passed initialization method
-        self.init_clusterer_, ids = init_strategy(
-            X=X,
-            y=y,
-            n_initial=self.n_initial_,
-            clusterer=self.init_clusterer,
-            init_strategy=self.init_strategy,
-            selection_strategy=self.selection_strategy_,
-            random_state=self.random_state,
+        ids = (
+            unlabeled_ids[np.argsort(uncertainties)[::-1][: self.budget_]]
+            if unlabeled_ids.ndim >= 1
+            else unlabeled_ids.flatten()[0]
         )
 
-        selection[ids] = True
-
-        for iter_n in range(self.max_iter_):
-
-            # Generator + Chooser (in this case chooser==Predictor)
-            if self.generator is not None:
-                generator = clone(self.generator)
-                chooser = clone(self._classifier)
-
-                classifier = Pipeline([("generator", generator), ("chooser", chooser)])
-            else:
-                classifier = clone(self._classifier)
-
-            # Set up parameter tuning within iterations
-            if self.param_grid is not None:
-                cv = self._check_cross_validation(y[selection])
-                classifier = GridSearchCV(
-                    estimator=classifier,
-                    param_grid=self.param_grid,
-                    scoring=self.evaluation_metric,
-                    cv=cv,
-                    refit=True,
-                )
-
-            # Generate artificial data and train classifier
-            if self.use_sample_weight:
-
-                # Save oversampler name to pass sample weight
-                ovr_name = (
-                    classifier.steps[-2][0]
-                    if self.param_grid is None
-                    else classifier.estimator.steps[-2][0]
-                )
-
-                classifier.fit(
-                    X[selection],
-                    y[selection],
-                    **{f"{ovr_name}__sample_weight": sample_weight},
-                )
-
-                # Compute the class probabilities of labeled observations
-                labeled_ids = np.argwhere(selection).squeeze()
-                probabs_labeled = classifier.predict_proba(X[selection])
-                probabs_labeled = np.where(
-                    probabs_labeled == 0.0, 1e-10, probabs_labeled
-                )
-            else:
-                classifier.fit(X[selection], y[selection])
-
-            # Save metadata from current iteration
-            self._save_metadata(iter_n, classifier, X_test, y_test, selection)
-
-            # Compute the class probabilities of unlabeled observations
-            unlabeled_ids = np.argwhere(~selection).squeeze()
-            probabs = classifier.predict_proba(X[~selection])
-            probabs = np.where(probabs == 0.0, 1e-10, probabs)
-
-            # Calculate uncertainty
-            uncertainty = self.selection_strategy_(probabs)
-            if self.use_sample_weight:
-                uncertainty = (
-                    MinMaxScaler().fit_transform(uncertainty.reshape(-1, 1)).squeeze()
-                )
-                uncertainty_labeled = (
-                    MinMaxScaler()
-                    .fit_transform(
-                        self.selection_strategy_(probabs_labeled).reshape(-1, 1)
-                    )
-                    .squeeze()
-                )
-
-            # Get data according to passed selection criterion
-            if self.selection_strategy != "random":
-                ids = (
-                    unlabeled_ids[np.argsort(uncertainty)[::-1][: self.increment_]]
-                    if unlabeled_ids.ndim >= 1
-                    else unlabeled_ids.flatten()[0]
-                )
-            else:
-                rng = np.random.RandomState(self.random_state)
-                ids = rng.choice(unlabeled_ids, self.increment_, replace=False)
-
-            selection[ids] = True
-
-            # Update sample weights for the following iteration
-            if self.use_sample_weight:
-                sample_weight = np.zeros(selection.shape)
-                sample_weight[labeled_ids] = uncertainty_labeled
-                sample_weight[unlabeled_ids] = uncertainty
-                sample_weight = sample_weight[selection]
-
-                # Corner case: when there is no uncertainty
-                if np.isnan(sample_weight).all():
-                    sample_weight = np.ones(sample_weight.shape)
-
-            # stop if all examples have been included
-            if selection.all():
-                break
-            elif selection.sum() + self.increment_ > y.shape[0]:
-                self.increment_ = y.shape[0] - selection.sum()
-
+        self.labeled_pool_[ids] = True
         return self
-
-    def load_best_classifier(self, X, y):
-        """
-        Loads the best classifier in the ``self.classifiers_`` list.
-
-        The best classifier is used in the predict method according to the
-        performance metric passed.
-
-        Parameters
-        ----------
-        X : {array-like, sparse matrix} of shape (n_samples, n_features)
-            The test input samples.
-
-        y : array-like of shape (n_samples,) or (n_samples, n_outputs)
-            The target values (class labels) as integers or strings.
-
-        Returns
-        -------
-        self : ALWrapper
-            Completed Active Learning procedure
-        """
-        scores = []
-        for classifier in self.classifiers_:
-            scores.append(self.evaluation_metric_(classifier, X, y))
-
-        self.classifier_ = self.classifiers_[np.argmax(scores)]
-        return self
-
-    def predict(self, X):
-        """
-        Predict class or regression value for X.
-
-        For a classification model, the predicted class for each sample in X is
-        returned. For a regression model, the predicted value based on X is
-        returned.
-
-        Parameters
-        ----------
-        X : {array-like, sparse matrix} of shape (n_samples, n_features)
-            The test input samples.
-
-        Returns
-        -------
-        y : array-like of shape (n_samples,) or (n_samples, n_outputs)
-            The predicted classes, or the predict values.
-        """
-        return self.classifier_.predict(X)

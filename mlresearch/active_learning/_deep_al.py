@@ -1,17 +1,18 @@
+from sklearn.base import ClassifierMixin
 from .base import BaseActiveLearner
 
 
-class SelfSupervisedAL(BaseActiveLearner):
+class SelfSupervisedAL(BaseActiveLearner, ClassifierMixin):
     """Active Learning with self supervision."""
 
 
-class LADA(BaseActiveLearner):
+class LADA(BaseActiveLearner, ClassifierMixin):
     """Look-Ahead Data Augmentation for Active Learning implementation."""
 
 
-class LearningLoss(BaseActiveLearner):
+class LearningLoss(BaseActiveLearner, ClassifierMixin):
     """Learning Loss implementation."""
 
 
-class CoreSet(BaseActiveLearner):
+class CoreSet(BaseActiveLearner, ClassifierMixin):
     """Coreset Active Learning implementation."""

@@ -13,7 +13,7 @@ from rlearn.utils import check_random_states
 from rlearn.model_selection import ModelSearchCV
 
 from .._check_pipelines import check_pipelines, check_pipelines_wrapper
-from ...active_learning import ALSimulation
+from ...active_learning import StandardAL
 from ...data_augmentation import OverSamplingAugmentation
 
 
@@ -245,8 +245,8 @@ def test_check_pipelines_wrapper():
     classifiers = [("clf", DecisionTreeClassifier(), {"max_depth": [3, 5]})]
     al_model = (
         "AL-TEST",
-        ALSimulation(max_iter=2),
-        {"selection_strategy": ["random", "entropy", "breaking_ties"]},
+        StandardAL(max_iter=2),
+        {"acquisition_func": ["random", "entropy", "breaking_ties"]},
     )
 
     we_wpg = check_pipelines_wrapper(

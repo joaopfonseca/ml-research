@@ -6,7 +6,7 @@ from sklearn.utils.validation import check_random_state
 from sklearn.utils._testing import assert_array_equal
 from sklearn.ensemble import RandomForestClassifier
 
-from ....data_augmentation import OverSamplingAugmentation, GeometricSMOTE
+from ...data_augmentation import OverSamplingAugmentation, GeometricSMOTE
 from .._acquisition_functions import ACQUISITION_FUNCTIONS
 from .._active_learning import StandardAL, AugmentationAL
 
