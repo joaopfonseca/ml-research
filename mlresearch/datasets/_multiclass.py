@@ -65,16 +65,6 @@ class ContinuousCategoricalDatasets(Datasets):
             self.content_.append((name, data))
         return self
 
-    def save(self, path, db_name):
-        """Save datasets."""
-        connection = connect(join(path, f"{db_name}.db"))
-        cat_feats_datasets = {}
-        for name, data, cat_feats in self.content_:
-            data.to_sql(name, connection, index=False, if_exists="replace")
-            cat_feats_datasets[name] = cat_feats
-
-        pickle.dump(cat_feats_datasets, open(join(path, f"{db_name}.pkl"), "wb"))
-
     def fetch_adult(self):
         """Download and transform the Adult Data Set.
 
