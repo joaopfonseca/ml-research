@@ -15,8 +15,16 @@ ______________________________________________________________________
 <a href="https://doi.org/10.3390/RS13132619"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.3390/RS13132619.svg"></a>
 </p>
 
-This repository contains the software implementation of most algorithms used
-or developed in my research. The LaTeX and Python code for generating the
+``ML-Research`` is an open source library for machine learning research.  It
+contains the software implementation of most algorithms used or developed in
+my research. Specifically, it contains ``scikit-learn`` compatible
+implementations for Active Learning, Oversampling, Datasets and various
+utilities to assist in experiment design and results reporting. Other
+techniques, such as self-supervised learning and semi-supervised learning are
+currently under development and are being implemented in ``pytorch`` and
+intended to be ``scikit-learn`` compatible.
+
+The LaTeX and Python code for generating the
 paper, experiments' results and visualizations reported in each paper is
 available (whenever possible) in the [publications
 repo](https://github.com/joaopfonseca/publications).
@@ -39,7 +47,7 @@ ML-Research requires:
 - rich (>= 10.16.1)
 - matplotlib (>= 2.2.3)
 - seaborn (>= 0.9.0)
-- rlearn (>= 0.2.1)
+- research-learn (>= 0.2.1)
 - pytorch (>= 1.10.1)
 - torchvision (>= 0.11.2)
 - pytorch_lightning (>= 1.5.8)
