@@ -10,6 +10,7 @@ ______________________________________________________________________
 <a href="https://codecov.io/gh/joaopfonseca/ml-research"><img alt="Codecov" src="https://codecov.io/gh/joaopfonseca/ml-research/branch/master/graph/badge.svg?token=J2EBA4YTMN"></a>
 <a href="https://mlresearch.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/mlresearch/badge/?version=latest"></a>
 <a href="https://badge.fury.io/py/ml-research"><img alt="Pypi Version" src="https://badge.fury.io/py/ml-research.svg"></a>
+<a href="https://pepy.tech/project/ml-research"><img alt="Downloads" src="https://pepy.tech/badge/ml-research"></a>
 <a href="https://github.com/psf/black"><img alt="Black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 <a href="https://img.shields.io/badge/python-3.8%20|%203.9-blue"><img alt="Python Versions" src="https://img.shields.io/badge/python-3.8%20|%203.9-blue"></a>
 <a href="https://doi.org/10.3390/RS13132619"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.3390/RS13132619.svg"></a>
