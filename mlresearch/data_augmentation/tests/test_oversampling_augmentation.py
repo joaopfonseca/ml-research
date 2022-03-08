@@ -24,6 +24,9 @@ OVERSAMPLERS = [
     SVMSMOTE(random_state=RANDOM_STATE),
 ]
 
+X = np.array([(0.0, 0.0), (1.0, 1.0), (2.0, 2.0), (3.0, 3.0), (4.0, 4.0)])
+y = np.array([0, 0, 1, 1, 1])
+
 
 def test_modify_nn_object():
     """Test the modification of nn object."""
@@ -79,49 +82,38 @@ def test_clone_modify_neighbors(oversampler):
 
 
 @pytest.mark.parametrize(
-    "X,y,generator",
+    "generator",
     [
-        (
-            np.array([(0.0, 0.0), (1.0, 1.0), (2.0, 2.0), (3.0, 3.0), (4.0, 4.0)]),
-            np.array([0, 0, 1, 1, 1]),
-            OverSamplingAugmentation(
-                oversampler=SMOTE(k_neighbors=5),
-                random_state=RANDOM_STATE,
-            ),
+        OverSamplingAugmentation(
+            oversampler=SMOTE(k_neighbors=5),
+            random_state=RANDOM_STATE,
         ),
-        (
-            np.array([(0.0, 0.0), (1.0, 1.0), (2.0, 2.0), (3.0, 3.0), (4.0, 4.0)]),
-            np.array([0, 0, 1, 1, 1]),
-            OverSamplingAugmentation(
-                oversampler=SMOTE(k_neighbors=5, random_state=RANDOM_STATE),
-                random_state=RANDOM_STATE,
-                augmentation_strategy="constant",
-                value=10,
-            ),
+        OverSamplingAugmentation(
+            oversampler=SMOTE(k_neighbors=5, random_state=RANDOM_STATE),
+            random_state=RANDOM_STATE,
+            augmentation_strategy="constant",
+            value=10,
         ),
-        (
-            np.array([(0.0, 0.0), (1.0, 1.0), (2.0, 2.0), (3.0, 3.0), (4.0, 4.0)]),
-            np.array([0, 0, 1, 1, 1]),
-            OverSamplingAugmentation(
-                oversampler=SMOTE(k_neighbors=5, random_state=RANDOM_STATE),
-                random_state=RANDOM_STATE,
-                augmentation_strategy="proportional",
-                value=10,
-            ),
+        OverSamplingAugmentation(
+            oversampler=SMOTE(k_neighbors=5, random_state=RANDOM_STATE),
+            random_state=RANDOM_STATE,
+            augmentation_strategy="proportional",
+            value=10,
         ),
-        (
-            np.array([(0.0, 0.0), (1.0, 1.0), (2.0, 2.0), (3.0, 3.0), (4.0, 4.0)]),
-            np.array([0, 0, 1, 1, 1]),
-            OverSamplingAugmentation(
-                oversampler=SMOTE(k_neighbors=5, random_state=RANDOM_STATE),
-                random_state=RANDOM_STATE,
-                augmentation_strategy=2,
-            ),
+        OverSamplingAugmentation(
+            oversampler=SMOTE(k_neighbors=5, random_state=RANDOM_STATE),
+            random_state=RANDOM_STATE,
+            augmentation_strategy=2,
+        ),
+        OverSamplingAugmentation(
+            oversampler=SMOTE(k_neighbors=5, random_state=RANDOM_STATE),
+            random_state=RANDOM_STATE,
+            augmentation_strategy={0: 6, 1: 10},
         ),
     ],
 )
 @ignore_warnings
-def test_fit_resample(X, y, generator):
+def test_fit_resample(generator):
     """Test the fit_resample method for various
     cases and data generator."""
     n_exp_obs = {
@@ -129,8 +121,24 @@ def test_fit_resample(X, y, generator):
         "constant": {0: 10, 1: 10},
         "proportional": {0: 4, 1: 6},
         "2": {0: 4, 1: 6},
+        "{0: 6, 1: 10}": {0: 6, 1: 10},
     }
 
     X_res, y_res = generator.fit_resample(X, y)
     y_count = dict(Counter(y_res))
     assert y_count == n_exp_obs[str(generator.augmentation_strategy)]
+
+
+def test_errors():
+    oversampler = OverSamplingAugmentation(
+        oversampler=SMOTE(k_neighbors=5, random_state=RANDOM_STATE),
+        random_state=RANDOM_STATE,
+        augmentation_strategy="proportional",
+        value=2,
+    )
+    err_msg = (
+        "The new size of the augmented dataset must be larger than the original "
+        + "dataset. Originally, there are 5 samples and 2 samples are asked."
+    )
+    with pytest.raises(ValueError, match=err_msg):
+        oversampler.fit_resample(X, y)
