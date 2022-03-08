@@ -1,4 +1,5 @@
 import pytest
+import re
 import numpy as np
 from collections import Counter
 from sklearn.neighbors import NearestNeighbors
@@ -127,18 +128,58 @@ def test_fit_resample(generator):
     X_res, y_res = generator.fit_resample(X, y)
     y_count = dict(Counter(y_res))
     assert y_count == n_exp_obs[str(generator.augmentation_strategy)]
+    assert generator._fit_resample(X, y) is None  # _fit_resample shouldn't do anything
 
 
-def test_errors():
-    oversampler = OverSamplingAugmentation(
-        oversampler=SMOTE(k_neighbors=5, random_state=RANDOM_STATE),
-        random_state=RANDOM_STATE,
-        augmentation_strategy="proportional",
-        value=2,
-    )
-    err_msg = (
-        "The new size of the augmented dataset must be larger than the original "
-        + "dataset. Originally, there are 5 samples and 2 samples are asked."
-    )
-    with pytest.raises(ValueError, match=err_msg):
-        oversampler.fit_resample(X, y)
+@pytest.mark.parametrize(
+    "generator, err_msg",
+    [
+        (
+            OverSamplingAugmentation(
+                oversampler=SMOTE(k_neighbors=5),
+                augmentation_strategy="proportional",
+                value=2,
+            ),
+            (
+                "The new size of the augmented dataset must be larger than the original "
+                "dataset. Originally, there are 5 samples and 2 samples are asked."
+            ),
+        ),
+        (
+            OverSamplingAugmentation(
+                oversampler=SMOTE(k_neighbors=5),
+                augmentation_strategy="option",
+            ),
+            (
+                "When 'augmentation_strategy' is neither an int or float, it needs to be"
+                " one of ['oversampling', 'constant', 'proportional']. Got 'option' "
+                "instead."
+            ),
+        ),
+        (
+            OverSamplingAugmentation(
+                oversampler=SMOTE(k_neighbors=5),
+                augmentation_strategy="constant",
+                value="10",
+            ),
+            (
+                "When 'augmentation_strategy' is 'constant' or 'proportional', 'value' "
+                "needs to be an int or float. Got 10 instead."
+            ),
+        ),
+        (
+            OverSamplingAugmentation(
+                oversampler=SMOTE(k_neighbors=5),
+                augmentation_strategy="proportional",
+                value="10",
+            ),
+            (
+                "When 'augmentation_strategy' is 'constant' or 'proportional', 'value' "
+                "needs to be an int or float. Got 10 instead."
+            ),
+        ),
+    ],
+)
+def test_errors(generator, err_msg):
+    with pytest.raises(ValueError, match=re.escape(err_msg)):
+        generator.fit_resample(X, y)
