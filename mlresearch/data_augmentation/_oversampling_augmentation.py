@@ -152,7 +152,7 @@ class OverSamplingAugmentation(BaseOverSampler):
             and self.augmentation_strategy not in AUGMENTATION_STRATEGIES
         ):
             raise ValueError(
-                f"When 'augmentation_strategy' in neither an int or float,"
+                f"When 'augmentation_strategy' is neither an int or float,"
                 f" it needs to be one of {AUGMENTATION_STRATEGIES}. Got "
                 f"'{self.augmentation_strategy}' instead."
             )
