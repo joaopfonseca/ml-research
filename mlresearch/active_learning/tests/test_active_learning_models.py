@@ -1,12 +1,15 @@
 """Testing active learning models."""
 import pytest
+from itertools import product
 import numpy as np
 from sklearn import datasets
 from sklearn.utils.validation import check_random_state
-from sklearn.utils._testing import assert_array_equal
+from sklearn.utils._testing import assert_array_equal, ignore_warnings
+from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import RandomForestClassifier
 
 from ...data_augmentation import OverSamplingAugmentation, GeometricSMOTE
+from ...metrics import SCORERS
 from .._acquisition_functions import ACQUISITION_FUNCTIONS
 from .._active_learning import StandardAL, AugmentationAL
 
@@ -22,7 +25,7 @@ true_result = [-1, 1, 1]
 
 # Larger classification sample used for testing feature importances
 X_large, y_large = datasets.make_classification(
-    n_samples=500,
+    n_samples=100,
     n_features=10,
     n_informative=3,
     n_redundant=0,
@@ -111,3 +114,69 @@ def test_classifier_metadata(name):
 
     assert al_model._has_test
     assert list(metadata.keys()) == exp_metadata_keys
+
+
+@pytest.mark.parametrize("name", ACTIVE_LEARNERS.keys())
+@ignore_warnings
+def test_al_params(name):
+    """Test less commonly used parameters"""
+    # generator = OverSamplingAugmentation(GeometricSMOTE(n_jobs=-1))
+    classifier = MLPClassifier(max_iter=2)
+
+    # passing a function instead of a string and set continued training
+    al_model = ACTIVE_LEARNERS[name](
+        classifier=classifier,
+        acquisition_func=ACQUISITION_FUNCTIONS["entropy"],
+        continue_training=True,
+        max_iter=5,
+        n_init=2,
+        budget=1,
+    )
+    al_model.fit(X, y)
+
+    # passing various types of values for initialization and budget
+    for param, n in product(["n_init", "budget"], [0.01, 2]):
+        al_model = ACTIVE_LEARNERS[name](
+            classifier=classifier,
+            acquisition_func=ACQUISITION_FUNCTIONS["entropy"],
+            n_init=2,
+            budget=1,
+            max_iter=5,
+        )
+        al_model.set_params(**{param: n})
+        al_model.fit(X, y)
+
+        assert al_model.get_params()[param] == n
+        assert getattr(al_model, "n_init_") == 2
+        if param == "n_init" or al_model.budget == 0.01:
+            assert getattr(al_model, "budget_") == 1
+        else:
+            assert getattr(al_model, "budget_") == 2
+
+    # passing an evaluation metric as string
+    ACTIVE_LEARNERS[name](
+        classifier=classifier,
+        evaluation_metric="f1_macro",
+        n_init=2,
+        budget=1,
+        max_iter=5,
+    ).fit(X, y)
+
+    # passing an evaluation metric as function
+    ACTIVE_LEARNERS[name](
+        classifier=classifier,
+        evaluation_metric=SCORERS["f1_macro"],
+        n_init=2,
+        budget=1,
+        max_iter=5,
+    ).fit(X, y)
+
+    # fit with test set
+    ACTIVE_LEARNERS[name](
+        classifier=classifier, n_init=2, budget=1, max_iter=5, continue_training=False
+    ).fit(X, y, X_test=T, y_test=true_result).predict(T)
+
+
+# @pytest.mark.parametrize("name", ACTIVE_LEARNERS.keys())
+# def test_errors(name):
+#     pass
