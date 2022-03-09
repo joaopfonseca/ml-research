@@ -164,8 +164,7 @@ class AugmentationAL(BaseActiveLearner, ClassifierMixin):
         other cases, :class:`KFold` is used. These splitters are instantiated
         with `shuffle=False` so the splits will be the same across calls.
 
-    acquisition_func : function or {'entropy', 'breaking_ties',\
-        'random'}, default=None
+    acquisition_func : function or {'entropy', 'breaking_ties', 'random'}, default=None
         Method used to quantify the prediction's uncertainty level. All predefined
         functions are set up so that a higher value means higher uncertainty (higher
         likelihood of selection) and vice-versa. The uncertainty estimate is used to
@@ -191,7 +190,7 @@ class AugmentationAL(BaseActiveLearner, ClassifierMixin):
 
     evaluation_metric : string, default='accuracy'
         Metric used to calculate the test scores. See
-        ``research.metrics`` for info on available
+        ``mlresearch.metrics`` for info on available
         performance metrics.
 
     continue_training : bool, default=False
@@ -202,12 +201,10 @@ class AugmentationAL(BaseActiveLearner, ClassifierMixin):
     random_state : int, RandomState instance, default=None
         Control the randomization of the algorithm.
 
-        - If int, ``random_state`` is the seed used by the random number
-          generator;
-        - If ``RandomState`` instance, random_state is the random number
-          generator;
-        - If ``None``, the random number generator is the ``RandomState``
-          instance used by ``np.random``.
+        - If int, ``random_state`` is the seed used by the random number generator;
+        - If ``RandomState`` instance, random_state is the random number generator;
+        - If ``None``, the random number generator is the ``RandomState`` instance used
+          by ``np.random``.
 
     Attributes
     ----------
