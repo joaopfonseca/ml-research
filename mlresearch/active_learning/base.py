@@ -159,7 +159,7 @@ class BaseActiveLearner(BaseEstimator, metaclass=ABCMeta):
 
         # Number of initial observations
         if self.n_init is None or self.n_init < 1:
-            perc = 0.02 if self.budget is None else self.budget
+            perc = 0.02 if self.n_init is None else self.n_init
             n_init_ = int(np.round(perc * X.shape[0]))
         else:
             n_init_ = self.n_init
