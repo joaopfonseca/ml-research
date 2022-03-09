@@ -321,7 +321,10 @@ class BaseActiveLearner(BaseEstimator, metaclass=ABCMeta):
         """
         if not self._continue_training and self._has_test:
             iter_perf = np.array(
-                [[i, self.metadata_[i]["test_score"]] for i in self.metadata_.keys()]
+                [
+                    [i, self.metadata_[i]["test_score"]]
+                    for i in range(1, self._current_iter + 1)
+                ]
             )
             index = iter_perf[np.argmax(iter_perf, axis=0)[1]][0]
             return self.metadata_[index]["classifier"].predict(X)
