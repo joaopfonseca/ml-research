@@ -207,7 +207,9 @@ class BaseActiveLearner(BaseEstimator, metaclass=ABCMeta):
             }
         else:
             # Raise error, model is already fitted
-            raise StopIteration(f"Active Learning model {self} is already initialized.")
+            raise StopIteration(
+                f"Active Learning model {type(self).__name__} is already initialized."
+            )
 
     def _save_metadata(self, X, y, X_test=None, y_test=None):
         self.metadata_[self._current_iter] = {"labeled_pool": self.labeled_pool_.copy()}
@@ -240,7 +242,7 @@ class BaseActiveLearner(BaseEstimator, metaclass=ABCMeta):
         if not hasattr(self, "_current_iter"):
             # Raise error, model is not initialized
             raise StopIteration(
-                f"Active Learning model {self.__name__} is not initialized yet."
+                f"Active Learning model {type(self).__name__} is not initialized yet."
             )
 
         # Create iteration's classifier if the previous one is not going to be
