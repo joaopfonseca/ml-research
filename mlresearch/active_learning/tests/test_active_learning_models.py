@@ -1,6 +1,7 @@
 """Testing active learning models."""
 import pytest
 from itertools import product
+import re
 import numpy as np
 from sklearn import datasets
 from sklearn.utils.validation import check_random_state
@@ -120,7 +121,6 @@ def test_classifier_metadata(name):
 @ignore_warnings
 def test_al_params(name):
     """Test less commonly used parameters"""
-    # generator = OverSamplingAugmentation(GeometricSMOTE(n_jobs=-1))
     classifier = MLPClassifier(max_iter=2)
 
     # passing a function instead of a string and set continued training
@@ -177,6 +177,21 @@ def test_al_params(name):
     ).fit(X, y, X_test=T, y_test=true_result).predict(T)
 
 
-# @pytest.mark.parametrize("name", ACTIVE_LEARNERS.keys())
-# def test_errors(name):
-#     pass
+@pytest.mark.parametrize("name", ACTIVE_LEARNERS.keys())
+@ignore_warnings
+def test_errors(name):
+    classifier = MLPClassifier(max_iter=2)
+    err_msg = "``continue_training`` must be of type ``bool``. Got err instead."
+    with pytest.raises(TypeError, match=re.escape(err_msg)):
+        ACTIVE_LEARNERS[name](
+            classifier=classifier, max_iter=5, continue_training="err"
+        ).fit(X, y)
+
+    al_model = ACTIVE_LEARNERS[name](classifier=classifier, max_iter=5)
+    err_msg = f"Active Learning model {type(al_model).__name__} is not initialized yet."
+    with pytest.raises(StopIteration, match=re.escape(err_msg)):
+        al_model.iteration(X, y)
+
+    err_msg = f"Active Learning model {type(al_model).__name__} is already initialized."
+    with pytest.raises(StopIteration, match=re.escape(err_msg)):
+        al_model.fit(X, y).fit(X, y)
