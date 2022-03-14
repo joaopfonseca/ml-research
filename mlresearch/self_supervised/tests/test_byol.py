@@ -17,15 +17,18 @@
 # CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
 # OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-import numpy as np
-from PIL import Image
-import pytorch_lightning as pl
+import multiprocessing
+from typing import Tuple
 import torch
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Dataset
+import pytorch_lightning as pl
+from torchvision import transforms
 from mlresearch.data_augmentation import ImageTransform
 from .._byol import BYOL
 
 pl.seed_everything(42, workers=True)
+
+CPUS = multiprocessing.cpu_count()
 
 DATA_KWARGS = {
     "brightness": 0.4,
@@ -66,37 +69,33 @@ BASE_KWARGS = {
 }
 
 
-def make_dataset(size=512, num_classes=10, img_shape=(32, 32)):
-    """Random image dataset generator"""
+class FakeCIFAR(Dataset):
+    def __init__(
+        self, size=512, num_classes=10, img_shape=(32, 32), img_transforms=None
+    ):
+        self.img_transforms = img_transforms
 
-    im = np.random.rand(size, 3, *img_shape) * 255
-    im = torch.from_numpy(im.astype("uint8"))
+        imgs = torch.rand(size, 3, *img_shape)
+        imgs = transforms.Normalize((0.4914, 0.4822, 0.4465), (0.247, 0.243, 0.261))(
+            imgs
+        )
 
-    idx = torch.arange(size)
-    label = torch.randint(low=0, high=num_classes, size=(size,))
+        self.X = imgs
+        self.y = torch.randint(low=0, high=num_classes, size=(size,))
 
-    batch = (idx, im, label)
+    def __len__(self):
+        return self.X.shape[0]
 
-    return batch
+    def __getitem__(self, idx):
+        if self.img_transforms is None:
+            return self.X[idx], self.y[idx]
+        else:
+            return self.img_transforms(self.X[idx]), self.y[idx]
 
 
-def gen_batch(batch_size, num_classes, size=32):
-
-    im = np.random.rand(size, size, 3) * 255
-    im = Image.fromarray(im.astype("uint8")).convert("RGB")
-
-    T = ImageTransform(**DATA_KWARGS)
-
-    x1, x2 = T(im), T(im)
-    x1 = x1.unsqueeze(0).repeat(batch_size, 1, 1, 1).requires_grad_(True)
-    x2 = x2.unsqueeze(0).repeat(batch_size, 1, 1, 1).requires_grad_(True)
-
-    idx = torch.arange(batch_size)
-    label = torch.randint(low=0, high=num_classes, size=(batch_size,))
-
-    batch = [idx, (x1, x2), label]
-
-    return batch
+class BYOLImageTransform(ImageTransform):
+    def __call__(self, x) -> Tuple[torch.Tensor, torch.Tensor]:
+        return self.transform(x), self.transform(x)
 
 
 ########################################################################################
@@ -104,27 +103,24 @@ def gen_batch(batch_size, num_classes, size=32):
 
 def test_byol():
 
+    data = FakeCIFAR(size=64)
+    img_transforms = BYOLImageTransform(**DATA_KWARGS)
     model = BYOL()
 
     # test forward
-    batch = gen_batch(BASE_KWARGS["batch_size"], BASE_KWARGS["num_classes"])
-    out = model(batch[1][0])
+    out = model(data[: BASE_KWARGS["batch_size"]][0])
     assert isinstance(out, torch.Tensor) and out.size() == (
         BASE_KWARGS["batch_size"],
         model.hparams["encoder_out_dim"],
     )
 
     # test fitting
-    trainer = pl.Trainer()
+    trainer = pl.Trainer(max_epochs=1, log_every_n_steps=1)
+    data.img_transforms = img_transforms
 
-    # pl.LightningDataModule
     train_dl = DataLoader(
-        make_dataset(size=512, num_classes=10, img_shape=(32, 32)),
-        batch_size=BASE_KWARGS["batch_size"],
+        data, batch_size=BASE_KWARGS["batch_size"], shuffle=True, num_workers=CPUS
     )
-    val_dl = DataLoader(
-        make_dataset(size=512, num_classes=10, img_shape=(32, 32)),
-        batch_size=BASE_KWARGS["batch_size"],
-    )
-    # TODO: finish test module and BYOL implementation
-    # trainer.fit(model, train_dl, val_dl)
+
+    val_dl = DataLoader(data, batch_size=BASE_KWARGS["batch_size"], num_workers=CPUS)
+    trainer.fit(model, train_dl, val_dl)
