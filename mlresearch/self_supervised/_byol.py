@@ -302,15 +302,29 @@ class BYOLMAWeightUpdate(Callback):
 class BYOL(LightningModule):
     """
     Pytorch implementation of Bootstrap Your Own Latent (BYOL).
+
+    Args:
+        datamodule: The datamodule
+        learning_rate: the learning rate
+        weight_decay: optimizer weight decay
+        input_height: image input height
+        batch_size: the batch size
+        num_workers: number of workers
+        warmup_epochs: num of epochs for scheduler warm up
+        max_epochs: max epochs for scheduler
+        base_encoder: the base encoder module or resnet name
+        encoder_out_dim: output dimension of base_encoder
+        projector_hidden_size: hidden layer size of projector MLP
+        projector_out_dim: output size of projector MLP
     """
 
     def __init__(
         self,
         learning_rate: float = 0.2,
         weight_decay: float = 1.5e-6,
-        exclude_bias_from_adaption: bool = True,  # Not implemented yet
+        exclude_bias_from_adaption: bool = True,
         input_height: int = 32,  # This is not in the paper's hyperparameters list
-        batch_size: int = 32,  # This is not the same value as in the paper
+        batch_size: int = 512,  # This is not the same value as in the paper
         num_workers: int = 0,
         warmup_epochs: int = 10,
         max_epochs: int = 1000,
@@ -319,25 +333,8 @@ class BYOL(LightningModule):
         projector_hidden_size: int = 4096,
         projector_out_dim: int = 256,
     ):
-        """
-        Args:
-            datamodule: The datamodule
-            learning_rate: the learning rate
-            weight_decay: optimizer weight decay
-            input_height: image input height
-            batch_size: the batch size
-            num_workers: number of workers
-            warmup_epochs: num of epochs for scheduler warm up
-            max_epochs: max epochs for scheduler
-            base_encoder: the base encoder module or resnet name
-            encoder_out_dim: output dimension of base_encoder
-            projector_hidden_size: hidden layer size of projector MLP
-            projector_out_dim: output size of projector MLP
-        """
         super().__init__()
         self.save_hyperparameters(ignore="base_encoder")
-
-        # TODO: Check where data augmentation is being done (and how).
 
         self.online_network = BYOLArm(
             encoder=base_encoder,
