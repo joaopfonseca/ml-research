@@ -1,22 +1,4 @@
-# Retrieved from solo-learn
-
-# Permission is hereby granted, free of charge, to any person obtaining a copy of
-# this software and associated documentation files (the "Software"), to deal in
-# the Software without restriction, including without limitation the rights to use,
-# copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the
-# Software, and to permit persons to whom the Software is furnished to do so,
-# subject to the following conditions:
-
-# The above copyright notice and this permission notice shall be included in all copies
-# or substantial portions of the Software.
-
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-# PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
-# CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
-# OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
+import pytest
 import multiprocessing
 from typing import Tuple
 import torch
@@ -25,9 +7,11 @@ import pytorch_lightning as pl
 from torchvision import transforms
 from mlresearch.data_augmentation import ImageTransform
 from .._byol import BYOL
+from .._simsiam import SimSiam
 
 pl.seed_everything(42, workers=True)
 
+MODELS = {"BYOL": BYOL, "SimSiam": SimSiam}
 CPUS = multiprocessing.cpu_count()
 
 DATA_KWARGS = {
@@ -93,7 +77,7 @@ class FakeCIFAR(Dataset):
             return self.img_transforms(self.X[idx]), self.y[idx]
 
 
-class BYOLImageTransform(ImageTransform):
+class SSLImageTransform(ImageTransform):
     def __call__(self, x) -> Tuple[torch.Tensor, torch.Tensor]:
         return self.transform(x), self.transform(x)
 
@@ -101,15 +85,17 @@ class BYOLImageTransform(ImageTransform):
 ########################################################################################
 
 
-def test_byol():
+@pytest.mark.parametrize("name", MODELS.keys())
+def test_models(name):
 
     data = FakeCIFAR(size=64)
-    img_transforms = BYOLImageTransform(**DATA_KWARGS)
-    model = BYOL()
+    img_transforms = SSLImageTransform(**DATA_KWARGS)
+    model = MODELS[name]()
 
     # test forward
     out = model(data[: BASE_KWARGS["batch_size"]][0])
-    assert isinstance(out, torch.Tensor) and out.size() == (
+    assert isinstance(out, torch.Tensor)
+    assert out.size() == (
         BASE_KWARGS["batch_size"],
         model.hparams["encoder_out_dim"],
     )
