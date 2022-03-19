@@ -89,6 +89,8 @@ class BYOL(LightningModule):
 
     The recommended batch sizes are 256 and 512.
 
+    .. warning:: Work in progress.
+
     Args:
         datamodule: The datamodule
         learning_rate: the learning rate
