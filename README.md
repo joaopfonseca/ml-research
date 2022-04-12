@@ -5,7 +5,6 @@
 ______________________________________________________________________
 
 <p align="center">
-<a href="https://circleci.com/gh/joaopfonseca/ml-research/tree/master"><img alt="CircleCI" src="https://circleci.com/gh/joaopfonseca/ml-research/tree/master.svg?style=shield"></a>
 <a href="https://github.com/joaopfonseca/ml-research/actions/workflows/ci.yml"><img alt="Github Actions" src="https://github.com/joaopfonseca/ml-research/actions/workflows/ci.yml/badge.svg"></a>
 <a href="https://codecov.io/gh/joaopfonseca/ml-research"><img alt="Codecov" src="https://codecov.io/gh/joaopfonseca/ml-research/branch/master/graph/badge.svg?token=J2EBA4YTMN"></a>
 <a href="https://mlresearch.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/mlresearch/badge/?version=latest"></a>
