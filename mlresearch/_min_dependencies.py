@@ -29,7 +29,7 @@ dependent_packages = {
     "pytorch-lightning": (PYTORCH_LIGHTNING_VERSION, "install"),
     "pytest-cov": ("3.0.0", "tests"),
     "flake8": ("3.8.2", "tests"),
-    "black": ("21.6b0", "tests"),
+    "black": ("22.3", "tests"),
     "pylint": ("2.12.2", "tests"),
     "coverage": ("6.2", "tests"),
     "sphinx": ("4.2.0", "docs"),
