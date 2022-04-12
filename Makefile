@@ -53,6 +53,7 @@ code-format:
 test:
 	rm -rf coverage .coverage
 	pytest --cov=$(PROJECT_NAME) $(PROJECT_NAME) 
+	coverage xml
 	# pytest docs/*.rst
 
 ## Upload new package version to pypi
