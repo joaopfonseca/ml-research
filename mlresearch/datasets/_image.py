@@ -2,24 +2,14 @@ import os
 from os.path import join, exists
 
 from torchvision import datasets
-from .base import get_data_home
+from .base import Datasets, get_data_home
 
 
-class PytorchDatasets:
+class PytorchDatasets(Datasets):
     """
     Download and save Pytorch image datasets. The data is stored both locally and in
     memory.
     """
-
-    def __init__(
-        self,
-        names: list = ["cifar10", "cifar100", "svhn", "fashionmnist"],
-        data_home: str = None,
-        download_if_missing: bool = True,
-    ):
-        self.names = names
-        self.data_home = data_home
-        self.download_if_missing = download_if_missing
 
     def fetch_cifar10(self):
         """Download the CIFAR-10 Data Set.

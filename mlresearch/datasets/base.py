@@ -6,13 +6,17 @@ Download, transform and simulate various datasets.
 #         Joao Fonseca <jpfonseca@novaims.unl.pt>
 # License: MIT
 
-from typing import Optional
+from typing import Optional, Union
 import os
 from os.path import expanduser, join
+from collections import Counter
 from urllib.parse import urljoin
 from sqlite3 import connect
 from rich.progress import track
+import numpy as np
 import pandas as pd
+from sklearn.utils import check_X_y
+from imblearn.datasets import make_imbalance
 
 UCI_URL = "https://archive.ics.uci.edu/ml/machine-learning-databases/"
 GIC_URL = "http://www.ehu.eus/ccwintco/uploads/"
@@ -140,14 +144,39 @@ def get_data_home(data_home: Optional[str] = None) -> str:
 
 
 class Datasets:
-    """Base class to download and save datasets."""
+    """
+    Base class to download and save datasets.
+    """
 
     def __init__(
         self,
-        names: str = "all",
+        names: Union[str, list] = "all",
         data_home: str = None,
         download_if_missing: bool = True,
     ):
+        """
+        Parameters
+        ----------
+        names : str or list, default="all"
+            List of dataset names to be downloaded. If ``all``, downloads all datasets.
+
+        data_home : str, default=None
+            The path to the data directory. If `None`, the default path
+            is `~/ml_research_data`.
+
+        download_if_missing : bool, default=True
+            If True, downloads the dataset from the internet and puts it in
+            ``data_home``. If the dataset is already downloaded, it is not downloaded
+            again.
+
+        Attributes
+        ----------
+        data_home_ : str
+            Path were the data was stored.
+
+        content_ : list
+            List of tuples composed of (Dataset name, Dataframe).
+        """
         self.names = names
         self.data_home = data_home
         self.download_if_missing = download_if_missing
@@ -158,6 +187,33 @@ class Datasets:
         X, y = data.drop(columns="target"), data.target
         X.columns = range(len(X.columns))
         return pd.concat([X, y], axis=1)
+
+    @staticmethod
+    def _calculate_sampling_strategy(ir, y):
+        """Calculate ratio based on the IR."""
+        ratio = Counter(y).most_common()
+        b = ratio[0][1]
+        c_min = ratio[0][1] / ir
+        m = (c_min - b) / (len(ratio) - 1)
+
+        sampling_strategy = {}
+        for x, (c, f) in enumerate(ratio):
+            f_new = int(np.clip(m * x + b, 1, f))
+            sampling_strategy[c] = f_new
+
+        return sampling_strategy
+
+    def _make_imbalance(self, data, sampling_strategy, random_state=None):
+        """Undersample the minority class."""
+        X_columns = [col for col in data.columns if col != "target"]
+        X, y = check_X_y(data.loc[:, X_columns], data.target)
+        X, y = make_imbalance(
+            X, y, sampling_strategy=sampling_strategy, random_state=random_state
+        )
+        data = pd.DataFrame(np.column_stack((X, y)))
+        data.iloc[:, -1] = data.iloc[:, -1].astype(int)
+        data.rename(columns={data.columns[-1]: "target"}, inplace=True)
+        return data
 
     def download(self):
         """Download the datasets."""
@@ -186,6 +242,50 @@ class Datasets:
             data = pd.read_csv(join(self.data_home_, file_name))
             data = self._modify_columns(data)
             self.content_.append((name, data))
+        return self
+
+    def imbalance_datasets(self, imbalance_ratio: float, random_state: int = None):
+        """
+        Appends imbalanced versions of datasets with predefined imbalance ratios to
+        ``self.content_``.
+
+        $IR = \frac{|C_{maj}|}{|C_{min}|}$
+
+        Parameters
+        ----------
+        imbalance_ratio : float
+            Final Imbalance Ratio expected in the datasets.
+
+        random_state : int, RandomState instance, default=None
+            Control the randomization of the algorithm.
+
+            - If int, ``random_state`` is the seed used by the random number
+              generator;
+            - If ``RandomState`` instance, random_state is the random number
+              generator;
+            - If ``None``, the random number generator is the ``RandomState``
+              instance used by ``np.random``.
+
+        Returns
+        -------
+        self
+
+        """
+        imbalanced_content = []
+        for name, data in self.content_:
+            sampling_strategy = self._calculate_sampling_strategy(
+                ir=imbalance_ratio, y=data.target
+            )
+            data_imb = self._make_imbalance(
+                data, sampling_strategy=sampling_strategy, random_state=random_state
+            )
+            freqs = list(Counter(data_imb.target).values())
+            actual_ir = int(max(freqs) / min(freqs))
+            name_imb = f"{name} ({actual_ir})"
+            if name_imb not in dict(self.content_).keys():
+                imbalanced_content.append((name_imb, data_imb))
+
+        self.content_.extend(imbalanced_content)
         return self
 
     def save(self, path, db_name):
