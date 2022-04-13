@@ -11,7 +11,7 @@ ______________________________________________________________________
 <a href="https://badge.fury.io/py/ml-research"><img alt="Pypi Version" src="https://badge.fury.io/py/ml-research.svg"></a>
 <a href="https://pepy.tech/project/ml-research"><img alt="Downloads" src="https://pepy.tech/badge/ml-research"></a>
 <a href="https://github.com/psf/black"><img alt="Black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-<a href="https://img.shields.io/badge/python-3.8%20|%203.9-blue"><img alt="Python Versions" src="https://img.shields.io/badge/python-3.8%20|%203.9-blue"></a>
+<a href="https://img.shields.io/badge/python-3.8%20|%203.9-blue"><img alt="Python Versions" src="https://img.shields.io/badge/python-3.8%20|%203.9%20|%203.10-blue"></a>
 <a href="https://doi.org/10.3390/RS13132619"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.3390/RS13132619.svg"></a>
 </p>
 
@@ -34,11 +34,9 @@ package ``mlresearch``.
 
 ## Installation
 
-A Python distribution of version 3.8 or 3.9 is required to run this project.
-Due to the computational limitations of the free tiers in CI/CD platforms,
-currently we cannot ensure compatibility with earlier Python versions.
-
-ML-Research requires:
+A Python distribution of version 3.8, 3.9 or 3.10 is required to run this
+project. Earlier Python versions might work in most cases, but they are not
+tested. ``ML-Research`` requires:
 
 - numpy (>= 1.14.6)
 - pandas (>= 1.3.5)
