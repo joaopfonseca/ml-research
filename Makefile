@@ -22,7 +22,6 @@ endif
 ## Install and Update Python Dependencies + ML-Research
 install-update: 
 	$(PYTHON_INTERPRETER) -m pip install -U pip setuptools wheel numpy
-	$(PYTHON_INTERPRETER) -m pip install -Ur requirements.dev.txt
 	$(PYTHON_INTERPRETER) -m pip install -Ue .
 
 ## Delete all compiled Python files
