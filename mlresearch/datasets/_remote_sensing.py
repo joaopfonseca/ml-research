@@ -24,6 +24,33 @@ class RemoteSensingDatasets(Datasets):
         data_home: str = None,
         download_if_missing: bool = True,
     ):
+        """
+        Parameters
+        ----------
+        names : str or list, default="all"
+            List of dataset names to be downloaded. If ``all``, downloads all datasets.
+
+        return_coords : bool, default=False
+            If ``True``, two columns with x and y coordinates will be added to the
+            dataframe.
+
+        data_home : str, default=None
+            The path to the data directory. If `None`, the default path
+            is `~/ml_research_data`.
+
+        download_if_missing : bool, default=True
+            If True, downloads the dataset from the internet and puts it in
+            ``data_home``. If the dataset is already downloaded, it is not downloaded
+            again.
+
+        Attributes
+        ----------
+        data_home_ : str
+            Path were the data was stored.
+
+        content_ : list
+            List of tuples composed of (Dataset name, Dataframe).
+        """
         self.names = names
         self.return_coords = return_coords
         self.data_home = data_home

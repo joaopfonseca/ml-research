@@ -7,10 +7,8 @@ Download, transform and simulate various datasets.
 
 import os
 from os.path import join
-import pickle
 from urllib.parse import urljoin
 from string import ascii_lowercase
-from sqlite3 import connect
 
 from rich.progress import track
 import numpy as np
