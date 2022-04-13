@@ -43,7 +43,7 @@ dependent_packages = {
 
 # create inverse mapping for setuptools
 tag_to_packages: dict = {
-    extra: [] for extra in ["install", "optional", "docs", "examples", "tests"]
+    extra: [] for extra in ["install", "optional", "docs", "examples", "tests", "all"]
 }
 for package, (min_version, extras) in dependent_packages.items():
     for extra in extras.split(", "):
