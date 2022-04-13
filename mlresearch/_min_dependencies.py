@@ -8,7 +8,6 @@ IMBLEARN_MIN_VERSION = "0.8.0"
 RICH_MIN_VERSION = "10.16.1"
 MATPLOTLIB_MIN_VERSION = "2.2.3"
 SEABORN_MIN_VERSION = "0.9.0"
-RLEARN_MIN_VERSION = "0.2.1"
 PYTORCH_MIN_VERSION = "1.10.1"
 TORCHVISION_MIN_VERSION = "0.11.2"
 PYTORCH_LIGHTNING_VERSION = "1.5.8"
@@ -22,11 +21,11 @@ dependent_packages = {
     "rich": (RICH_MIN_VERSION, "install"),
     "matplotlib": (MATPLOTLIB_MIN_VERSION, "install"),
     "seaborn": (SEABORN_MIN_VERSION, "install"),
-    "research-learn": (RLEARN_MIN_VERSION, "install"),
     "requests": ("2.26.0", "install"),
     "torch": (PYTORCH_MIN_VERSION, "install"),
     "torchvision": (TORCHVISION_MIN_VERSION, "install"),
     "pytorch-lightning": (PYTORCH_LIGHTNING_VERSION, "install"),
+    "research-learn": ("0.3.0", "tests"),
     "pytest-cov": ("3.0.0", "tests"),
     "flake8": ("3.8.2", "tests"),
     "black": ("22.3", "tests"),
@@ -49,6 +48,7 @@ tag_to_packages: dict = {
 for package, (min_version, extras) in dependent_packages.items():
     for extra in extras.split(", "):
         tag_to_packages[extra].append("{}>={}".format(package, min_version))
+    tag_to_packages["all"].append("{}>={}".format(package, min_version))
 
 
 # Used by CI to get the min dependencies
