@@ -45,7 +45,6 @@ tested. ``ML-Research`` requires:
 - rich (>= 10.16.1)
 - matplotlib (>= 2.2.3)
 - seaborn (>= 0.9.0)
-- research-learn (>= 0.2.1)
 - pytorch (>= 1.10.1)
 - torchvision (>= 0.11.2)
 - pytorch_lightning (>= 1.5.8)
