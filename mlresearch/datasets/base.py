@@ -272,7 +272,12 @@ class Datasets:
 
         """
         imbalanced_content = []
-        for name, data in self.content_:
+        base_content = [
+            dataset for dataset in self.content_ if not dataset[0].endswith(")")
+        ]
+        for name, data in base_content:
+            base_freqs = list(Counter(data.target).values())
+            base_ir = int(max(base_freqs) / min(base_freqs))
             sampling_strategy = self._calculate_sampling_strategy(
                 ir=imbalance_ratio, y=data.target
             )
@@ -280,9 +285,9 @@ class Datasets:
                 data, sampling_strategy=sampling_strategy, random_state=random_state
             )
             freqs = list(Counter(data_imb.target).values())
-            actual_ir = int(max(freqs) / min(freqs))
-            name_imb = f"{name} ({actual_ir})"
-            if name_imb not in dict(self.content_).keys():
+            new_ir = int(max(freqs) / min(freqs))
+            name_imb = f"{name} ({new_ir})"
+            if name_imb not in dict(self.content_).keys() and base_ir < new_ir:
                 imbalanced_content.append((name_imb, data_imb))
 
         self.content_.extend(imbalanced_content)
