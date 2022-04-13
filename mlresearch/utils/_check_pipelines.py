@@ -1,9 +1,17 @@
 from itertools import product
 from sklearn.base import clone
+from sklearn.utils import check_random_state
 from sklearn.preprocessing import FunctionTransformer
 from sklearn.model_selection import ParameterGrid
 from imblearn.pipeline import Pipeline
-from rlearn.utils import check_random_states
+
+
+def check_random_states(random_state, repetitions):
+    """Create random states for experiments."""
+    random_state = check_random_state(random_state)
+    return [
+        random_state.randint(0, 2**32 - 1, dtype='uint32') for _ in range(repetitions)
+    ]
 
 
 def check_pipelines(objects_list, random_state, n_runs):

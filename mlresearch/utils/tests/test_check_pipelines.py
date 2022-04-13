@@ -9,10 +9,9 @@ from sklearn.decomposition import PCA
 from sklearn.datasets import load_iris
 from imblearn.over_sampling import SMOTE, BorderlineSMOTE
 from imblearn.pipeline import Pipeline
-from rlearn.utils import check_random_states
 from rlearn.model_selection import ModelSearchCV
 
-from .._check_pipelines import check_pipelines, check_pipelines_wrapper
+from .._check_pipelines import check_pipelines, check_pipelines_wrapper, check_random_states
 from ...active_learning import StandardAL
 from ...data_augmentation import OverSamplingAugmentation
 
