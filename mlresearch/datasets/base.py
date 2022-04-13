@@ -293,6 +293,58 @@ class Datasets:
         self.content_.extend(imbalanced_content)
         return self
 
+    def summarize_datasets(self):
+        """Create a summary of the downloaded datasets."""
+
+        # Check datasets format
+        datasets = [
+            (name, (data.drop(columns="target"), data.target))
+            if type(data) == pd.DataFrame
+            else data
+            for name, data in self.content_
+        ]
+
+        # Define summary table columns
+        summary_columns = [
+            "Dataset name",
+            "Features",
+            "Instances",
+            "Minority instances",
+            "Majority instances",
+            "Imbalance Ratio",
+        ]
+
+        # Define empty summary table
+        datasets_summary = []
+
+        # Populate summary table
+        for dataset_name, (X, y) in datasets:
+            n_instances = Counter(y).values()
+            n_minority_instances = min(n_instances)
+            n_majority_instances = max(n_instances)
+            values = [
+                dataset_name,
+                X.shape[1],
+                len(X),
+                n_minority_instances,
+                n_majority_instances,
+                round(n_majority_instances / n_minority_instances, 2),
+            ]
+            datasets_summary.append(values)
+        datasets_summary = pd.DataFrame(datasets_summary, columns=summary_columns)
+
+        # Cast to integer columns
+        datasets_summary[summary_columns[1:-1]] = datasets_summary[
+            summary_columns[1:-1]
+        ].astype(int)
+
+        # Sort datasets summary
+        datasets_summary = datasets_summary.sort_values("Imbalance Ratio").reset_index(
+            drop=True
+        )
+
+        return datasets_summary
+
     def save(self, path, db_name):
         """Save datasets."""
         with connect(join(path, f"{db_name}.db")) as connection:
