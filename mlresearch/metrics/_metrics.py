@@ -8,7 +8,7 @@ class ALScorer(_PredictScorer):
     """
     Make an Active Learning scorer from a AL-specific metric or loss function.
 
-    This factory class wraps scoring functions for use in
+    This factory class wraps scoring functions to be used in
     :class:`~rlearn.model_selection.ModelSearchCV` and
     :class:`~sklearn.model_selection.GridSearchCV`. It takes a score function, such as
     :func:`~research.metrics.area_under_learning_curve` or
