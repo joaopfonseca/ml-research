@@ -2,8 +2,10 @@ from urllib.request import urlopen
 import multiprocessing.dummy as mp
 from multiprocessing import cpu_count
 import ssl
+import numpy as np
+import pandas as pd
 
-from ..base import FETCH_URLS
+from ..base import Datasets, FETCH_URLS
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -20,3 +22,30 @@ def test_urls():
     url_status = p.map(lambda url: (urlopen(url).status == 200), urls)
 
     assert all(url_status)
+
+
+def test_make_imbalance():
+    min_class = 20
+    maj_class = 100
+    y = pd.Series([
+        *[0 for i in range(min_class)],
+        *[1 for i in range(30)],
+        *[2 for i in range(maj_class)],
+    ], name="target")
+    X = pd.DataFrame(np.random.random((150, 4)))
+
+    base_ir = maj_class/min_class
+    irs = [1, 5, 10, 100]
+    exp_irs = [i for i in irs if i > base_ir]
+
+    name = "test"
+    data = pd.concat([X, y], axis=1)
+
+    datasets = Datasets()
+    datasets.content_ = [(name, data)]
+    for ir in irs:
+        datasets.imbalance_datasets(ir)
+
+    content = datasets.content_
+    assert len(content) == len(exp_irs)+1
+    assert list(dict(content).keys()) == [name]+[f"{name} ({ir})" for ir in exp_irs]
