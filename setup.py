@@ -1,5 +1,5 @@
 import os
-import codecs
+from pathlib import Path
 from setuptools import find_packages, setup
 
 try:
@@ -16,6 +16,12 @@ except ImportError:
 # Python import machinery.
 builtins.__MLRESEARCH_SETUP__ = True
 
+
+def get_long_description() -> str:
+    CURRENT_DIR = Path(__file__).parent
+    return (CURRENT_DIR / "README.md").read_text(encoding="utf8")
+
+
 import mlresearch._min_dependencies as min_deps
 
 ver_file = os.path.join("mlresearch", "_version.py")
@@ -29,8 +35,6 @@ VERSION = __version__
 SHORT_DESCRIPTION = (
     "Implementation of Machine Learning algorithms, experiments and utilities."
 )
-with codecs.open("README.md", encoding="utf-8-sig") as f:
-    LONG_DESCRIPTION = f.read()
 LICENSE = "MIT"
 CLASSIFIERS = [
     "Intended Audience :: Science/Research",
@@ -60,7 +64,8 @@ setup(
     download_url=URL,
     version=VERSION,
     description=SHORT_DESCRIPTION,
-    long_description=LONG_DESCRIPTION,
+    long_description=get_long_description(),
+    long_description_content_type="text/markdown",
     license=LICENSE,
     classifiers=CLASSIFIERS,
     packages=find_packages(),
