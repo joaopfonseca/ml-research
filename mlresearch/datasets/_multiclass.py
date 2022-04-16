@@ -70,6 +70,10 @@ class ContinuousCategoricalDatasets(Datasets):
         """
         data = pd.read_csv(FETCH_URLS["adult"], header=None, na_values=" ?").dropna()
         data.rename(columns={data.columns[-1]: "target"}, inplace=True)
+
+        mapper = {v: k for k, v in enumerate(data.target.unique())}
+        data.target = data.target.map(mapper)
+
         categorical_features = [1, 3, 5, 6, 7, 8, 9, 13]
         return data, categorical_features
 
@@ -93,6 +97,10 @@ class ContinuousCategoricalDatasets(Datasets):
         )
         data["target"] = data[6].str[0] + data[7].str[0]
         data.drop(columns=[6, 7], inplace=True)
+
+        mapper = {v: k for k, v in enumerate(data.target.unique())}
+        data.target = data.target.map(mapper)
+
         categorical_features = list(range(1, 6))
         return data, categorical_features
 
@@ -110,6 +118,9 @@ class ContinuousCategoricalDatasets(Datasets):
 
         data = data.T.reset_index(drop=True).T
         data.rename(columns={data.columns[-1]: "target"}, inplace=True)
+
+        mapper = {v: k for k, v in enumerate(data.target.unique())}
+        data.target = data.target.map(mapper)
 
         categorical_features = [0, 1, 5, 9]
         return data, categorical_features
@@ -146,6 +157,10 @@ class ContinuousCategoricalDatasets(Datasets):
         ]
 
         data.rename(columns={data.columns[-1]: "target"}, inplace=True)
+
+        mapper = {v: k for k, v in enumerate(data.target.unique())}
+        data.target = data.target.map(mapper)
+
         return data, categorical_features
 
     def fetch_contraceptive(self):
@@ -186,6 +201,10 @@ class ContinuousCategoricalDatasets(Datasets):
             FETCH_URLS["credit_approval"], header=None, na_values="?"
         ).dropna()
         data.rename(columns={data.columns[-1]: "target"}, inplace=True)
+
+        mapper = {v: k for k, v in enumerate(data.target.unique())}
+        data.target = data.target.map(mapper)
+
         categorical_features = [0, 3, 4, 5, 6, 8, 9, 11, 12]
         return data, categorical_features
 
