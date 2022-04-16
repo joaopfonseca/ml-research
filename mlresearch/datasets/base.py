@@ -206,13 +206,12 @@ class Datasets:
     def _make_imbalance(self, data, sampling_strategy, random_state=None):
         """Undersample the minority class."""
         X_columns = [col for col in data.columns if col != "target"]
-        X, y = check_X_y(data.loc[:, X_columns], data.target)
+        X, y = check_X_y(data.loc[:, X_columns], data.target, dtype=None)
         X, y = make_imbalance(
             X, y, sampling_strategy=sampling_strategy, random_state=random_state
         )
         data = pd.DataFrame(np.column_stack((X, y)))
         data.iloc[:, -1] = data.iloc[:, -1].astype(int)
-        data.rename(columns={data.columns[-1]: "target"}, inplace=True)
         return data
 
     def download(self):
@@ -276,7 +275,7 @@ class Datasets:
             dataset for dataset in self.content_ if not dataset[0].endswith(")")
         ]
         for name, data in base_content:
-            base_freqs = list(Counter(data.target).values())
+            base_freqs = Counter(data.target).values()
             base_ir = int(max(base_freqs) / min(base_freqs))
             sampling_strategy = self._calculate_sampling_strategy(
                 ir=imbalance_ratio, y=data.target
@@ -284,7 +283,10 @@ class Datasets:
             data_imb = self._make_imbalance(
                 data, sampling_strategy=sampling_strategy, random_state=random_state
             )
-            freqs = list(Counter(data_imb.target).values())
+
+            data_imb.columns = data.columns
+
+            freqs = Counter(data_imb.target).values()
             new_ir = int(max(freqs) / min(freqs))
             name_imb = f"{name} ({new_ir})"
             if name_imb not in dict(self.content_).keys() and base_ir < new_ir:
@@ -312,6 +314,7 @@ class Datasets:
             "Minority instances",
             "Majority instances",
             "Imbalance Ratio",
+            "Classes",
         ]
 
         # Define empty summary table
@@ -329,14 +332,16 @@ class Datasets:
                 n_minority_instances,
                 n_majority_instances,
                 round(n_majority_instances / n_minority_instances, 2),
+                len(n_instances),
             ]
             datasets_summary.append(values)
         datasets_summary = pd.DataFrame(datasets_summary, columns=summary_columns)
 
         # Cast to integer columns
-        datasets_summary[summary_columns[1:-1]] = datasets_summary[
-            summary_columns[1:-1]
-        ].astype(int)
+        int_cols = datasets_summary.columns.drop(["Dataset name", "Imbalance Ratio"])
+        datasets_summary.loc[:, int_cols] = datasets_summary.loc[:, int_cols].astype(
+            int
+        )
 
         # Sort datasets summary
         datasets_summary = datasets_summary.sort_values("Imbalance Ratio").reset_index(

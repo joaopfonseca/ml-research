@@ -59,7 +59,7 @@ def test_imbalance_datasets():
     assert list(dict(content).keys()) == [name] + [f"{name} ({ir})" for ir in exp_irs]
 
     # summarize_datasets
-    assert descr.shape == (len(exp_irs) + 1, 6)
+    assert descr.shape == (len(exp_irs) + 1, 7)
     assert (descr["Features"] == N_FEATURES).all()
     assert descr["Dataset name"].tolist() == list(dict(content).keys())
     assert descr["Imbalance Ratio"].astype(int).tolist() == [
