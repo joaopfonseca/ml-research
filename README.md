@@ -8,12 +8,30 @@ ______________________________________________________________________
 <a href="https://github.com/joaopfonseca/ml-research/actions/workflows/ci.yml"><img alt="Github Actions" src="https://github.com/joaopfonseca/ml-research/actions/workflows/ci.yml/badge.svg"></a>
 <a href="https://codecov.io/gh/joaopfonseca/ml-research"><img alt="Codecov" src="https://codecov.io/gh/joaopfonseca/ml-research/branch/master/graph/badge.svg?token=J2EBA4YTMN"></a>
 <a href="https://mlresearch.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/mlresearch/badge/?version=latest"></a>
-<a href="https://badge.fury.io/py/ml-research"><img alt="Pypi Version" src="https://badge.fury.io/py/ml-research.svg"></a>
-<a href="https://pepy.tech/project/ml-research"><img alt="Downloads" src="https://pepy.tech/badge/ml-research"></a>
 <a href="https://github.com/psf/black"><img alt="Black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
 <a href="https://img.shields.io/badge/python-3.8%20|%203.9-blue"><img alt="Python Versions" src="https://img.shields.io/badge/python-3.8%20|%203.9%20|%203.10-blue"></a>
 <a href="https://doi.org/10.3390/RS13132619"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.3390/RS13132619.svg"></a>
 </p>
+<table align="center">
+  <tr>
+    <td>
+      <b>PyPI</b>
+    </td>
+    <td>
+      <a href="https://badge.fury.io/py/ml-research"><img alt="Pypi Version" src="https://badge.fury.io/py/ml-research.svg"></a>
+      <a href="https://pepy.tech/project/ml-research"><img alt="Downloads" src="https://static.pepy.tech/personalized-badge/ml-research?period=total&units=international_system&left_color=grey&right_color=brightgreen&left_text=downloads"></a>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <b>Anaconda</b>
+    </td>
+    <td>
+      <a href="https://anaconda.org/conda-forge/ml-research"><img alt="Conda Version" src="https://img.shields.io/conda/vn/conda-forge/ml-research.svg"></a>
+      <a href="https://anaconda.org/conda-forge/ml-research"><img alt="Conda Downloads" src="https://img.shields.io/conda/dn/conda-forge/ml-research.svg"></a>
+    </td>
+  </tr>
+</table>
 
 ``ML-Research`` is an open source library for machine learning research.  It
 contains the software implementation of most algorithms used or developed in
@@ -51,10 +69,13 @@ tested. ``ML-Research`` requires:
 
 ### User Installation
 
-If you already have a working installation of numpy and scipy, the easiest way
-to install scikit-learn is using ``pip`` :
+The easiest way to install ml-research is using ``pip`` :
 
     pip install -U ml-research
+
+Or ``conda`` :
+
+    conda install -c conda-forge ml-research
 
 The documentation includes more detailed [installation
 instructions](https://mlresearch.readthedocs.io/en/latest/getting-started.html).
@@ -72,8 +93,9 @@ project with minimal effort:
     make environment 
     conda activate mlresearch # Adapt this line accordingly if you're not running conda
 
-    # Install project requirements and the research package
-    pip install .[tests,docs]
+    # Install project requirements and the research package. Dependecy group
+    # "all" will also install both dependency groups shown below.
+    pip install .[tests,docs] 
 
 ## Citing ML-Research
 
