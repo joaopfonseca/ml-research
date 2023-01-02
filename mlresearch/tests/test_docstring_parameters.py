@@ -16,7 +16,7 @@ from sklearn.utils._testing import check_docstring_parameters
 from sklearn.utils._testing import _get_func_name
 from sklearn.utils._testing import ignore_warnings
 from sklearn.utils.estimator_checks import _enforce_estimator_tags_y
-from sklearn.utils.estimator_checks import _enforce_estimator_tags_x
+from sklearn.utils.estimator_checks import _enforce_estimator_tags_X
 from sklearn.utils.estimator_checks import _construct_instance
 from sklearn.utils.deprecation import _is_deprecated
 
@@ -200,7 +200,7 @@ def test_fit_docstring_attributes(name, Estimator):
     )
 
     y = _enforce_estimator_tags_y(est, y)
-    X = _enforce_estimator_tags_x(est, X)
+    X = _enforce_estimator_tags_X(est, X)
 
     if "oob_score" in est.get_params():
         est.set_params(oob_score=True)
