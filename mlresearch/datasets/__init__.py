@@ -10,7 +10,6 @@ from ._multiclass import (
     MultiClassDatasets,
 )
 from ._remote_sensing import RemoteSensingDatasets
-from ._image import PytorchDatasets
 
 __all__ = [
     "ImbalancedBinaryDatasets",
@@ -18,5 +17,4 @@ __all__ = [
     "ContinuousCategoricalDatasets",
     "MultiClassDatasets",
     "RemoteSensingDatasets",
-    "PytorchDatasets",
 ]
