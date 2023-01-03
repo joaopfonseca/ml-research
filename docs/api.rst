@@ -56,7 +56,6 @@ This is the full API documentation of the `mlresearch` package.
     datasets.ContinuousCategoricalDatasets
     datasets.MultiClassDatasets
     datasets.RemoteSensingDatasets
-    datasets.PytorchDatasets
 
 :mod:`mlresearch.metrics`
 -------------------------
