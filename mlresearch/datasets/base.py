@@ -247,7 +247,8 @@ class Datasets:
         Appends imbalanced versions of datasets with predefined imbalance ratios to
         ``self.content_``.
 
-        $IR = \frac{|C_{maj}|}{|C_{min}|}$
+        .. math::
+            IR = \\frac{|C_{maj}|}{|C_{min}|}
 
         Parameters
         ----------
