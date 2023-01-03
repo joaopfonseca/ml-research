@@ -267,7 +267,7 @@ class Datasets:
 
         Returns
         -------
-        self
+        self : Datasets
 
         """
         imbalanced_content = []
@@ -296,7 +296,14 @@ class Datasets:
         return self
 
     def summarize_datasets(self):
-        """Create a summary of the downloaded datasets."""
+        """
+        Create a summary of the downloaded datasets.
+
+        Returns
+        -------
+        datasets_summary : pd.DataFrame
+            Dataframe with summary statistics of all datasets.
+        """
 
         # Check datasets format
         datasets = [
