@@ -499,7 +499,10 @@ class GeometricSMOTE(BaseOverSampler):
         return X_new, y_new
 
     def _encode_categorical(self, X, y):
-        """TODO"""
+        """
+        One-Hot encodes categorical features and replaces the 1 entries with the median
+        of the standard deviations divided by 2.
+        """
         # compute the median of the standard deviation of the minority class
         target_stats = Counter(y)
         class_minority = min(target_stats, key=target_stats.get)
