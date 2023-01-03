@@ -37,10 +37,7 @@ ______________________________________________________________________
 contains the software implementation of most algorithms used or developed in
 my research. Specifically, it contains ``scikit-learn`` compatible
 implementations for Active Learning, Oversampling, Datasets and various
-utilities to assist in experiment design and results reporting. Other
-techniques, such as self-supervised learning and semi-supervised learning are
-currently under development and are being implemented in ``pytorch`` and
-intended to be ``scikit-learn`` compatible.
+utilities to assist in experiment design and results reporting.
 
 The LaTeX and Python code for generating the
 paper, experiments' results and visualizations reported in each paper is
