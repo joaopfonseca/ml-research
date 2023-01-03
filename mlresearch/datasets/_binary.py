@@ -46,7 +46,7 @@ class ImbalancedBinaryDatasets(Datasets):
                 X, y, sampling_strategy=sampling_strategy, random_state=RANDOM_STATE
             )
         data = pd.DataFrame(np.column_stack((X, y)))
-        data.iloc[:, -1] = data.iloc[:, -1].astype(int)
+        data[data.columns[-1]] = data[data.columns[-1]].astype(int)
         return data
 
     def download(self):
@@ -190,7 +190,7 @@ class ImbalancedBinaryDatasets(Datasets):
 
         https://archive.ics.uci.edu/ml/datasets/Statlog+(Vehicle+Silhouettes)
         """
-        data = pd.DataFrame()
+        data = []
         for letter in ascii_lowercase[0:9]:
             partial_data = pd.read_csv(
                 urljoin(FETCH_URLS["vehicle"], "xa%s.dat" % letter),
@@ -199,8 +199,8 @@ class ImbalancedBinaryDatasets(Datasets):
             )
             partial_data = partial_data.rename(columns={18: "target"})
             partial_data["target"] = partial_data["target"].isin(["van"]).astype(int)
-            data = data.append(partial_data)
-        return data
+            data.append(partial_data)
+        return pd.concat(data)
 
     def fetch_wine(self):
         """Download and transform the Wine Data Set.
