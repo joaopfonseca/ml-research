@@ -11,7 +11,7 @@ import numpy as np
 from scipy.io import loadmat
 
 from .base import Datasets, FETCH_URLS
-from ..utils import img_array_to_pandas
+from ..utils import image_to_dataframe
 
 
 class RemoteSensingDatasets(Datasets):
@@ -20,7 +20,6 @@ class RemoteSensingDatasets(Datasets):
     def __init__(
         self,
         names: str = "all",
-        return_coords: bool = False,
         data_home: str = None,
         download_if_missing: bool = True,
     ):
@@ -29,10 +28,6 @@ class RemoteSensingDatasets(Datasets):
         ----------
         names : str or list, default="all"
             List of dataset names to be downloaded. If ``all``, downloads all datasets.
-
-        return_coords : bool, default=False
-            If ``True``, two columns with x and y coordinates will be added to the
-            dataframe.
 
         data_home : str, default=None
             The path to the data directory. If `None`, the default path
@@ -52,22 +47,15 @@ class RemoteSensingDatasets(Datasets):
             List of tuples composed of (Dataset name, Dataframe).
         """
         self.names = names
-        self.return_coords = return_coords
         self.data_home = data_home
         self.download_if_missing = download_if_missing
 
     def download(self):
         """Download the datasets and append undersampled versions of them."""
-        super(RemoteSensingDatasets, self).download()
+        super(RemoteSensingDatasets, self).download(keep_index=True)
         content_ = []
         for (name, data) in self.content_:
-            if not self.return_coords:
-                data = data.iloc[:, 2:]
-                new_cols = list(range(len(data.columns) - 1)) + ["target"]
-            else:
-                new_cols = ["x", "y"] + list(range(len(data.columns) - 3)) + ["target"]
-
-            data.columns = new_cols
+            data = data.set_index(["h", "w"])
             content_.append((name, data))
         self.content_ = content_
 
@@ -90,7 +78,7 @@ class RemoteSensingDatasets(Datasets):
 
         http://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes#Indian_Pines
         """
-        df = img_array_to_pandas(*self._load_gic_dataset("indian_pines"))
+        df = image_to_dataframe(*self._load_gic_dataset("indian_pines"))
         return df[df.target != 0]
 
     def fetch_salinas(self):
@@ -99,7 +87,7 @@ class RemoteSensingDatasets(Datasets):
 
         http://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes#Salinas_scene
         """
-        df = img_array_to_pandas(*self._load_gic_dataset("salinas"))
+        df = image_to_dataframe(*self._load_gic_dataset("salinas"))
         return df[df.target != 0]
 
     def fetch_salinas_a(self):
@@ -108,7 +96,7 @@ class RemoteSensingDatasets(Datasets):
 
         http://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes#Salinas-A_scene
         """
-        df = img_array_to_pandas(*self._load_gic_dataset("salinas_a"))
+        df = image_to_dataframe(*self._load_gic_dataset("salinas_a"))
         return df[df.target != 0]
 
     def fetch_pavia_centre(self):
@@ -117,7 +105,7 @@ class RemoteSensingDatasets(Datasets):
 
         http://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes#Pavia_Centre_scene
         """
-        df = img_array_to_pandas(*self._load_gic_dataset("pavia_centre"))
+        df = image_to_dataframe(*self._load_gic_dataset("pavia_centre"))
         return df[df.target != 0]
 
     def fetch_pavia_university(self):
@@ -126,7 +114,7 @@ class RemoteSensingDatasets(Datasets):
 
         http://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes#Pavia_University_scene
         """
-        df = img_array_to_pandas(*self._load_gic_dataset("pavia_university"))
+        df = image_to_dataframe(*self._load_gic_dataset("pavia_university"))
         return df[df.target != 0]
 
     def fetch_kennedy_space_center(self):
@@ -135,7 +123,7 @@ class RemoteSensingDatasets(Datasets):
 
         http://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes#Kennedy_Space_Center_.28KSC.29
         """
-        df = img_array_to_pandas(*self._load_gic_dataset("kennedy_space_center"))
+        df = image_to_dataframe(*self._load_gic_dataset("kennedy_space_center"))
         return df[df.target != 0]
 
     def fetch_botswana(self):
@@ -144,5 +132,5 @@ class RemoteSensingDatasets(Datasets):
 
         http://www.ehu.eus/ccwintco/index.php/Hyperspectral_Remote_Sensing_Scenes#Botswana
         """
-        df = img_array_to_pandas(*self._load_gic_dataset("botswana"))
+        df = image_to_dataframe(*self._load_gic_dataset("botswana"))
         return df[df.target != 0]

@@ -182,10 +182,10 @@ class Datasets:
         self.download_if_missing = download_if_missing
 
     @staticmethod
-    def _modify_columns(data):
+    def _modify_columns(data, keep_index=False):
         """Rename and reorder columns of dataframe."""
         X, y = data.drop(columns="target"), data.target
-        X.columns = range(len(X.columns))
+        X.columns = X.columns if keep_index else range(len(X.columns))
         return pd.concat([X, y], axis=1)
 
     @staticmethod
@@ -213,32 +213,36 @@ class Datasets:
         data[data.columns[-1]] = data[data.columns[-1]].astype(int)
         return data
 
-    def download(self):
+    def download(self, keep_index=False):
         """Download the datasets."""
         self.data_home_ = get_data_home(data_home=self.data_home)
         dataset_prefix = self.__class__.__name__.lower().replace("datasets", "")
 
+        # Get datasets to download
         if self.names == "all":
             func_names = [func_name for func_name in dir(self) if "fetch_" in func_name]
         else:
             func_names = [
                 f"fetch_{name}".lower().replace(" ", "_") for name in self.names
             ]
+
+        # Download datasets
         self.content_ = []
         for func_name in track(func_names, description="Datasets"):
             dat_name = func_name.replace("fetch_", "")
             name = dat_name.upper().replace("_", " ")
             file_name = f"{dataset_prefix}_{dat_name}.csv"
 
+            # Save file locally if it doesn't exist
             if (
                 file_name not in os.listdir(self.data_home_)
                 and self.download_if_missing
             ):
                 df = getattr(self, func_name)()
-                df.to_csv(join(self.data_home_, file_name), index=False)
+                df.to_csv(join(self.data_home_, file_name), index=keep_index)
 
             data = pd.read_csv(join(self.data_home_, file_name))
-            data = self._modify_columns(data)
+            data = self._modify_columns(data, keep_index=keep_index)
             self.content_.append((name, data))
         return self
 
