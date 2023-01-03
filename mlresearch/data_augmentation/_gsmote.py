@@ -153,8 +153,6 @@ class GeometricSMOTE(BaseOverSampler):
     This algorithm is an implementation of Geometric SMOTE, a geometrically
     enhanced drop-in replacement for SMOTE as presented in [1]_.
 
-    Read more in the :ref:`User Guide <user_guide>`.
-
     Parameters
     ----------
     categorical_features : ndarray of shape (n_cat_features,) or (n_features,)

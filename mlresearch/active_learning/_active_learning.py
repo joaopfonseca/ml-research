@@ -157,7 +157,7 @@ class AugmentationAL(BaseActiveLearner, ClassifierMixin):
 
         - None, to use the default 5-fold cross validation,
         - integer, to specify the number of folds in a `(Stratified)KFold`,
-        - :term:`CV splitter`.
+        - `CV splitter`.
 
         For integer/None inputs, if the estimator is a classifier and ``y`` is
         either binary or multiclass, :class:`StratifiedKFold` is used. In all
