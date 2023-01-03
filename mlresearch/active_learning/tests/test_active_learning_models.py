@@ -10,7 +10,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import RandomForestClassifier
 
 from ...data_augmentation import OverSamplingAugmentation, GeometricSMOTE
-from ...metrics import SCORERS
+from ...metrics import get_scorer
 from .._acquisition_functions import ACQUISITION_FUNCTIONS
 from .._active_learning import StandardAL, AugmentationAL
 
@@ -165,7 +165,7 @@ def test_al_params(name):
     # passing an evaluation metric as function
     ACTIVE_LEARNERS[name](
         classifier=classifier,
-        evaluation_metric=SCORERS["f1_macro"],
+        evaluation_metric=get_scorer("f1_macro"),
         n_init=2,
         budget=1,
         max_iter=5,

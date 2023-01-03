@@ -205,13 +205,12 @@ class Datasets:
 
     def _make_imbalance(self, data, sampling_strategy, random_state=None):
         """Undersample the minority class."""
-        X_columns = [col for col in data.columns if col != "target"]
-        X, y = check_X_y(data.loc[:, X_columns], data.target, dtype=None)
+        X, y = check_X_y(data.drop(columns="target"), data["target"], dtype=None)
         X, y = make_imbalance(
             X, y, sampling_strategy=sampling_strategy, random_state=random_state
         )
         data = pd.DataFrame(np.column_stack((X, y)))
-        data.iloc[:, -1] = data.iloc[:, -1].astype(int)
+        data[data.columns[-1]] = data[data.columns[-1]].astype(int)
         return data
 
     def download(self):

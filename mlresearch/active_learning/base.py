@@ -13,7 +13,7 @@ from sklearn.utils import check_X_y
 from sklearn.ensemble import RandomForestClassifier
 
 from ._acquisition_functions import ACQUISITION_FUNCTIONS
-from ..metrics import SCORERS
+from ..metrics import get_scorer
 
 
 class BaseActiveLearner(BaseEstimator, metaclass=ABCMeta):
@@ -182,9 +182,9 @@ class BaseActiveLearner(BaseEstimator, metaclass=ABCMeta):
 
         # Evaluation metric
         if self.evaluation_metric is None:
-            self.evaluation_metric_ = SCORERS["accuracy"]
+            self.evaluation_metric_ = get_scorer("accuracy")
         elif type(self.evaluation_metric) == str:
-            self.evaluation_metric_ = SCORERS[self.evaluation_metric]
+            self.evaluation_metric_ = get_scorer(self.evaluation_metric)
         else:
             self.evaluation_metric_ = self.evaluation_metric
 

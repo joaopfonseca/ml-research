@@ -4,15 +4,18 @@ included in scikit-learn's scorers' dictionary. Additionally, an expanded
 dictionary of scorers (as compared with scikit-learn's) is also provided.
 """
 from ._metrics import (
-    SCORERS,
     geometric_mean_score_macro,
     ALScorer,
     area_under_learning_curve,
     data_utilization_rate,
 )
 
+# Update the list of scorers
+from sklearn.metrics import get_scorer, get_scorer_names
+
 __all__ = [
-    "SCORERS",
+    "get_scorer",
+    "get_scorer_names",
     "geometric_mean_score_macro",
     "area_under_learning_curve",
     "data_utilization_rate",

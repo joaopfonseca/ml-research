@@ -525,7 +525,9 @@ class GeometricSMOTE(BaseOverSampler):
             dtype_ohe = X_continuous.dtype
         else:
             dtype_ohe = np.float64
-        self.ohe_ = OneHotEncoder(sparse=True, handle_unknown="ignore", dtype=dtype_ohe)
+        self.ohe_ = OneHotEncoder(
+            sparse_output=True, handle_unknown="ignore", dtype=dtype_ohe
+        )
 
         # the input of the OneHotEncoder needs to be dense
         X_ohe = self.ohe_.fit_transform(

@@ -1,6 +1,6 @@
 import numpy as np
-from sklearn.metrics import SCORERS, make_scorer
-from sklearn.metrics._scorer import _PredictScorer
+from sklearn.metrics import make_scorer
+from sklearn.metrics._scorer import _PredictScorer, _SCORERS
 from imblearn.metrics import geometric_mean_score
 
 
@@ -91,6 +91,6 @@ def data_utilization_rate(metadata, threshold=0.8):
     return dur
 
 
-SCORERS["geometric_mean_score_macro"] = make_scorer(geometric_mean_score_macro)
-SCORERS["area_under_learning_curve"] = ALScorer(area_under_learning_curve)
-SCORERS["data_utilization_rate"] = ALScorer(data_utilization_rate)
+_SCORERS["geometric_mean_score_macro"] = make_scorer(geometric_mean_score_macro)
+_SCORERS["area_under_learning_curve"] = ALScorer(area_under_learning_curve)
+_SCORERS["data_utilization_rate"] = ALScorer(data_utilization_rate)
