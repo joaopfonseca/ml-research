@@ -28,13 +28,13 @@ def test_image_to_dataframe(number_of_bands):
 
         if y is None:
             assert df.shape == (shape[0] * shape[1], shape[2])
-            for h, w in product([0, shape[0]-1], [0, shape[1]-1]):
+            for h, w in product([0, shape[0] - 1], [0, shape[1] - 1]):
                 assert (df.loc[h, w] == X[h, w]).all()
         else:
             assert df.shape == (shape[0] * shape[1], shape[2] + 1)
             assert df.columns[-1] == "target"
             assert df["target"].dtype == int
-            for h, w in product([0, shape[0]-1], [0, shape[1]-1]):
+            for h, w in product([0, shape[0] - 1], [0, shape[1] - 1]):
                 assert (df.loc[h, w] == np.append(X[h, w], y[h, w])).all()
 
         if bands is None:
