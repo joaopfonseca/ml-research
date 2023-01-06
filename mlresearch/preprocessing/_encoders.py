@@ -8,15 +8,39 @@ from sklearn.preprocessing._encoders import _BaseEncoder, OneHotEncoder
 class PipelineEncoder(_BaseEncoder):
     """
     Pipeline-compatible adaptation of Scikit-learn's OneHotEncoder and OrdinalEncoder
-    objects.
+    objects. Used to use encoding of non-metric features within a pipeline.
 
     The fitted encoder object from Scikit-learn is stored in ``self.encoder_``.
 
     Parameters
     ----------
-    categorical_features : TODO
+    categorical_features : ndarray of shape (n_cat_features,) or (n_features,)
+        Specified which features are categorical. Can either be:
 
-    encoder : TODO
+        - array of indices specifying the categorical features.
+        - mask array of shape (n_features, ) and ``bool`` dtype for which
+          ``True`` indicates the categorical features.
+        - array of shape (n_cat_features,) and ``str`` dtype with the names of the
+          categorical features. In this case, ``X`` must be a dataframe. Raises an
+          error otherwise.
+
+    encoder : encoder object, default=None
+        Encoder object to be used for encoding the categorical features. If None,
+        defaults to sklearn's OneHotEncoder with default parameters, which can be
+        modified with keyword arguments.
+
+        .. warning::
+            The ``encoder`` object must be compatible with sklearn's API.
+
+    **kwargs : dict
+        Parameters to define the ``OneHotEncoder`` when ``encoder`` is None. Otherwise,
+        it is ignored.
+
+    Attributes
+    ----------
+    categorical_features_ : array of shape (n_features,)
+        Mask array of shape (n_features, ) and ``bool`` dtype for which
+        ``True`` indicates the categorical features.
     """
 
     _estimator_type = "encoder"
@@ -27,21 +51,28 @@ class PipelineEncoder(_BaseEncoder):
         self._kwargs = kwargs
 
     def _check_X(self, X):
+        """
+        Perform custom check_array. Collect information regarding the passed data and
+        ensure the data is a numpy array.
+        """
         if type(X) == pd.DataFrame:
-            self.is_pandas_ = (
-                True if not hasattr(self, "is_pandas_") else self.is_pandas_
+            self._is_pandas = (
+                True if not hasattr(self, "_is_pandas") else self._is_pandas
             )
             self.columns_ = X.columns
             X_ = X.copy().values
         else:
-            self.is_pandas_ = (
-                False if not hasattr(self, "is_pandas_") else self.is_pandas_
+            self._is_pandas = (
+                False if not hasattr(self, "_is_pandas") else self._is_pandas
             )
             X_ = X.copy()
         return X_
 
     def _check_categorical_features(self, X):
-
+        """
+        Preprocess ``categorical_features``. Converts ``categorical_features`` to a mask
+        array.
+        """
         if self.categorical_features is None or len(self.categorical_features) == 0:
             cat_features = np.zeros(X.shape[-1]).astype(bool)
 
@@ -78,7 +109,7 @@ class PipelineEncoder(_BaseEncoder):
             return categorical_features_.astype(bool)
 
         elif is_col_names:
-            if not self.is_pandas_:
+            if not self._is_pandas:
                 error_msg = (
                     "If ``categorical_features`` contains string values, "
                     + "``X`` must be a pandas dataframe."
@@ -88,7 +119,7 @@ class PipelineEncoder(_BaseEncoder):
             if any(~in_columns):
                 not_in_columns = np.array(cat_features)[np.where(~in_columns)[0]]
                 raise KeyError(", ".join(not_in_columns))
-            elif self.is_pandas_ and any(X.columns.isin(cat_features)):
+            elif self._is_pandas and any(X.columns.isin(cat_features)):
                 return X.columns.isin(cat_features)
 
         else:
@@ -98,6 +129,23 @@ class PipelineEncoder(_BaseEncoder):
             )
 
     def fit(self, X, y=None):
+        """
+        Fit PipelineEncoder to X.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            The data to determine the categories of each feature.
+
+        y : None
+            Ignored. This parameter exists only for compatibility with
+            :class:`~sklearn.pipeline.Pipeline`.
+
+        Returns
+        -------
+        self
+            Fitted encoder.
+        """
 
         X_ = self._check_X(X)
 
@@ -117,6 +165,21 @@ class PipelineEncoder(_BaseEncoder):
         return self
 
     def transform(self, X):
+        """
+        Transform X using the ``encoder`` object.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features_to_encode + n_remaining)
+            Data containing the features to encode.
+
+        Returns
+        -------
+        X_out : {ndarray, sparse matrix} of shape \
+                (n_samples, n_encoded_features + n_remaining)
+            Transformed input. Regardless of `sparse_output`, a dense matrix will be
+            returned.
+        """
 
         X_ = self._check_X(X)
 
@@ -124,7 +187,7 @@ class PipelineEncoder(_BaseEncoder):
             # If there are no categorical features apply no change
             return X_
 
-        if self.is_pandas_:
+        if self._is_pandas:
             metric_data = pd.DataFrame(
                 X_[:, ~self.categorical_features_],
                 columns=self.columns_[~self.categorical_features_],
@@ -147,6 +210,3 @@ class PipelineEncoder(_BaseEncoder):
             )
 
         return data
-
-    def fit_transform(self, X, y=None):
-        return self.fit(X, y).transform(X)
