@@ -17,8 +17,10 @@ datasets
 metrics
     Module which contains performance metrics/scorers that are not
     included in scikit-learn's scorers' dictionary.
+preprocessing
+    Contains preprocessing methods adapted or modified from sklearn.
 utils
-    contains a variety of general utility functions and tools used to format and prepare
+    Contains a variety of general utility functions and tools used to format and prepare
     tables to incorporate into LaTeX code.
 """
 import sys
@@ -41,6 +43,7 @@ else:
     from . import data_augmentation
     from . import datasets
     from . import metrics
+    from . import preprocessing
     from . import utils
 
     from ._version import __version__
@@ -50,6 +53,7 @@ else:
         "data_augmentation",
         "datasets",
         "metrics",
+        "preprocessing",
         "utils",
         "__version__",
     ]
