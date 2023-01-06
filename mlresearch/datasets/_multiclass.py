@@ -63,6 +63,41 @@ class ContinuousCategoricalDatasets(Datasets):
             self.content_.append((name, data))
         return self
 
+    def summarize_datasets(self):
+        """
+        Create a summary of the downloaded datasets.
+
+        Returns
+        -------
+        datasets_summary : pd.DataFrame
+            Dataframe with summary statistics of all datasets.
+        """
+
+        datasets_summary = super(
+            ContinuousCategoricalDatasets, self
+        ).summarize_datasets()
+        columns = datasets_summary.columns.tolist()
+
+        # Define summary table columns and empty list
+        summary_columns = ["Metric", "Non-Metric"]
+        extended_summary = []
+
+        # Populate empty list
+        for name, dataset in self.content_:
+            dataset = dataset.drop(columns="target")
+            values = [
+                sum(~dataset.columns.str.startswith("cat_")),
+                sum(dataset.columns.str.startswith("cat_")),
+            ]
+            extended_summary.append(values)
+        extended_summary = pd.DataFrame(extended_summary, columns=summary_columns)
+        datasets_summary = pd.concat([datasets_summary, extended_summary], axis=1)
+
+        # Reorder columns
+        index = columns.index("Features") + 1
+        columns = [*columns[:index], *summary_columns, *columns[index:]]
+        return datasets_summary[columns]
+
     def fetch_adult(self):
         """Download and transform the Adult Data Set.
 

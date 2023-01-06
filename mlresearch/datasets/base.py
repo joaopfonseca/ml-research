@@ -321,9 +321,9 @@ class Datasets:
         summary_columns = [
             "Dataset name",
             "Features",
-            "Instances",
-            "Minority instances",
-            "Majority instances",
+            "Observations",
+            "Minority Obs.",
+            "Majority Obs.",
             "Imbalance Ratio",
             "Classes",
         ]
