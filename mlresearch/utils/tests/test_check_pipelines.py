@@ -29,7 +29,9 @@ def test_check_pipeline_single():
     classifiers = [("clf", DecisionTreeClassifier(), {"max_depth": [3, 5]})]
 
     # Estimators and parameters grids
-    estimators, param_grids = check_pipelines([classifiers], rnd_seed, n_runs)
+    estimators, param_grids = check_pipelines(
+        classifiers, random_state=rnd_seed, n_runs=n_runs
+    )
     names, pips = zip(*estimators)
     steps = [
         [(step[0], step[1].__class__.__name__) for step in pip.steps] for pip in pips
@@ -78,7 +80,7 @@ def test_check_pipelines():
 
     # Estimators and parameters grids
     estimators, param_grids = check_pipelines(
-        [oversamplers, classifiers], rnd_seed, n_runs
+        oversamplers, classifiers, random_state=rnd_seed, n_runs=n_runs
     )
     names, pips = zip(*estimators)
     steps = [
@@ -134,7 +136,7 @@ def test_check_oversamplers_classifiers_none():
 
     # Estimators and parameters grids
     estimators, param_grids = check_pipelines(
-        [oversamplers, classifiers], rnd_seed, n_runs
+        oversamplers, classifiers, random_state=rnd_seed, n_runs=n_runs
     )
     names, pips = zip(*estimators)
     steps = [
@@ -181,7 +183,7 @@ def test_check_oversamplers_classifiers_pipeline():
 
     # Estimators and parameters grids
     estimators, param_grids = check_pipelines(
-        [scalers, oversamplers, classifiers], rnd_seed, n_runs
+        scalers, oversamplers, classifiers, random_state=rnd_seed, n_runs=n_runs
     )
     names, pips = zip(*estimators)
     steps = [
@@ -253,12 +255,17 @@ def test_check_pipelines_wrapper():
     )
 
     we_wpg = check_pipelines_wrapper(
-        [classifiers], al_model, random_state=rnd_seed, n_runs=n_runs, wrapped_only=True
+        classifiers,
+        wrapper=al_model,
+        random_state=rnd_seed,
+        n_runs=n_runs,
+        wrapped_only=True,
     )
 
     we_wpg2 = check_pipelines_wrapper(
-        [oversamplers, classifiers],
-        al_model,
+        oversamplers,
+        classifiers,
+        wrapper=al_model,
         random_state=rnd_seed,
         n_runs=n_runs,
         wrapped_only=True,
