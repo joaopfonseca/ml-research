@@ -19,6 +19,9 @@ metrics
     included in scikit-learn's scorers' dictionary.
 preprocessing
     Contains preprocessing methods adapted or modified from sklearn.
+latex
+    This module contains several functions to prepare and format tables for LaTeX
+    documents.
 utils
     Contains a variety of general utility functions and tools used to format and prepare
     tables to incorporate into LaTeX code.

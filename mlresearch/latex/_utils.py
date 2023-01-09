@@ -1,3 +1,7 @@
+"""
+Contains several functions to prepare and format tables for LaTeX documents.
+"""
+
 # Author: Georgios Douzas <gdouzas@icloud.com>
 #         Joao Fonseca <jpmrfonseca@gmail.com>
 # License: MIT
@@ -52,18 +56,18 @@ def generate_paths(filepath):
     return paths
 
 
-def make_bold(row, maximum=True, num_decimals=2, threshold=None, with_sem=False):
+def make_bold(row, maximum=True, decimals=2, threshold=None, with_sem=False):
     """
     Make bold the lowest or highest value(s).
     with_sem simply returns an incomplete textbf latex function.
     """
-    row = round(row, num_decimals)
+    row = round(row, decimals)
     if threshold is None:
         val = row.max() if maximum else row.min()
         mask = row == val
     else:
         mask = (row > threshold) if maximum else (row < threshold)
-    formatter = "{0:.%sf}" % num_decimals
+    formatter = "{0:.%sf}" % decimals
     row = row.apply(lambda el: formatter.format(el))
     row[mask] = [
         "\\textbf{%s" % formatter.format(v)
@@ -100,3 +104,30 @@ def generate_mean_std_tbl_bold(
     std_bold = np.where(mask, std_bold + "}", std_bold)
     scores = mean_bold + r" $\pm$ " + std_bold
     return scores
+
+
+def save_longtable(df, path=None, caption=None, label=None):
+    """
+    Exports a pandas dataframe to longtable format.
+    This function replaces ``df.to_latex`` when there are latex commands in
+    the table.
+    """
+
+    wo_tex = (
+        df.to_latex(
+            longtable=True,
+            caption=caption,
+            label=label,
+            index=False,
+            column_format="c" * df.shape[1],
+        )
+        .replace(r"\textbackslash ", "\\")
+        .replace(r"\{", "{")
+        .replace(r"\}", "}")
+        .replace(r"\$", "$")
+    )
+
+    if path is not None:
+        open(path, "w").write(wo_tex)
+    else:
+        return wo_tex
