@@ -8,58 +8,31 @@ Contains several functions to prepare and format tables for LaTeX documents.
 
 import numpy as np
 import pandas as pd
-from os.path import join, dirname, abspath
 
 
-def generate_mean_std_tbl(mean_vals, std_vals):
-    """Generate table that combines mean and sem values."""
-    index = mean_vals.iloc[:, :2]
-    scores = (
-        mean_vals.iloc[:, 2:].applymap("{:,.2f}".format)
-        + r" $\pm$ "
-        + std_vals.iloc[:, 2:].applymap("{:,.2f}".format)
-    )
-    tbl = pd.concat([index, scores], axis=1)
-    return tbl
-
-
-def generate_pvalues_tbl(tbl):
-    """Format p-values."""
-    for name in tbl.dtypes[tbl.dtypes == float].index:
-        tbl[name] = tbl[name].apply(lambda pvalue: "%.1e" % pvalue)
-    return tbl
-
-
-def sort_tbl(tbl, ds_order=None, ovrs_order=None, clfs_order=None, metrics_order=None):
+def sort_table(table, index_order_dict, columns_order_list=None):
     """
     Sort tables rows and columns. Mostly used to format results from
     oversampling experiments.
     """
-    cols = tbl.columns
-    keys = ["Dataset", "Oversampler", "Classifier", "Metric"]
-    for key, cat in zip(keys, (ds_order, ovrs_order, clfs_order, metrics_order)):
+    cols = table.columns
+    for key, cat in index_order_dict.items():
         if key in cols:
-            tbl[key] = pd.Categorical(tbl[key], categories=cat)
-    key_cols = [col for col in cols if col in keys]
-    tbl.sort_values(key_cols, inplace=True)
-    if ovrs_order is not None and set(ovrs_order).issubset(cols):
-        tbl = tbl[key_cols + list(ovrs_order)]
-    return tbl
+            table[key] = pd.Categorical(table[key], categories=cat)
 
+    key_cols = [col for col in cols if col in index_order_dict.keys()]
+    table.sort_values(key_cols, inplace=True)
 
-def generate_paths(filepath):
-    """
-    Generate data, results and analysis paths.
-    """
-    prefix_path = join(dirname(abspath(filepath)), "..")
-    paths = [join(prefix_path, name) for name in ("data", "results", "analysis")]
-    return paths
+    if columns_order_list is not None:
+        table = table[key_cols + columns_order_list].set_index(key_cols)
+
+    return table
 
 
 def make_bold(row, maximum=True, decimals=2, threshold=None, with_sem=False):
     """
     Make bold the lowest or highest value(s).
-    with_sem simply returns an incomplete textbf latex function.
+    with_sem returns an incomplete textbf latex function and a mask array.
     """
     row = round(row, decimals)
     if threshold is None:
@@ -84,29 +57,35 @@ def make_bold(row, maximum=True, decimals=2, threshold=None, with_sem=False):
         return row
 
 
-def generate_mean_std_tbl_bold(
-    mean_vals, std_vals, maximum=True, decimals=2, threshold=None
+def make_mean_sem_table(
+    mean_vals, sem_vals=None, make_bold=False, maximum=True, decimals=2, threshold=None
 ):
     """
-    Generate table that combines mean and sem values.
+    Generate table with rounded decimals, bold maximum/minimum values or values
+    above/below a given threshold, and combine mean and sem values.
     """
-    mean_bold = mean_vals.apply(
-        lambda row: make_bold(row, maximum, decimals, threshold, with_sem=True)[0],
-        axis=1,
-    )
-    mask = mean_vals.apply(
-        lambda row: make_bold(row, maximum, decimals, threshold, with_sem=True)[1],
-        axis=1,
-    ).values
 
-    formatter = "{0:.%sf}" % decimals
-    std_bold = std_vals.applymap(lambda x: formatter.format(x))
-    std_bold = np.where(mask, std_bold + "}", std_bold)
-    scores = mean_bold + r" $\pm$ " + std_bold
+    if sem_vals is not None:
+        scores = (
+            mean_vals.applymap(("{:,.%sf}" % decimals).format)
+            + r" $\pm$ "
+            + sem_vals.applymap(("{:,.%sf}" % decimals).format)
+        )
+    else:
+        scores = mean_vals.applymap(("{:,.%sf}" % decimals).format)
+
+    if make_bold:
+        mask = mean_vals.apply(
+            lambda row: make_bold(row, maximum, decimals, threshold, with_sem=True)[1],
+            axis=1,
+        ).values
+
+        scores.iloc[:, :] = np.where(mask, "\\textbf{" + scores + "}", scores)
+
     return scores
 
 
-def save_longtable(df, path=None, caption=None, label=None):
+def export_latex_longtable(df, path=None, caption=None, label=None):
     """
     Exports a pandas dataframe to longtable format.
     This function replaces ``df.to_latex`` when there are latex commands in

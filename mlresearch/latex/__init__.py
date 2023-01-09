@@ -4,20 +4,16 @@ documents.
 """
 
 from ._utils import (
-    generate_mean_std_tbl,
-    generate_pvalues_tbl,
-    sort_tbl,
-    generate_paths,
+    sort_table,
     make_bold,
-    generate_mean_std_tbl_bold,
+    make_mean_sem_table,
+    export_latex_longtable,
 )
 
 
 __all__ = [
-    "generate_mean_std_tbl",
-    "generate_pvalues_tbl",
-    "sort_tbl",
-    "generate_paths",
+    "sort_table",
     "make_bold",
-    "generate_mean_std_tbl_bold",
+    "make_mean_sem_table",
+    "export_latex_longtable",
 ]
