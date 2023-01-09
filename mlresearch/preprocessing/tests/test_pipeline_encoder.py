@@ -98,17 +98,15 @@ def test_default_encoder(X, y, cat_features):
             X = X.values
 
         if cat_features is None or len(cat_features) == 0:
-            assert not encoder.categorical_features_.any()
+            assert not encoder.features_.any()
             assert (X == X_).all()
         elif type(cat_features[0]) == np.bool_:
-            assert encoder.categorical_features_.sum() == sum(cat_features)
+            assert encoder.features_.sum() == sum(cat_features)
         else:
-            assert encoder.categorical_features_.sum() == len(cat_features)
+            assert encoder.features_.sum() == len(cat_features)
 
-        n_feats = sum(
-            [len(np.unique(feat)) for feat in X[:, encoder.categorical_features_].T]
-        )
-        assert X_.shape == (X.shape[0], n_feats + sum(~encoder.categorical_features_))
+        n_feats = sum([len(np.unique(feat)) for feat in X[:, encoder.features_].T])
+        assert X_.shape == (X.shape[0], n_feats + sum(~encoder.features_))
 
 
 @pytest.mark.parametrize(
@@ -121,9 +119,7 @@ def test_default_encoder(X, y, cat_features):
 def test_encoder(sklearn_encoder, X, y, categorical_features):
 
     # Check ordinal and One-Hot encoder
-    encoder = PipelineEncoder(
-        categorical_features=categorical_features, encoder=sklearn_encoder
-    )
+    encoder = PipelineEncoder(features=categorical_features, encoder=sklearn_encoder)
 
     if (
         categorical_features is not None
@@ -141,12 +137,10 @@ def test_encoder(sklearn_encoder, X, y, categorical_features):
         if sklearn_encoder.__class__.__name__ == "OrdinalEncoder":
             assert X.shape == X_.shape
         else:
-            n_feats = sum(
-                [len(np.unique(feat)) for feat in X[:, encoder.categorical_features_].T]
-            )
+            n_feats = sum([len(np.unique(feat)) for feat in X[:, encoder.features_].T])
             assert X_.shape == (
                 X.shape[0],
-                n_feats + sum(~encoder.categorical_features_),
+                n_feats + sum(~encoder.features_),
             )
 
 
@@ -161,9 +155,7 @@ def test_pipeline_encoder(sklearn_encoder, X, y, categorical_features):
 
     # Check in Pipeline
     pipeline = make_pipeline(
-        PipelineEncoder(
-            categorical_features=categorical_features, encoder=sklearn_encoder
-        ),
+        PipelineEncoder(features=categorical_features, encoder=sklearn_encoder),
         DecisionTreeClassifier(),
     )
     if (
@@ -185,12 +177,12 @@ def test_pipeline_encoder_errors():
 
     err_cat_features = [[0, True, "cat_2"], [{}, {}, {}]]
     for cat_features in err_cat_features:
-        encoder = PipelineEncoder(categorical_features=cat_features)
+        encoder = PipelineEncoder(features=cat_features)
         with pytest.raises(TypeError):
             encoder.fit_transform(X, y)
 
     key_err_features = [["test"], ["test1", "test2"], "test"]
     for cat_features in key_err_features:
-        encoder = PipelineEncoder(categorical_features=cat_features)
+        encoder = PipelineEncoder(features=cat_features)
         with pytest.raises(KeyError):
             encoder.fit_transform(X, y)

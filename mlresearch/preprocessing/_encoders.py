@@ -1,31 +1,37 @@
 import numpy as np
 import pandas as pd
 from scipy.sparse import issparse
-from sklearn.base import clone
-from sklearn.preprocessing._encoders import _BaseEncoder, OneHotEncoder
+from sklearn.base import clone, TransformerMixin
+from sklearn.utils.metaestimators import _BaseComposition
+from sklearn.preprocessing._encoders import OneHotEncoder
 
 
-class PipelineEncoder(_BaseEncoder):
+class PipelineEncoder(TransformerMixin, _BaseComposition):
     """
-    Pipeline-compatible adaptation of Scikit-learn's OneHotEncoder and OrdinalEncoder
-    objects. Used to use encoding of non-metric features within a pipeline.
+    Pipeline-compatible wrapper of Scikit-learn's Transformer objects. Used to pass
+    encoding of non-metric features and scalers (when there are categorical features)
+    within a pipeline.
 
     The fitted encoder object from Scikit-learn is stored in ``self.encoder_``.
 
+    .. warning::
+        In most cases, ``sklearn.compose.ColumnTransformer`` should be used instead of
+        ``PipelineEncoder``. This object might be removed in the future.
+
     Parameters
     ----------
-    categorical_features : ndarray of shape (n_cat_features,) or (n_features,)
-        Specified which features are categorical. Can either be:
+    features : ndarray of shape (n_cat_features,) or (n_features,)
+        Specifies which features to transform. Can either be:
 
-        - array of indices specifying the categorical features.
+        - array of indices specifying the features to transform.
         - mask array of shape (n_features, ) and ``bool`` dtype for which
-          ``True`` indicates the categorical features.
-        - array of shape (n_cat_features,) and ``str`` dtype with the names of the
-          categorical features. In this case, ``X`` must be a dataframe. Raises an
+          ``True`` indicates the features to transform.
+        - array of shape (n_transf_features,) and ``str`` dtype with the names of the
+          features to transform. In this case, ``X`` must be a dataframe. Raises an
           error otherwise.
 
     encoder : encoder object, default=None
-        Encoder object to be used for encoding the categorical features. If None,
+        Encoder object to be used for transforming the features. If None,
         defaults to sklearn's OneHotEncoder with default parameters, which can be
         modified with keyword arguments.
 
@@ -38,15 +44,15 @@ class PipelineEncoder(_BaseEncoder):
 
     Attributes
     ----------
-    categorical_features_ : array of shape (n_features,)
+    features_ : array of shape (n_features,)
         Mask array of shape (n_features, ) and ``bool`` dtype for which
-        ``True`` indicates the categorical features.
+        ``True`` indicates the features to transform.
     """
 
     _estimator_type = "encoder"
 
-    def __init__(self, categorical_features=None, encoder=None, **kwargs):
-        self.categorical_features = categorical_features
+    def __init__(self, features=None, encoder=None, **kwargs):
+        self.features = features
         self.encoder = encoder
         self._kwargs = kwargs
 
@@ -68,29 +74,29 @@ class PipelineEncoder(_BaseEncoder):
             X_ = X.copy()
         return X_
 
-    def _check_categorical_features(self, X):
+    def _check_features(self, X):
         """
-        Preprocess ``categorical_features``. Converts ``categorical_features`` to a mask
+        Preprocess ``features``. Converts ``features`` to a mask
         array.
         """
-        if self.categorical_features is None or len(self.categorical_features) == 0:
+        if self.features is None or len(self.features) == 0:
             cat_features = np.zeros(X.shape[-1]).astype(bool)
 
-        elif type(self.categorical_features) in [str, bool, int, float]:
-            cat_features = np.array([self.categorical_features])
+        elif type(self.features) in [str, bool, int, float]:
+            cat_features = np.array([self.features])
 
-        elif hasattr(self.categorical_features, "__iter__"):
-            if len(set([type(i) for i in self.categorical_features])) != 1:
+        elif hasattr(self.features, "__iter__"):
+            if len(set([type(i) for i in self.features])) != 1:
                 raise TypeError(
-                    "``categorical_features`` cannot have more than one type of object."
+                    "``features`` cannot have more than one type of object."
                 )
-            cat_features = np.array(self.categorical_features)
+            cat_features = np.array(self.features)
 
         else:
             error_msg = (
-                "``categorical_features`` must be an iterable or one of str,"
+                "``features`` must be an iterable or one of str,"
                 + " bool, int, float or NoneType. Got "
-                + f"{type(self.categorical_features).__name__} instead."
+                + f"{type(self.features).__name__} instead."
             )
             raise TypeError(error_msg)
 
@@ -104,14 +110,14 @@ class PipelineEncoder(_BaseEncoder):
             return cat_features
 
         elif is_indices:
-            categorical_features_ = np.zeros(X.shape[-1])
-            categorical_features_[cat_features] = 1
-            return categorical_features_.astype(bool)
+            features_ = np.zeros(X.shape[-1])
+            features_[cat_features] = 1
+            return features_.astype(bool)
 
         elif is_col_names:
             if not self._is_pandas:
                 error_msg = (
-                    "If ``categorical_features`` contains string values, "
+                    "If ``features`` contains string values, "
                     + "``X`` must be a pandas dataframe."
                 )
                 raise TypeError(error_msg)
@@ -124,8 +130,8 @@ class PipelineEncoder(_BaseEncoder):
 
         else:
             raise TypeError(
-                "Could not parse which features are categorical from "
-                + f"``categorical_features``. Got {self.categorical_features}."
+                "Could not parse which features to transform from "
+                + f"``features``. Got {self.features}."
             )
 
     def fit(self, X, y=None):
@@ -149,10 +155,10 @@ class PipelineEncoder(_BaseEncoder):
 
         X_ = self._check_X(X)
 
-        self.categorical_features_ = self._check_categorical_features(X)
+        self.features_ = self._check_features(X)
 
-        if not self.categorical_features_.any():
-            # If there are no categorical features apply no change
+        if not self.features_.any():
+            # If there are no features apply no change
             return self
 
         self.encoder_ = (
@@ -160,7 +166,7 @@ class PipelineEncoder(_BaseEncoder):
             if self.encoder is not None
             else OneHotEncoder(**self._kwargs)
         )
-        self.encoder_.fit(X_[:, self.categorical_features_], y)
+        self.encoder_.fit(X_[:, self.features_], y)
 
         return self
 
@@ -183,27 +189,27 @@ class PipelineEncoder(_BaseEncoder):
 
         X_ = self._check_X(X)
 
-        if not self.categorical_features_.any():
-            # If there are no categorical features apply no change
+        if not self.features_.any():
+            # If there are no features apply no change
             return X_
 
         if self._is_pandas:
             metric_data = pd.DataFrame(
-                X_[:, ~self.categorical_features_],
-                columns=self.columns_[~self.categorical_features_],
+                X_[:, ~self.features_],
+                columns=self.columns_[~self.features_],
             )
-            enc_vals = self.encoder_.transform(X_[:, self.categorical_features_])
+            enc_vals = self.encoder_.transform(X_[:, self.features_])
             encoded_data = pd.DataFrame(
                 enc_vals if not issparse(enc_vals) else enc_vals.toarray(),
                 columns=self.encoder_.get_feature_names_out(
-                    self.columns_[self.categorical_features_]
+                    self.columns_[self.features_]
                 ),
             )
             data = pd.concat([metric_data, encoded_data], axis=1)
 
         else:
-            metric_data = X_[:, ~self.categorical_features_]
-            enc_vals = self.encoder_.transform(X_[:, self.categorical_features_])
+            metric_data = X_[:, ~self.features_]
+            enc_vals = self.encoder_.transform(X_[:, self.features_])
             encoded_data = enc_vals if not issparse(enc_vals) else enc_vals.toarray()
             data = np.concatenate([metric_data, encoded_data], axis=1).astype(
                 np.float64
