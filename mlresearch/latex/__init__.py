@@ -4,7 +4,7 @@ documents.
 """
 
 from ._utils import (
-    sort_table,
+    format_table,
     make_bold,
     make_mean_sem_table,
     export_latex_longtable,
@@ -12,7 +12,7 @@ from ._utils import (
 
 
 __all__ = [
-    "sort_table",
+    "format_table",
     "make_bold",
     "make_mean_sem_table",
     "export_latex_longtable",
