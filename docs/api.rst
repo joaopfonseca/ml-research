@@ -38,6 +38,21 @@ This is the full API documentation of the `mlresearch` package.
     data_augmentation.GeometricSMOTE
     data_augmentation.OverSamplingAugmentation
 
+:mod:`mlresearch.preprocessing`
+-------------------------------
+
+.. automodule:: mlresearch.preprocessing
+   :no-members:
+   :no-inherited-members:
+
+.. currentmodule:: mlresearch
+
+.. autosummary::
+   :toctree: _generated/
+   :template: class.rst
+
+    preprocessing.PipelineEncoder
+
 :mod:`mlresearch.datasets`
 --------------------------
 
@@ -70,6 +85,8 @@ This is the full API documentation of the `mlresearch` package.
     :toctree: _generated/
     :template: function.rst
 
+    metrics.get_scorer
+    metrics.get_scorer_names
     metrics.geometric_mean_score_macro
     metrics.area_under_learning_curve
     metrics.data_utilization_rate
@@ -79,6 +96,24 @@ This is the full API documentation of the `mlresearch` package.
     :template: class.rst
     
     metrics.ALScorer
+
+:mod:`mlresearch.latex`
+-----------------------
+
+.. automodule:: mlresearch.latex
+    :no-members:
+    :no-inherited-members:
+
+.. currentmodule:: mlresearch
+
+.. autosummary::
+    :toctree: _generated/
+    :template: function.rst
+
+    latex.format_table
+    latex.make_bold
+    latex.make_mean_sem_table
+    latex.export_longtable
 
 :mod:`mlresearch.utils`
 -----------------------
@@ -93,15 +128,10 @@ This is the full API documentation of the `mlresearch` package.
     :toctree: _generated/
     :template: function.rst
 
-    utils.generate_mean_std_tbl
-    utils.generate_pvalues_tbl
-    utils.sort_tbl
-    utils.generate_paths
-    utils.make_bold
-    utils.generate_mean_std_tbl_bold
-    utils.img_array_to_pandas
+    utils.image_to_dataframe
     utils.load_datasets
     utils.check_pipelines
     utils.check_pipelines_wrapper
     utils.load_plt_sns_configs
     utils.val_to_color
+    utils.generate_paths
