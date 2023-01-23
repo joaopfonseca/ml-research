@@ -7,7 +7,7 @@ from .._utils import (
     format_table,
     make_bold,
     make_mean_sem_table,
-    export_latex_longtable,
+    export_longtable,
 )
 
 classifiers = {"KNN": "K-NN", "LR": "LogReg", "DT": "DecTree"}
@@ -132,7 +132,7 @@ def test_make_mean_sem_table(sem_vals, make_bold):
 
 def test_export_latex_longtable():
     mean_sem = make_mean_sem_table(table, rng.random((9, 3)), make_bold=True)
-    longtable = export_latex_longtable(mean_sem, index=True)
+    longtable = export_longtable(mean_sem, index=True)
     assert longtable.startswith("\\begin{longtable}{ccc}")
     assert longtable.endswith("\\end{longtable}\n")
     assert longtable.count("$\\pm$") == mean_sem.size

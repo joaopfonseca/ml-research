@@ -7,7 +7,7 @@ from ._utils import (
     format_table,
     make_bold,
     make_mean_sem_table,
-    export_latex_longtable,
+    export_longtable,
 )
 
 
@@ -15,5 +15,5 @@ __all__ = [
     "format_table",
     "make_bold",
     "make_mean_sem_table",
-    "export_latex_longtable",
+    "export_longtable",
 ]
