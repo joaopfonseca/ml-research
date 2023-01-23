@@ -129,6 +129,7 @@ This is the full API documentation of the `mlresearch` package.
     :template: function.rst
 
     utils.image_to_dataframe
+    utils.dataframe_to_image
     utils.load_datasets
     utils.check_pipelines
     utils.check_pipelines_wrapper
