@@ -11,6 +11,7 @@ import pandas as pd
 
 
 def _check_indices(table_index, indices):
+    """Formats the ``indices`` parameter passed."""
 
     if indices is None:
         indices = table_index.to_frame().to_dict("list")
@@ -51,32 +52,42 @@ def _check_indices(table_index, indices):
 
 def format_table(table, indices=None, columns=None, drop_missing=True):
     """
-    Sort rows and columns. Mostly used to set results from
+    Sort and rename rows and columns. Mostly used to set results from
     experiments in the intended order.
-
-    TODO: Rewrite docstring properly.
 
     Arguments
     ---------
-    table : TODO
+    table : pd.DataFrame
+        Dataframe with results statistics. Optionally, it may be indexed with related
+        metadata. Supports both single and multi index.
 
     indices : list, dict
+        Iterable with index names and order of index. Can be used to order index columns,
+        rows and filter unwanted rows or columns:
 
         - If list of strings, orders index according to the passed values.
         - If list of lists, orders multi indices according to the passed values.
         - If list of dicts, orders and renames indices according to the passed values.
-
         - If dict, orders and renames index values.
         - If dict of lists orders index columns and values.
         - If dict of dicts orders both index columns and values and renames values.
 
     columns : list, dict
+        Iterable with column names and order of columns. Can be used to order columns,
+        filter unwanted columns:
+
         - If list, orders and selects columns
         - If dict, orders, selects and renames columns
 
     drop_missing : bool, default=True
-        If True, removes any values/columns/index not included in ``indices`` and
-        ``columns``.
+        If True, removes any values, columns or indices not included in ``indices`` and
+        ``columns``. If False, the columns and indices not included will be moved to the
+        end of the dataframe.
+
+    Returns
+    -------
+    formatted_table : pd.DataFrame
+        Formatted dataframe.
 
     """
 
@@ -134,9 +145,9 @@ def format_table(table, indices=None, columns=None, drop_missing=True):
         columns_ = {**columns_, **missing}
 
     # Sort columns
-    table = table[list(columns_.keys())].rename(columns=columns_).copy()
+    formatted_table = table[list(columns_.keys())].rename(columns=columns_).copy()
 
-    return table
+    return formatted_table
 
 
 def _make_bold(row, maximum=True, decimals=2, threshold=None, with_sem=False):
@@ -168,9 +179,44 @@ def _make_bold(row, maximum=True, decimals=2, threshold=None, with_sem=False):
         return row
 
 
-def make_bold(df, maximum=True, decimals=2, threshold=None, axis=1):
-    """TODO"""
-    return df.apply(
+def make_bold(table, maximum=True, threshold=None, decimals=2, axis=1):
+    """
+    Make bold the lowest or highest values, or values lower than, or higher than the
+    passed value in ``threshold`` per row or column.
+
+    Arguments
+    ---------
+    table : pd.DataFrame
+        Dataframe with results statistics. Must not contain non-indexed metadata.
+        Supports both single and multi index.
+
+    maximum : bool, default=True
+        Whether to look for the highest or lowest values:
+
+        - If True and ``threshold`` is None, boldfaces the highest value in each
+          row/column.
+        - If False and ``threshold`` is None, boldfaces the lowest value in each
+          row/column.
+        - If True and ``threshold`` is not None, boldfaces all values above the given
+          threshold.
+        - If False and ``threshold`` is not None, boldfaces all values below the given
+          threshold.
+
+    threshold : int or float, default=None
+        Threshold to boldface values. If None, one value will be boldfaced per row or
+        column. If not None, boldfaces all values above or below ``threshold``.
+
+    decimals : int, default=2
+        Number of decimal places to round each value to.
+
+    axis : {0 or 'index', 1 or 'columns'}, default=1
+        Axis along which the function is applied:
+
+        - 0 or 'index': apply function to column.
+        - 1 or 'columns': apply function to each row.
+
+    """
+    return table.apply(
         lambda row: _make_bold(
             row, maximum=maximum, decimals=decimals, threshold=threshold
         ),
@@ -183,13 +229,58 @@ def make_mean_sem_table(
     sem_vals=None,
     make_bold=False,
     maximum=True,
-    decimals=2,
     threshold=None,
+    decimals=2,
     axis=1,
 ):
     """
     Generate table with rounded decimals, bold maximum/minimum values or values
     above/below a given threshold, and combine mean and sem values.
+
+    Arguments
+    ---------
+    mean_vals : pd.DataFrame
+        Dataframe with results statistics. Must not
+        contain non-indexed metadata. Supports both single and multi index.
+
+    sem_vals : {pd.DataFrame or np.ndarray}, default=None
+        Dataframe with standard errors of the means. If it is a DataFrame, must not
+        contain non-indexed metadata. Supports both single and multi index.
+
+    make_bold : bool, default=False
+        If True, make bold the lowest or highest values, or values lower than, or higher
+        than the passed value in ``threshold`` per row or column. If False, the
+        parameters ``maximum``, ``threshold`` and ``axis`` are ignored.
+
+    maximum : bool, default=True
+        Whether to look for the highest or lowest values:
+
+        - If True and ``threshold`` is None, boldfaces the highest value in each
+          row/column.
+        - If False and ``threshold`` is None, boldfaces the lowest value in each
+          row/column.
+        - If True and ``threshold`` is not None, boldfaces all values above the given
+          threshold.
+        - If False and ``threshold`` is not None, boldfaces all values below the given
+          threshold.
+
+    threshold : int or float, default=None
+        Threshold to boldface values. If None, one value will be boldfaced per row or
+        column. If not None, boldfaces all values above or below ``threshold``.
+
+    decimals : int, default=2
+        Number of decimal places to round each value to.
+
+    axis : {0 or 'index', 1 or 'columns'}, default=1
+        Axis along which the function is applied:
+
+        - 0 or 'index': apply function to column.
+        - 1 or 'columns': apply function to each row.
+
+    Returns
+    -------
+    scores : pd.DataFrame
+        Dataframe with the specified formatting.
     """
 
     if sem_vals is not None:
@@ -218,20 +309,53 @@ def make_mean_sem_table(
     return scores
 
 
-def export_latex_longtable(df, path=None, caption=None, label=None, index=False):
+def export_latex_longtable(table, path=None, caption=None, label=None, index=True):
     """
     Exports a pandas dataframe to longtable format.
+
     This function replaces ``df.to_latex`` when there are latex commands in
-    the table.
+    the table. Requires ``\\usepackage{booktabs}`` and ``\\usepackage{longtable}`` in the
+    LaTeX preamble.
+
+    .. warning::
+        Do not pass a table with column names, index names or values containing an
+        underscore ("_"), as it will result in an error in LaTeX. If you wish to have
+        underscores in the LaTeX table, add a backslash before the underscore.
+
+    Arguments
+    ---------
+    table : pd.DataFrame
+        Dataframe with results statistics. Must not contain non-indexed metadata.
+        Supports both single and multi index.
+
+    path : str, default=None
+        File path to write to. If None, the output is returned as a string.
+
+    caption : str or tuple, default=None
+        Tuple (full_caption, short_caption), which results in
+        ``\\caption[short_caption]{full_caption}``; if a single string is passed, no
+        short caption will be set.
+
+    label : str, default=None
+        The LaTeX label to be placed inside ``\\label{}`` in the output. This is used
+        with ``\\ref{}`` in the main ``.tex`` file.
+
+    index : bool, default=True
+        Write row names (index).
+
+    Returns
+    -------
+    tex_table : str or None
+        If ``path`` is None, returns the result as a string. Otherwise returns None.
     """
 
-    wo_tex = (
-        df.to_latex(
+    tex_table = (
+        table.to_latex(
             longtable=True,
             caption=caption,
             label=label,
             index=index,
-            column_format="c" * df.shape[1],
+            column_format="c" * table.shape[1],
         )
         .replace(r"\textbackslash ", "\\")
         .replace(r"\{", "{")
@@ -240,6 +364,6 @@ def export_latex_longtable(df, path=None, caption=None, label=None, index=False)
     )
 
     if path is not None:
-        open(path, "w").write(wo_tex)
+        open(path, "w").write(tex_table)
     else:
-        return wo_tex
+        return tex_table
