@@ -36,13 +36,12 @@ ______________________________________________________________________
 ``ML-Research`` is an open source library for machine learning research.  It
 contains the software implementation of most algorithms used or developed in
 my research. Specifically, it contains ``scikit-learn`` compatible
-implementations for Active Learning, Oversampling, Datasets and various
-utilities to assist in experiment design and results reporting.
+implementations for Active Learning and Oversampling, as well as Datasets and
+various utilities to assist in experiment design and results reporting.
 
-The LaTeX and Python code for generating the
-paper, experiments' results and visualizations reported in each paper is
-available (whenever possible) in the [publications
-repo](https://github.com/joaopfonseca/publications).
+The LaTeX and Python code for generating the paper, experiments' results and
+visualizations shown in each paper is available (whenever possible) in the
+[publications repo](https://github.com/joaopfonseca/publications).
 
 Contributions at the algorithm level are available in the
 package ``mlresearch``.
@@ -58,11 +57,9 @@ tested. ``ML-Research`` requires:
 - sklearn (>= 1.0.0)
 - imblearn (>= 0.8.0)
 - rich (>= 10.16.1)
-- matplotlib (>= 2.2.3)
-- seaborn (>= 0.9.0)
-- pytorch (>= 1.10.1)
-- torchvision (>= 0.11.2)
-- pytorch_lightning (>= 1.5.8)
+
+Some functions in the ``mlresearch.utils`` submodule (the ones in the script
+``_visualization.py``) require Matplotlib >= 2.2.3.
 
 ### User Installation
 
@@ -92,7 +89,7 @@ project with minimal effort:
 
     # Install project requirements and the research package. Dependecy group
     # "all" will also install both dependency groups shown below.
-    pip install .[tests,docs] 
+    pip install .[optional,tests,docs] 
 
 ## Citing ML-Research
 
