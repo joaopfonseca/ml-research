@@ -7,7 +7,6 @@ SKLEARN_MIN_VERSION = "1.0.0"
 IMBLEARN_MIN_VERSION = "0.8.0"
 RICH_MIN_VERSION = "10.16.1"
 MATPLOTLIB_MIN_VERSION = "2.2.3"
-SEABORN_MIN_VERSION = "0.9.0"
 
 # The values are (version_spec, comma separated tags)
 dependent_packages = {
@@ -16,9 +15,8 @@ dependent_packages = {
     "scikit-learn": (SKLEARN_MIN_VERSION, "install"),
     "imbalanced-learn": (IMBLEARN_MIN_VERSION, "install"),
     "rich": (RICH_MIN_VERSION, "install"),
-    "matplotlib": (MATPLOTLIB_MIN_VERSION, "install"),
-    "seaborn": (SEABORN_MIN_VERSION, "install"),
     "requests": ("2.26.0", "install"),
+    "matplotlib": (MATPLOTLIB_MIN_VERSION, "optional"),
     "research-learn": ("0.3.0", "tests"),
     "pytest-cov": ("3.0.0", "tests"),
     "flake8": ("3.8.2", "tests"),

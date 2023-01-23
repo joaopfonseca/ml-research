@@ -2,23 +2,74 @@
 Functions for visualization formatting or producing pre-formatted
 visualizations.
 """
-
+from distutils.spawn import find_executable
+import warnings
+import types
 import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
-from matplotlib.colors import rgb2hex, Normalize
-from matplotlib.cm import ScalarMappable
 
 
-def load_plt_sns_configs(font_size=8):
+def _optional_import(module: str) -> types.ModuleType:
     """
-    Load LaTeX style configurations for Matplotlib/Seaborn
-    Visualizations.
+    Import an optional dependency.
+
+    Parameters
+    ----------
+    module : str
+        The identifier for the backend. Either an entrypoint item registered
+        with importlib.metadata, "matplotlib", or a module name.
+
+    Returns
+    -------
+    types.ModuleType
+        The imported backend.
     """
-    sns.set_style("whitegrid")
-    tex_fonts = {
-        # Use LaTeX to write all text
-        "text.usetex": True,
+    # This function was adapted from the _load_backend function from the pandas.plotting
+    # source code.
+    import importlib
+
+    # Attempt an import of an optional dependency here and raise an ImportError if
+    # needed.
+    try:
+        module_ = importlib.import_module(module)
+    except ImportError:
+        mod = module.split(".")[0]
+        raise ImportError(f"{mod} is required to use this functionality.") from None
+
+    return module_
+
+
+def load_plt_sns_configs(font_size=8, **rcparams):
+    """
+    Load LaTeX style configurations for Matplotlib Visualizations.
+    """
+    plt = _optional_import("matplotlib.pyplot")
+
+    # Replicates the rcParams of seaborn's "whitegrid" style and a few extra
+    # configurations I like
+    base_style = {
+        # Whitegrid
+        "axes.axisbelow": True,
+        "axes.edgecolor": ".8",
+        "axes.grid": True,
+        "axes.labelcolor": ".15",
+        "font.sans-serif": [
+            "Arial",
+            "DejaVu Sans",
+            "Liberation Sans",
+            "Bitstream Vera Sans",
+            "sans-serif",
+        ],
+        "grid.color": ".8",
+        "image.cmap": "rocket",
+        "lines.solid_capstyle": "round",
+        "patch.edgecolor": "w",
+        "patch.force_edgecolor": True,
+        "text.color": ".15",
+        "xtick.bottom": False,
+        "xtick.color": ".15",
+        "ytick.color": ".15",
+        "ytick.left": False,
+        # Extras
         "font.family": "serif",
         # Use 10pt font in plots, to match 10pt font in document
         "axes.labelsize": (10 / 8) * font_size,
@@ -35,7 +86,22 @@ def load_plt_sns_configs(font_size=8):
         "figure.subplot.wspace": 0.071,
         "figure.subplot.hspace": 0.2,
     }
-    plt.rcParams.update(tex_fonts)
+    plt.rcParams.update(base_style)
+
+    if find_executable("latex"):
+        tex_fonts = {
+            # Use LaTeX to write all text
+            "text.usetex": True,
+        }
+        plt.rcParams.update(tex_fonts)
+    else:
+        warn_msg = (
+            "Could not find a LaTeX installation. ``text.usetex`` will be set to False."
+        )
+        warnings.warning(warn_msg)
+
+    # Used to pass any additional custom configurations
+    plt.rcParams.update(rcparams)
 
 
 def val_to_color(col, cmap="RdYlBu_r"):
@@ -55,8 +121,11 @@ def val_to_color(col, cmap="RdYlBu_r"):
     colors : array-like of shape (n_samples,)
         Array with hex values as string type.
     """
-    norm = Normalize(vmin=col.min(), vmax=col.max(), clip=True)
-    mapper = ScalarMappable(norm=norm, cmap=cmap)
+    colors = _optional_import("matplotlib.colors")
+    cm = _optional_import("matplotlib.cm")
+
+    norm = colors.Normalize(vmin=col.min(), vmax=col.max(), clip=True)
+    mapper = cm.ScalarMappable(norm=norm, cmap=cmap)
     rgba = mapper.to_rgba(col)
 
-    return np.apply_along_axis(rgb2hex, 1, rgba)
+    return np.apply_along_axis(colors.rgb2hex, 1, rgba)
