@@ -38,38 +38,20 @@ def _optional_import(module: str) -> types.ModuleType:
     return module_
 
 
-def load_plt_sns_configs(font_size=8, **rcparams):
+def set_matplotlib_style(font_size=8, **rcparams):
     """
-    Load LaTeX style configurations for Matplotlib Visualizations.
+    Load LaTeX-style configurations for Matplotlib Visualizations.
     """
     plt = _optional_import("matplotlib.pyplot")
 
     # Replicates the rcParams of seaborn's "whitegrid" style and a few extra
     # configurations I like
+    plt.style.use("seaborn-v0_8-whitegrid")
     base_style = {
-        # Whitegrid
-        "axes.axisbelow": True,
-        "axes.edgecolor": ".8",
-        "axes.grid": True,
-        "axes.labelcolor": ".15",
-        "font.sans-serif": [
-            "Arial",
-            "DejaVu Sans",
-            "Liberation Sans",
-            "Bitstream Vera Sans",
-            "sans-serif",
-        ],
-        "grid.color": ".8",
-        "image.cmap": "rocket",
-        "lines.solid_capstyle": "round",
-        "patch.edgecolor": "w",
-        "patch.force_edgecolor": True,
-        "text.color": ".15",
-        "xtick.bottom": False,
-        "xtick.color": ".15",
-        "ytick.color": ".15",
-        "ytick.left": False,
-        # Extras
+        # "patch.edgecolor": "w",
+        # "patch.force_edgecolor": True,
+        # "xtick.bottom": False,
+        # "ytick.left": False,
         "font.family": "serif",
         # Use 10pt font in plots, to match 10pt font in document
         "axes.labelsize": (10 / 8) * font_size,
@@ -84,7 +66,6 @@ def load_plt_sns_configs(font_size=8, **rcparams):
         "figure.subplot.bottom": 0.12,
         "figure.subplot.top": 0.944,
         "figure.subplot.wspace": 0.071,
-        "figure.subplot.hspace": 0.2,
     }
     plt.rcParams.update(base_style)
 
@@ -104,13 +85,13 @@ def load_plt_sns_configs(font_size=8, **rcparams):
     plt.rcParams.update(rcparams)
 
 
-def val_to_color(col, cmap="RdYlBu_r"):
+def feature_to_color(col, cmap="RdYlBu_r"):
     """
     Converts a column of values to hex-type colors.
 
     Parameters
     ----------
-    col : array-like of shape (n_samples,)
+    col : {list, array-like} of shape (n_samples,)
         Values to convert to hex-type color code
 
     cmap : str or `~matplotlib.colors.Colormap`
@@ -123,6 +104,9 @@ def val_to_color(col, cmap="RdYlBu_r"):
     """
     colors = _optional_import("matplotlib.colors")
     cm = _optional_import("matplotlib.cm")
+
+    if type(col) == list:
+        col = np.array(col)
 
     norm = colors.Normalize(vmin=col.min(), vmax=col.max(), clip=True)
     mapper = cm.ScalarMappable(norm=norm, cmap=cmap)

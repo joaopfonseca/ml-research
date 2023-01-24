@@ -38,20 +38,6 @@ This is the full API documentation of the `mlresearch` package.
     data_augmentation.GeometricSMOTE
     data_augmentation.OverSamplingAugmentation
 
-:mod:`mlresearch.preprocessing`
--------------------------------
-
-.. automodule:: mlresearch.preprocessing
-   :no-members:
-   :no-inherited-members:
-
-.. currentmodule:: mlresearch
-
-.. autosummary::
-   :toctree: _generated/
-   :template: class.rst
-
-    preprocessing.PipelineEncoder
 
 :mod:`mlresearch.datasets`
 --------------------------
@@ -71,6 +57,25 @@ This is the full API documentation of the `mlresearch` package.
     datasets.ContinuousCategoricalDatasets
     datasets.MultiClassDatasets
     datasets.RemoteSensingDatasets
+
+:mod:`mlresearch.latex`
+-----------------------
+
+.. automodule:: mlresearch.latex
+    :no-members:
+    :no-inherited-members:
+
+.. currentmodule:: mlresearch
+
+.. autosummary::
+    :toctree: _generated/
+    :template: function.rst
+
+    latex.format_table
+    latex.make_bold
+    latex.make_mean_sem_table
+    latex.export_longtable
+
 
 :mod:`mlresearch.metrics`
 -------------------------
@@ -97,23 +102,20 @@ This is the full API documentation of the `mlresearch` package.
     
     metrics.ALScorer
 
-:mod:`mlresearch.latex`
------------------------
+:mod:`mlresearch.preprocessing`
+-------------------------------
 
-.. automodule:: mlresearch.latex
-    :no-members:
-    :no-inherited-members:
+.. automodule:: mlresearch.preprocessing
+   :no-members:
+   :no-inherited-members:
 
 .. currentmodule:: mlresearch
 
 .. autosummary::
-    :toctree: _generated/
-    :template: function.rst
+   :toctree: _generated/
+   :template: class.rst
 
-    latex.format_table
-    latex.make_bold
-    latex.make_mean_sem_table
-    latex.export_longtable
+    preprocessing.PipelineEncoder
 
 :mod:`mlresearch.utils`
 -----------------------
@@ -133,6 +135,6 @@ This is the full API documentation of the `mlresearch` package.
     utils.load_datasets
     utils.check_pipelines
     utils.check_pipelines_wrapper
-    utils.load_plt_sns_configs
-    utils.val_to_color
+    utils.set_matplotlib_style
+    utils.feature_to_color
     utils.generate_paths
