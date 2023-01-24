@@ -79,7 +79,7 @@ def set_matplotlib_style(font_size=8, **rcparams):
         warn_msg = (
             "Could not find a LaTeX installation. ``text.usetex`` will be set to False."
         )
-        warnings.warning(warn_msg)
+        warnings.warn(warn_msg)
 
     # Used to pass any additional custom configurations
     plt.rcParams.update(rcparams)
