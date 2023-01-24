@@ -16,7 +16,7 @@ dependent_packages = {
     "imbalanced-learn": (IMBLEARN_MIN_VERSION, "install"),
     "rich": (RICH_MIN_VERSION, "install"),
     "requests": ("2.26.0", "install"),
-    "matplotlib": (MATPLOTLIB_MIN_VERSION, "optional"),
+    "matplotlib": (MATPLOTLIB_MIN_VERSION, "optional, tests"),
     "research-learn": ("0.3.0", "tests"),
     "pytest-cov": ("3.0.0", "tests"),
     "flake8": ("3.8.2", "tests"),
