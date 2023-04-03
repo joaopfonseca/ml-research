@@ -436,7 +436,6 @@ class GeometricSMOTE(BaseOverSampler):
         X_new = np.zeros((n_samples, X.shape[1]))
         all_neighbors_ = []
         for ind, (row, col) in enumerate(zip(rows, cols)):
-
             # Define center point
             center = X_pos[row]
 
@@ -599,7 +598,6 @@ class GeometricSMOTE(BaseOverSampler):
         return X_resampled
 
     def _fit_resample(self, X, y, sample_weight=None):
-
         # Save basic data
         self._issparse = sparse.issparse(X)
         X_dtype = X.dtype
@@ -619,7 +617,6 @@ class GeometricSMOTE(BaseOverSampler):
 
         # Resample
         for class_label, n_samples in self.sampling_strategy_.items():
-
             # Apply gsmote mechanism
             X_new, y_new, all_neighbors_ = self._make_geometric_samples(
                 X, y, class_label, n_samples, sample_weight=sample_weight

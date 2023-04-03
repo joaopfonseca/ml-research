@@ -45,7 +45,6 @@ def test_image_to_dataframe(number_of_bands):
 
 @pytest.mark.parametrize("number_of_bands", list(range(1, 20, 3)))
 def test_dataframe_to_image(number_of_bands):
-
     shape = (150, 200, number_of_bands)
     band_names = [f"a{i}" for i in range(number_of_bands)]
 

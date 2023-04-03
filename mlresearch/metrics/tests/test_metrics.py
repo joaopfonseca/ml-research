@@ -5,6 +5,7 @@
 import pytest
 import numpy as np
 from sklearn.utils._testing import ignore_warnings
+from sklearn.linear_model import LogisticRegression
 
 from ...active_learning import StandardAL
 from .._metrics import (
@@ -13,6 +14,7 @@ from .._metrics import (
     area_under_learning_curve,
     data_utilization_rate,
 )
+from .._rankings import RankingScorer, precision_at_k
 
 RANDOM_STATE = 42
 
@@ -59,3 +61,15 @@ def test_al_metrics():
 
     assert ALScorer(data_utilization_rate)(al_model, None, None) == 1 / 3
     assert ALScorer(area_under_learning_curve)(al_model, None, None) == 1
+
+
+def test_rank_metrics():
+    y_score = [0.7, 0.1, 0.5]
+    assert precision_at_k(true_result, y_score, k=1) == 0.0
+    assert precision_at_k(true_result, y_score, k=2) == 0.5
+    assert precision_at_k(true_result, y_score, k=3) == 2 / 3
+
+    # Check if scorer is being created properly
+    clf = LogisticRegression().fit(X, y)
+    assert RankingScorer(precision_at_k, k=3)(clf, T, true_result) == 2 / 3
+    assert RankingScorer(precision_at_k, k=2)(clf, T, true_result) == 1

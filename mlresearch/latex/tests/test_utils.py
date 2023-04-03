@@ -69,7 +69,6 @@ def test_check_indices(indices):
     "columns", [{"Prop": "a", "Bench1": "b"}, ["Prop"], ["Prop", "Bench2", "Bench1"]]
 )
 def test_format_table(columns):
-
     indices = {"Perf": metrics}
 
     tab = format_table(table, indices=indices, columns=columns, drop_missing=False)
@@ -88,7 +87,6 @@ def test_format_table(columns):
 
 
 def test_make_bold():
-
     # Default values
     for i in [0, 1]:
         exp_max_indices = np.argmax(table.values, axis=i)
@@ -113,7 +111,6 @@ def test_make_bold():
     "sem_vals, make_bold", product([None, rng.random((9, 3))], [True, False])
 )
 def test_make_mean_sem_table(sem_vals, make_bold):
-
     exp_max_indices = np.argmax(table.values, axis=1)
     mean_sem = make_mean_sem_table(table, sem_vals=sem_vals, make_bold=make_bold)
 

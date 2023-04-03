@@ -9,6 +9,10 @@ from ._metrics import (
     area_under_learning_curve,
     data_utilization_rate,
 )
+from ._rankings import (
+    RankingScorer,
+    precision_at_k,
+)
 
 # Update the list of scorers
 from sklearn.metrics import get_scorer, get_scorer_names
@@ -19,5 +23,7 @@ __all__ = [
     "geometric_mean_score_macro",
     "area_under_learning_curve",
     "data_utilization_rate",
+    "precision_at_k",
     "ALScorer",
+    "RankingScorer",
 ]

@@ -284,7 +284,6 @@ def make_mean_sem_table(
     """
 
     if sem_vals is not None:
-
         if type(sem_vals) == np.ndarray:
             sem_vals = pd.DataFrame(
                 sem_vals, index=mean_vals.index, columns=mean_vals.columns

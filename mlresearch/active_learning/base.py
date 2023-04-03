@@ -295,7 +295,6 @@ class BaseActiveLearner(BaseEstimator, metaclass=ABCMeta):
 
         # Iterate
         for iter_ in range(1, self.max_iter_ + 1):
-
             self.iteration(X, y, **kwargs)
 
             if self._early_stop():

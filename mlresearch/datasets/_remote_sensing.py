@@ -54,7 +54,7 @@ class RemoteSensingDatasets(Datasets):
         """Download the datasets and append undersampled versions of them."""
         super(RemoteSensingDatasets, self).download(keep_index=True)
         content_ = []
-        for (name, data) in self.content_:
+        for name, data in self.content_:
             data = data.set_index(["h", "w"])
             content_.append((name, data))
         self.content_ = content_

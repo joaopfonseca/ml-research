@@ -77,7 +77,6 @@ def generate_datasets():
 
 @pytest.mark.parametrize("X, y, cat_features", generate_datasets())
 def test_default_encoder(X, y, cat_features):
-
     encoder = PipelineEncoder(
         cat_features,
         sparse_output=False,
@@ -117,7 +116,6 @@ def test_default_encoder(X, y, cat_features):
     ],
 )
 def test_encoder(sklearn_encoder, X, y, categorical_features):
-
     # Check ordinal and One-Hot encoder
     encoder = PipelineEncoder(features=categorical_features, encoder=sklearn_encoder)
 
@@ -152,7 +150,6 @@ def test_encoder(sklearn_encoder, X, y, categorical_features):
     ],
 )
 def test_pipeline_encoder(sklearn_encoder, X, y, categorical_features):
-
     # Check in Pipeline
     pipeline = make_pipeline(
         PipelineEncoder(features=categorical_features, encoder=sklearn_encoder),
@@ -172,7 +169,6 @@ def test_pipeline_encoder(sklearn_encoder, X, y, categorical_features):
 
 
 def test_pipeline_encoder_errors():
-
     X, y, _ = generate_datasets()[3]
 
     err_cat_features = [[0, True, "cat_2"], [{}, {}, {}]]

@@ -11,8 +11,8 @@ class ALScorer(_PredictScorer):
     This factory class wraps scoring functions to be used in
     :class:`~rlearn.model_selection.ModelSearchCV` and
     :class:`~sklearn.model_selection.GridSearchCV`. It takes a score function, such as
-    :func:`~research.metrics.area_under_learning_curve` or
-    :func:`~research.metrics.data_utilization_rate` and is used to score an AL
+    :func:`~mlresearch.metrics.area_under_learning_curve` or
+    :func:`~mlresearch.metrics.data_utilization_rate` and is used to score an AL
     simulation. The signature of the call is `(estimator, X, y)` where `estimator` is the
     model to be evaluated, `X` is the data and `y` is the ground truth labeling (or
     `None` in the case of unsupervised models).
@@ -32,8 +32,10 @@ class ALScorer(_PredictScorer):
         Callable object that returns a scalar score.
     """
 
-    def __init__(self, score_func):
-        super().__init__(score_func=score_func, sign=1, kwargs={})
+    def __init__(self, score_func, sign=1, **kwargs):
+        self._score_func = score_func
+        self._sign = sign
+        self._kwargs = kwargs
 
     def _score(self, method_caller, estimator, X, y_true, sample_weight=None):
         """Evaluate predicted target values for X relative to y_true.

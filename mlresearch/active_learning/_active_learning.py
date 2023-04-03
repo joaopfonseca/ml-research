@@ -324,7 +324,6 @@ class AugmentationAL(BaseActiveLearner, ClassifierMixin):
         return labeled_pool
 
     def _iteration(self, X, y, **kwargs):
-
         # Set up parameter tuning within iterations
         cv = self._check_cross_validation(y[self.labeled_pool_])
         if self.param_grid is not None and cv != 1:

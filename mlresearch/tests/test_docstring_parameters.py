@@ -152,7 +152,6 @@ def test_tabs():
     for importer, modname, ispkg in walk_packages(
         mlresearch.__path__, prefix="mlresearch."
     ):
-
         if IS_PYPY:
             continue
 
