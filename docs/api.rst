@@ -93,6 +93,7 @@ This is the full API documentation of the `mlresearch` package.
     metrics.get_scorer
     metrics.get_scorer_names
     metrics.geometric_mean_score_macro
+    metrics.precision_at_k
     metrics.area_under_learning_curve
     metrics.data_utilization_rate
 

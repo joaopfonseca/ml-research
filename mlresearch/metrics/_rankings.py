@@ -86,7 +86,14 @@ class RankingScorer(_BaseScorer):
 def precision_at_k(y_true, y_score, k=10, target_label=1):
     """
     Calculate precision at ``k``, where ``k`` is the number of relevant items to consider
-    (sorted in descending order by its score)
+    (sorted in descending order by its score). This metric consists of the ration between
+    the number of items with label ``target_label``, out of the top ``k`` items with
+    highest scores.
+
+    .. warning::
+        This metric is not the same as ``sklearn.metrics.top_k_accuracy_score``, which
+        calculates the amount of times ``y_true`` is within the top ``k`` predicted
+        classes for each item.
 
     Parameters
     ----------
@@ -96,12 +103,7 @@ def precision_at_k(y_true, y_score, k=10, target_label=1):
     y_score : array-like of shape (n_samples,) or (n_samples, n_classes)
         Target scores. These can be either probability estimates or non-thresholded
         decision values (as returned by :term:`decision_function` on some classifiers).
-        The binary case expects scores with shape (n_samples,) while the multiclass case
-        expects scores with shape (n_samples, n_classes).  In the multiclass case, the
-        order of the class scores must correspond to the order of ``labels``, if
-        provided, or else to the numerical or lexicographical order of the labels in
-        ``y_true``.  If ``y_true`` does not contain all the labels, ``labels`` must be
-        provided.
+        Expects scores with shape (n_samples,).
 
     k : int, default=10
         Number of most likely predictions considered to compute the number of correct
