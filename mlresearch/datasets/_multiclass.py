@@ -86,11 +86,14 @@ class ContinuousCategoricalDatasets(Datasets):
         for name, dataset in self.content_:
             dataset = dataset.drop(columns="target")
             values = [
+                name,
                 sum(~dataset.columns.str.startswith("cat_")),
                 sum(dataset.columns.str.startswith("cat_")),
             ]
             extended_summary.append(values)
-        extended_summary = pd.DataFrame(extended_summary, columns=summary_columns)
+        extended_summary = pd.DataFrame(
+            extended_summary, columns=["Dataset name"] + summary_columns
+        ).set_index("Dataset name")
         datasets_summary = pd.concat([datasets_summary, extended_summary], axis=1)
 
         # Reorder columns

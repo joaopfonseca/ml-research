@@ -63,9 +63,10 @@ def test_imbalance_datasets():
     assert list(dict(content).keys()) == [name] + [f"{name} ({ir})" for ir in exp_irs]
 
     # summarize_datasets
-    assert descr.shape == (len(exp_irs) + 1, 7)
+    assert descr.index.name == "Dataset name"
+    assert descr.shape == (len(exp_irs) + 1, 6)
     assert (descr["Features"] == N_FEATURES).all()
-    assert descr["Dataset name"].tolist() == list(dict(content).keys())
+    assert descr.index.tolist() == list(dict(content).keys())
     assert descr["Imbalance Ratio"].astype(int).tolist() == [
         i for i in irs if i >= base_ir
     ]
@@ -89,9 +90,7 @@ def test_categorical_summary():
         }
         name = f"test_{n_cat}"
         data = pd.concat([X.rename(columns=cat_columns), y], axis=1)
-        data.loc[:, cat_columns.values()] = (
-            data[cat_columns.values()].round().astype(int)
-        )
+        data = data.assign(**data[cat_columns.values()].round().astype(int))
         datasets.content_.append((name, data))
 
     # Imbalance datasets
@@ -101,13 +100,14 @@ def test_categorical_summary():
     descr = datasets.summarize_datasets()
 
     # summarize_datasets
-    assert descr.shape == ((len(exp_irs) + 1) * (N_FEATURES + 1), 9)
+    assert descr.index.name == "Dataset name"
+    assert descr.shape == ((len(exp_irs) + 1) * (N_FEATURES + 1), 8)
     assert (descr["Features"] == N_FEATURES).all()
-    assert descr["Dataset name"].tolist() == list(dict(datasets.content_).keys())
+    assert descr.index.tolist() == list(dict(datasets.content_).keys())
     assert (descr["Metric"] + descr["Non-Metric"] == descr["Features"]).all()
 
     exp_cat = (
-        descr["Dataset name"]
+        descr.index.to_series()
         .apply(lambda x: x.split("_")[-1].split(" ")[0])
         .replace({"test": 0})
         .astype(int)
