@@ -27,7 +27,10 @@ def test_load_datasets():
         "sample_data_base.db"
     ]
     for file in files:
-        remove(file)
+        try:
+            remove(file)
+        except PermissionError:
+            pass
 
     exp_csv_datasets = [f"{name.upper()} DATA FILE" for name in DATASET_NAMES]
     exp_db_datasets = [name.upper() for name in DATASET_NAMES]

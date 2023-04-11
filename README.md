@@ -9,8 +9,8 @@ ______________________________________________________________________
 <a href="https://codecov.io/gh/joaopfonseca/ml-research"><img alt="Codecov" src="https://codecov.io/gh/joaopfonseca/ml-research/branch/master/graph/badge.svg?token=J2EBA4YTMN"></a>
 <a href="https://mlresearch.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/mlresearch/badge/?version=latest"></a>
 <a href="https://github.com/psf/black"><img alt="Black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-<a href="https://img.shields.io/badge/python-3.8%20|%203.9-blue"><img alt="Python Versions" src="https://img.shields.io/badge/python-3.8%20|%203.9%20|%203.10-blue"></a>
-<a href="https://doi.org/10.3390/RS13132619"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.3390/RS13132619.svg"></a>
+<a href="https://img.shields.io/badge/python-3.8%20|%203.9%20|%203.10%20|%203.11-blue"><img alt="Python Versions" src="https://img.shields.io/badge/python-3.8%20|%203.9%20|%203.10%20|%203.11-blue"></a>
+<a href="https://doi.org/10.1155/2023/7941878"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.1155/2023/7941878.svg"></a>
 </p>
 <table align="center">
   <tr>
@@ -88,7 +88,7 @@ project with minimal effort:
     conda activate mlresearch # Adapt this line accordingly if you're not running conda
 
     # Install project requirements and the research package. Dependecy group
-    # "all" will also install both dependency groups shown below.
+    # "all" will also install the dependency groups shown below.
     pip install .[optional,tests,docs] 
 
 ## Citing ML-Research
@@ -96,16 +96,11 @@ project with minimal effort:
 If you use ML-Research in a scientific publication, we would appreciate
 citations to the following paper:
 
-    @article{Fonseca2021,
-      doi = {10.3390/RS13132619},
-      url = {https://doi.org/10.3390/RS13132619},
-      keywords = {SMOTE,active learning,artificial data generation,land use/land cover classification,oversampling},
-      year = {2021},
-      month = {jul},
-      publisher = {Multidisciplinary Digital Publishing Institute},
-      volume = {13},
-      pages = {2619},
-      author = {Fonseca, Joao and Douzas, Georgios and Bacao, Fernando},
-      title = {{Increasing the Effectiveness of Active Learning: Introducing Artificial Data Generation in Active Learning for Land Use/Land Cover Classification}},
-      journal = {Remote Sensing}
+    @article{fonseca2023improving,
+      title={Improving Active Learning Performance through the Use of Data Augmentation},
+      author={Fonseca, Joao and Bacao, Fernando and others},
+      journal={International Journal of Intelligent Systems},
+      volume={2023},
+      year={2023},
+      publisher={Hindawi}
     }
