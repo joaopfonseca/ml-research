@@ -2,8 +2,8 @@
 Download, transform and simulate various datasets.
 """
 
-# Author: Georgios Douzas <gdouzas@icloud.com>
-#         Joao Fonseca <jpfonseca@novaims.unl.pt>
+# Author: Joao Fonseca <jpfonseca@novaims.unl.pt>
+#         Georgios Douzas <gdouzas@icloud.com>
 # License: MIT
 
 from typing import Optional, Union
@@ -181,6 +181,28 @@ class Datasets:
         self.data_home = data_home
         self.download_if_missing = download_if_missing
 
+    def __getitem__(self, i):
+        if type(i) == str:
+            return dict(self.content_)[i]
+        else:
+            return self.content_[i]
+
+    def __setitem__(self, key, value):
+        self.content_.append((key, value))
+        return self
+
+    def __len__(self):
+        return len(self.content_)
+
+    def keys(self):
+        return dict(self.content_).keys()
+
+    def values(self):
+        return dict(self.content_).values()
+
+    def items(self):
+        return dict(self.content_).items()
+
     @staticmethod
     def _modify_columns(data, keep_index=False):
         """Rename and reorder columns of dataframe."""
@@ -355,8 +377,8 @@ class Datasets:
         )
 
         # Sort datasets summary
-        datasets_summary = datasets_summary.sort_values("Imbalance Ratio").reset_index(
-            drop=True
+        datasets_summary = datasets_summary.sort_values("Imbalance Ratio").set_index(
+            "Dataset name"
         )
 
         return datasets_summary
