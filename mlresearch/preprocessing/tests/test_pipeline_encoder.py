@@ -46,10 +46,9 @@ def generate_datasets():
         X_ = X.rename(columns=cat_columns).copy()
         y_ = y.copy()
 
-        for cat_col in cat_columns.values():
-            X_.loc[:, cat_col] = (
-                (X_.loc[:, cat_col] * np.random.randint(1, 10)).round().astype(int)
-            )
+        X_ = X_.assign(
+            **(X_[cat_columns.values()] * np.random.randint(1, 10)).round().astype(int)
+        )
 
         cat_cols_1 = X_.columns.str.startswith("cat_")
         cat_cols_2 = list(cat_cols_1)
