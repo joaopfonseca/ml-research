@@ -138,4 +138,5 @@ This is the full API documentation of the `mlresearch` package.
     utils.check_pipelines_wrapper
     utils.set_matplotlib_style
     utils.feature_to_color
+    utils.parallel_loop
     utils.generate_paths
