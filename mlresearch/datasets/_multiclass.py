@@ -113,6 +113,12 @@ class ContinuousCategoricalDatasets(Datasets):
         data.target = data.target.map(mapper)
 
         categorical_features = [1, 3, 5, 6, 7, 8, 9, 13]
+
+        # Trim spaces in categorical features
+        data.iloc[:, categorical_features] = data.iloc[
+            :, categorical_features
+        ].applymap(lambda x: x.strip())
+
         return data, categorical_features
 
     def fetch_abalone(self):
