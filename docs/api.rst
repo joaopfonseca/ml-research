@@ -140,3 +140,4 @@ This is the full API documentation of the `mlresearch` package.
     utils.feature_to_color
     utils.parallel_loop
     utils.generate_paths
+    utils.check_random_states
