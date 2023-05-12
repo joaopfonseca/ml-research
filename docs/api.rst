@@ -136,8 +136,8 @@ This is the full API documentation of the `mlresearch` package.
     utils.load_datasets
     utils.check_pipelines
     utils.check_pipelines_wrapper
+    utils.check_random_states
     utils.set_matplotlib_style
     utils.feature_to_color
     utils.parallel_loop
     utils.generate_paths
-    utils.check_random_states
