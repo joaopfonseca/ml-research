@@ -177,7 +177,8 @@ def check_pipelines_wrapper(
         {
             "est_name": [f'{wrapper_label}|{d["est_name"][0]}'],
             **{
-                f'{wrapper_label}|{d["est_name"][0]}__{estimator_param}__{_format_param(k)}': v
+                f'{wrapper_label}|{d["est_name"][0]}__{estimator_param}__'
+                + f"{_format_param(k)}": v
                 for k, v in d.items()
                 if k != "est_name"
             },
