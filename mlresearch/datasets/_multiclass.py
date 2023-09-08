@@ -10,6 +10,11 @@ from os.path import join
 from urllib.parse import urljoin
 from string import ascii_lowercase
 
+from io import BytesIO, StringIO
+from zipfile import ZipFile
+import tarfile
+import requests
+
 from rich.progress import track
 import numpy as np
 import pandas as pd
@@ -172,9 +177,19 @@ class ContinuousCategoricalDatasets(Datasets):
     def fetch_census(self):
         """Download and transform the Census-Income (KDD) Data Set.
 
-        https://archive.ics.uci.edu/ml/datasets/Census-Income+%28KDD%29
+        https://archive.ics.uci.edu/dataset/117/census+income+kdd
         """
-        data = pd.read_csv(FETCH_URLS["census"], header=None)
+
+        zipped_data = requests.get(FETCH_URLS["census"]).content
+        zipped_data = ZipFile(BytesIO(zipped_data)).read("census.tar.gz")
+        zipped_data = tarfile.open(fileobj=BytesIO(zipped_data))
+
+        data = pd.read_csv(
+            StringIO(
+                zipped_data.extractfile("census-income.data").read().decode("utf-8")
+            ),
+            header=None,
+        )
 
         categorical_features = (
             list(range(1, 5))
@@ -542,16 +557,19 @@ class MultiClassDatasets(Datasets):
 
         https://archive.ics.uci.edu/ml/datasets/Statlog+(Vehicle+Silhouettes)
         """
-        data = pd.DataFrame()
+        data = []
         for letter in ascii_lowercase[0:9]:
             partial_data = pd.read_csv(
-                urljoin(FETCH_URLS["vehicle"], "xa%s.dat" % letter),
+                urljoin(
+                    FETCH_URLS["vehicle"].replace("Index", ""), "xa%s.dat" % letter
+                ),
                 header=None,
                 delim_whitespace=True,
             )
             partial_data = partial_data.rename(columns={18: "target"})
-            data = data.append(partial_data)
+            data.append(partial_data)
 
+        data = pd.concat(data)
         mapper = {v: k for k, v in enumerate(data.target.unique())}
         data.target = data.target.map(mapper)
 

@@ -47,6 +47,7 @@ class ImbalancedBinaryDatasets(Datasets):
             )
         data = pd.DataFrame(np.column_stack((X, y)))
         data[data.columns[-1]] = data[data.columns[-1]].astype(int)
+        data.rename(columns={data.columns[-1]: "target"}, inplace=True)
         return data
 
     def download(self):
@@ -193,7 +194,9 @@ class ImbalancedBinaryDatasets(Datasets):
         data = []
         for letter in ascii_lowercase[0:9]:
             partial_data = pd.read_csv(
-                urljoin(FETCH_URLS["vehicle"], "xa%s.dat" % letter),
+                urljoin(
+                    FETCH_URLS["vehicle"].replace("Index", ""), "xa%s.dat" % letter
+                ),
                 header=None,
                 delim_whitespace=True,
             )
@@ -349,26 +352,35 @@ class BinaryDatasets(Datasets):
 
         https://archive.ics.uci.edu/ml/datasets/Arcene
         """
-        url = FETCH_URLS["arcene"]
+
+        zipped_data = requests.get(FETCH_URLS["arcene"]).content
+        zipped_data = ZipFile(BytesIO(zipped_data))
+
         data, labels = [], []
         for data_type in ("train", "valid"):
             data.append(
                 pd.read_csv(
-                    urljoin(url, f"ARCENE/arcene_{data_type}.data"),
+                    StringIO(
+                        zipped_data.read(f"ARCENE/arcene_{data_type}.data").decode(
+                            "utf-8"
+                        )
+                    ),
                     header=None,
                     sep=" ",
                 ).drop(columns=list(range(1998, 10001)))
             )
             labels.append(
                 pd.read_csv(
-                    urljoin(
-                        url,
-                        ("ARCENE/" if data_type == "train" else "")
-                        + f"arcene_{data_type}.labels",
+                    StringIO(
+                        zipped_data.read(
+                            ("ARCENE/" if data_type == "train" else "")
+                            + f"arcene_{data_type}.labels"
+                        ).decode("utf-8")
                     ),
                     header=None,
                 ).rename(columns={0: "target"})
             )
+
         data = pd.concat(data, ignore_index=True)
         labels = pd.concat(labels, ignore_index=True)
         data = pd.concat([data, labels], axis=1)

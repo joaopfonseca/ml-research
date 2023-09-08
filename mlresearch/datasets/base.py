@@ -1,9 +1,11 @@
 """
 Download, transform and simulate various datasets.
+
+Part of the code was adapted from
+https://github.com/NOVA-IMS-Innovation-and-Analytics-Lab/publications
 """
 
 # Author: Joao Fonseca <jpfonseca@novaims.unl.pt>
-#         Georgios Douzas <gdouzas@icloud.com>
 # License: MIT
 
 from typing import Optional, Union
@@ -19,6 +21,7 @@ from sklearn.utils import check_X_y
 from imblearn.datasets import make_imbalance
 
 UCI_URL = "https://archive.ics.uci.edu/ml/machine-learning-databases/"
+UCI_URL2 = "https://archive.ics.uci.edu/static/public/"
 GIC_URL = "http://www.ehu.eus/ccwintco/uploads/"
 OPENML_URL = "https://www.openml.org/data/get_csv/"
 FETCH_URLS = {
@@ -33,7 +36,7 @@ FETCH_URLS = {
     "liver": urljoin(UCI_URL, "liver-disorders/bupa.data"),
     "pima": "https://gist.githubusercontent.com/ktisha/c21e73a1bd1700294ef790c56c8aec1f"
     "/raw/819b69b5736821ccee93d05b51de0510bea00294/pima-indians-diabetes.csv",
-    "vehicle": urljoin(UCI_URL, "statlog/vehicle/"),
+    "vehicle": urljoin(UCI_URL, "statlog/vehicle/Index"),
     "wine": urljoin(UCI_URL, "wine/wine.data"),
     "new_thyroid": urljoin(UCI_URL, "thyroid-disease/new-thyroid.data"),
     "cleveland": urljoin(UCI_URL, "heart-disease/processed.cleveland.data"),
@@ -43,7 +46,7 @@ FETCH_URLS = {
     "banknote_authentication": urljoin(
         UCI_URL, "00267/data_banknote_authentication.txt"
     ),
-    "arcene": urljoin(UCI_URL, "arcene/"),
+    "arcene": urljoin(UCI_URL2, "167/arcene.zip"),
     "audit": urljoin(UCI_URL, "00475/audit_data.zip"),
     "spambase": urljoin(UCI_URL, "spambase/spambase.data"),
     "parkinsons": urljoin(UCI_URL, "parkinsons/parkinsons.data"),
@@ -53,7 +56,7 @@ FETCH_URLS = {
     "abalone": urljoin(UCI_URL, "abalone/abalone.data"),
     "acute": urljoin(UCI_URL, "acute/diagnosis.data"),
     "annealing": urljoin(UCI_URL, "annealing/anneal.data"),
-    "census": urljoin(UCI_URL, "census-income-mld/census-income.data.gz"),
+    "census": urljoin(UCI_URL2, "117/census+income+kdd.zip"),
     "contraceptive": urljoin(UCI_URL, "cmc/cmc.data"),
     "covertype": urljoin(UCI_URL, "covtype/covtype.data.gz"),
     "credit_approval": urljoin(UCI_URL, "credit-screening/crx.data"),

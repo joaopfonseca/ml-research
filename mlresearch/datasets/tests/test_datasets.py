@@ -5,8 +5,8 @@ import ssl
 import numpy as np
 import pandas as pd
 
-from ..base import Datasets, FETCH_URLS
-from .._multiclass import ContinuousCategoricalDatasets
+from mlresearch.datasets.base import Datasets, FETCH_URLS
+from mlresearch.datasets._multiclass import ContinuousCategoricalDatasets
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
