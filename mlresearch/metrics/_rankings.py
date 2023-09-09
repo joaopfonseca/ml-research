@@ -25,6 +25,10 @@ class RankingScorer(_BaseScorer):
     sign : int, default=1
         Use 1 to keep the original variable's scale, use -1 to reverse the scale.
 
+    **kwargs : dict
+        Other parameters passed to the scorer. Refer to
+        :func:`set_score_request` for more details.
+
     Returns
     -------
     scorer : callable
@@ -61,7 +65,7 @@ class RankingScorer(_BaseScorer):
 
         y_type = type_of_target(y)
         y_pred = method_caller(clf, "predict_proba", X)
-        if y_type == "binary" and y_pred.shape[1] <= 2:
+        if y_type == "binary" and len(y_pred.shape) == 2 and y_pred.shape[1] <= 2:
             # `y_type` could be equal to "binary" even in a multi-class
             # problem: (when only 2 class are given to `y_true` during scoring)
             # Thus, we need to check for the shape of `y_pred`.
@@ -81,6 +85,17 @@ class RankingScorer(_BaseScorer):
 
     def _factory_args(self):
         return ", needs_proba=True"
+
+    def set_score_request(self):
+        """
+        Placeholder to overwrite sklearn's ``_BaseScorer.set_score_request`` function.
+        It is not used and was raising a docstring error with scikit-learn v1.3.0.
+
+        Note
+        ----
+        This placeholder will be removed soon
+        """
+        pass
 
 
 def precision_at_k(y_true, y_score, k=10, target_label=1):

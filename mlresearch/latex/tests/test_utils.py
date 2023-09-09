@@ -54,7 +54,7 @@ def test_check_indices(indices):
     }
     indices_ = _check_indices(table.index, indices)
 
-    assert type(indices_) == dict
+    assert type(indices_) is dict
 
     if indices is None:
         assert indices_ == none_indices

@@ -7,14 +7,14 @@ import numpy as np
 from sklearn.utils._testing import ignore_warnings
 from sklearn.linear_model import LogisticRegression
 
-from ...active_learning import StandardAL
-from .._metrics import (
+from mlresearch.active_learning import StandardAL
+from mlresearch.metrics._metrics import (
     ALScorer,
     geometric_mean_score_macro,
     area_under_learning_curve,
     data_utilization_rate,
 )
-from .._rankings import RankingScorer, precision_at_k
+from mlresearch.metrics._rankings import RankingScorer, precision_at_k
 
 RANDOM_STATE = 42
 

@@ -12,6 +12,9 @@ class PipelineEncoder(TransformerMixin, _BaseComposition):
     encoding of non-metric features and scalers (when there are categorical features)
     within a pipeline.
 
+    When ``encoder`` is None, ``sklearn.preprocessing.OneHotEncoder`` will be used. In
+    that case, kwargs can be passed to define its parameters. Otherwise, it is ignored.
+
     The fitted encoder object from Scikit-learn is stored in ``self.encoder_``.
 
     .. warning::
@@ -37,10 +40,6 @@ class PipelineEncoder(TransformerMixin, _BaseComposition):
 
         .. warning::
             The ``encoder`` object must be compatible with sklearn's API.
-
-    **kwargs : dict
-        Parameters to define the ``OneHotEncoder`` when ``encoder`` is None. Otherwise,
-        it is ignored.
 
     Attributes
     ----------

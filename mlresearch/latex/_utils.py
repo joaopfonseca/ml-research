@@ -17,29 +17,29 @@ def _check_indices(table_index, indices):
         indices = table_index.to_frame().to_dict("list")
 
     # Check indices - list
-    if type(indices) == list:
+    if type(indices) is list:
         if all([type(i) in [str, int] for i in indices]):
             indices_ = {table_index.names[0]: {i: i for i in indices}}
-        elif all([type(i) == list for i in indices]):
+        elif all([type(i) is list for i in indices]):
             indices_ = {
                 name: {i: i for i in values}
                 for name, values in zip(table_index.names, indices)
             }
-        elif all([type(i) == dict for i in indices]):
+        elif all([type(i) is dict for i in indices]):
             indices_ = {
                 name: values for name, values in zip(table_index.names, indices)
             }
 
     # Check indices - dict
-    if type(indices) == dict:
-        if all([type(i) == str for i in list(indices.values())]):
+    if type(indices) is dict:
+        if all([type(i) is str for i in list(indices.values())]):
             index_name = table_index.names[0] if table_index.names[0] is not None else 0
             indices_ = {index_name: indices}
-        elif all([type(i) == list for i in list(indices.values())]):
+        elif all([type(i) is list for i in list(indices.values())]):
             indices_ = {
                 name: {i: i for i in values} for name, values in indices.items()
             }
-        elif all([type(i) == dict for i in list(indices.values())]):
+        elif all([type(i) is dict for i in list(indices.values())]):
             indices_ = indices
 
     # Replace index name if there's only a single index with no name
@@ -135,9 +135,9 @@ def format_table(table, indices=None, columns=None, drop_missing=True):
         table.index.name = None
 
     # Update column list/dictionary if necessary
-    if type(columns) == list:
+    if type(columns) is list:
         columns_ = {i: i for i in columns}
-    elif type(columns) == dict:
+    elif type(columns) is dict:
         columns_ = columns
 
     if not drop_missing:
@@ -284,7 +284,7 @@ def make_mean_sem_table(
     """
 
     if sem_vals is not None:
-        if type(sem_vals) == np.ndarray:
+        if type(sem_vals) is np.ndarray:
             sem_vals = pd.DataFrame(
                 sem_vals, index=mean_vals.index, columns=mean_vals.columns
             )

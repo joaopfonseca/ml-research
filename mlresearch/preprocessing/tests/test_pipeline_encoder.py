@@ -85,20 +85,20 @@ def test_default_encoder(X, y, cat_features):
     if (
         cat_features is not None
         and len(cat_features) > 0
-        and type(X) == np.ndarray
-        and type(cat_features[0]) == str
+        and type(X) is np.ndarray
+        and type(cat_features[0]) is str
     ):
         with pytest.raises(TypeError):
             encoder.fit_transform(X, y)
     else:
         X_ = encoder.fit_transform(X, y)
-        if type(X) == pd.DataFrame:
+        if type(X) is pd.DataFrame:
             X = X.values
 
         if cat_features is None or len(cat_features) == 0:
             assert not encoder.features_.any()
             assert (X == X_).all()
-        elif type(cat_features[0]) == np.bool_:
+        elif type(cat_features[0]) is np.bool_:
             assert encoder.features_.sum() == sum(cat_features)
         else:
             assert encoder.features_.sum() == len(cat_features)
@@ -121,14 +121,14 @@ def test_encoder(sklearn_encoder, X, y, categorical_features):
     if (
         categorical_features is not None
         and len(categorical_features) > 0
-        and type(X) == np.ndarray
-        and type(categorical_features[0]) == str
+        and type(X) is np.ndarray
+        and type(categorical_features[0]) is str
     ):
         with pytest.raises(TypeError):
             encoder.fit_transform(X, y)
     else:
         X_ = encoder.fit_transform(X, y)
-        if type(X) == pd.DataFrame:
+        if type(X) is pd.DataFrame:
             X = X.values
 
         if sklearn_encoder.__class__.__name__ == "OrdinalEncoder":
@@ -157,10 +157,10 @@ def test_pipeline_encoder(sklearn_encoder, X, y, categorical_features):
     if (
         categorical_features is not None
         and len(categorical_features) > 0
-        and type(X) == np.ndarray
-        and type(categorical_features[0]) == str
+        and type(X) is np.ndarray
+        and type(categorical_features[0]) is str
     ):
-        with pytest.raises(TypeError):
+        with pytest.raises(AttributeError):
             pipeline.fit_transform(X, y)
     else:
         pipeline.fit(X, y)

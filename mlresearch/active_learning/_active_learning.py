@@ -20,7 +20,7 @@ def _random_initialization(self, X=None, y=None, initial_selection=None):
         if np.unique(y[ids]).shape[0] == 1:
             ids[-1] = rng.choice(
                 np.arange(X.shape[0])[y != y[ids][0]], 1, replace=False
-            )
+            ).squeeze()
         labeled_pool[ids] = True
     return labeled_pool
 

@@ -64,6 +64,17 @@ class ALScorer(_PredictScorer):
 
         return self._sign * self._score_func(metadata)
 
+    def set_score_request(self):
+        """
+        Placeholder to overwrite sklearn's ``_BaseScorer.set_score_request`` function.
+        It is not used and was raising a docstring error with scikit-learn v1.3.0.
+
+        Note
+        ----
+        This placeholder will be removed soon
+        """
+        pass
+
 
 def geometric_mean_score_macro(y_true, y_pred):
     """Geometric mean score with macro average."""
