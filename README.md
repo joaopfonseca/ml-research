@@ -48,7 +48,7 @@ package ``mlresearch``.
 
 ## Installation
 
-A Python distribution of version 3.8, 3.9 or 3.10 is required to run this
+A Python distribution of version >= 3.8 is required to run this
 project. Earlier Python versions might work in most cases, but they are not
 tested. ``ML-Research`` requires:
 
