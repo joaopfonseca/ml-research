@@ -90,10 +90,20 @@ def test_default_encoder(X, y, cat_features):
     ):
         with pytest.raises(TypeError):
             encoder.fit_transform(X, y)
+
+    elif cat_features is None or len(cat_features) == 0:
+        with pytest.warns(UserWarning):
+            encoder.fit_transform(X, y)
+
     else:
         X_ = encoder.fit_transform(X, y)
+
+        # Check if type of data structure is preserved
+        assert type(X) is type(X_)
+
         if type(X) is pd.DataFrame:
             X = X.values
+            X_ = X_.values
 
         if cat_features is None or len(cat_features) == 0:
             assert not encoder.features_.any()
@@ -126,10 +136,20 @@ def test_encoder(sklearn_encoder, X, y, categorical_features):
     ):
         with pytest.raises(TypeError):
             encoder.fit_transform(X, y)
+
+    elif categorical_features is None or len(categorical_features) == 0:
+        with pytest.warns(UserWarning):
+            encoder.fit_transform(X, y)
+
     else:
         X_ = encoder.fit_transform(X, y)
+
+        # Check if type of data structure is preserved
+        assert type(X) is type(X_)
+
         if type(X) is pd.DataFrame:
             X = X.values
+            X_ = X_.values
 
         if sklearn_encoder.__class__.__name__ == "OrdinalEncoder":
             assert X.shape == X_.shape
@@ -139,6 +159,16 @@ def test_encoder(sklearn_encoder, X, y, categorical_features):
                 X.shape[0],
                 n_feats + sum(~encoder.features_),
             )
+
+        # Test if self.encoded_features_idx_out_ is being defined correctly (#43)
+        # (only if there are features to transform)
+        if not encoder.features_.any():
+            metric_features = [
+                i
+                for i in range(X_.shape[1])
+                if i not in encoder.encoded_features_idx_out_
+            ]
+            assert (X_[:, metric_features] == X[:, ~encoder.features_]).all()
 
 
 @pytest.mark.parametrize(
@@ -162,6 +192,11 @@ def test_pipeline_encoder(sklearn_encoder, X, y, categorical_features):
     ):
         with pytest.raises(AttributeError):
             pipeline.fit_transform(X, y)
+
+    elif categorical_features is None or len(categorical_features) == 0:
+        with pytest.warns(UserWarning):
+            pipeline.fit(X, y)
+
     else:
         pipeline.fit(X, y)
         pipeline.predict(X)

@@ -1,3 +1,4 @@
+import warnings
 import numpy as np
 import pandas as pd
 from scipy.sparse import issparse
@@ -16,10 +17,6 @@ class PipelineEncoder(TransformerMixin, _BaseComposition):
     that case, kwargs can be passed to define its parameters. Otherwise, it is ignored.
 
     The fitted encoder object from Scikit-learn is stored in ``self.encoder_``.
-
-    .. warning::
-        In most cases, ``sklearn.compose.ColumnTransformer`` should be used instead of
-        ``PipelineEncoder``. This object might be removed in the future.
 
     Parameters
     ----------
@@ -43,9 +40,20 @@ class PipelineEncoder(TransformerMixin, _BaseComposition):
 
     Attributes
     ----------
-    features_ : array of shape (n_features,)
+    features_ : ndarray of shape (n_features,)
         Mask array of shape (n_features, ) and ``bool`` dtype for which
         ``True`` indicates the features to transform.
+
+    encoded_features_names_out_ : ndarray of str objects
+        Output feature names after transformation.
+
+    encoded_features_idx_out_ : ndarray of int objects
+        Indices of encoded features after transformation.
+
+    Notes
+    -----
+    In most situations, ``sklearn.compose.ColumnTransformer`` can be used as an
+    alternative to ``PipelineEncoder``.
     """
 
     _estimator_type = "encoder"
@@ -60,7 +68,7 @@ class PipelineEncoder(TransformerMixin, _BaseComposition):
         Perform custom check_array. Collect information regarding the passed data and
         ensure the data is a numpy array.
         """
-        if type(X) == pd.DataFrame:
+        if type(X) is pd.DataFrame:
             self._is_pandas = (
                 True if not hasattr(self, "_is_pandas") else self._is_pandas
             )
@@ -99,11 +107,11 @@ class PipelineEncoder(TransformerMixin, _BaseComposition):
             )
             raise TypeError(error_msg)
 
-        is_mask = np.array([type(i) == np.bool_ for i in cat_features]).all()
+        is_mask = np.array([type(i) is np.bool_ for i in cat_features]).all()
         is_indices = np.array(
             [type(i) in [np.int64, np.float64] for i in cat_features]
         ).all()
-        is_col_names = np.array([type(i) == np.str_ for i in cat_features]).all()
+        is_col_names = np.array([type(i) is np.str_ for i in cat_features]).all()
 
         if is_mask:
             return cat_features
@@ -158,6 +166,13 @@ class PipelineEncoder(TransformerMixin, _BaseComposition):
 
         if not self.features_.any():
             # If there are no features apply no change
+            self.encoded_features_names_out_ = np.array([])
+            self.encoded_features_idx_out_ = np.array([])
+            msg = (
+                "No features were passed for encoding. No transformation will be "
+                "applied."
+            )
+            warnings.warn(UserWarning(msg))
             return self
 
         self.encoder_ = (
@@ -166,6 +181,18 @@ class PipelineEncoder(TransformerMixin, _BaseComposition):
             else OneHotEncoder(**self._kwargs)
         )
         self.encoder_.fit(X_[:, self.features_], y)
+
+        # Get names and/or indices for encoded features
+        input_features = self.columns_[self.features_] if self._is_pandas else None
+        self.encoded_features_names_out_ = self.encoder_.get_feature_names_out(
+            input_features
+        )
+
+        non_cat_feats_out = (~self.features_).sum()
+        total_feats_out = non_cat_feats_out + len(self.encoded_features_names_out_)
+        self.encoded_features_idx_out_ = np.array(
+            list(range(non_cat_feats_out, total_feats_out))
+        )
 
         return self
 
@@ -190,7 +217,7 @@ class PipelineEncoder(TransformerMixin, _BaseComposition):
 
         if not self.features_.any():
             # If there are no features apply no change
-            return X_
+            return X
 
         if self._is_pandas:
             metric_data = pd.DataFrame(
