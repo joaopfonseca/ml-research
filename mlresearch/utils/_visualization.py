@@ -38,9 +38,29 @@ def _optional_import(module: str) -> types.ModuleType:
     return module_
 
 
-def set_matplotlib_style(font_size=8, **rcparams):
+def set_matplotlib_style(font_size=8, use_latex=True, **rcparams):
     """
-    Load LaTeX-style configurations for Matplotlib Visualizations.
+    Load LaTeX-style configurations for Matplotlib Visualizations. You may pass
+    additional parameters to the rcParams as keyworded arguments.
+
+    Parameters
+    ----------
+    font_size : int, default=8
+        Desired default font size displayed in visualizations. ``axes.labelsize`` and
+        ``font.size`` will take 1.25x the size passed in ``font_size``, whereas
+        ``legend.fontsize``, ``xtick.labelsize`` and ``ytick.labelsize`` will take the
+        value passed in this parameter.
+
+    use_latex : bool, default=True
+        Whether to use Latex to render visualizations. If ``True`` and a Latex
+        installation is found in the system, the text will be rendered using Latex and
+        math mode can be used. If ``True`` and no Latex installation is found,
+        ``text.usetex`` will be set to ``False`` and an issue is raised. If ``False``,
+        ``text.usetex`` will be set to ``False``.
+
+    Returns
+    -------
+    None : NoneType
     """
     plt = _optional_import("matplotlib.pyplot")
 
@@ -52,7 +72,7 @@ def set_matplotlib_style(font_size=8, **rcparams):
         # "patch.force_edgecolor": True,
         # "xtick.bottom": False,
         # "ytick.left": False,
-        "font.family": "serif",
+        "font.family": "Times",
         # Use 10pt font in plots, to match 10pt font in document
         "axes.labelsize": (10 / 8) * font_size,
         "font.size": (10 / 8) * font_size,
@@ -69,13 +89,13 @@ def set_matplotlib_style(font_size=8, **rcparams):
     }
     plt.rcParams.update(base_style)
 
-    if find_executable("latex"):
+    if find_executable("latex") and use_latex:
         tex_fonts = {
             # Use LaTeX to write all text
             "text.usetex": True,
         }
         plt.rcParams.update(tex_fonts)
-    else:
+    elif use_latex:
         warn_msg = (
             "Could not find a LaTeX installation. ``text.usetex`` will be set to False."
         )
@@ -105,7 +125,7 @@ def feature_to_color(col, cmap="RdYlBu_r"):
     colors = _optional_import("matplotlib.colors")
     cm = _optional_import("matplotlib.cm")
 
-    if type(col) == list:
+    if type(col) is list:
         col = np.array(col)
 
     norm = colors.Normalize(vmin=col.min(), vmax=col.max(), clip=True)
