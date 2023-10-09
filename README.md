@@ -52,9 +52,9 @@ A Python distribution of version >= 3.8 is required to run this
 project. Earlier Python versions might work in most cases, but they are not
 tested. ``ML-Research`` requires:
 
-- numpy (>= 1.14.6)
+- numpy (>= 1.20.0)
 - pandas (>= 1.3.5)
-- sklearn (>= 1.0.0)
+- sklearn (>= 1.2.0)
 - imblearn (>= 0.8.0)
 - rich (>= 10.16.1)
 

@@ -1,9 +1,9 @@
 """All minimum dependencies for ml-research."""
 import argparse
 
-NUMPY_MIN_VERSION = "1.14.6"
+NUMPY_MIN_VERSION = "1.20.0"
 PANDAS_MIN_VERSION = "1.3.5"
-SKLEARN_MIN_VERSION = "1.0.0"
+SKLEARN_MIN_VERSION = "1.2.0"
 IMBLEARN_MIN_VERSION = "0.8.0"
 RICH_MIN_VERSION = "10.16.1"
 MATPLOTLIB_MIN_VERSION = "2.2.3"
