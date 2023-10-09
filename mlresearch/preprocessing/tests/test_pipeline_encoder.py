@@ -64,11 +64,11 @@ def generate_datasets():
             datasets.append((X_.copy().values, y_.copy().values, cat_cols))
 
         # Pandas + Numpy
-        for cat_cols in [cat_cols_1, cat_cols_2, cat_cols_3, cat_cols_4]:
+        for cat_cols in [cat_cols_1, cat_cols_2, cat_cols_3]:
             datasets.append((X_.copy().values, y_.copy(), cat_cols))
 
         # Numpy + Pandas
-        for cat_cols in [cat_cols_1, cat_cols_2, cat_cols_3]:
+        for cat_cols in [cat_cols_1, cat_cols_2, cat_cols_3, cat_cols_4]:
             datasets.append((X_.copy(), y_.copy().values, cat_cols))
 
     return datasets
@@ -216,3 +216,9 @@ def test_pipeline_encoder_errors():
         encoder = PipelineEncoder(features=cat_features)
         with pytest.raises(KeyError):
             encoder.fit_transform(X, y)
+
+    err_type_features = [["cat_0"], "cat_0"]
+    for cat_features in err_type_features:
+        encoder = PipelineEncoder(features=cat_features)
+        with pytest.raises(TypeError):
+            encoder.fit_transform(X.values, y)
