@@ -1,13 +1,23 @@
-name: Changelog
+name: Generate changelog
 on:
   release:
-    types:
-      - created
+    types: [created, edited]
+
+  workflow_dispatch:
+
 jobs:
   changelog:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - name: "✏️ Generate release changelog"
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: "✏️  Generate release changelog"
         uses: heinrichreimer/action-github-changelog-generator@v2.3
         with:
           token: ${{ secrets.GITHUB_TOKEN }} 
+          output: "CHANGELOG.md"
+      - name: Commit changelog
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "DOC update release notes"
