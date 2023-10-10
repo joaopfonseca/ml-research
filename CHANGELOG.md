@@ -7,9 +7,11 @@
 **Closed issues:**
 
 - Add Changelog generator [\#45](https://github.com/joaopfonseca/ml-research/issues/45)
+- Add CONTRIBUTING file [\#44](https://github.com/joaopfonseca/ml-research/issues/44)
 
 **Merged pull requests:**
 
+- Add CONTRIBUTING.md file [\#48](https://github.com/joaopfonseca/ml-research/pull/48) ([joaopfonseca](https://github.com/joaopfonseca))
 - \[MRG\] Add changelog generator [\#46](https://github.com/joaopfonseca/ml-research/pull/46) ([joaopfonseca](https://github.com/joaopfonseca))
 
 ## [v0.4.2](https://github.com/joaopfonseca/ml-research/tree/v0.4.2) (2023-09-28)
