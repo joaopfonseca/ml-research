@@ -19,8 +19,7 @@ def parallel_loop(
     function, iterable, n_jobs=None, progress_bar=False, description=None
 ):
     """
-    Parallelizes a loop (passed as a function), given an iterable. Optionally, progress
-    with a description may be displayed.
+    Parallelize a loop and optionally add a progress bar.
 
     .. warning::
         The progress bar tracks job starts, not completions.
