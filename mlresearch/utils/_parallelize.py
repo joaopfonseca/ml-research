@@ -1,6 +1,6 @@
 import os
 from joblib import Parallel, delayed
-from rich.progress import track
+from ._utils import _optional_import
 
 
 def _get_n_jobs(n_jobs):
@@ -43,6 +43,9 @@ def parallel_loop(
     output : list
         The list with the results produced using ``function`` across ``iterable``.
     """
+    if progress_bar:
+        track = _optional_import("rich.progress").track
+        iterable = track(iterable, description=description)
+
     n_jobs = _get_n_jobs(n_jobs)
-    iterable = track(iterable, description=description) if progress_bar else iterable
     return Parallel(n_jobs=n_jobs)(delayed(function)(i) for i in iterable)
