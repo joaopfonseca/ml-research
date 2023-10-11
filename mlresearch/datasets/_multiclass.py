@@ -15,11 +15,11 @@ from zipfile import ZipFile
 import tarfile
 import requests
 
-from rich.progress import track
 import numpy as np
 import pandas as pd
 
 from .base import Datasets, get_data_home, FETCH_URLS
+from ..utils._utils import _optional_import
 
 
 class ContinuousCategoricalDatasets(Datasets):
@@ -43,14 +43,23 @@ class ContinuousCategoricalDatasets(Datasets):
         self.data_home_ = get_data_home(data_home=self.data_home)
         dataset_prefix = self.__class__.__name__.lower().replace("datasets", "")
 
+        # Get datasets to download
         if self.names == "all":
             func_names = [func_name for func_name in dir(self) if "fetch_" in func_name]
         else:
             func_names = [
                 f"fetch_{name}".lower().replace(" ", "_") for name in self.names
             ]
+
+        # Download datasets
+        try:
+            track = _optional_import("rich.progress").track
+            iterable = track(func_names, description="Datasets")
+        except ImportError:
+            iterable = func_names
+
         self.content_ = []
-        for func_name in track(func_names, description="Datasets"):
+        for func_name in iterable:
             dat_name = func_name.replace("fetch_", "")
             name = dat_name.upper().replace("_", " ")
             file_name = f"{dataset_prefix}_{dat_name}.csv"

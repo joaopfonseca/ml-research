@@ -14,11 +14,12 @@ from os.path import expanduser, join
 from collections import Counter
 from urllib.parse import urljoin
 from sqlite3 import connect
-from rich.progress import track
 import numpy as np
 import pandas as pd
 from sklearn.utils import check_X_y
 from imblearn.datasets import make_imbalance
+
+from mlresearch.utils._utils import _optional_import
 
 UCI_URL = "https://archive.ics.uci.edu/ml/machine-learning-databases/"
 UCI_URL2 = "https://archive.ics.uci.edu/static/public/"
@@ -252,8 +253,14 @@ class Datasets:
             ]
 
         # Download datasets
+        try:
+            track = _optional_import("rich.progress").track
+            iterable = track(func_names, description="Datasets")
+        except ImportError:
+            iterable = func_names
+
         self.content_ = []
-        for func_name in track(func_names, description="Datasets"):
+        for func_name in iterable:
             dat_name = func_name.replace("fetch_", "")
             name = dat_name.upper().replace("_", " ")
             file_name = f"{dataset_prefix}_{dat_name}.csv"
