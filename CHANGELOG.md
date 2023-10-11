@@ -6,11 +6,13 @@
 
 **Closed issues:**
 
+- Make package `rich` an optional dependency [\#47](https://github.com/joaopfonseca/ml-research/issues/47)
 - Add Changelog generator [\#45](https://github.com/joaopfonseca/ml-research/issues/45)
 - Add CONTRIBUTING file [\#44](https://github.com/joaopfonseca/ml-research/issues/44)
 
 **Merged pull requests:**
 
+- Make rich an optional dependency [\#50](https://github.com/joaopfonseca/ml-research/pull/50) ([joaopfonseca](https://github.com/joaopfonseca))
 - Add CONTRIBUTING.md file [\#48](https://github.com/joaopfonseca/ml-research/pull/48) ([joaopfonseca](https://github.com/joaopfonseca))
 - \[MRG\] Add changelog generator [\#46](https://github.com/joaopfonseca/ml-research/pull/46) ([joaopfonseca](https://github.com/joaopfonseca))
 
