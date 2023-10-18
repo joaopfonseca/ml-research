@@ -254,8 +254,8 @@ class Datasets:
 
         # Download datasets
         try:
-            track = _optional_import("rich.progress").track
-            iterable = track(func_names, description="Datasets")
+            tqdm = _optional_import("tqdm.auto").tqdm
+            iterable = tqdm(func_names, desc="Datasets")
         except ImportError:
             iterable = func_names
 
