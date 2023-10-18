@@ -5,7 +5,7 @@ NUMPY_MIN_VERSION = "1.20.0"
 PANDAS_MIN_VERSION = "1.3.5"
 SKLEARN_MIN_VERSION = "1.2.0"
 IMBLEARN_MIN_VERSION = "0.8.0"
-RICH_MIN_VERSION = "10.16.1"
+TQDM_MIN_VERSION = "4.46.0"
 MATPLOTLIB_MIN_VERSION = "2.2.3"
 
 # The values are (version_spec, comma separated tags)
@@ -15,7 +15,7 @@ dependent_packages = {
     "scikit-learn": (SKLEARN_MIN_VERSION, "install"),
     "imbalanced-learn": (IMBLEARN_MIN_VERSION, "install"),
     "requests": ("2.26.0", "install"),
-    "rich": (RICH_MIN_VERSION, "optional"),
+    "tqdm": (TQDM_MIN_VERSION, "optional"),
     "matplotlib": (MATPLOTLIB_MIN_VERSION, "optional"),
     "research-learn": ("0.3.0", "tests"),
     "pytest-cov": ("3.0.0", "tests"),
