@@ -3,7 +3,7 @@ import os
 import time
 import contextlib
 import io
-from .._parallelize import _get_n_jobs, parallel_loop
+from mlresearch.utils._parallelize import _get_n_jobs, parallel_loop
 
 
 def example_function(a):
@@ -43,7 +43,7 @@ def test_progress_bar():
 
     # Check if parallelization is happening
     f = io.StringIO()
-    with contextlib.redirect_stdout(f):
+    with contextlib.redirect_stderr(f):
         parallel_loop(
             function=example_function,
             iterable=range(n_jobs),
@@ -52,5 +52,5 @@ def test_progress_bar():
             description=description,
         )
 
-    output = f.getvalue()
-    assert output.startswith(description)
+    output = f.getvalue().splitlines()[1:]
+    assert all([out_.startswith(description) for out_ in output])
