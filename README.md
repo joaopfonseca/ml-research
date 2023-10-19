@@ -56,10 +56,11 @@ tested. ``ML-Research`` requires:
 - pandas (>= 1.3.5)
 - sklearn (>= 1.2.0)
 - imblearn (>= 0.8.0)
-- tqdm (>= 4.46.0)
 
 Some functions in the ``mlresearch.utils`` submodule (the ones in the script
-``_visualization.py``) require Matplotlib >= 2.2.3.
+``_visualization.py``) require Matplotlib (>= 2.2.3). The
+``mlresearch.datasets`` submodule and ``mlresearch.utils.parallel_apply``
+function require tqdm (>= 4.46.0) to display progress bars.
 
 ### User Installation
 
