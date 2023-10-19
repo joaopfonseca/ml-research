@@ -1,0 +1,10 @@
+name: Question
+description: If you have a usage question.
+labels: ["Question"]
+
+body:
+- type: textarea
+  attributes:
+    label: Ask your question here.
+  validations:
+    required: true
