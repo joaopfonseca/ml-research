@@ -2,7 +2,7 @@
 Functions for visualization formatting or producing pre-formatted
 visualizations.
 """
-from distutils.spawn import find_executable
+from setuptools import distutils
 import warnings
 import numpy as np
 from ._utils import _optional_import
@@ -59,7 +59,7 @@ def set_matplotlib_style(font_size=8, use_latex=True, **rcparams):
     }
     plt.rcParams.update(base_style)
 
-    if find_executable("latex") and use_latex:
+    if distutils.spawn.find_executable("latex") and use_latex:
         tex_fonts = {
             # Use LaTeX to write all text
             "text.usetex": True,
