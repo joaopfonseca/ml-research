@@ -4,17 +4,20 @@
 
 [Full Changelog](https://github.com/joaopfonseca/ml-research/compare/v0.4.2...HEAD)
 
-**Closed issues:**
+**Implemented features and enhancements:**
 
-- Make package `rich` an optional dependency [\#47](https://github.com/joaopfonseca/ml-research/issues/47)
+- Set ``utils.parallel\_loop`` to track job completions instead of job starts [\#51](https://github.com/joaopfonseca/ml-research/issues/51)
+
+**Documentation updates:**
+
+- Add issues template and fix broken link on PR template [\#49](https://github.com/joaopfonseca/ml-research/issues/49)
 - Add Changelog generator [\#45](https://github.com/joaopfonseca/ml-research/issues/45)
 - Add CONTRIBUTING file [\#44](https://github.com/joaopfonseca/ml-research/issues/44)
 
-**Merged pull requests:**
+**Closed issues:**
 
-- Make rich an optional dependency [\#50](https://github.com/joaopfonseca/ml-research/pull/50) ([joaopfonseca](https://github.com/joaopfonseca))
-- Add CONTRIBUTING.md file [\#48](https://github.com/joaopfonseca/ml-research/pull/48) ([joaopfonseca](https://github.com/joaopfonseca))
-- \[MRG\] Add changelog generator [\#46](https://github.com/joaopfonseca/ml-research/pull/46) ([joaopfonseca](https://github.com/joaopfonseca))
+- Add Python 3.12 support [\#53](https://github.com/joaopfonseca/ml-research/issues/53)
+- Make package `rich` an optional dependency [\#47](https://github.com/joaopfonseca/ml-research/issues/47)
 
 ## [v0.4.2](https://github.com/joaopfonseca/ml-research/tree/v0.4.2) (2023-09-28)
 
@@ -40,16 +43,11 @@
 
 - Add ``check\_random\_states`` to ``\_\_init\_\_.py`` in utils submodule [\#37](https://github.com/joaopfonseca/ml-research/issues/37)
 
-**Merged pull requests:**
-
-- add check\_random\_state to \_\_init\_\_.py in utils and update docs [\#38](https://github.com/joaopfonseca/ml-research/pull/38) ([ArcturusMotors](https://github.com/ArcturusMotors))
-- \[MRG\] Add Python 3.11 support [\#24](https://github.com/joaopfonseca/ml-research/pull/24) ([joaopfonseca](https://github.com/joaopfonseca))
-
 ## [v0.4.0](https://github.com/joaopfonseca/ml-research/tree/v0.4.0) (2023-01-24)
 
 [Full Changelog](https://github.com/joaopfonseca/ml-research/compare/v0.4a2...v0.4.0)
 
-**Implemented enhancements:**
+**Implemented features and enhancements:**
 
 - Create function ``dataframe\_to\_image`` [\#28](https://github.com/joaopfonseca/ml-research/issues/28)
 - Include a pipeline-compatible version for one-hot encoding [\#19](https://github.com/joaopfonseca/ml-research/issues/19)
@@ -59,20 +57,17 @@
 - Make pytorch models sklearn compatible [\#9](https://github.com/joaopfonseca/ml-research/issues/9)
 - Move secondary dependencies to optional dependencies [\#8](https://github.com/joaopfonseca/ml-research/issues/8)
 
-**Closed issues:**
+**Documentation updates:**
 
 - Move LaTeX-related functions to their own submodule [\#29](https://github.com/joaopfonseca/ml-research/issues/29)
 - Fix some of the errors/warnings in the documentation [\#22](https://github.com/joaopfonseca/ml-research/issues/22)
-- Fix deprecation warnings [\#21](https://github.com/joaopfonseca/ml-research/issues/21)
 - Add missing docstring to GeometricSMOTE's ``\_encode\_categorical`` [\#17](https://github.com/joaopfonseca/ml-research/issues/17)
+
+**Closed issues:**
+
+- Fix deprecation warnings [\#21](https://github.com/joaopfonseca/ml-research/issues/21)
 - Consider modifying default BYOL hyper-parameters for smaller batch sizes [\#11](https://github.com/joaopfonseca/ml-research/issues/11)
 - Add Semi-supervised learning implementation [\#7](https://github.com/joaopfonseca/ml-research/issues/7)
-
-**Merged pull requests:**
-
-- \[MRG\] Move latex functions to its own module [\#30](https://github.com/joaopfonseca/ml-research/pull/30) ([joaopfonseca](https://github.com/joaopfonseca))
-- \[MRG\] Add wrapper to encode categorical features in a pipeline [\#27](https://github.com/joaopfonseca/ml-research/pull/27) ([joaopfonseca](https://github.com/joaopfonseca))
-- \[MRG\] Improvements to datasets submodule [\#26](https://github.com/joaopfonseca/ml-research/pull/26) ([joaopfonseca](https://github.com/joaopfonseca))
 
 ## [v0.4a2](https://github.com/joaopfonseca/ml-research/tree/v0.4a2) (2022-10-10)
 
@@ -86,21 +81,19 @@
 
 [Full Changelog](https://github.com/joaopfonseca/ml-research/compare/v0.3.4...v0.4a1)
 
-**Implemented enhancements:**
+**Implemented features and enhancements:**
 
 - Add function to describe and imbalance datasets [\#10](https://github.com/joaopfonseca/ml-research/issues/10)
 - Get to 80% code coverage [\#1](https://github.com/joaopfonseca/ml-research/issues/1)
 
-**Closed issues:**
+**Documentation updates:**
 
 - Update ``make`` commands [\#12](https://github.com/joaopfonseca/ml-research/issues/12)
+
+**Closed issues:**
+
 - Finish BYOL implementation and tests [\#6](https://github.com/joaopfonseca/ml-research/issues/6)
 - Move all CI/CD to GitHub Actions [\#3](https://github.com/joaopfonseca/ml-research/issues/3)
-
-**Merged pull requests:**
-
-- \[MRG\] Add more utilities to dataset functions [\#14](https://github.com/joaopfonseca/ml-research/pull/14) ([joaopfonseca](https://github.com/joaopfonseca))
-- Move all CI/CD to GitHub Actions [\#13](https://github.com/joaopfonseca/ml-research/pull/13) ([joaopfonseca](https://github.com/joaopfonseca))
 
 ## [v0.3.4](https://github.com/joaopfonseca/ml-research/tree/v0.3.4) (2021-12-28)
 
