@@ -17,6 +17,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }} 
           output: "CHANGELOG.md"
+          pullRequests: false
+          addSections: '{"documentation":{"prefix":"**Documentation updates:**","labels":["Documentation"]}}'
+          enhancementLabel: '**Implemented features and enhancements:**'
+          enhancementLabels: 'enhancement,Enhancement,New Feature'
       - name: Commit changelog
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
