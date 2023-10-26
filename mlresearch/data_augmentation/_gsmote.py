@@ -678,7 +678,9 @@ class GeometricSMOTE(BaseOverSampler):
 
         output = self._fit_resample(X, y, sample_weight)
 
-        y_ = label_binarize(output[1], np.unique(y)) if binarize_y else output[1]
+        y_ = (
+            label_binarize(output[1], classes=np.unique(y)) if binarize_y else output[1]
+        )
 
         X_, y_ = arrays_transformer.transform(output[0], y_)
         return (X_, y_) if len(output) == 2 else (X_, y_, output[2])

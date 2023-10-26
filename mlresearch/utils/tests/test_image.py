@@ -63,11 +63,11 @@ def test_dataframe_to_image(number_of_bands):
         if y is None:
             assert y_ is None
         else:
-            assert type(y_) == np.ndarray
+            assert type(y_) is np.ndarray
             assert (y_ == y).all()
 
         assert (bands_ == df.columns.drop(target_, errors="ignore")).all()
-        assert type(X_) == np.ndarray
+        assert type(X_) is np.ndarray
         assert (X_ == X).all()
 
         # Without "h", "w" features at all
@@ -88,8 +88,8 @@ def test_dataframe_to_image(number_of_bands):
         )
 
         assert (bands_ == bands_filter).all()
-        assert type(y_) == np.ndarray
-        assert type(X_) == np.ndarray
+        assert type(y_) is np.ndarray
+        assert type(X_) is np.ndarray
         assert (y_ == target).all()
 
         band_indices = [

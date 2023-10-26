@@ -54,7 +54,7 @@ with warnings.catch_warnings():
     )
 
 # functions to ignore args / docstring of
-_DOCSTRING_IGNORES = []
+_DOCSTRING_IGNORES = []  # type: ignore
 
 # Methods where y param should be ignored if y=None by default
 _METHODS_IGNORE_NONE_Y = [
@@ -70,7 +70,7 @@ _METHODS_IGNORE_NONE_Y = [
 @pytest.mark.filterwarnings("ignore::FutureWarning")
 @pytest.mark.filterwarnings("ignore::DeprecationWarning")
 @pytest.mark.skipif(IS_PYPY, reason="test segfaults on PyPy")
-def test_docstring_parameters():
+def test_docstring_parameters():  # noqa: C901
     # Test module docstring formatting
 
     # Skip test if numpydoc is not found
