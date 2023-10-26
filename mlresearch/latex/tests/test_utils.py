@@ -92,7 +92,7 @@ def test_make_bold():
         exp_max_indices = np.argmax(table.values, axis=i)
         table_bf = make_bold(table, decimals=5, axis=i)
         max_indices = np.argmax(
-            table_bf.applymap(lambda x: x.startswith("\\textbf")).values, axis=i
+            table_bf.map(lambda x: x.startswith("\\textbf")).values, axis=i
         )
         assert (max_indices == exp_max_indices).all()
 
@@ -103,7 +103,7 @@ def test_make_bold():
     ]
     for exp_is_bold, maximum in bold_test:
         table_bf = make_bold(table, decimals=5, maximum=maximum, threshold=0.5)
-        is_bold = table_bf.applymap(lambda x: x.startswith("\\textbf")).values
+        is_bold = table_bf.map(lambda x: x.startswith("\\textbf")).values
         assert (is_bold == exp_is_bold).all()
 
 
@@ -116,12 +116,12 @@ def test_make_mean_sem_table(sem_vals, make_bold):
 
     if make_bold:
         max_indices = np.argmax(
-            mean_sem.applymap(lambda x: x.startswith("\\textbf")).values, axis=1
+            mean_sem.map(lambda x: x.startswith("\\textbf")).values, axis=1
         )
         assert (max_indices == exp_max_indices).all()
 
     if sem_vals is not None:
-        assert mean_sem.applymap(lambda x: "$\\pm$" in x).values.all()
+        assert mean_sem.map(lambda x: "$\\pm$" in x).values.all()
 
     if not make_bold and sem_vals is None:
         assert (mean_sem.values == table.round(2).astype(str).values).all()

@@ -174,6 +174,7 @@ def _construct_compose_pipeline_instance(Estimator):
         return Estimator(steps=[("clf", LogisticRegression())])
 
 
+@pytest.mark.filterwarnings("ignore::UserWarning")
 @pytest.mark.parametrize("name, Estimator", all_estimators())
 def test_fit_docstring_attributes(name, Estimator):
     pytest.importorskip("numpydoc")

@@ -290,12 +290,12 @@ def make_mean_sem_table(
             )
 
         scores = (
-            mean_vals.applymap(("{:,.%sf}" % decimals).format)
+            mean_vals.map(("{:,.%sf}" % decimals).format)
             + r" $\pm$ "
-            + sem_vals.applymap(("{:,.%sf}" % decimals).format)
+            + sem_vals.map(("{:,.%sf}" % decimals).format)
         )
     else:
-        scores = mean_vals.applymap(("{:,.%sf}" % decimals).format)
+        scores = mean_vals.map(("{:,.%sf}" % decimals).format)
 
     if make_bold:
         mask = mean_vals.apply(

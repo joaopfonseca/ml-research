@@ -129,9 +129,9 @@ class ContinuousCategoricalDatasets(Datasets):
         categorical_features = [1, 3, 5, 6, 7, 8, 9, 13]
 
         # Trim spaces in categorical features
-        data.iloc[:, categorical_features] = data.iloc[
-            :, categorical_features
-        ].applymap(lambda x: x.strip())
+        data.iloc[:, categorical_features] = data.iloc[:, categorical_features].map(
+            lambda x: x.strip()
+        )
 
         return data, categorical_features
 
@@ -220,9 +220,7 @@ class ContinuousCategoricalDatasets(Datasets):
         ).squeeze()
         data = data.drop(columns=cols_ids).T.reset_index(drop=True).T
         # some rows are dropped; they have rare missing values
-        data = data.iloc[
-            data.applymap(lambda x: x != " Not in universe").all(1).values, :
-        ]
+        data = data.iloc[data.map(lambda x: x != " Not in universe").all(1).values, :]
 
         data.rename(columns={data.columns[-1]: "target"}, inplace=True)
 
