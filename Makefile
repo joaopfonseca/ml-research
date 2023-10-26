@@ -40,10 +40,12 @@ clean:
 	rm -rf docs/_build
 	rm -rf docs/_generated
 
-## Lint using flake8 and pylint
+## Lint using black, flake8 and pylint
 code-analysis:
-	flake8 $(PROJECT_NAME)
-	pylint -E $(PROJECT_NAME) -d E1103,E0611,E1101
+	black --check --diff .
+	mypy $(PROJECT_NAME) --ignore-missing-imports --no-strict-optional
+	flake8 $(PROJECT_NAME) --ignore=E203,W503
+	pylint -E $(PROJECT_NAME) -d E1103,E0611,E1101,E0601
 
 ## Format code using Black
 code-format:
