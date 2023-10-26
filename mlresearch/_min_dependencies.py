@@ -22,6 +22,8 @@ dependent_packages = {
     "flake8": ("3.8.2", "tests"),
     "black": ("22.3", "tests"),
     "pylint": ("2.12.2", "tests"),
+    "mypy": ("1.6.1", "tests"),
+    "types-requests": ("2.31.0.10", "tests"),
     "coverage": ("6.2", "tests"),
     "sphinx": ("4.2.0", "docs"),
     "numpydoc": ("1.0.0", "docs, tests"),

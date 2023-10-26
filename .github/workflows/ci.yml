@@ -23,17 +23,13 @@ jobs:
           python-version: 3.12
           architecture: x64
 
-      - name: Install linters
+      - name: Install dependencies
         run: |
-          BLACK=$(python mlresearch/_min_dependencies.py black)
-          pip install pytest typed_ast==1.5.5 mypy==1.6.1 black==$BLACK
-      - name: Run black
+          pip install ".[tests]"
+
+      - name: Run code analysis (black, mypy, flake8, pylint)
         run: |
-          black --check --diff .
-      # - name: Run mypy
-      #   run: |
-      #     mypy --ignore-missing-imports --no-strict-optional mlresearch/
-    
+          make code-analysis
 
   build:
     strategy:
