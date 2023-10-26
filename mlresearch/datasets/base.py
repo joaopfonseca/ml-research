@@ -186,7 +186,7 @@ class Datasets:
         self.download_if_missing = download_if_missing
 
     def __getitem__(self, i):
-        if type(i) == str:
+        if type(i) is str:
             return dict(self.content_)[i]
         else:
             return self.content_[i]
@@ -344,7 +344,7 @@ class Datasets:
         # Check datasets format
         datasets = [
             (name, (data.drop(columns="target"), data.target))
-            if type(data) == pd.DataFrame
+            if type(data) is pd.DataFrame
             else data
             for name, data in self.content_
         ]

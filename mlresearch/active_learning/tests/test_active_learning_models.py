@@ -75,7 +75,7 @@ def test_default_parameters(name, X, y):
     exp_budget = exp_budget if exp_budget >= 1 else 1
     exp_max_iter = int((np.array(X).shape[0] - exp_n_init) / exp_budget)
 
-    assert type(al_model.classifier_) == RandomForestClassifier
+    assert type(al_model.classifier_) is RandomForestClassifier
     assert al_model.acquisition_func_ == exp_acquisition_func
     assert al_model.n_init_ == exp_n_init
     assert al_model.budget_ == exp_budget

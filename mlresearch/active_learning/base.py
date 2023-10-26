@@ -152,7 +152,7 @@ class BaseActiveLearner(BaseEstimator, metaclass=ABCMeta):
         # Acquisition function
         if self.acquisition_func is None:
             self.acquisition_func_ = ACQUISITION_FUNCTIONS["random"]
-        elif type(self.acquisition_func) == str:
+        elif type(self.acquisition_func) is str:
             self.acquisition_func_ = ACQUISITION_FUNCTIONS[self.acquisition_func]
         else:
             self.acquisition_func_ = self.acquisition_func
@@ -183,14 +183,14 @@ class BaseActiveLearner(BaseEstimator, metaclass=ABCMeta):
         # Evaluation metric
         if self.evaluation_metric is None:
             self.evaluation_metric_ = get_scorer("accuracy")
-        elif type(self.evaluation_metric) == str:
+        elif type(self.evaluation_metric) is str:
             self.evaluation_metric_ = get_scorer(self.evaluation_metric)
         else:
             self.evaluation_metric_ = self.evaluation_metric
 
         # Train a different classifier per iteration (as an alternative continue training
         # the classifier from previous iterations)
-        if type(self.continue_training) == bool:
+        if type(self.continue_training) is bool:
             self._continue_training = self.continue_training
         else:
             raise TypeError(

@@ -278,7 +278,7 @@ class AugmentationAL(BaseActiveLearner, ClassifierMixin):
             )
 
         # Check if parameters in param_grid are valid
-        if type(self.param_grid) == dict:
+        if type(self.param_grid) is dict:
             for key in self.param_grid.keys():
                 if key not in self._classifier.get_params():
                     raise ValueError(
@@ -293,7 +293,7 @@ class AugmentationAL(BaseActiveLearner, ClassifierMixin):
 
     def _save_metadata(self, X, y, **kwargs):
         super()._save_metadata(X, y, **kwargs)
-        if hasattr(self, "classifier_") and type(self.classifier_) == GridSearchCV:
+        if hasattr(self, "classifier_") and type(self.classifier_) is GridSearchCV:
             self.metadata_[self._current_iter]["parameters"] = {
                 k: v
                 for k, v in self.classifier_.best_estimator_.get_params().items()
@@ -308,7 +308,7 @@ class AugmentationAL(BaseActiveLearner, ClassifierMixin):
 
         if hasattr(self.cv, "n_splits"):
             cv.n_splits = min(min_frequency, cv.n_splits)
-        elif type(self.cv) == int:
+        elif type(self.cv) is int:
             cv = min(min_frequency, cv)
         elif cv is None:
             cv = min(min_frequency, 5)

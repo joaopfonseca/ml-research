@@ -83,7 +83,7 @@ def geometric_mean_score_macro(y_true, y_pred):
 
 def area_under_learning_curve(metadata, *args):
     """Area under the learning curve. Used in Active Learning experiments."""
-    iterations = np.sort([i for i in metadata.keys() if type(i) == int])[1:]
+    iterations = np.sort([i for i in metadata.keys() if type(i) is int])[1:]
     test_scores = [metadata[i]["test_score"] for i in iterations]
     auc = np.sum(test_scores) / len(test_scores)
     return auc
@@ -91,7 +91,7 @@ def area_under_learning_curve(metadata, *args):
 
 def data_utilization_rate(metadata, threshold=0.8):
     """Data Utilization Rate. Used in Active Learning Experiments."""
-    iterations = np.sort([i for i in metadata.keys() if type(i) == int])[1:]
+    iterations = np.sort([i for i in metadata.keys() if type(i) is int])[1:]
     test_scores = [metadata[i]["test_score"] for i in iterations]
     n_obs = metadata["data"][0].shape[0]
     data_utilization = [

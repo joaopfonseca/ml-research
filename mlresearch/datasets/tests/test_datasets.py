@@ -31,7 +31,7 @@ def test_urls():
     """Test whether URLS are working."""
     urls = [
         url
-        for sublist in [[url] for url in list(FETCH_URLS.values()) if type(url) == str]
+        for sublist in [[url] for url in list(FETCH_URLS.values()) if type(url) is str]
         for url in sublist
     ]
 
