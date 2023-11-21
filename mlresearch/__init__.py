@@ -48,8 +48,8 @@ else:
     from . import metrics
     from . import preprocessing
     from . import utils
-
     from ._version import __version__
+    from .utils._show_versions import show_versions
 
     __all__ = [
         "active_learning",
@@ -58,5 +58,7 @@ else:
         "metrics",
         "preprocessing",
         "utils",
+        # Non-modules:
+        "show_versions",
         "__version__",
     ]
