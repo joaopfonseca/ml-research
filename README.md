@@ -51,7 +51,7 @@ project. Earlier Python versions might work in most cases, but they are not
 tested. ``ML-Research`` requires:
 
 - numpy (>= 1.20.0)
-- pandas (>= 1.3.5)
+- pandas (>= 2.1.0)
 - sklearn (>= 1.2.0)
 - imblearn (>= 0.8.0)
 
