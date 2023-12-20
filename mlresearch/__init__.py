@@ -8,7 +8,7 @@ Subpackages
 -----------
 active_learning
     Module which contains the code developed for experiments related to Active Learning.
-data_augmentation
+synthetic_data
     Module which contains the implementation of variations of oversampling/data
     augmentation algorithms, as well as helper classes to use oversampling algorithms as
     data augmentation techniques.
@@ -43,7 +43,7 @@ if __MLRESEARCH_SETUP__:
     # process, as it may not be compiled yet
 else:
     from . import active_learning
-    from . import data_augmentation
+    from . import synthetic_data
     from . import datasets
     from . import metrics
     from . import preprocessing
@@ -53,7 +53,7 @@ else:
 
     __all__ = [
         "active_learning",
-        "data_augmentation",
+        "synthetic_data",
         "datasets",
         "metrics",
         "preprocessing",
