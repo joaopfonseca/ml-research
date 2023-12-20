@@ -102,6 +102,9 @@ This is the full API documentation of the `mlresearch` package.
     :template: class.rst
     
     metrics.ALScorer
+    metrics.AlphaPrecision
+    metrics.BetaRecall
+    metrics.Authenticity
 
 :mod:`mlresearch.preprocessing`
 -------------------------------
