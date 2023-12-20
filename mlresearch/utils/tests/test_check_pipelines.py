@@ -17,7 +17,7 @@ from .._check_pipelines import (
     check_random_states,
 )
 from ...active_learning import StandardAL
-from ...data_augmentation import OverSamplingAugmentation
+from ...synthetic_data import OverSamplingAugmentation
 
 
 def test_check_pipeline_single():

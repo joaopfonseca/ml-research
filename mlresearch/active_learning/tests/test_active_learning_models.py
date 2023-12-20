@@ -9,7 +9,7 @@ from sklearn.utils._testing import assert_array_equal, ignore_warnings
 from sklearn.neural_network import MLPClassifier
 from sklearn.ensemble import RandomForestClassifier
 
-from ...data_augmentation import OverSamplingAugmentation, GeometricSMOTE
+from ...synthetic_data import OverSamplingAugmentation, GeometricSMOTE
 from ...metrics import get_scorer
 from .._acquisition_functions import ACQUISITION_FUNCTIONS
 from .._active_learning import StandardAL, AugmentationAL

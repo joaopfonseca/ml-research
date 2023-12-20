@@ -22,10 +22,10 @@ This is the full API documentation of the `mlresearch` package.
     active_learning.StandardAL
     active_learning.AugmentationAL
 
-:mod:`mlresearch.data_augmentation`
+:mod:`mlresearch.synthetic_data`
 -----------------------------------
 
-.. automodule:: mlresearch.data_augmentation
+.. automodule:: mlresearch.synthetic_data
     :no-members:
     :no-inherited-members:
 
@@ -35,8 +35,8 @@ This is the full API documentation of the `mlresearch` package.
     :toctree: _generated/
     :template: class.rst
     
-    data_augmentation.GeometricSMOTE
-    data_augmentation.OverSamplingAugmentation
+    synthetic_data.GeometricSMOTE
+    synthetic_data.OverSamplingAugmentation
 
 
 :mod:`mlresearch.datasets`
