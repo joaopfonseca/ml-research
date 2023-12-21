@@ -55,8 +55,8 @@ def format_table(table, indices=None, columns=None, drop_missing=True):
     Sort and rename rows and columns. Mostly used to set results from
     experiments in the intended order.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     table : pd.DataFrame
         Dataframe with results statistics. Optionally, it may be indexed with related
         metadata. Supports both single and multi index.
@@ -184,8 +184,8 @@ def make_bold(table, maximum=True, threshold=None, decimals=2, axis=1):
     Make bold the lowest or highest values, or values lower than, or higher than the
     passed value in ``threshold`` per row or column.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     table : pd.DataFrame
         Dataframe with results statistics. Must not contain non-indexed metadata.
         Supports both single and multi index.
@@ -237,8 +237,8 @@ def make_mean_sem_table(
     Generate table with rounded decimals, bold maximum/minimum values or values
     above/below a given threshold, and combine mean and sem values.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     mean_vals : pd.DataFrame
         Dataframe with results statistics. Must not
         contain non-indexed metadata. Supports both single and multi index.
@@ -321,8 +321,8 @@ def export_longtable(table, path=None, caption=None, label=None, index=True):
         underscore ("_"), as it will result in an error in LaTeX. If you wish to have
         underscores in the LaTeX table, add a backslash before the underscore.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     table : pd.DataFrame
         Dataframe with results statistics. Must not contain non-indexed metadata.
         Supports both single and multi index.
