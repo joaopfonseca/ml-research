@@ -117,7 +117,7 @@ def precision_at_k(y_true, y_score, k=10, target_label=1):
 
     y_score : array-like of shape (n_samples,) or (n_samples, n_classes)
         Target scores. These can be either probability estimates or non-thresholded
-        decision values (as returned by :term:`decision_function` on some classifiers).
+        decision values (as returned by `decision_function` on some classifiers).
         Expects scores with shape (n_samples,).
 
     k : int, default=10
