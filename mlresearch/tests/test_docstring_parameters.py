@@ -25,11 +25,14 @@ from mlresearch.utils._testing import all_estimators
 
 
 def is_sampler(estimator):
-    """Return True if the given estimator is a sampler, False otherwise.
+    """
+    Return True if the given estimator is a sampler, False otherwise.
+
     Parameters
     ----------
     estimator : object
         Estimator to test.
+
     Returns
     -------
     is_sampler : bool

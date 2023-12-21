@@ -22,23 +22,6 @@ This is the full API documentation of the `mlresearch` package.
     active_learning.StandardAL
     active_learning.AugmentationAL
 
-:mod:`mlresearch.synthetic_data`
------------------------------------
-
-.. automodule:: mlresearch.synthetic_data
-    :no-members:
-    :no-inherited-members:
-
-.. currentmodule:: mlresearch
-
-.. autosummary::
-    :toctree: _generated/
-    :template: class.rst
-    
-    synthetic_data.GeometricSMOTE
-    synthetic_data.OverSamplingAugmentation
-
-
 :mod:`mlresearch.datasets`
 --------------------------
 
@@ -106,6 +89,21 @@ This is the full API documentation of the `mlresearch` package.
     metrics.BetaRecall
     metrics.Authenticity
 
+:mod:`mlresearch.neural_network`
+--------------------------------
+
+.. automodule:: mlresearch.neural_network
+   :no-members:
+   :no-inherited-members:
+
+.. currentmodule:: mlresearch
+
+.. autosummary::
+   :toctree: _generated/
+   :template: class.rst
+
+    neural_network.OneClassMLP
+
 :mod:`mlresearch.preprocessing`
 -------------------------------
 
@@ -120,6 +118,22 @@ This is the full API documentation of the `mlresearch` package.
    :template: class.rst
 
     preprocessing.PipelineEncoder
+
+:mod:`mlresearch.synthetic_data`
+--------------------------------
+
+.. automodule:: mlresearch.synthetic_data
+    :no-members:
+    :no-inherited-members:
+
+.. currentmodule:: mlresearch
+
+.. autosummary::
+    :toctree: _generated/
+    :template: class.rst
+    
+    synthetic_data.GeometricSMOTE
+    synthetic_data.OverSamplingAugmentation
 
 :mod:`mlresearch.utils`
 -----------------------
