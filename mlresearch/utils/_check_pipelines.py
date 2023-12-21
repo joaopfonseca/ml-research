@@ -16,8 +16,8 @@ def check_random_states(random_state, n_runs):
     Create random states for experiments. Used to create seeds for different
     initializations.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     {random_state}
 
     n_runs : int
@@ -40,8 +40,8 @@ def check_pipelines(*objects_list, random_state, n_runs):
     Extract estimators and parameter grids to be passed to ModelSearchCV. This enables
     searching over any sequence of parameter settings and objects.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     *objects_list : sequence of lists
         Lists of objects to be chained in a pipeline in the passed order. Each list
         must contain tuples composed of (``<obj_name>``, ``<object>``,
@@ -122,8 +122,8 @@ def check_pipelines_wrapper(
     ModelSearchCV. This enables searching over any sequence of parameter settings and
     objects.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     *objects_list : sequence of lists
         Lists of objects to be chained in a pipeline in the passed order. Each list
         must contain tuples composed of (``<obj_name>``, ``<object>``,

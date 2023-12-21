@@ -87,8 +87,8 @@ def dataframe_to_image(df, bands=None, target_feature=None):
     Converts a pandas dataframe to an image. The height ("h"), and width ("w")
     coordinates of the image must be in the index.
 
-    Arguments
-    ---------
+    Parameters
+    ----------
     df : pd.DataFrame
         Dataframe with pixel coordinates (h, w) as index, counting from the top left
         corner.
