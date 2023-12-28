@@ -7,24 +7,17 @@ import sys
 import warnings
 from io import StringIO
 
-import joblib
 import numpy as np
 import pytest
-from numpy.testing import (
-    assert_allclose,
-    assert_almost_equal,
-    assert_array_equal,
-)
+from numpy.testing import assert_allclose
 
 from sklearn.datasets import (
     load_digits,
     load_iris,
-    make_multilabel_classification,
     make_regression,
 )
 from sklearn.exceptions import ConvergenceWarning
-from sklearn.metrics import roc_auc_score
-from sklearn.preprocessing import LabelBinarizer, MinMaxScaler, scale
+from sklearn.preprocessing import MinMaxScaler, scale
 from sklearn.utils._testing import ignore_warnings
 from sklearn.neural_network._multilayer_perceptron import _STOCHASTIC_SOLVERS
 
