@@ -13,7 +13,7 @@ from ._rankings import (
     RankingScorer,
     precision_at_k,
 )
-from ._synth_data_evaluation import AlphaPrecision, BetaRecall, Authenticity
+from ._synth_data_quality import AlphaPrecision, BetaRecall, Authenticity
 
 # Update the list of scorers
 from sklearn.metrics import get_scorer, get_scorer_names
