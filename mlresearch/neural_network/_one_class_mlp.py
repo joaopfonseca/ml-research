@@ -26,9 +26,9 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
     and $\\beta$ supports for the performance metrics used to assess synthetic data
     quality.
 
-    Uses the loss function proposed in [1]_, which is optimized using LBFGS or stochastic
-    gradient descent. This implementation refers to the architecture described in [2]_
-    using the soft-boundary objective.
+    Uses the loss function proposed in [1]_, which is optimized using LBFGS, stochastic
+    gradient descent, or adam. This implementation refers to the architecture described
+    in [2]_ using the soft-boundary objective.
 
     Parameters
     ----------
@@ -92,8 +92,7 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
         - 'adaptive' keeps the learning rate constant to
           'learning_rate_init' as long as training loss keeps decreasing.
           Each time two consecutive epochs fail to decrease training loss by at
-          least tol, or fail to increase validation score by at least tol if
-          'early_stopping' is on, the current learning rate is divided by 5.
+          least tol, the current learning rate is divided by 5.
 
         Only used when ``solver='sgd'``.
 
@@ -181,8 +180,6 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
 
     best_loss_ : float or None
         The minimum loss reached by the solver throughout fitting.
-        If `early_stopping=True`, this attribute is set to `None`. Refer to
-        the `best_validation_score_` fitted attribute instead.
 
     loss_curve_ : list of shape (`n_iter_`,)
         The ith element in the list represents the loss at the ith iteration.
@@ -320,10 +317,7 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
         if self.solver in _STOCHASTIC_SOLVERS:
             self.loss_curve_ = []
             self._no_improvement_count = 0
-            if self.early_stopping:
-                self.best_loss_ = None
-            else:
-                self.best_loss_ = np.inf
+            self.best_loss_ = np.inf
 
     def _backprop(self, X, y, activations, deltas, coef_grads, intercept_grads):
         """Compute the MLP loss function and its corresponding derivatives
@@ -404,9 +398,9 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
 
         return loss, coef_grads, intercept_grads
 
-    @available_if(lambda est: est._check_solver)
+    @available_if(lambda est: est._check_solver())
     @_fit_context(prefer_skip_nested_validation=True)
-    def partial_fit(self, X):
+    def partial_fit(self, X, y=None):
         """Update the model with a single iteration over the given data.
 
         Parameters
@@ -470,7 +464,7 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
             # First time training the model
             self._initialize(layer_units, X.dtype)
 
-            y_pred = self._forward_pass_fast(X)
+            y_pred = self._forward_pass_fast(X, check_input=False)
             self._init_center(y_pred)
             self._init_radius(y_pred)
 
@@ -550,7 +544,4 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
     def _predict(self, X, check_input=True):
         """Private predict method with optional input validation"""
         scores = self._forward_pass_fast(X, check_input=check_input)
-
-        if scores.shape[1] == 1:
-            return scores.ravel()
-        return scores
+        return scores.ravel()
