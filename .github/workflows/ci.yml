@@ -25,6 +25,10 @@ jobs:
 
       - name: Install dependencies
         run: |
+          # NOTE: pip, setuptools and wheel should be included with any python 
+          #       installation. It's being installed/upgraded here because the 
+          #       setup-python action is not including setuptools with Python 3.12
+          pip install --upgrade pip setuptools wheel
           pip install ".[tests]"
 
       - name: Run code analysis (black, mypy, flake8, pylint)
