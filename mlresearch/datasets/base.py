@@ -343,9 +343,11 @@ class Datasets:
 
         # Check datasets format
         datasets = [
-            (name, (data.drop(columns="target"), data.target))
-            if type(data) is pd.DataFrame
-            else data
+            (
+                (name, (data.drop(columns="target"), data.target))
+                if type(data) is pd.DataFrame
+                else data
+            )
             for name, data in self.content_
         ]
 

@@ -71,9 +71,11 @@ def check_pipelines(*objects_list, random_state, n_runs):
 
         # name, object, sub grid
         comb = [
-            (nm, ob, ParameterGrid(sg))
-            if ob is not None
-            else (nm, FunctionTransformer(), ParameterGrid(sg))
+            (
+                (nm, ob, ParameterGrid(sg))
+                if ob is not None
+                else (nm, FunctionTransformer(), ParameterGrid(sg))
+            )
             for nm, ob, sg in comb
         ]
 

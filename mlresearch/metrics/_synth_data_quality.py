@@ -3,6 +3,7 @@ Implementation of the 3 synthetic data quality metrics from the paper 'How Faith
 your Synthetic Data? Sample-level Metrics for Evaluating and Auditing Generative Models'
 from Alaa et al (2022).
 """
+
 import numpy as np
 from sklearn.metrics._scorer import _BaseScorer
 from sklearn.neighbors import NearestNeighbors

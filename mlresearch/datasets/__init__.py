@@ -1,6 +1,7 @@
 """
 Download, transform and simulate various datasets.
 """
+
 from ._binary import (
     ImbalancedBinaryDatasets,
     BinaryDatasets,

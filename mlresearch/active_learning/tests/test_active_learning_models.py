@@ -1,4 +1,5 @@
 """Testing active learning models."""
+
 import pytest
 from itertools import product
 import re

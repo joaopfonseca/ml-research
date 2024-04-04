@@ -3,6 +3,7 @@ Acquisition functions that may be used along with Active Learning objects. All f
 must be set up so that a higher value means higher uncertainty (higher likelihood of
 selection) and vice-versa.
 """
+
 import numpy as np
 
 

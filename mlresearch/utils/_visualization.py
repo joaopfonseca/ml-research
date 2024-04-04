@@ -2,6 +2,7 @@
 Functions for visualization formatting or producing pre-formatted
 visualizations.
 """
+
 from setuptools import distutils
 import warnings
 import numpy as np

@@ -2,6 +2,7 @@
 A wrapper to allow the use of oversampling algorithms for data augmentation
 in Active Learning experiments with multiple datasets.
 """
+
 import warnings
 from collections import Counter, OrderedDict
 import numpy as np
@@ -197,9 +198,11 @@ class OverSamplingAugmentation(BaseOverSampler):
             counts = OrderedDict(Counter(y))
             max_freq = max(counts.values())
             self.sampling_strategy_ = {
-                k: int(np.round(max_freq * self.value))
-                if max_freq * self.value > freq
-                else freq
+                k: (
+                    int(np.round(max_freq * self.value))
+                    if max_freq * self.value > freq
+                    else freq
+                )
                 for k, freq in counts.items()
             }
 

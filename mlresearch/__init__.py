@@ -26,6 +26,7 @@ utils
     Contains a variety of general utility functions and tools used to format and prepare
     tables to incorporate into LaTeX code.
 """
+
 import sys
 
 try:

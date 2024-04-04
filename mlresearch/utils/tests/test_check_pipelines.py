@@ -1,6 +1,7 @@
 """
 Test the check_pipelines module.
 """
+
 from itertools import product
 
 from sklearn.tree import DecisionTreeClassifier
