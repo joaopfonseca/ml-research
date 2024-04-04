@@ -1,10 +1,10 @@
 import numpy as np
 from sklearn.metrics import make_scorer
-from sklearn.metrics._scorer import _PredictScorer, _SCORERS
+from sklearn.metrics._scorer import _Scorer, _SCORERS
 from imblearn.metrics import geometric_mean_score
 
 
-class ALScorer(_PredictScorer):
+class ALScorer(_Scorer):
     """
     Make an Active Learning scorer from a AL-specific metric or loss function.
 
