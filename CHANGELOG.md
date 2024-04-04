@@ -2,22 +2,39 @@
 
 ## [Unreleased](https://github.com/joaopfonseca/ml-research/tree/HEAD)
 
-[Full Changelog](https://github.com/joaopfonseca/ml-research/compare/v0.4.2...HEAD)
+[Full Changelog](https://github.com/joaopfonseca/ml-research/compare/v0.5.0...HEAD)
+
+**Deprecated:**
+
+- Format code with new version of ``black`` and fix errors coming from new ``sklearn`` version [\#66](https://github.com/joaopfonseca/ml-research/issues/66)
+
+## [v0.5.0](https://github.com/joaopfonseca/ml-research/tree/v0.5.0) (2024-04-04)
+
+[Full Changelog](https://github.com/joaopfonseca/ml-research/compare/v0.4.2...v0.5.0)
 
 **Implemented features and enhancements:**
 
+- Implement metrics for evaluating synthetic data [\#63](https://github.com/joaopfonseca/ml-research/issues/63)
 - Set ``utils.parallel\_loop`` to track job completions instead of job starts [\#51](https://github.com/joaopfonseca/ml-research/issues/51)
+
+**Fixed bugs:**
+
+- Error when running ``make\_mean\_sem\_table`` \(AttributeError: 'DataFrame' object has no attribute 'map'\)  [\#61](https://github.com/joaopfonseca/ml-research/issues/61)
+- Fix applymap `FutureWarning` [\#42](https://github.com/joaopfonseca/ml-research/issues/42)
 
 **Documentation updates:**
 
+- Add ``mlresearch.show\_versions\(\)`` functions for bug reports [\#56](https://github.com/joaopfonseca/ml-research/issues/56)
 - Add issues template and fix broken link on PR template [\#49](https://github.com/joaopfonseca/ml-research/issues/49)
 - Add Changelog generator [\#45](https://github.com/joaopfonseca/ml-research/issues/45)
 - Add CONTRIBUTING file [\#44](https://github.com/joaopfonseca/ml-research/issues/44)
 
 **Closed issues:**
 
+- Add type hints to code and fix ``make code-analysis`` warnings [\#57](https://github.com/joaopfonseca/ml-research/issues/57)
 - Add Python 3.12 support [\#53](https://github.com/joaopfonseca/ml-research/issues/53)
 - Make package `rich` an optional dependency [\#47](https://github.com/joaopfonseca/ml-research/issues/47)
+- Rename ``data\_augmentation`` submodule to ``synthetic\_data`` [\#32](https://github.com/joaopfonseca/ml-research/issues/32)
 
 ## [v0.4.2](https://github.com/joaopfonseca/ml-research/tree/v0.4.2) (2023-09-28)
 
