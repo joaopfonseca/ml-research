@@ -9,7 +9,24 @@ from sklearn.metrics._scorer import _BaseScorer
 from sklearn.neighbors import NearestNeighbors
 
 
-class AlphaPrecision(_BaseScorer):
+class _BaseSynthQualityScorer(_BaseScorer):
+    def __repr__(self):
+        kwargs_string = "".join([f", {k}={v}" for k, v in self.__dict__.items()])
+        return f"make_scorer({self.__class__.__name__}{kwargs_string})"
+
+    def set_score_request(self):
+        """
+        Placeholder to overwrite sklearn's ``_BaseScorer.set_score_request`` function.
+        It is not used and was raising a docstring error with scikit-learn v1.3.0.
+
+        Note
+        ----
+        This placeholder will be removed soon
+        """
+        pass
+
+
+class AlphaPrecision(_BaseSynthQualityScorer):
     """
     Measures synthetic data fidelity. It estimates the probability that a synthetic
     sample resides in the $\\alpha$-support of the real distribution.
@@ -86,19 +103,8 @@ class AlphaPrecision(_BaseScorer):
         within_ball = np.abs(self.scorer_real(X_synth) - self.center_) < radius
         return within_ball.astype(int)
 
-    def set_score_request(self):
-        """
-        Placeholder to overwrite sklearn's ``_BaseScorer.set_score_request`` function.
-        It is not used and was raising a docstring error with scikit-learn v1.3.0.
 
-        Note
-        ----
-        This placeholder will be removed soon
-        """
-        pass
-
-
-class BetaRecall(_BaseScorer):
+class BetaRecall(_BaseSynthQualityScorer):
     """
     Checks whether the synthetic data is diverse enough to cover the variability of real
     data, i.e., a model should be able to generate a wide variety of good samples.
@@ -249,19 +255,8 @@ class BetaRecall(_BaseScorer):
             scores = self._score_with_support_estimation(X_real)
         return scores.astype(int)
 
-    def set_score_request(self):
-        """
-        Placeholder to overwrite sklearn's ``_BaseScorer.set_score_request`` function.
-        It is not used and was raising a docstring error with scikit-learn v1.3.0.
 
-        Note
-        ----
-        This placeholder will be removed soon
-        """
-        pass
-
-
-class Authenticity(_BaseScorer):
+class Authenticity(_BaseSynthQualityScorer):
     """
     Quantifies the rate by which a model generates new samples. In other words, this
     scorer assesses whether a sample is non-memorized.
@@ -356,14 +351,3 @@ class Authenticity(_BaseScorer):
         neighbors = neighbors[:, 0]
         a_j = 1 - (distances < self.distances_real_[neighbors]).astype(int)
         return a_j
-
-    def set_score_request(self):
-        """
-        Placeholder to overwrite sklearn's ``_BaseScorer.set_score_request`` function.
-        It is not used and was raising a docstring error with scikit-learn v1.3.0.
-
-        Note
-        ----
-        This placeholder will be removed soon
-        """
-        pass
