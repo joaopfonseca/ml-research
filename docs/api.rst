@@ -89,6 +89,21 @@ This is the full API documentation of the `mlresearch` package.
     metrics.BetaRecall
     metrics.Authenticity
 
+:mod:`mlresearch.model_selection`
+--------------------------------
+
+.. automodule:: mlresearch.model_selection
+   :no-members:
+   :no-inherited-members:
+
+.. currentmodule:: mlresearch
+
+.. autosummary::
+   :toctree: _generated/
+   :template: class.rst
+
+    model_selection.ModelSearchCV
+
 :mod:`mlresearch.neural_network`
 --------------------------------
 

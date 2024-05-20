@@ -195,3 +195,61 @@ def check_pipelines_wrapper(
         return wrapped_estimators, wrapped_param_grids
     else:
         return (estimators + wrapped_estimators, param_grids + wrapped_param_grids)
+
+
+def check_param_grids(param_grids, est_names):
+    """Check the parameters grids to use with
+    parametrized estimators."""
+
+    # Check the parameters grids
+    flat_param_grids = [
+        param_grid for param_grid in list(ParameterGrid(param_grids)) if param_grid
+    ]
+
+    # Append existing estimators names
+    param_grids = []
+    for param_grid in flat_param_grids:
+
+        # Get estimator name
+        est_name = param_grid.pop("est_name", None)
+
+        # Modify values
+        param_grid = {param: [val] for param, val in param_grid.items()}
+
+        # Check estimators prefixes
+        params_prefixes = set([param.split("__")[0] for param in param_grid.keys()])
+        if not params_prefixes.issubset(est_names):
+            raise ValueError(
+                "Parameters prefixes are not subset of parameter `est_names`."
+            )
+        if len(params_prefixes) > 1:
+            raise ValueError("Parameters prefixes are not unique.")
+        if est_name is not None and len(params_prefixes.union([est_name])) > 1:
+            raise ValueError(
+                "Parameters prefixes and parameter `est_name` are not unique."
+            )
+        param_grid["est_name"] = (
+            [est_name] if est_name is not None else list(params_prefixes)
+        )
+
+        # Append parameter grid
+        param_grids.append(param_grid)
+
+    # Append missing estimators names
+    current_est_names = set([param_grid["est_name"][0] for param_grid in param_grids])
+    missing_est_names = set(est_names).difference(current_est_names)
+    for est_name in missing_est_names:
+        param_grids.append({"est_name": [est_name]})
+
+    return param_grids
+
+
+def check_estimator_type(estimators):
+    """Returns the type of estimators."""
+    estimator_types = set([estimator._estimator_type for _, estimator in estimators])
+    if len(estimator_types) > 1:
+        raise ValueError(
+            "Both classifiers and regressors were found. "
+            "A single estimator type should be included."
+        )
+    return estimator_types.pop()

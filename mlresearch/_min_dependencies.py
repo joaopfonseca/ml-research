@@ -18,7 +18,6 @@ dependent_packages = {
     "requests": ("2.26.0", "install"),
     "tqdm": (TQDM_MIN_VERSION, "optional"),
     "matplotlib": (MATPLOTLIB_MIN_VERSION, "optional"),
-    "research-learn": ("0.3.0", "tests"),
     "pytest-cov": ("3.0.0", "tests"),
     "flake8": ("3.8.2", "tests"),
     "black": ("22.3", "tests"),

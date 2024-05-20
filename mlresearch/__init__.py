@@ -1,8 +1,8 @@
 """Toolbox to develop research in Machine Learning.
 
-``research`` is a library containing the implementation of various algorithms developed
-in Machine Learning research, as well as utilities to facilitate the formatting of pandas
-dataframes into LaTeX tables.
+``ml-research`` is a library containing the implementation of various algorithms
+developed in Machine Learning research, as well as utilities to facilitate the formatting
+of pandas dataframes into LaTeX tables.
 
 Subpackages
 -----------
@@ -17,6 +17,8 @@ datasets
 metrics
     Module which contains performance metrics/scorers that are not
     included in scikit-learn's scorers' dictionary.
+model_selection
+    Includes the model and parameter search methods.
 preprocessing
     Contains preprocessing methods adapted or modified from sklearn.
 latex

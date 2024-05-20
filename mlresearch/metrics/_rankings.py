@@ -9,7 +9,7 @@ class RankingScorer(_BaseScorer):
     Make an Rank-based scorer from a probability-based metric or loss function.
 
     This factory class wraps scoring functions to be used in
-    :class:`~rlearn.model_selection.ModelSearchCV` and
+    :class:`~mlresearch.model_selection.ModelSearchCV` and
     :class:`~sklearn.model_selection.GridSearchCV`. It takes a score function, such as
     :func:`~mlresearch.metrics.precision_at_k` and is used to score a
     classifier. The signature of the call is `(estimator, X, y)` where `estimator` is the
