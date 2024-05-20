@@ -71,7 +71,10 @@ class ImbalancedBinaryDatasets(Datasets):
 
         http://archive.ics.uci.edu/ml/datasets/breast+tissue
         """
-        data = pd.read_excel(FETCH_URLS["breast_tissue"], sheet_name="Data")
+        zipped_data = requests.get(FETCH_URLS["breast_tissue"]).content
+        unzipped_data = ZipFile(BytesIO(zipped_data)).read("BreastTissue.xls")
+        data = pd.read_excel(BytesIO(unzipped_data), sheet_name="Data")
+
         data = data.drop(columns="Case #").rename(columns={"Class": "target"})
         data["target"] = data["target"].isin(["car", "fad"]).astype(int)
         return data
@@ -118,9 +121,12 @@ class ImbalancedBinaryDatasets(Datasets):
         The minority class is identified as the `1` label
         and the majority class as the `0` label.
 
-        https://archive.ics.uci.edu/ml/datasets/Haberman's+Survival
+        https://archive.ics.uci.edu/dataset/43/haberman+s+survival
         """
-        data = pd.read_csv(FETCH_URLS["haberman"], header=None)
+        zipped_data = requests.get(FETCH_URLS["haberman"]).content
+        unzipped_data = ZipFile(BytesIO(zipped_data)).read("haberman.data")
+        data = pd.read_csv(BytesIO(unzipped_data), header=None)
+
         data.rename(columns={3: "target"}, inplace=True)
         data["target"] = data["target"].isin([2]).astype(int)
         return data
@@ -168,7 +174,10 @@ class ImbalancedBinaryDatasets(Datasets):
 
         https://archive.ics.uci.edu/ml/datasets/liver+disorders
         """
-        data = pd.read_csv(FETCH_URLS["liver"], header=None)
+        zipped_data = requests.get(FETCH_URLS["liver"]).content
+        unzipped_data = ZipFile(BytesIO(zipped_data)).read("bupa.data")
+        data = pd.read_csv(BytesIO(unzipped_data), header=None)
+
         data.rename(columns={6: "target"}, inplace=True)
         data["target"] = data["target"].isin([1]).astype(int)
         return data

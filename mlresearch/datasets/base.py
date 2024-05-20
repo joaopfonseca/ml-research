@@ -26,15 +26,15 @@ UCI_URL2 = "https://archive.ics.uci.edu/static/public/"
 GIC_URL = "http://www.ehu.eus/ccwintco/uploads/"
 OPENML_URL = "https://www.openml.org/data/get_csv/"
 FETCH_URLS = {
-    "breast_tissue": urljoin(UCI_URL, "00192/BreastTissue.xls"),
+    "breast_tissue": urljoin(UCI_URL2, "192/breast+tissue.zip"),
     "ecoli": urljoin(UCI_URL, "ecoli/ecoli.data"),
     "eucalyptus": urljoin(OPENML_URL, "3625/dataset_194_eucalyptus.arff"),
     "glass": urljoin(UCI_URL, "glass/glass.data"),
-    "haberman": urljoin(UCI_URL, "haberman/haberman.data"),
+    "haberman": urljoin(UCI_URL2, "43/haberman+s+survival.zip"),
     "heart": urljoin(UCI_URL, "statlog/heart/heart.dat"),
     "iris": urljoin(UCI_URL, "iris/bezdekIris.data"),
     "libras": urljoin(UCI_URL, "libras/movement_libras.data"),
-    "liver": urljoin(UCI_URL, "liver-disorders/bupa.data"),
+    "liver": urljoin(UCI_URL2, "60/liver+disorders.zip"),
     "pima": "https://gist.githubusercontent.com/ktisha/c21e73a1bd1700294ef790c56c8aec1f"
     "/raw/819b69b5736821ccee93d05b51de0510bea00294/pima-indians-diabetes.csv",
     "vehicle": urljoin(UCI_URL, "statlog/vehicle/Index"),

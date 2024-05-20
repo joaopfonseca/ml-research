@@ -1,4 +1,5 @@
 from urllib.request import urlopen
+from urllib.error import URLError
 import multiprocessing.dummy as mp
 from multiprocessing import cpu_count
 import ssl
@@ -27,6 +28,13 @@ y = pd.Series(
 )
 
 
+def _open_url(url):
+    try:
+        return urlopen(url)
+    except URLError as e:
+        raise URLError(f"Error for url {url}: {e}")
+
+
 def test_urls():
     """Test whether URLS are working."""
     urls = [
@@ -36,7 +44,7 @@ def test_urls():
     ]
 
     p = mp.Pool(cpu_count())
-    url_status = p.map(lambda url: (urlopen(url).status == 200), urls)
+    url_status = p.map(lambda url: (_open_url(url).status == 200), urls)
 
     assert all(url_status)
 
