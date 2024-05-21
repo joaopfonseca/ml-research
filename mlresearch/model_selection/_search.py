@@ -81,6 +81,8 @@ class MultiEstimatorMixin(_BaseComposition):
         # Fit estimator
         self.estimator_ = estimator.fit(X, y, **fit_params)
 
+        self.classes_ = estimator.classes_
+
         return self
 
     def predict(self, X):
