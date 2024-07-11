@@ -98,12 +98,15 @@ def test_augmentation_active_learning():
     )
     al_model.fit(iris.data, iris.target)
 
+    # Get steps in classifier - Required for compatibility purposes
+    if hasattr(al_model.classifier_, "best_estimator_"):
+        steps = al_model.classifier_.best_estimator_.steps
+    else:
+        steps = al_model.classifier_.steps
+
     assert al_model.max_iter_ == 2
     assert al_model.random_state == RANDOM_STATE
-    assert (
-        dict(al_model.classifier_.best_estimator_.steps)["generator"].random_state
-        == RANDOM_STATE
-    )
+    assert dict(steps)["generator"].random_state == RANDOM_STATE
 
 
 @pytest.mark.parametrize("name", ACTIVE_LEARNERS.keys())
