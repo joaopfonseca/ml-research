@@ -224,6 +224,8 @@ class PipelineEncoder(TransformerMixin, _BaseComposition):
                 X_[:, ~self.features_],
                 columns=self.columns_[~self.features_],
             )
+            for col in metric_data.columns:
+                metric_data[col] = metric_data[col].astype(X[col].dtype)
             enc_vals = self.encoder_.transform(X_[:, self.features_])
             encoded_data = pd.DataFrame(
                 enc_vals if not issparse(enc_vals) else enc_vals.toarray(),

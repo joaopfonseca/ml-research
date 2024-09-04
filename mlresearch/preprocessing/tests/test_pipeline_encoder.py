@@ -142,12 +142,21 @@ def test_encoder(sklearn_encoder, X, y, categorical_features):
             encoder.fit_transform(X, y)
 
     else:
+
+        if type(X) is pd.DataFrame:
+            cat_cols = X.columns[X.columns.str.startswith("cat_")]
+            for cat_col in cat_cols:
+                X[cat_col] = X[cat_col].astype(str)
+
         X_ = encoder.fit_transform(X, y)
 
         # Check if type of data structure is preserved
         assert type(X) is type(X_)
 
         if type(X) is pd.DataFrame:
+            num_cols = X.columns[~encoder.features_]
+            assert (X.dtypes[num_cols] == X_.dtypes[num_cols]).all()
+
             X = X.values
             X_ = X_.values
 
