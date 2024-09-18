@@ -43,7 +43,6 @@ def set_matplotlib_style(font_size=8, use_latex=True, **rcparams):
         # "patch.force_edgecolor": True,
         # "xtick.bottom": False,
         # "ytick.left": False,
-        "font.family": "Times",
         # Use 10pt font in plots, to match 10pt font in document
         "axes.labelsize": (10 / 8) * font_size,
         "font.size": (10 / 8) * font_size,
@@ -58,6 +57,20 @@ def set_matplotlib_style(font_size=8, use_latex=True, **rcparams):
         "figure.subplot.top": 0.944,
         "figure.subplot.wspace": 0.071,
     }
+
+    # Find the font family that is available and similar to times new roman
+    font_preferences = (["Times New Roman", "Times", "TeX Gyre Bonum", "Nimbus Roman"],)
+    fonts = list_available_fonts()
+    fonts = [font for font in font_preferences if font in fonts]
+    if len(fonts) > 0:
+        base_style["font.family"] = fonts[0]
+    else:
+        warn_msg = (
+            "Could not find a font family similar to Times New Roman. Matplotlib's "
+            "default font will be used instead."
+        )
+        warnings.warn(warn_msg)
+
     plt.rcParams.update(base_style)
 
     if distutils.spawn.find_executable("latex") and use_latex:
@@ -104,3 +117,69 @@ def feature_to_color(col, cmap="RdYlBu_r"):
     rgba = mapper.to_rgba(col)
 
     return np.apply_along_axis(colors.rgb2hex, 1, rgba)
+
+
+def list_available_fonts():
+    """
+    Returns a list of available fonts in the current system.
+
+    Returns
+    -------
+    list
+        List of font names.
+    """
+
+    fonts = _optional_import("matplotlib.font_manager")
+    return [font.name for font in fonts.fontManager.ttflist]
+
+
+def _make_html(fontname):
+    return (
+        "<p>{font}: <span style='font-family:{font}; "
+        "font-size: 24px;'>{font}</p>".format(font=fontname)
+    )
+
+
+def display_available_fonts(ipython_session=True):
+    """
+    Check and display the available fonts in matplotlib.
+
+    Parameters
+    ----------
+    ipython_session : bool, optional
+        Flag to determine whether to display the fonts in an IPython session or return
+        the HTML output as a string. If True, the fonts will be displayed in the IPython
+        session using the IPython.core.display.HTML function. If False, the HTML output
+        will be returned as a string. Default is True.
+
+    Returns
+    -------
+    str or None
+        If `ipython_session` is True, the function displays the fonts in the IPython
+        session and returns None. If `ipython_session` is False, the function returns the
+        HTML output as a string.
+
+    Examples
+    --------
+    >>> display_available_fonts()
+    # Displays the available fonts in the IPython session
+
+    >>> html_output = display_available_fonts(ipython_session=False)
+    >>> print(html_output)
+    # Prints the HTML output as a string
+    """
+
+    fonts = _optional_import("matplotlib.font_manager")
+
+    code = "\n".join(
+        [
+            _make_html(font)
+            for font in sorted(set([f.name for f in fonts.fontManager.ttflist]))
+        ]
+    )
+    html_output = "<div style='column-count: 2;'>{}</div>".format(code)
+    if ipython_session:
+        HTML = _optional_import("IPython.core.display.HTML")
+        HTML(html_output)
+    else:
+        return html_output

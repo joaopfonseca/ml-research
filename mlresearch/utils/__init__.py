@@ -10,7 +10,12 @@ from ._check_pipelines import (
     check_pipelines_wrapper,
     check_random_states,
 )
-from ._visualization import set_matplotlib_style, feature_to_color
+from ._visualization import (
+    set_matplotlib_style,
+    list_available_fonts,
+    display_available_fonts,
+    feature_to_color,
+)
 from ._parallelize import parallel_loop
 from ._utils import generate_paths
 
@@ -22,6 +27,8 @@ __all__ = [
     "check_pipelines_wrapper",
     "check_random_states",
     "set_matplotlib_style",
+    "list_available_fonts",
+    "display_available_fonts",
     "feature_to_color",
     "parallel_loop",
     "generate_paths",
