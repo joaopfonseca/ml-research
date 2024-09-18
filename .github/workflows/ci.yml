@@ -39,6 +39,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # NOTE: macos-13 is a workaround for an issue with the latest version
         os: [ubuntu-latest, macos-13, windows-latest]
         python: [3.9, "3.10", 3.11, 3.12]
     name: ${{ matrix.os }} Python ${{ matrix.python }}
@@ -72,6 +73,8 @@ jobs:
       - name: Upload coverage to codecov
         uses: codecov/codecov-action@v2
         with:
+          # NOTE: Version is set as a workaround for a macos issue
+          version: v0.7.3
           files: ./coverage.xml
           fail_ci_if_error: false
           verbose: true
