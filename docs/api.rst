@@ -6,6 +6,22 @@ API
 
 This is the full API documentation of the `mlresearch` package.
 
+:mod:`mlresearch`
+---------------------------------
+
+.. automodule:: mlresearch
+    :no-members:
+    :no-inherited-members:
+
+.. currentmodule:: mlresearch
+
+.. autosummary::
+    :toctree: _generated/
+    :template: function.rst
+
+    show_versions
+
+
 :mod:`mlresearch.active_learning`
 ---------------------------------
 
@@ -170,6 +186,8 @@ This is the full API documentation of the `mlresearch` package.
     utils.check_pipelines_wrapper
     utils.check_random_states
     utils.set_matplotlib_style
+    utils.list_available_fonts
+    utils.display_available_fonts
     utils.feature_to_color
     utils.parallel_loop
     utils.generate_paths
