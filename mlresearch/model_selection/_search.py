@@ -140,51 +140,50 @@ class ModelSearchCV(GridSearchCV):
         in the list are explored. This enables searching over any sequence
         of parameter settings.
 
-    scoring : string, callable, list/tuple, dict or None, optional (default=None)
+    scoring : string, callable, list/tuple, dict or None, default=None
         A single string or a callable to evaluate the predictions on the
         test set.
 
         For evaluating multiple metrics, either give a list of (unique) strings
         or a dict with names as keys and callables as values.
 
-        NOTE that when using custom scorers, each scorer should return a single
+        Note that when using custom scorers, each scorer should return a single
         value. Metric functions returning a list/array of values can be wrapped
         into multiple scorers that return one value each.
 
-        If ``None``, a default scorer is used.
+        If ``None``, the estimator's score method is used.
 
-    n_jobs : int or None, optional (default=None)
+    n_jobs : int, default=None
         Number of jobs to run in parallel.
+        ``None`` means 1 unless in a :obj:`joblib.parallel_backend` context.
+        ``-1`` means using all processors. See :term:`Glossary <n_jobs>`
+        for more details.
 
-        - When ``None`` means 1 unless in a :obj:`joblib.parallel_backend` context.
-
-        - When ``-1`` means using all processors.
-
-    pre_dispatch : int or string, optional (default=None)
+    pre_dispatch : int or string, default=None
         Controls the number of jobs that get dispatched during parallel
         execution. Reducing this number can be useful to avoid an
         explosion of memory consumption when more jobs get dispatched
         than CPUs can process. This parameter can be:
 
         - ``None``, in which case all the jobs are immediately created.
-
         - An int, giving the exact number of total jobs that are spawned.
-
         - A string, as a function of n_jobs i.e. ``'2*n_jobs'``.
 
-    cv : int, cross-validation generator or an iterable, optional (defalut=None)
+    cv : int, cross-validation generator or an iterable, default=5
         Determines the cross-validation splitting strategy.
         Possible inputs for cv are:
 
         - ``None``, to use the default 3-fold cross validation.
-
         - integer, to specify the number of folds in a ``(Stratified)KFold``.
-
         - An object to be used as a cross-validation generator.
+        - An iterable yielding (train, test) splits as arrays of indices.
 
-        - An iterable yielding train, test splits.
+        For integer/None inputs, if the estimator is a classifier and ``y`` is
+        either binary or multiclass, :class:`StratifiedKFold` is used. In all
+        other cases, :class:`KFold` is used. These splitters are instantiated
+        with `shuffle=False` so the splits will be the same across calls.
 
-    refit : boolean, string, or callable, optional (default=True)
+    refit : boolean, string, or callable, default=True
         Refit an estimator using the best found parameters on the whole
         dataset.
 
@@ -211,16 +210,16 @@ class ModelSearchCV(GridSearchCV):
         See ``scoring`` parameter to know more about multiple metric
         evaluation.
 
-    verbose : integer, optional (default=0)
+    verbose : integer, default=0
         Controls the verbosity: the higher, the more messages.
 
-    error_score : 'raise' or numeric, optional (default=np.nan)
+    error_score : 'raise' or numeric, default=np.nan
         Value to assign to the score if an error occurs in estimator fitting.
         If set to 'raise', the error is raised. If a numeric value is given,
         FitFailedWarning is raised. This parameter does not affect the refit
         step, which will always raise the error. Default is ``np.nan``.
 
-    return_train_score : boolean, optional (default=False)
+    return_train_score : boolean, default=False
         If ``False``, the ``cv_results_`` attribute will not include training
         scores.
 
@@ -229,21 +228,6 @@ class ModelSearchCV(GridSearchCV):
         However computing the scores on the training set can be computationally
         expensive and is not strictly required to select the parameters that
         yield the best generalization performance.
-
-    Examples
-    --------
-    >>> from sklearn.datasets import load_breast_cancer
-    >>> from sklearn.tree import DecisionTreeClassifier
-    >>> from sklearn.neighbors import KNeighborsClassifier
-    >>> from mlresearch.model_selection import ModelSearchCV
-    >>> X, y, *_ = load_breast_cancer().values()
-    >>> param_grids = [{'dt__max_depth': [3, 6]}, {'kn__n_neighbors': [3, 5]}]
-    >>> estimators = [('dt', DecisionTreeClassifier()), ('kn', KNeighborsClassifier())]
-    >>> model_search_cv = ModelSearchCV(estimators, param_grids)
-    >>> model_search_cv.fit(X, y)
-    ModelSearchCV(...)
-    >>> sorted(model_search_cv.cv_results_.keys())
-    ['mean_fit_time', 'mean_score_time', 'mean_test_score',...]
 
     Attributes
     ----------
@@ -350,7 +334,7 @@ class ModelSearchCV(GridSearchCV):
 
     Notes
     -----
-    The parameters selected are those that maximize the score of the left out
+    The parameters selected are those that maximize the score of the held out
     data, unless an explicit score is passed in which case it is used instead.
 
     If `n_jobs` was set to a value higher than one, the data is copied for each
@@ -361,6 +345,20 @@ class ModelSearchCV(GridSearchCV):
     `pre_dispatch` many times. A reasonable value for `pre_dispatch` is `2 *
     n_jobs`.
 
+    Examples
+    --------
+    >>> from sklearn.datasets import load_breast_cancer
+    >>> from sklearn.tree import DecisionTreeClassifier
+    >>> from sklearn.neighbors import KNeighborsClassifier
+    >>> from mlresearch.model_selection import ModelSearchCV
+    >>> X, y, *_ = load_breast_cancer().values()
+    >>> param_grids = [{'dt__max_depth': [3, 6]}, {'kn__n_neighbors': [3, 5]}]
+    >>> estimators = [('dt', DecisionTreeClassifier()), ('kn', KNeighborsClassifier())]
+    >>> model_search_cv = ModelSearchCV(estimators, param_grids)
+    >>> model_search_cv.fit(X, y)
+    ModelSearchCV(...)
+    >>> sorted(model_search_cv.cv_results_.keys())
+    ['mean_fit_time', 'mean_score_time', 'mean_test_score',...]
     """
 
     def __init__(
