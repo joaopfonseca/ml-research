@@ -59,7 +59,7 @@ def set_matplotlib_style(font_size=8, use_latex=True, **rcparams):
     }
 
     # Find the font family that is available and similar to times new roman
-    font_preferences = (["Times New Roman", "Times", "TeX Gyre Bonum", "Nimbus Roman"],)
+    font_preferences = ["Times New Roman", "Times", "TeX Gyre Bonum", "Nimbus Roman"]
     fonts = list_available_fonts()
     fonts = [font for font in font_preferences if font in fonts]
     if len(fonts) > 0:
