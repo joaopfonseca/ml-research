@@ -119,6 +119,7 @@ This is the full API documentation of the `mlresearch` package.
    :template: class.rst
 
     model_selection.ModelSearchCV
+    model_selection.HalvingModelSearchCV
 
 :mod:`mlresearch.neural_network`
 --------------------------------
