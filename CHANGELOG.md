@@ -2,7 +2,24 @@
 
 ## [Unreleased](https://github.com/joaopfonseca/ml-research/tree/HEAD)
 
-[Full Changelog](https://github.com/joaopfonseca/ml-research/compare/v0.5.0...HEAD)
+[Full Changelog](https://github.com/joaopfonseca/ml-research/compare/v0.5.1...HEAD)
+
+**Implemented features and enhancements:**
+
+- Implement ModelSearchCV with grid search and halving grid search [\#33](https://github.com/joaopfonseca/ml-research/issues/33)
+
+**Fixed bugs:**
+
+- Calling ``Authenticity`` metric raises an error on the ``\_\_repr\_\_`` method [\#67](https://github.com/joaopfonseca/ml-research/issues/67)
+- Error when importing ``set\_matplotlib\_style`` [\#60](https://github.com/joaopfonseca/ml-research/issues/60)
+
+**Documentation updates:**
+
+- Add `mlresearch.show_versions()` to documentation page [\#65](https://github.com/joaopfonseca/ml-research/issues/65)
+
+## [v0.5.1](https://github.com/joaopfonseca/ml-research/tree/v0.5.1) (2024-07-11)
+
+[Full Changelog](https://github.com/joaopfonseca/ml-research/compare/v0.5.0...v0.5.1)
 
 **Deprecated:**
 
