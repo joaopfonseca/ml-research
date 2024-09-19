@@ -3,30 +3,6 @@
 ``ml-research`` is a library containing the implementation of various algorithms
 developed in Machine Learning research, as well as utilities to facilitate the formatting
 of pandas dataframes into LaTeX tables.
-
-Subpackages
------------
-active_learning
-    Module which contains the code developed for experiments related to Active Learning.
-synthetic_data
-    Module which contains the implementation of variations of oversampling/data
-    augmentation algorithms, as well as helper classes to use oversampling algorithms as
-    data augmentation techniques.
-datasets
-    Module which contains code to download, transform and simulate various datasets.
-metrics
-    Module which contains performance metrics/scorers that are not
-    included in scikit-learn's scorers' dictionary.
-model_selection
-    Includes the model and parameter search methods.
-preprocessing
-    Contains preprocessing methods adapted or modified from sklearn.
-latex
-    This module contains several functions to prepare and format tables for LaTeX
-    documents.
-utils
-    Contains a variety of general utility functions and tools used to format and prepare
-    tables to incorporate into LaTeX code.
 """
 
 import sys
