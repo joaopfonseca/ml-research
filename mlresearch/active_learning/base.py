@@ -135,6 +135,11 @@ class BaseActiveLearner(BaseEstimator, metaclass=ABCMeta):
     def _check(self, X, y):
         """Check initialization parameters to run an AL model."""
 
+        # Set _has_test if not set (happens when calling initialization and iteration
+        # outside the fit method)
+        if not hasattr(self, "_has_test"):
+            self._has_test = False
+
         # Classifier
         if self.classifier is None:
             self._classifier = RandomForestClassifier(random_state=self.random_state)
