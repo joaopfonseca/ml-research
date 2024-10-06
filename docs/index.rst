@@ -15,9 +15,6 @@ code (LaTeX, Python, etc.) of all papers I have been involved with. They can
 be found in the `publications directory
 <https://github.com/joaopfonseca/ml-research/tree/master/publications>`_. 
 
-Contents
---------
-
 .. toctree::
    :maxdepth: 2
    :caption: Getting Started
@@ -30,4 +27,5 @@ Contents
    
    commands
    running-experiments
+   auto_examples/index
    api

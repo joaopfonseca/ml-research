@@ -7,7 +7,7 @@ API
 This is the full API documentation of the `mlresearch` package.
 
 :mod:`mlresearch`
----------------------------------
+-----------------
 
 .. automodule:: mlresearch
     :no-members:
@@ -106,7 +106,7 @@ This is the full API documentation of the `mlresearch` package.
     metrics.Authenticity
 
 :mod:`mlresearch.model_selection`
---------------------------------
+---------------------------------
 
 .. automodule:: mlresearch.model_selection
    :no-members:

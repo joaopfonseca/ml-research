@@ -34,17 +34,18 @@ sys.path.insert(0, os.path.abspath(os.pardir))
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = [
     "sphinx.ext.autodoc",
-    "numpydoc",
+    "sphinx.ext.autosummary",
     "sphinx.ext.doctest",
     "sphinx.ext.extlinks",
     "sphinx.ext.intersphinx",
-    "sphinx.ext.todo",
     "sphinx.ext.mathjax",
+    "sphinx.ext.todo",
     "sphinx.ext.viewcode",
-    "nbsphinx",
-    "recommonmark",
+    "sphinx_gallery.gen_gallery",
     "sphinx_markdown_tables",
     "sphinx_copybutton",
+    "recommonmark",
+    "numpydoc",
 ]
 
 autosummary_generate = True
@@ -66,6 +67,11 @@ source_suffix = ".rst"
 
 # Generate the plots for the gallery
 plot_gallery = "True"
+
+sphinx_gallery_conf = {
+    "examples_dirs": "../examples",  # path to your example scripts
+    "gallery_dirs": "auto_examples",  # path to where to save gallery generated output
+}
 
 # The master toctree document.
 master_doc = "index"
