@@ -1,5 +1,6 @@
+import warnings
 from urllib.request import urlopen
-from urllib.error import URLError
+from urllib.error import URLError, HTTPError
 import multiprocessing.dummy as mp
 from multiprocessing import cpu_count
 import ssl
@@ -31,8 +32,8 @@ y = pd.Series(
 def _open_url(url):
     try:
         return urlopen(url)
-    except URLError as e:
-        raise URLError(f"Error for url {url}: {e}")
+    except (URLError, HTTPError) as e:
+        warnings.warn(f"Error for url {url}: {e}")
 
 
 def test_urls():
