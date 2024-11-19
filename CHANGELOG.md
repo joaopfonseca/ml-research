@@ -16,6 +16,7 @@
 **Documentation updates:**
 
 - Add `mlresearch.show_versions()` to documentation page [\#65](https://github.com/joaopfonseca/ml-research/issues/65)
+- Review and add examples to documentation [\#4](https://github.com/joaopfonseca/ml-research/issues/4)
 
 ## [v0.5.1](https://github.com/joaopfonseca/ml-research/tree/v0.5.1) (2024-07-11)
 
