@@ -20,7 +20,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.12
+          python-version: 3.13
           architecture: x64
 
       - name: Install dependencies
@@ -41,7 +41,7 @@ jobs:
       matrix:
         # NOTE: macos-13 is a workaround for an issue with the latest version
         os: [ubuntu-latest, macos-13, windows-latest]
-        python: [3.9, "3.10", 3.11, 3.12]
+        python: ["3.10", 3.11, 3.12, 3.13]
     name: ${{ matrix.os }} Python ${{ matrix.python }}
     runs-on: ${{ matrix.os }}
     steps:
