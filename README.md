@@ -9,7 +9,7 @@ ______________________________________________________________________
 <a href="https://codecov.io/gh/joaopfonseca/ml-research"><img alt="Codecov" src="https://codecov.io/gh/joaopfonseca/ml-research/branch/master/graph/badge.svg?token=J2EBA4YTMN"></a>
 <a href="https://mlresearch.readthedocs.io/en/latest/?badge=latest"><img alt="Documentation Status" src="https://readthedocs.org/projects/mlresearch/badge/?version=latest"></a>
 <a href="https://github.com/psf/black"><img alt="Black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-<a href="https://img.shields.io/badge/python-3.9%20|%203.10%20|%203.11%20|%203.12-blue"><img alt="Python Versions" src="https://img.shields.io/badge/python-3.9%20|%203.10%20|%203.11%20|%203.12-blue"></a>
+<a href="https://img.shields.io/badge/python-3.10%20|%203.11%20|%203.12%20|%203.13-blue"><img alt="Python Versions" src="https://img.shields.io/badge/python-3.10%20|%203.11%20|%203.12%20|%203.13-blue"></a>
 <a href="https://doi.org/10.1155/2023/7941878"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.1155/2023/7941878.svg"></a>
 </p>
 <table align="center">
@@ -46,7 +46,7 @@ visualizations shown in each paper is available (whenever possible) in the
 
 ## Installation
 
-A Python distribution of version >= 3.9 is required to run this
+A Python distribution of version >= 3.10 is required to run this
 project. Earlier Python versions might work in most cases, but they are not
 tested. ``ML-Research`` requires:
 
