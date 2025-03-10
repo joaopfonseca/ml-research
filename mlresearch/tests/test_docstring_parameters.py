@@ -17,11 +17,22 @@ from sklearn.utils._testing import _get_func_name
 from sklearn.utils._testing import ignore_warnings
 from sklearn.utils.estimator_checks import _enforce_estimator_tags_y
 from sklearn.utils.estimator_checks import _enforce_estimator_tags_X
-from sklearn.utils.estimator_checks import _construct_instance
+from sklearn.utils._test_common.instance_generator import _construct_instances
 from sklearn.utils.deprecation import _is_deprecated
 
 import mlresearch
+from mlresearch.utils import check_pipelines
 from mlresearch.utils._testing import all_estimators
+
+
+def _construct_searchcv_instance(SearchCV):
+    return SearchCV(
+        *check_pipelines(
+            [("LR", LogisticRegression(), {"C": [0.1, 1]})],
+            random_state=None,
+            n_runs=1
+        )
+    )
 
 
 def is_sampler(estimator):
@@ -189,10 +200,15 @@ def test_fit_docstring_attributes(name, Estimator):
     doc = docscrape.ClassDoc(Estimator)
     attributes = doc["Attributes"]
 
-    if Estimator.__name__ == "Pipeline":
+    if Estimator.__name__ in (
+        "ModelSearchCV",
+        "HalvingModelSearchCV",
+    ):
+        est = _construct_searchcv_instance(Estimator)
+    elif Estimator.__name__ == "Pipeline":
         est = _construct_compose_pipeline_instance(Estimator)
     else:
-        est = _construct_instance(Estimator)
+        est = next(_construct_instances(Estimator))
 
     X, y = make_classification(
         n_samples=20,

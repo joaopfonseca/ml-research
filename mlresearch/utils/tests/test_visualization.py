@@ -47,7 +47,7 @@ def test_available_fonts():
         def handle_endtag(self, tag):
             self.tags["end"] = tag
 
-    html_output = display_available_fonts(ipython_session=False)
+    html_output = display_available_fonts(ipython_session=False, display=False)
     parser = MyHTMLParser()
     parser.feed(html_output)
     assert parser.tags["start"] == "span"

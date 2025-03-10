@@ -142,7 +142,7 @@ def _make_html(fontname):
     )
 
 
-def display_available_fonts(ipython_session=True):
+def display_available_fonts(ipython_session=True, display=True):
     """
     Check and display the available fonts in matplotlib.
 
@@ -154,11 +154,16 @@ def display_available_fonts(ipython_session=True):
         session using the IPython.core.display.HTML function. If False, the HTML output
         will be returned as a string. Default is True.
 
+    display : bool, optional
+        Whether to render the html code or return as string. Only used if
+        `ipython_session` is False.
+
     Returns
     -------
     str or None
         If `ipython_session` is True, the function displays the fonts in the IPython
-        session and returns None. If `ipython_session` is False, the function returns the
+        session and returns None. If `ipython_session` is False, the function renders an
+        html page in the default browser, or returns the
         HTML output as a string.
 
     Examples
@@ -186,9 +191,11 @@ def display_available_fonts(ipython_session=True):
         except ImportError as e:
             raise ImportError(f"A Jupyter session and {e}")
         HTML(html_output)
-    else:
+    elif display:
         _, path = tempfile.mkstemp(suffix=".html")
         url = "file://" + path
         with open(path, "w") as temp:
             temp.write(html_output)
         webbrowser.open(url)
+    else:
+        return html_output
