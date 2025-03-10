@@ -308,13 +308,15 @@ def make_mean_sem_table(
     return scores
 
 
-def export_longtable(table, path=None, caption=None, label=None, index=True):
+def export_table(
+    table, path=None, caption=None, label=None, index=True, longtable=True
+):
     """
-    Exports a pandas dataframe to LaTeX (longtable) format.
+    Exports a pandas dataframe to LaTeX (tabular or longtable) format.
 
     This function replaces ``df.to_latex`` when there are latex commands in
-    the table. Requires ``\\usepackage{booktabs}`` and ``\\usepackage{longtable}`` in the
-    LaTeX preamble.
+    the table. For longtable format, it requires ``\\usepackage{booktabs}`` and
+    ``\\usepackage{longtable}`` in the LaTeX preamble.
 
     .. warning::
         Do not pass a table with column names, index names or values containing an
@@ -350,7 +352,7 @@ def export_longtable(table, path=None, caption=None, label=None, index=True):
 
     tex_table = (
         table.to_latex(
-            longtable=True,
+            longtable=longtable,
             caption=caption,
             label=label,
             index=index,

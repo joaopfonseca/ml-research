@@ -73,7 +73,7 @@ This is the full API documentation of the `mlresearch` package.
     latex.format_table
     latex.make_bold
     latex.make_mean_sem_table
-    latex.export_longtable
+    latex.export_table
 
 
 :mod:`mlresearch.metrics`
