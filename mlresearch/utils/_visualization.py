@@ -4,6 +4,8 @@ visualizations.
 """
 
 from setuptools import distutils
+import tempfile
+import webbrowser
 import warnings
 import numpy as np
 from ._utils import _optional_import
@@ -179,7 +181,14 @@ def display_available_fonts(ipython_session=True):
     )
     html_output = "<div style='column-count: 2;'>{}</div>".format(code)
     if ipython_session:
-        HTML = _optional_import("IPython.core.display.HTML")
+        try:
+            HTML = _optional_import("IPython.core.display.HTML")
+        except ImportError as e:
+            raise ImportError(f"A Jupyter session and {e}")
         HTML(html_output)
     else:
-        return html_output
+        _, path = tempfile.mkstemp(suffix=".html")
+        url = "file://" + path
+        with open(path, "w") as temp:
+            temp.write(html_output)
+        webbrowser.open(url)
