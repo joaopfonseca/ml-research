@@ -28,9 +28,7 @@ from mlresearch.utils._testing import all_estimators
 def _construct_searchcv_instance(SearchCV):
     return SearchCV(
         *check_pipelines(
-            [("LR", LogisticRegression(), {"C": [0.1, 1]})],
-            random_state=None,
-            n_runs=1
+            [("LR", LogisticRegression(), {"C": [0.1, 1]})], random_state=None, n_runs=1
         )
     )
 
