@@ -58,7 +58,7 @@ class HalvingModelSearchCV(HalvingGridSearchCV):
     The search strategy starts evaluating all the candidates with a small amount of
     resources and iteratively selects the best candidates, using more and more resources.
 
-    Read more in the :ref:`User Guide <user_guide>`.
+    Read more in the User Guide.
 
     Parameters
     ----------
@@ -122,8 +122,7 @@ class HalvingModelSearchCV(HalvingGridSearchCV):
         iteration. If ``True``, then the search process will 'replay' the
         first iteration for as long as needed until the number of candidates
         is small enough. This is ``False`` by default, which means that the
-        last iteration may evaluate more than ``factor`` candidates. See
-        :ref:`aggressive_elimination` for more details.
+        last iteration may evaluate more than ``factor`` candidates.
 
     scoring : string, callable, list/tuple, dict or None, default=None
         A single string or a callable to evaluate the predictions on the
@@ -257,8 +256,6 @@ class HalvingModelSearchCV(HalvingGridSearchCV):
         A dict with keys as column headers and values as columns, that can be
         imported into a pandas ``DataFrame``. It contains lots of information
         for analysing the results of a search.
-        Please refer to the :ref:`User guide<successive_halving_cv_results>`
-        for details.
 
     best_estimator_ : estimator or dict
         Estimator that was chosen by the search, i.e. estimator
@@ -326,8 +323,6 @@ class HalvingModelSearchCV(HalvingGridSearchCV):
     HalvingModelSearchCV(...)
     >>> sorted(model_search_cv.cv_results_.keys())
     ['mean_fit_time', 'mean_score_time', 'mean_test_score',...]
-
-
     """
 
     def __init__(

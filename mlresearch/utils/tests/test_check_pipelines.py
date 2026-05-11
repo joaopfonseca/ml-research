@@ -17,6 +17,7 @@ from .._check_pipelines import (
     check_pipelines_wrapper,
     check_random_states,
     check_param_grids,
+    check_estimator_type,
 )
 from ...active_learning import StandardAL
 from ...model_selection import ModelSearchCV
@@ -344,3 +345,116 @@ def test_check_param_grids_wrong_est_names():
     param_grids = {"svc__C": [0.1, 1.0], "svc__kernel": ["rbf", "linear"]}
     with pytest.raises(ValueError):
         check_param_grids(param_grids, ["svr", "dtc"])
+
+
+class FakeEstimatorNoTags:
+    """A fake estimator with no _estimator_type, no sklearn tags, and no mixins."""
+
+    pass
+
+
+class FakeRegressor:
+    """A fake estimator with _estimator_type set."""
+
+    _estimator_type = "regressor"
+
+
+# Manually inject TransformerMixin into MRO for testing
+def test_check_estimator_type_legacy_attr():
+    """Test that _estimator_type attribute is detected."""
+    estimators = [("est1", FakeRegressor())]
+    result = check_estimator_type(estimators)
+    assert result == "regressor"
+
+
+def test_check_estimator_type_sklearn_tags():
+    """Test that sklearn tag system works for estimator type detection."""
+    from sklearn.tree import DecisionTreeClassifier
+
+    estimators = [("dt", DecisionTreeClassifier())]
+    result = check_estimator_type(estimators)
+    assert result == "classifier"
+
+
+def test_check_estimator_type_mixed_raises():
+    """Test that mixed classifier/regressor types raise ValueError."""
+    from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
+
+    estimators = [
+        ("clf", DecisionTreeClassifier()),
+        ("reg", DecisionTreeRegressor()),
+    ]
+    with pytest.raises(ValueError, match="Both classifiers and regressors"):
+        check_estimator_type(estimators)
+
+
+def test_check_estimator_type_none_raises():
+    """Test that estimators with no detectable type raise ValueError."""
+    estimators = [("none", FakeEstimatorNoTags())]
+    with pytest.raises(ValueError, match="No estimator type found"):
+        check_estimator_type(estimators)
+
+
+def test_check_estimator_type_mro_classifier():
+    """Test MRO fallback for ClassifierMixin detection (class with no tags)."""
+    from sklearn.base import ClassifierMixin, BaseEstimator
+
+    # Use a class that inherits ClassifierMixin but get_tags will fail on
+    # because the MRO fallback is meant for classes, not instances
+    class FakeClassifier(ClassifierMixin, BaseEstimator):
+        def fit(self, X, y):
+            return self
+
+        def predict(self, X):
+            return [0]
+
+    estimators = [("clf", FakeClassifier())]
+    result = check_estimator_type(estimators)
+    assert result == "classifier"
+
+
+def test_check_estimator_type_mro_regressor():
+    """Test MRO fallback for RegressorMixin detection."""
+    from sklearn.base import RegressorMixin, BaseEstimator
+
+    class FakeReg(RegressorMixin, BaseEstimator):
+        def fit(self, X, y):
+            return self
+
+        def predict(self, X):
+            return [0.0]
+
+    estimators = [("reg", FakeReg())]
+    result = check_estimator_type(estimators)
+    assert result == "regressor"
+
+
+def test_check_estimator_type_mro_transformer():
+    """Test MRO fallback for TransformerMixin detection."""
+    from sklearn.base import TransformerMixin, BaseEstimator
+
+    class FakeTransformer(TransformerMixin, BaseEstimator):
+        def fit(self, X, y=None):
+            return self
+
+        def transform(self, X):
+            return X
+
+    estimators = [("trans", FakeTransformer())]
+    result = check_estimator_type(estimators)
+    assert result == "transformer"
+
+
+def test_check_estimator_type_sampler_attr():
+    """Test that sampler with _estimator_type attribute works."""
+    from imblearn.base import SamplerMixin
+
+    class FakeSampler(SamplerMixin):
+        _estimator_type = "sampler"
+
+        def _fit_resample(self, X, y):
+            return X, y
+
+    estimators = [("smp", FakeSampler())]
+    result = check_estimator_type(estimators)
+    assert result == "sampler"

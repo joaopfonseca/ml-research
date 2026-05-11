@@ -8,7 +8,6 @@ from sklearn.tree import DecisionTreeClassifier
 
 from .._encoders import PipelineEncoder
 
-
 sklearn_encoders = [None, OrdinalEncoder(), OneHotEncoder()]
 
 

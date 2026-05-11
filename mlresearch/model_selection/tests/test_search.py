@@ -16,7 +16,6 @@ from ...model_selection._search import (
     ModelSearchCV,
 )
 
-
 RND_SEED = 0
 X_reg, y_reg = make_regression(random_state=RND_SEED)
 X_clf, y_clf = make_classification(random_state=RND_SEED)

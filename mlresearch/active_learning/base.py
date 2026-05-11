@@ -16,7 +16,7 @@ from ._acquisition_functions import ACQUISITION_FUNCTIONS
 from ..metrics import get_scorer
 
 
-class BaseActiveLearner(BaseEstimator, metaclass=ABCMeta):
+class BaseActiveLearner(ClassifierMixin, BaseEstimator, metaclass=ABCMeta):
     """
     Base class to implement Active Learning models.
 

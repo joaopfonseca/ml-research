@@ -3,7 +3,7 @@ Functions for visualization formatting or producing pre-formatted
 visualizations.
 """
 
-from setuptools import distutils
+import shutil
 import tempfile
 import webbrowser
 import warnings
@@ -75,7 +75,7 @@ def set_matplotlib_style(font_size=8, use_latex=True, **rcparams):
 
     plt.rcParams.update(base_style)
 
-    if distutils.spawn.find_executable("latex") and use_latex:
+    if shutil.which("latex") and use_latex:
         tex_fonts = {
             # Use LaTeX to write all text
             "text.usetex": True,

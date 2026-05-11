@@ -167,9 +167,12 @@ def _make_bold(row, maximum=True, decimals=2, threshold=None, with_sem=False):
     formatter = "{0:.%sf}" % decimals
     row = row.apply(lambda el: formatter.format(el))
 
-    row[mask] = [
-        "\\textbf{%s" % v if with_sem else "\\textbf{%s}" % v for v in row[mask]
-    ]
+    # Build a replacement Series with the same index to avoid pandas putmask issues
+    replacements = pd.Series(
+        ["\\textbf{%s" % v if with_sem else "\\textbf{%s}" % v for v in row[mask]],
+        index=row[mask].index,
+    )
+    row.loc[mask] = replacements
 
     # Return mask only if function is being used to generate
     # a table with sem values
