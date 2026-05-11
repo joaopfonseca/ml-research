@@ -11,8 +11,12 @@ import pytest
 
 from sklearn.datasets import make_classification
 from sklearn.linear_model import LogisticRegression
-from sklearn.utils import IS_PYPY
 from sklearn.utils._testing import check_docstring_parameters
+
+try:
+    from sklearn.utils import IS_PYPY
+except ImportError:
+    IS_PYPY = False
 from sklearn.utils._testing import _get_func_name
 from sklearn.utils._testing import ignore_warnings
 from sklearn.utils.estimator_checks import _enforce_estimator_tags_y
@@ -47,9 +51,12 @@ def is_sampler(estimator):
     is_sampler : bool
         True if estimator is a sampler, otherwise False.
     """
-    if estimator._estimator_type == "sampler":
-        return True
-    return False
+    try:
+        from sklearn.utils._tags import get_tags
+
+        return get_tags(estimator).estimator_type == "sampler"
+    except Exception:
+        return getattr(estimator, "_estimator_type", None) == "sampler"
 
 
 # walk_packages() ignores DeprecationWarnings, now we need to ignore
@@ -228,6 +235,42 @@ def test_fit_docstring_attributes(name, Estimator):
         est.fit(X, y)
 
     skipped_attributes = set([])
+
+    if Estimator.__name__ in ("ModelSearchCV", "HalvingModelSearchCV"):
+        skipped_attributes.update({"classes_", "multimetric_", "n_features_in_"})
+
+    if Estimator.__name__ == "OneClassMLP":
+        skipped_attributes.update(
+            {
+                "t_",
+                "center_",
+                "out_activation_",
+                "n_features_in_",
+                "n_iter_",
+                "intercepts_",
+                "radius_",
+                "coefs_",
+                "loss_",
+                "loss_curve_",
+                "best_loss_",
+                "n_layers_",
+                "n_outputs_",
+            }
+        )
+
+    if Estimator.__name__ in ("StandardAL", "AugmentationAL"):
+        skipped_attributes.update(
+            {
+                "evaluation_metric_",
+                "labeled_pool_",
+                "acquisition_func_",
+                "budget_",
+                "max_iter_",
+                "classifier_",
+                "metadata_",
+                "n_init_",
+            }
+        )
 
     for attr in attributes:
         if attr.name in skipped_attributes:

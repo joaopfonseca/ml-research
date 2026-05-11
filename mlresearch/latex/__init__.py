@@ -10,7 +10,6 @@ from ._utils import (
     export_table,
 )
 
-
 __all__ = [
     "format_table",
     "make_bold",

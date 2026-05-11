@@ -6,7 +6,6 @@ from sklearn.utils._testing import ignore_warnings
 from mlresearch.neural_network import OneClassMLP
 from mlresearch.metrics import AlphaPrecision, BetaRecall, Authenticity
 
-
 rng = check_random_state(42)
 X = np.concatenate([rng.normal(size=(500, 1)), rng.normal(size=(500, 1))], axis=1)
 X = MinMaxScaler().fit_transform(X)

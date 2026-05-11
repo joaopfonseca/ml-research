@@ -10,7 +10,9 @@ import pandas as pd
 from mlresearch.datasets.base import Datasets, FETCH_URLS
 from mlresearch.datasets._multiclass import ContinuousCategoricalDatasets
 
-ssl._create_default_https_context = ssl._create_unverified_context
+ssl._create_default_https_context = (
+    ssl._create_unverified_context  # type: ignore[assignment]
+)
 
 MIN_CLASS = 20
 MAJ_CLASS = 100

@@ -104,6 +104,8 @@ class StandardAL(BaseActiveLearner, ClassifierMixin):
         Mask that filters the labeled observations from the original dataset.
     """
 
+    _estimator_type = "classifier"
+
     def _initialization(self, X=None, y=None, initial_selection=None):
         labeled_pool = _random_initialization(self, X, y, initial_selection)
         return labeled_pool
@@ -227,6 +229,8 @@ class AugmentationAL(BaseActiveLearner, ClassifierMixin):
     labeled_pool_ : array-like of shape (n_samples,)
         Mask that filters the labeled observations from the original dataset.
     """
+
+    _estimator_type = "classifier"
 
     def __init__(
         self,

@@ -97,6 +97,8 @@ class MultiClassifier(MultiEstimatorMixin, ClassifierMixin):
     a single metaclassifier. The classifier to be fitted is selected using a
     parameter."""
 
+    _estimator_type = "classifier"
+
     def predict_proba(self, X):
         """Predict the probability with the selected estimator."""
         check_is_fitted(self, "estimator_")
@@ -107,6 +109,8 @@ class MultiRegressor(MultiEstimatorMixin, RegressorMixin):
     """The functionality of a collection of regressors is provided as
     a single metaregressor. The regressor to be fitted is selected using a
     parameter."""
+
+    _estimator_type = "regressor"
 
     pass
 
@@ -124,7 +128,7 @@ class ModelSearchCV(GridSearchCV):
     The parameters of the estimators used to apply these methods are optimized
     by cross-validated grid-search over their parameter grids.
 
-    Read more in the :ref:`User Guide <user_guide>`.
+    Read more in the User Guide.
 
     Parameters
     ----------
