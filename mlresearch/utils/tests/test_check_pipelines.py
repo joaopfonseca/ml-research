@@ -458,3 +458,106 @@ def test_check_estimator_type_sampler_attr():
     estimators = [("smp", FakeSampler())]
     result = check_estimator_type(estimators)
     assert result == "sampler"
+
+
+def test_check_estimator_type_mro_classifier_no_tags():
+    """Test MRO fallback when get_tags returns None for a ClassifierMixin."""
+    from sklearn.base import ClassifierMixin, BaseEstimator
+
+    class FakeClassifierNoTag(ClassifierMixin, BaseEstimator):
+        """Classifier where get_tags returns None (simulating edge case)."""
+
+        def fit(self, X, y):
+            return self
+
+        def predict(self, X):
+            return [0]
+
+    # Force get_tags to return None by monkeypatching
+    import sklearn.utils._tags as _tags_module
+
+    orig_get_tags = _tags_module.get_tags
+
+    def mock_get_tags(estimator):
+        class MockTags:
+            estimator_type = None
+
+        return MockTags()
+
+    _tags_module.get_tags = mock_get_tags
+    try:
+        estimators = [("clf", FakeClassifierNoTag())]
+        result = check_estimator_type(estimators)
+        assert result == "classifier"
+    finally:
+        _tags_module.get_tags = orig_get_tags
+
+
+def test_check_estimator_type_mro_regressor_no_tags():
+    """Test MRO fallback when get_tags returns None for a RegressorMixin."""
+    from sklearn.base import RegressorMixin, BaseEstimator
+
+    class FakeRegressorNoTag(RegressorMixin, BaseEstimator):
+        def fit(self, X, y):
+            return self
+
+        def predict(self, X):
+            return [0.0]
+
+    import sklearn.utils._tags as _tags_module
+
+    orig_get_tags = _tags_module.get_tags
+
+    def mock_get_tags(estimator):
+        class MockTags:
+            estimator_type = None
+
+        return MockTags()
+
+    _tags_module.get_tags = mock_get_tags
+    try:
+        estimators = [("reg", FakeRegressorNoTag())]
+        result = check_estimator_type(estimators)
+        assert result == "regressor"
+    finally:
+        _tags_module.get_tags = orig_get_tags
+
+
+def test_check_estimator_type_mro_sampler():
+    """Test MRO fallback for SamplerMixin detection (no _estimator_type)."""
+    from imblearn.base import SamplerMixin
+
+    class FakeSamplerNoAttr(SamplerMixin):
+        """Sampler without _estimator_type, relying on MRO fallback."""
+
+        def _fit_resample(self, X, y):
+            return X, y
+
+    estimators = [("smp", FakeSamplerNoAttr())]
+    result = check_estimator_type(estimators)
+    assert result == "sampler"
+
+
+def test_check_estimator_type_sklearn_tags_none_fallback():
+    """Test that get_tags returning None falls through to legacy attr then MRO."""
+    import sklearn.utils._tags as _tags_module
+
+    orig_get_tags = _tags_module.get_tags
+
+    def mock_get_tags(estimator):
+        class MockTags:
+            estimator_type = None
+
+        return MockTags()
+
+    _tags_module.get_tags = mock_get_tags
+    try:
+        # DecisionTreeClassifier has no _estimator_type in sklearn 1.8,
+        # but it inherits ClassifierMixin, so MRO should find it.
+        from sklearn.tree import DecisionTreeClassifier
+
+        estimators = [("dt", DecisionTreeClassifier())]
+        result = check_estimator_type(estimators)
+        assert result == "classifier"
+    finally:
+        _tags_module.get_tags = orig_get_tags
