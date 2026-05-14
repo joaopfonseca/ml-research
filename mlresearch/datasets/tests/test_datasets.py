@@ -47,7 +47,12 @@ def test_urls():
     ]
 
     p = mp.Pool(cpu_count())
-    url_status = p.map(lambda url: (_open_url(url).status == 200), urls)
+    url_status = p.map(
+        lambda url: (
+            True if (response := _open_url(url)) and response.status == 200 else False
+        ),
+        urls,
+    )
 
     assert all(url_status)
 
