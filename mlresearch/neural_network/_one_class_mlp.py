@@ -20,7 +20,6 @@ def hypersphere_loss(outputs, scores, center=1, nu=0.01, radius=0):
 
 
 class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
-    _estimator_type = "outlier"
     """
     Unsupervised One-Class neural network. Can be used to project n-dimensional data into
     a single dimension and for outlier detection. Also used to calculate the $\\alpha$
@@ -226,37 +225,9 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
         A., Muller, E., and Kloft, M. Deep one-class classification. In International
         conference on machine learning, pp. 4393–4402. PMLR, 2018.
 
-    Attributes
-    ----------
-    t_ : int
-        Number of training samples seen by the solver during fitting.
-    center_ : float
-        Center of the hypersphere.
-    out_activation_ : str
-        Name of the output activation function.
-    n_features_in_ : int
-        Number of features seen during fit.
-    n_iter_ : int
-        Number of iterations the solver has run.
-    intercepts_ : list of length n_layers - 1
-        The ith element in the list represents the bias vector corresponding to
-        layer i + 1.
-    radius_ : float
-        Radius of the hypersphere.
-    coefs_ : list of length n_layers - 1
-        The ith element in the list represents the weight matrix corresponding to
-        layer i.
-    loss_ : float
-        The current loss computed with the loss function.
-    loss_curve_ : list of shape (n_iter_,)
-        The ith element in the list represents the loss at the ith iteration.
-    best_loss_ : float
-        The minimum loss reached by the solver throughout fitting.
-    n_layers_ : int
-        Number of layers.
-    n_outputs_ : int
-        Number of outputs.
     """
+
+    _estimator_type = "outlier"
 
     def __init__(
         self,
@@ -364,6 +335,10 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
 
         y : ndarray of shape (n_samples,)
             The target values.
+
+        sample_weight : ndarray of shape (n_samples,)
+            The sample weights. Currently ignored; present for sklearn API
+            compatibility.
 
         activations : list, length = n_layers - 1
              The ith element of the list holds the values of the ith layer.
