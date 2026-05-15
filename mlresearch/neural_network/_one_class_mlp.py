@@ -2,7 +2,11 @@ from itertools import chain
 import numpy as np
 from sklearn.base import OutlierMixin, _fit_context
 from sklearn.utils import check_random_state
-from sklearn.utils.validation import check_is_fitted, validate_data
+from sklearn.utils.validation import check_is_fitted
+try:
+    from sklearn.utils.validation import validate_data
+except ImportError:
+    validate_data = None
 from sklearn.utils.extmath import safe_sparse_dot
 from sklearn.utils.metaestimators import available_if
 from sklearn.neural_network._multilayer_perceptron import (
@@ -528,13 +532,21 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
         return self
 
     def _validate_input(self, X, incremental, reset):
-        X = validate_data(
-            self,
-            X,
-            accept_sparse=["csr", "csc"],
-            dtype=(np.float64, np.float32),
-            reset=reset,
-        )
+        if validate_data is not None:
+            X = validate_data(
+                self,
+                X,
+                accept_sparse=["csr", "csc"],
+                dtype=(np.float64, np.float32),
+                reset=reset,
+            )
+        else:
+            X = self._validate_data(
+                X,
+                accept_sparse=["csr", "csc"],
+                dtype=(np.float64, np.float32),
+                reset=reset,
+            )
         return X
 
     def predict(self, X):

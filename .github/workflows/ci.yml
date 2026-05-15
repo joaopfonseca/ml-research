@@ -26,8 +26,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install --upgrade setuptools wheel
-          pip install ".[tests]"
+          python -m pip install --upgrade setuptools wheel
+          python -m pip install ".[tests]"
 
       - name: Run code analysis (black, mypy, flake8, pylint)
         run: |
@@ -53,8 +53,8 @@ jobs:
       - name: Install
         run: |
           python -m pip install --upgrade pip
-          pip install --upgrade setuptools wheel
-          pip install .[tests,optional,docs]
+          python -m pip install --upgrade setuptools wheel
+          python -m pip install .[tests,optional,docs]
 
       - name: Test library
         run: |
