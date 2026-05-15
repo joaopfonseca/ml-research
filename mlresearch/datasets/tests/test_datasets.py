@@ -46,13 +46,19 @@ def test_urls():
         for url in sublist
     ]
 
-    p = mp.Pool(cpu_count())
-    url_status = p.map(
-        lambda url: (
-            True if (response := _open_url(url)) and response.status == 200 else False
-        ),
-        urls,
-    )
+    def _check_url(url):
+        try:
+            response = _open_url(url)
+            if response is not None:
+                result = response.status == 200
+                response.close()
+                return result
+            return False
+        except Exception:
+            return False
+
+    with mp.Pool(cpu_count()) as p:
+        url_status = p.map(_check_url, urls)
 
     assert all(url_status)
 

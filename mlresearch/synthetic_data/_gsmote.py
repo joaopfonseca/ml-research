@@ -13,7 +13,10 @@ from collections import Counter
 from numpy.linalg import norm
 from scipy import sparse
 from sklearn.utils import check_random_state, check_array
-from sklearn.utils.validation import validate_data
+try:
+    from sklearn.utils.validation import validate_data
+except ImportError:
+    validate_data = None
 from sklearn.utils.multiclass import check_classification_targets
 from sklearn.utils.validation import _check_sample_weight
 from sklearn.utils.sparsefuncs_fast import (
@@ -330,9 +333,14 @@ class GeometricSMOTE(BaseOverSampler):
         features.
         """
         y, binarize_y = check_target_type(y, indicate_one_vs_all=True)
-        X, y = validate_data(
-            self, X, y, reset=True, dtype=None, accept_sparse=["csr", "csc"]
-        )
+        if validate_data is not None:
+            X, y = validate_data(
+                self, X, y, reset=True, dtype=None, accept_sparse=["csr", "csc"]
+            )
+        else:
+            X, y = self._validate_data(
+                X, y, reset=True, dtype=None, accept_sparse=["csr", "csc"]
+            )
 
         return X, y, binarize_y
 

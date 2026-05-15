@@ -359,7 +359,7 @@ class FakeRegressor:
     _estimator_type = "regressor"
 
 
-# Manually inject TransformerMixin into MRO for testing
+# Test that legacy _estimator_type attribute is detected correctly
 def test_check_estimator_type_legacy_attr():
     """Test that _estimator_type attribute is detected."""
     estimators = [("est1", FakeRegressor())]
@@ -384,14 +384,14 @@ def test_check_estimator_type_mixed_raises():
         ("clf", DecisionTreeClassifier()),
         ("reg", DecisionTreeRegressor()),
     ]
-    with pytest.raises(ValueError, match="Both classifiers and regressors"):
+    with pytest.raises(ValueError, match="Multiple estimator types found"):
         check_estimator_type(estimators)
 
 
 def test_check_estimator_type_none_raises():
     """Test that estimators with no detectable type raise ValueError."""
     estimators = [("none", FakeEstimatorNoTags())]
-    with pytest.raises(ValueError, match="No estimator type found"):
+    with pytest.raises(ValueError, match="Could not detect estimator type"):
         check_estimator_type(estimators)
 
 

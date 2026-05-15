@@ -280,14 +280,25 @@ def check_estimator_type(estimators):
         return None
 
     estimator_types = set([_get_type(estimator) for _, estimator in estimators])
+    if None in estimator_types:
+        unknown = [name for name, est in estimators if _get_type(est) is None]
+        raise ValueError(
+            f"Could not detect estimator type for: {unknown}. "
+            "Ensure all estimators define a valid estimator type via sklearn tags,"
+            "mixins (ClassifierMixin, RegressorMixin, etc.), or the"
+            "_estimator_type attribute."
+        )
     estimator_types.discard(None)
     if len(estimator_types) > 1:
         raise ValueError(
-            "Both classifiers and regressors were found. "
+            f"Multiple estimator types found: {sorted(estimator_types)}. "
             "A single estimator type should be included."
         )
     if len(estimator_types) == 0:
         raise ValueError(
-            "No estimator type found. Ensure all estimators have _estimator_type set."
+            "No estimator type found. "
+            "Ensure all estimators define a valid estimator type via sklearn tags,"
+            "mixins (ClassifierMixin, RegressorMixin, etc.), or the"
+            "_estimator_type attribute."
         )
     return estimator_types.pop()

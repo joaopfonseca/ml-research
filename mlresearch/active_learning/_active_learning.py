@@ -25,7 +25,7 @@ def _random_initialization(self, X=None, y=None, initial_selection=None):
     return labeled_pool
 
 
-class StandardAL(BaseActiveLearner, ClassifierMixin):
+class StandardAL(BaseActiveLearner):
     """
     Standard Active Learning model with a random initial data selection
 
@@ -128,7 +128,7 @@ class StandardAL(BaseActiveLearner, ClassifierMixin):
         return self
 
 
-class AugmentationAL(BaseActiveLearner, ClassifierMixin):
+class AugmentationAL(BaseActiveLearner):
     """
     Active Learning with pipelined Data Augmentation. This method is implemented and
     analysed in a working paper.
