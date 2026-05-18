@@ -75,7 +75,7 @@ def set_matplotlib_style(font_size=8, use_latex=True, **rcparams):
 
     plt.rcParams.update(base_style)
 
-    if shutil.which("latex") and use_latex:
+    if use_latex and shutil.which("latex"):
         tex_fonts = {
             # Use LaTeX to write all text
             "text.usetex": True,
