@@ -69,6 +69,7 @@ setup(
     long_description_content_type="text/markdown",
     license=LICENSE,
     classifiers=CLASSIFIERS,
+    python_requires=">=3.11",
     packages=find_packages(),
     install_requires=INSTALL_REQUIRES,
     extras_require=EXTRAS_REQUIRE,
