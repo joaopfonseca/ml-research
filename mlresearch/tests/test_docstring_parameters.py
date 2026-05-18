@@ -55,7 +55,7 @@ def is_sampler(estimator):
         from sklearn.utils._tags import get_tags
 
         return get_tags(estimator).estimator_type == "sampler"
-    except Exception:
+    except (ImportError, AttributeError):
         return getattr(estimator, "_estimator_type", None) == "sampler"
 
 

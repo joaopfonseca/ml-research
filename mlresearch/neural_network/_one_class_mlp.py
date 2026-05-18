@@ -328,18 +328,15 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
             self._no_improvement_count = 0
             self.best_loss_ = np.inf
 
-    def _backprop(
-        self,
-        X,
-        y,
-        sample_weight=None,
-        activations=None,
-        deltas=None,
-        coef_grads=None,
-        intercept_grads=None,
-    ):
+    def _backprop(self, X, y, *args):
         """Compute the MLP loss function and its corresponding derivatives
         with respect to each parameter: weights and bias vectors.
+
+        Supports both sklearn calling conventions via *args:
+        - sklearn >= 1.8: (X, y, sample_weight, activations, deltas,
+          coef_grads, intercept_grads) — 5 extra args
+        - sklearn < 1.8:  (X, y, activations, deltas, coef_grads,
+          intercept_grads) — 4 extra args
 
         Parameters
         ----------
@@ -349,41 +346,28 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
         y : ndarray of shape (n_samples,)
             The target values.
 
-        sample_weight : ndarray of shape (n_samples,), default=None
-            Sample weights. Currently unused; accepted for sklearn API
-            compatibility.
-
-        activations : list, length = n_layers - 1
-             The ith element of the list holds the values of the ith layer.
-
-        deltas : list, length = n_layers - 1
-            The ith element of the list holds the difference between the
-            activations of the i + 1 layer and the backpropagated error.
-            More specifically, deltas are gradients of loss with respect to z
-            in each layer, where z = wx + b is the value of a particular layer
-            before passing through the activation function
-
-        coef_grads : list, length = n_layers - 1
-            The ith element contains the amount of change used to update the
-            coefficient parameters of the ith layer in an iteration.
-
-        intercept_grads : list, length = n_layers - 1
-            The ith element contains the amount of change used to update the
-            intercept parameters of the ith layer in an iteration.
-
-        sample_weight : ndarray of shape (n_samples,), default=None
-            Sample weights. Currently unused; accepted for sklearn API
-            compatibility.
-
         Returns
         -------
         loss : float
         coef_grads : list, length = n_layers - 1
         intercept_grads : list, length = n_layers - 1
         """
+        # Unpack args based on calling convention:
+        # - 5 args: newer sklearn (includes sample_weight)
+        # - 4 args: older sklearn (no sample_weight)
+        if len(args) == 5:
+            (
+                _sample_weight,  # noqa: F841 — unused in OneClassMLP
+                activations,
+                deltas,
+                coef_grads,
+                intercept_grads,
+            ) = args
+        else:
+            activations, deltas, coef_grads, intercept_grads = args
+
         n_samples = X.shape[0]
 
-        # Forward propagate
         activations = self._forward_pass(activations)
 
         dist = np.sum((activations[-1] - self.center_) ** 2, axis=1).reshape(-1, 1)
