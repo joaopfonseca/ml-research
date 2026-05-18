@@ -332,11 +332,11 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
         self,
         X,
         y,
-        sample_weight=None,
-        activations=None,
-        deltas=None,
-        coef_grads=None,
-        intercept_grads=None,
+        sample_weight,
+        activations,
+        deltas,
+        coef_grads,
+        intercept_grads,
     ):
         """Compute the MLP loss function and its corresponding derivatives
         with respect to each parameter: weights and bias vectors.
@@ -349,7 +349,7 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
         y : ndarray of shape (n_samples,)
             The target values.
 
-        sample_weight : ndarray of shape (n_samples,), default=None
+        sample_weight : ndarray of shape (n_samples,)
             Sample weights. Currently unused; accepted for sklearn API
             compatibility.
 
@@ -370,6 +370,10 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
         intercept_grads : list, length = n_layers - 1
             The ith element contains the amount of change used to update the
             intercept parameters of the ith layer in an iteration.
+
+        sample_weight : ndarray of shape (n_samples,), default=None
+            Sample weights. Currently unused; accepted for sklearn API
+            compatibility.
 
         Returns
         -------
