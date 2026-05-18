@@ -9,7 +9,7 @@ running::
 Prerequisites
 =============
 
-A Python distribution of version 3.7 or higher is required to run this
+A Python distribution of version 3.11 or higher is required to run this
 project. It is generally recommended that you create a separate environment to
 use this project, which can be done by running ``make environment`` from the
 root of this project. The package's dependencies are listed in the
