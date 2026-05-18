@@ -1,8 +1,20 @@
 # Changelog
 
+## [v0.5.3](https://github.com/joaopfonseca/ml-research/tree/v0.5.3) (2026-05-18)
+
+[Full Changelog](https://github.com/joaopfonseca/ml-research/compare/v0.5.1...v0.5.3)
+
+**Implemented features and enhancements:**
+
+- Add Python 3.14 and scikit-learn 1.8.0 compatibility [\#79](https://github.com/joaopfonseca/ml-research/pull/79)
+- Update CI matrix: drop Python 3.10, add Python 3.14 [\#79](https://github.com/joaopfonseca/ml-research/pull/79)
+- Replace removed sklearn internals (`_validate_data`, mixin `_estimator_type`) [\#79](https://github.com/joaopfonseca/ml-research/pull/79)
+- Add sklearn 1.8 tag-system support and MRO-based estimator type detection [\#79](https://github.com/joaopfonseca/ml-research/pull/79)
+- Fix pandas StringArray.putmask incompatibility in `latex._make_bold` [\#79](https://github.com/joaopfonseca/ml-research/pull/79)
+
 ## [Unreleased](https://github.com/joaopfonseca/ml-research/tree/HEAD)
 
-[Full Changelog](https://github.com/joaopfonseca/ml-research/compare/v0.5.1...HEAD)
+[Full Changelog](https://github.com/joaopfonseca/ml-research/compare/v0.5.3...HEAD)
 
 **Implemented features and enhancements:**
 
