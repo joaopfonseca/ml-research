@@ -519,7 +519,7 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
             except TypeError:
                 # Fall back for older sklearn versions that don't accept
                 # sample_weight in _fit_stochastic
-                self._fit_stochastic(
+                self._fit_stochastic(  # pylint: disable=E1120
                     X,
                     np.ones(X.shape[0]),
                     activations=activations,
@@ -546,7 +546,7 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
             except TypeError:
                 # Fall back for older sklearn versions that don't accept
                 # sample_weight in _fit_lbfgs
-                self._fit_lbfgs(
+                self._fit_lbfgs(  # pylint: disable=E1120
                     X,
                     np.ones(X.shape[0]),
                     activations=activations,
