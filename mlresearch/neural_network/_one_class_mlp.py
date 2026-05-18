@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.base import OutlierMixin, _fit_context
 from sklearn.utils import check_random_state
 from sklearn.utils.validation import check_is_fitted
+
 try:
     from sklearn.utils.validation import validate_data
 except ImportError:
@@ -231,8 +232,6 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
 
     """
 
-    _estimator_type = "outlier"
-
     def __init__(
         self,
         hidden_layer_sizes=(500, 500),
@@ -287,6 +286,8 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
         )
         self.nu = nu
 
+    _estimator_type = "outlier"
+
     def _init_center(self, y_pred):
         """
         Initialize hypersphere center c as the mean from an initial forward pass on the
@@ -327,7 +328,14 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
             self.best_loss_ = np.inf
 
     def _backprop(
-        self, X, y, sample_weight, activations, deltas, coef_grads, intercept_grads
+        self,
+        X,
+        y,
+        sample_weight=None,
+        activations=None,
+        deltas=None,
+        coef_grads=None,
+        intercept_grads=None,
     ):
         """Compute the MLP loss function and its corresponding derivatives
         with respect to each parameter: weights and bias vectors.
@@ -340,8 +348,8 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
         y : ndarray of shape (n_samples,)
             The target values.
 
-        sample_weight : ndarray of shape (n_samples,)
-            The sample weights. Currently ignored; present for sklearn API
+        sample_weight : ndarray of shape (n_samples,), default=None
+            Sample weights. Currently unused; accepted for sklearn API
             compatibility.
 
         activations : list, length = n_layers - 1
@@ -496,30 +504,57 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
 
         # Run the Stochastic optimization solver
         if self.solver in _STOCHASTIC_SOLVERS:
-            self._fit_stochastic(
-                X,
-                np.ones(X.shape[0]),
-                sample_weight=None,
-                activations=activations,
-                deltas=deltas,
-                coef_grads=coef_grads,
-                intercept_grads=intercept_grads,
-                layer_units=layer_units,
-                incremental=incremental,
-            )
+            try:
+                self._fit_stochastic(
+                    X,
+                    np.ones(X.shape[0]),
+                    sample_weight=None,
+                    activations=activations,
+                    deltas=deltas,
+                    coef_grads=coef_grads,
+                    intercept_grads=intercept_grads,
+                    layer_units=layer_units,
+                    incremental=incremental,
+                )
+            except TypeError:
+                # Fall back for older sklearn versions that don't accept
+                # sample_weight in _fit_stochastic
+                self._fit_stochastic(
+                    X,
+                    np.ones(X.shape[0]),
+                    activations=activations,
+                    deltas=deltas,
+                    coef_grads=coef_grads,
+                    intercept_grads=intercept_grads,
+                    layer_units=layer_units,
+                    incremental=incremental,
+                )
 
         # Run the LBFGS solver
         elif self.solver == "lbfgs":
-            self._fit_lbfgs(
-                X,
-                np.ones(X.shape[0]),
-                sample_weight=None,
-                activations=activations,
-                deltas=deltas,
-                coef_grads=coef_grads,
-                intercept_grads=intercept_grads,
-                layer_units=layer_units,
-            )
+            try:
+                self._fit_lbfgs(
+                    X,
+                    np.ones(X.shape[0]),
+                    sample_weight=None,
+                    activations=activations,
+                    deltas=deltas,
+                    coef_grads=coef_grads,
+                    intercept_grads=intercept_grads,
+                    layer_units=layer_units,
+                )
+            except TypeError:
+                # Fall back for older sklearn versions that don't accept
+                # sample_weight in _fit_lbfgs
+                self._fit_lbfgs(
+                    X,
+                    np.ones(X.shape[0]),
+                    activations=activations,
+                    deltas=deltas,
+                    coef_grads=coef_grads,
+                    intercept_grads=intercept_grads,
+                    layer_units=layer_units,
+                )
 
         # validate parameter weights
         weights = chain(self.coefs_, self.intercepts_)
