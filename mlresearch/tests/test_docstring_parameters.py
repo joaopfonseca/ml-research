@@ -13,10 +13,12 @@ from sklearn.datasets import make_classification
 from sklearn.linear_model import LogisticRegression
 from sklearn.utils._testing import check_docstring_parameters
 
+import platform
+
 try:
     from sklearn.utils import IS_PYPY
 except ImportError:
-    IS_PYPY = False
+    IS_PYPY = platform.python_implementation() == "PyPy"
 from sklearn.utils._testing import _get_func_name
 from sklearn.utils._testing import ignore_warnings
 from sklearn.utils.estimator_checks import _enforce_estimator_tags_y

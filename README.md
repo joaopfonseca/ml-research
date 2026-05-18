@@ -47,8 +47,8 @@ visualizations shown in each paper is available (whenever possible) in the
 ## Installation
 
 A Python distribution of version >= 3.11 is required to run this
-project. Earlier Python versions might work in most cases, but they are not
-tested. ``ML-Research`` requires:
+project. Python versions below 3.11 are not supported and pip will refuse
+installation on Python < 3.11. ``ML-Research`` requires:
 
 - numpy (>= 1.20.0)
 - pandas (>= 2.1.0)

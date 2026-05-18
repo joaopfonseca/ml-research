@@ -368,7 +368,7 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
         else:
             raise TypeError(
                 f"_backprop expected 4 or 5 extra args (sklearn < 1.8 or >= 1.8 "
-                f"convention), got {len(args)}: {args}"
+                f"convention), got {len(args)}"
             )
 
         n_samples = X.shape[0]
