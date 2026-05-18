@@ -1,4 +1,5 @@
 from itertools import chain
+import inspect
 import numpy as np
 from sklearn.base import OutlierMixin, _fit_context
 from sklearn.utils import check_random_state
@@ -504,7 +505,8 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
 
         # Run the Stochastic optimization solver
         if self.solver in _STOCHASTIC_SOLVERS:
-            try:
+            sig = inspect.signature(self._fit_stochastic)
+            if "sample_weight" in sig.parameters:
                 self._fit_stochastic(
                     X,
                     np.ones(X.shape[0]),
@@ -516,10 +518,9 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
                     layer_units=layer_units,
                     incremental=incremental,
                 )
-            except TypeError:
-                # Fall back for older sklearn versions that don't accept
-                # sample_weight in _fit_stochastic
-                self._fit_stochastic(  # pylint: disable=E1120
+            else:
+                # pylint: disable-next=E1120
+                self._fit_stochastic(
                     X,
                     np.ones(X.shape[0]),
                     activations=activations,
@@ -532,7 +533,8 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
 
         # Run the LBFGS solver
         elif self.solver == "lbfgs":
-            try:
+            sig = inspect.signature(self._fit_lbfgs)
+            if "sample_weight" in sig.parameters:
                 self._fit_lbfgs(
                     X,
                     np.ones(X.shape[0]),
@@ -543,10 +545,9 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
                     intercept_grads=intercept_grads,
                     layer_units=layer_units,
                 )
-            except TypeError:
-                # Fall back for older sklearn versions that don't accept
-                # sample_weight in _fit_lbfgs
-                self._fit_lbfgs(  # pylint: disable=E1120
+            else:
+                # pylint: disable-next=E1120
+                self._fit_lbfgs(
                     X,
                     np.ones(X.shape[0]),
                     activations=activations,

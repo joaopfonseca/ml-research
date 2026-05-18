@@ -254,7 +254,7 @@ def _get_estimator_type(estimator):
         tags = get_tags(estimator)
         if tags.estimator_type is not None:
             return tags.estimator_type
-    except Exception:
+    except (ImportError, AttributeError):
         pass
 
     # Try legacy _estimator_type attribute
