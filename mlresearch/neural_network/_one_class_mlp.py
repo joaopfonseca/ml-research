@@ -363,8 +363,13 @@ class OneClassMLP(OutlierMixin, BaseMultilayerPerceptron):
                 coef_grads,
                 intercept_grads,
             ) = args
-        else:
+        elif len(args) == 4:
             activations, deltas, coef_grads, intercept_grads = args
+        else:
+            raise TypeError(
+                f"_backprop expected 4 or 5 extra args (sklearn < 1.8 or >= 1.8 "
+                f"convention), got {len(args)}: {args}"
+            )
 
         n_samples = X.shape[0]
 
