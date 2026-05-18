@@ -399,8 +399,8 @@ def test_check_estimator_type_mro_classifier():
     """Test MRO fallback for ClassifierMixin detection (class with no tags)."""
     from sklearn.base import ClassifierMixin, BaseEstimator
 
-    # Use a class that inherits ClassifierMixin but get_tags will fail on
-    # because the MRO fallback is meant for classes, not instances
+    # Use a class that inherits ClassifierMixin; get_tags will fail
+    # and fall through to legacy _estimator_type (None) then MRO detection.
     class FakeClassifier(ClassifierMixin, BaseEstimator):
         def fit(self, X, y):
             return self

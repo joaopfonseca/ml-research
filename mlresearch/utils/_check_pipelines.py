@@ -262,7 +262,7 @@ def _get_estimator_type(estimator):
     if est_type is not None:
         return est_type
 
-    # Check MRO for sklearn mixins (works on classes too)
+    # Check MRO for sklearn mixins (for estimator instances)
     from sklearn.base import ClassifierMixin, RegressorMixin, TransformerMixin
     from imblearn.base import SamplerMixin
 
