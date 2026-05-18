@@ -54,7 +54,7 @@ def test_urls():
                 response.close()
                 return result
             return False
-        except Exception:
+        except (OSError, ValueError):
             return False
 
     with mp.Pool(cpu_count()) as p:
