@@ -13,6 +13,7 @@ from collections import Counter
 from numpy.linalg import norm
 from scipy import sparse
 from sklearn.utils import check_random_state, check_array
+
 try:
     from sklearn.utils.validation import validate_data
 except ImportError:

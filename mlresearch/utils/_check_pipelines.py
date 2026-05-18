@@ -244,48 +244,57 @@ def check_param_grids(param_grids, est_names):
     return param_grids
 
 
+def _get_estimator_type(estimator):
+    """Detect the estimator type using sklearn tags, legacy attributes,
+    and MRO-based mixin detection."""
+    # Try sklearn's tag system (works on instances in sklearn >= 1.6)
+    try:
+        from sklearn.utils._tags import get_tags
+
+        tags = get_tags(estimator)
+        if tags.estimator_type is not None:
+            return tags.estimator_type
+    except Exception:
+        pass
+
+    # Try legacy _estimator_type attribute
+    est_type = getattr(estimator, "_estimator_type", None)
+    if est_type is not None:
+        return est_type
+
+    # Check MRO for sklearn mixins (works on classes too)
+    from sklearn.base import ClassifierMixin, RegressorMixin, TransformerMixin
+    from imblearn.base import SamplerMixin
+
+    mro = set(getattr(type(estimator), "__mro__", []))
+    if ClassifierMixin in mro:
+        return "classifier"
+    if RegressorMixin in mro:
+        return "regressor"
+    if TransformerMixin in mro:
+        return "transformer"
+    if SamplerMixin in mro:
+        return "sampler"
+
+    return None
+
+
 def check_estimator_type(estimators):
     """Returns the type of estimators."""
 
-    def _get_type(estimator):
-        # Try sklearn's tag system (works on instances in sklearn >= 1.6)
-        try:
-            from sklearn.utils._tags import get_tags
+    estimator_types = set()
+    est_type_map = {}
+    for name, estimator in estimators:
+        est_type = _get_estimator_type(estimator)
+        est_type_map[name] = est_type
+        estimator_types.add(est_type)
 
-            tags = get_tags(estimator)
-            if tags.estimator_type is not None:
-                return tags.estimator_type
-        except Exception:
-            pass
-
-        # Try legacy _estimator_type attribute
-        est_type = getattr(estimator, "_estimator_type", None)
-        if est_type is not None:
-            return est_type
-
-        # Check MRO for sklearn mixins (works on classes too)
-        from sklearn.base import ClassifierMixin, RegressorMixin, TransformerMixin
-        from imblearn.base import SamplerMixin
-
-        mro = set(getattr(type(estimator), "__mro__", []))
-        if ClassifierMixin in mro:
-            return "classifier"
-        if RegressorMixin in mro:
-            return "regressor"
-        if TransformerMixin in mro:
-            return "transformer"
-        if SamplerMixin in mro:
-            return "sampler"
-
-        return None
-
-    estimator_types = set([_get_type(estimator) for _, estimator in estimators])
     if None in estimator_types:
-        unknown = [name for name, est in estimators if _get_type(est) is None]
+        unknown = [name for name, est_type in est_type_map.items() if est_type is None]
         raise ValueError(
             f"Could not detect estimator type for: {unknown}. "
-            "Ensure all estimators define a valid estimator type via sklearn tags,"
-            "mixins (ClassifierMixin, RegressorMixin, etc.), or the"
+            "Ensure all estimators define a valid estimator type via sklearn tags, "
+            "mixins (ClassifierMixin, RegressorMixin, etc.), or the "
             "_estimator_type attribute."
         )
     estimator_types.discard(None)
@@ -297,8 +306,8 @@ def check_estimator_type(estimators):
     if len(estimator_types) == 0:
         raise ValueError(
             "No estimator type found. "
-            "Ensure all estimators define a valid estimator type via sklearn tags,"
-            "mixins (ClassifierMixin, RegressorMixin, etc.), or the"
+            "Ensure all estimators define a valid estimator type via sklearn tags, "
+            "mixins (ClassifierMixin, RegressorMixin, etc.), or the "
             "_estimator_type attribute."
         )
     return estimator_types.pop()
