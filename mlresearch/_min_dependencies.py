@@ -2,12 +2,12 @@
 
 import argparse
 
-NUMPY_MIN_VERSION = "1.20.0"
-PANDAS_MIN_VERSION = "2.1.0"
+NUMPY_MIN_VERSION = "1.26.0"
+PANDAS_MIN_VERSION = "2.2.0"
 SKLEARN_MIN_VERSION = "1.2.0"
-IMBLEARN_MIN_VERSION = "0.8.0"
-TQDM_MIN_VERSION = "4.46.0"
-MATPLOTLIB_MIN_VERSION = "2.2.3"
+IMBLEARN_MIN_VERSION = "0.11.0"
+TQDM_MIN_VERSION = "4.60.0"
+MATPLOTLIB_MIN_VERSION = "3.5.0"
 
 # The values are (version_spec, comma separated tags)
 dependent_packages = {
@@ -15,23 +15,23 @@ dependent_packages = {
     "numpy": (NUMPY_MIN_VERSION, "install"),
     "scikit-learn": (SKLEARN_MIN_VERSION, "install"),
     "imbalanced-learn": (IMBLEARN_MIN_VERSION, "install"),
-    "requests": ("2.26.0", "install"),
+    "requests": ("2.28.0", "install"),
     "tqdm": (TQDM_MIN_VERSION, "optional"),
     "matplotlib": (MATPLOTLIB_MIN_VERSION, "optional, docs"),
-    "pytest-cov": ("3.0.0", "tests"),
-    "flake8": ("3.8.2", "tests"),
+    "pytest-cov": ("4.0.0", "tests"),
+    "flake8": ("5.0.0", "tests"),
     "black": ("22.3", "tests"),
     "pylint": ("2.12.2", "tests"),
-    "mypy": ("1.6.1", "tests"),
-    "types-requests": ("2.31.0.10", "tests"),
-    "coverage": ("6.2", "tests"),
-    "numpydoc": ("1.0.0", "docs, tests"),
+    "mypy": ("1.10.0", "tests"),
+    "types-requests": ("2.32.0.20240622", "tests"),
+    "coverage": ("7.0.0", "tests"),
+    "numpydoc": ("1.5.0", "docs, tests"),
     "sphinx": ("4.2.0", "docs"),
-    "sphinx-material": ("0.0.35", "docs"),
+    "sphinx-material": ("0.0.36", "docs"),
     "recommonmark": ("0.7.1", "docs"),
-    "sphinx-markdown-tables": ("0.0.15", "docs"),
-    "sphinx-copybutton": ("0.4.0", "docs"),
-    "sphinx-gallery": ("0.17.1", "docs"),
+    "sphinx-markdown-tables": ("0.0.17", "docs"),
+    "sphinx-copybutton": ("0.5.0", "docs"),
+    "sphinx-gallery": ("0.19.0", "docs"),
     "ipykernel": ("6.29.5", "docs"),
     "pandoc": ("2.4", "docs"),
 }
