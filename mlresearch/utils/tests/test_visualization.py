@@ -9,6 +9,8 @@ try:
 except ModuleNotFoundError:
     matplotlib_installed = False
 
+import shutil
+
 from .._visualization import (
     set_matplotlib_style,
     feature_to_color,
@@ -35,14 +37,38 @@ def test_set_matplotlib_style_use_latex_reset():
 
     Regression test for GitHub issue #70.
     """
-    # Force text.usetex to True first (simulating a prior LaTeX-enabled call)
-    plt.rcParams["text.usetex"] = True
+    from matplotlib import rc_context
 
-    # Second call with use_latex=False — must reset text.usetex to False
-    set_matplotlib_style(use_latex=False)
-    assert not plt.rcParams[
-        "text.usetex"
-    ], "text.usetex should be False after calling set_matplotlib_style(use_latex=False)"
+    with rc_context():
+        # Force text.usetex to True first (simulating a prior LaTeX-enabled call)
+        plt.rcParams["text.usetex"] = True
+
+        # Second call with use_latex=False — must reset text.usetex to False
+        set_matplotlib_style(use_latex=False)
+        assert not plt.rcParams[
+            "text.usetex"
+        ], "text.usetex should be False after calling set_matplotlib_style(use_latex=False)"
+
+
+@pytest.mark.skipif(not matplotlib_installed, reason="Matplotlib not installed.")
+def test_set_matplotlib_style_use_latex_fallback():
+    """Test that when use_latex=True but LaTeX is not installed,
+    text.usetex is reset to False and a warning is emitted.
+
+    Regression test for GitHub issue #70 (fallback path).
+    """
+    original_which = shutil.which
+    try:
+        shutil.which = lambda cmd: None if cmd == "latex" else original_which(cmd)
+
+        with pytest.warns(UserWarning, match="Could not find a LaTeX installation"):
+            set_matplotlib_style(use_latex=True)
+
+        assert not plt.rcParams[
+            "text.usetex"
+        ], "text.usetex should be False when LaTeX is unavailable"
+    finally:
+        shutil.which = original_which
 
 
 @pytest.mark.skipif(not matplotlib_installed, reason="Matplotlib not installed.")
