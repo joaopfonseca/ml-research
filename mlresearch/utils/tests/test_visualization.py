@@ -45,9 +45,10 @@ def test_set_matplotlib_style_use_latex_reset():
 
         # Second call with use_latex=False — must reset text.usetex to False
         set_matplotlib_style(use_latex=False)
-        assert not plt.rcParams[
-            "text.usetex"
-        ], "text.usetex should be False after calling set_matplotlib_style(use_latex=False)"
+        assert not plt.rcParams["text.usetex"], (
+            "text.usetex should be False after calling "
+            "set_matplotlib_style(use_latex=False)"
+        )
 
 
 @pytest.mark.skipif(not matplotlib_installed, reason="Matplotlib not installed.")
