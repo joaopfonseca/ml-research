@@ -37,9 +37,7 @@ def test_set_matplotlib_style_use_latex_reset():
 
     Regression test for GitHub issue #70.
     """
-    from matplotlib import rc_context
-
-    with rc_context():
+    with plt.rc_context():
         # Force text.usetex to True first (simulating a prior LaTeX-enabled call)
         plt.rcParams["text.usetex"] = True
 
