@@ -60,12 +60,13 @@ def test_set_matplotlib_style_use_latex_fallback():
     try:
         shutil.which = lambda cmd: None if cmd == "latex" else original_which(cmd)
 
-        with pytest.warns(UserWarning, match="Could not find a LaTeX installation"):
-            set_matplotlib_style(use_latex=True)
+        with plt.rc_context():
+            with pytest.warns(UserWarning, match="Could not find a LaTeX installation"):
+                set_matplotlib_style(use_latex=True)
 
-        assert not plt.rcParams[
-            "text.usetex"
-        ], "text.usetex should be False when LaTeX is unavailable"
+            assert not plt.rcParams[
+                "text.usetex"
+            ], "text.usetex should be False when LaTeX is unavailable"
     finally:
         shutil.which = original_which
 
