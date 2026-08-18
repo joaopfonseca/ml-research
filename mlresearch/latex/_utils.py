@@ -50,6 +50,31 @@ def _check_indices(table_index, indices):
     return indices_
 
 
+def _check_columns(table_columns, columns):
+    """Formats the ``columns`` parameter passed."""
+
+    if columns is None:
+        return {i: i for i in table_columns}
+
+    # Check columns - list
+    if type(columns) is list:
+        if all([type(i) in [str, int, tuple] for i in columns]):
+            columns_ = {i: i for i in columns}
+        elif all([type(i) is list for i in columns]):
+            # Level-wise order: expand to the cartesian product of level values
+            columns_ = {col: col for col in product(*columns)}
+
+    # Check columns - dict
+    if type(columns) is dict:
+        if all([type(i) in [str, int, tuple] for i in list(columns.values())]):
+            columns_ = columns
+        elif all([type(i) is list for i in list(columns.values())]):
+            # Level-wise selection by column level name
+            columns_ = {col: col for col in product(*columns.values())}
+
+    return columns_
+
+
 def format_table(table, indices=None, columns=None, drop_missing=True):
     """
     Sort and rename rows and columns. Mostly used to set results from
@@ -135,10 +160,7 @@ def format_table(table, indices=None, columns=None, drop_missing=True):
         table.index.name = None
 
     # Update column list/dictionary if necessary
-    if type(columns) is list:
-        columns_ = {i: i for i in columns}
-    elif type(columns) is dict:
-        columns_ = columns
+    columns_ = _check_columns(table.columns, columns)
 
     if not drop_missing:
         missing = {i: i for i in table.columns if i not in columns_.keys()}
