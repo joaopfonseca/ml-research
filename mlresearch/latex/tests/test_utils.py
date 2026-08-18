@@ -86,6 +86,42 @@ def test_format_table(columns):
     assert tab.index.tolist() == indices[:-1]
 
 
+# Regression test for https://github.com/joaopfonseca/ml-research/issues/76
+# format_table should support reordering two-level (MultiIndex) columns via a
+# nested list-of-lists (level-wise order) and a dict-of-lists (level-wise
+# selection by column level name), mirroring the ``indices`` behaviour.
+@pytest.mark.parametrize(
+    "columns, expected",
+    [
+        (
+            [["f1", "acc"], ["mean", "sem"]],
+            [("f1", "mean"), ("f1", "sem"), ("acc", "mean"), ("acc", "sem")],
+        ),
+        (
+            {"metric": ["f1", "acc"], "stat": ["mean", "sem"]},
+            [("f1", "mean"), ("f1", "sem"), ("acc", "mean"), ("acc", "sem")],
+        ),
+    ],
+)
+def test_format_table_multiindex_columns(columns, expected):
+    cols = pd.MultiIndex.from_tuples(
+        [("acc", "mean"), ("acc", "sem"), ("f1", "mean"), ("f1", "sem")],
+        names=["metric", "stat"],
+    )
+    tab = pd.DataFrame(
+        [[0.9, 0.01, 0.85, 0.02], [0.88, 0.02, 0.83, 0.01]],
+        index=["model_a", "model_b"],
+        columns=cols,
+    )
+
+    formatted = format_table(tab, columns=columns)
+
+    assert list(formatted.columns) == expected
+    # Values follow the reordered columns
+    assert formatted[("f1", "mean")].tolist() == [0.85, 0.83]
+    assert formatted[("acc", "mean")].tolist() == [0.9, 0.88]
+
+
 def test_make_bold():
     # Default values
     for i in [0, 1]:
